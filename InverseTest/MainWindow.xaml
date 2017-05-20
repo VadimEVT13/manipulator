@@ -1,0 +1,85 @@
+﻿<Window x:Class="InverseTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:h="http://helix-toolkit.org/wpf"
+        xmlns:gui="clr-namespace:InverseTest.GUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="858.065" Width="1170.968" WindowStartupLocation="CenterScreen">
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom" Height="120">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Label Content="T1" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0"/>
+            <Slider Name="T1Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T1Slider_OnValueChanged" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+            <TextBox Name="T1TextBox" Text="0" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0"/>
+            <Label Content="T2" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+            <Slider Name="T2Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+            <TextBox Name="T2TextBox" Text="0" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
+
+            <Label Content="T3" VerticalAlignment="Center" Grid.Column="3" Grid.Row="0"/>
+            <Slider Name="T3Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"  VerticalAlignment="Center" Grid.Column="4" Grid.Row="0"/>
+            <TextBox Name="T3TextBox" Text="0" VerticalAlignment="Center" Grid.Column="5" Grid.Row="0"/>
+            <Label Content="T4" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
+            <Slider Name="T4Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"  VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
+            <TextBox Name="T4TextBox" Text="0" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
+
+            <Label Content="T5" VerticalAlignment="Center" Grid.Column="6" Grid.Row="0"/>
+            <Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"  VerticalAlignment="Center" Grid.Column="7" Grid.Row="0"/>
+            <TextBox Name="T5TextBox" Text="0" VerticalAlignment="Center" Grid.Column="8" Grid.Row="0"/>
+            <Label Content="T6" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
+            <Slider Name="T6Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T6Slider_OnValueChanged"  VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
+            <TextBox Name="T6TextBox" Text="0" VerticalAlignment="Center" Grid.Column="8" Grid.Row="1"/>
+
+        </Grid>
+        <StackPanel DockPanel.Dock="Right" Width="160">
+            <Label Content="Координаты точки съемки"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Content="X" Grid.Column="0" Grid.Row="0"/>
+                <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
+                <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
+                <TextBox Name="TargetPointXTextBox" Text="300" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox Name="TargetPointYTextBox" Text="300" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox Name="TargetPointZTextBox" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
+                <Button Name="TargetPointAcceptButton" Content="Confirm point" Grid.Column="1" Grid.Row="3" Margin="5" Click="TargetPointAcceptButton_OnClick"/>
+            </Grid>
+            <Label Content="АБЫРВАЛГ"></Label>
+            <Button Content="Повернуть станок!" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
+            <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
+            <TextBlock Name="DebugOutput" Height="250"/>
+            <Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick"/>
+            <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
+            <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
+            
+        </StackPanel>
+        <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
+        <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer"/>
+
+
+    </DockPanel>
+</Window>
