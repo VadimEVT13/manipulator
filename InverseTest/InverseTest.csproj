@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FileWriter.cs" />
     <Compile Include="Manipulator\JointAxises.cs" />
     <Page Include="GUI\ManipulatorVisualizer.xaml">
       <SubType>Designer</SubType>

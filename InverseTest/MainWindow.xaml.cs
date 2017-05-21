@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.InverseAlgorithm;
 using InverseTest.Manipulator;
+using Microsoft.Win32;
 
 namespace InverseTest
 {
@@ -32,12 +34,19 @@ namespace InverseTest
 
         double length = 10; // кубик будет размером 10 единиц
 
+        private ObservableCollection<Point3D> targetPoints{get; set;}
+
+
         public MainWindow()
         {
+
+            targetPoints = new ObservableCollection<Point3D>();
             InitializeComponent();
 
             manipulator = new ManipulatorV2(@"Manip.obj");
             ManipulatorVisualizer.RegisterManipulator(manipulator);
+
+            TargetPointsListView.ItemsSource = targetPoints;
 
         }
 
@@ -86,7 +95,7 @@ namespace InverseTest
             double.TryParse(TargetPointXTextBox.Text, out x);
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
-            
+                        
            
             if (targetBox == null)
             {
@@ -233,6 +242,77 @@ namespace InverseTest
                 ManipulatorVisualizer.RemoveAllMathModels();
             }
             
+        }
+
+        private void ImportAnglesEngine_MouseClick(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog importAnglesDialog = new SaveFileDialog();
+            importAnglesDialog.Filter = "Text file (*.txt) | *.txt";
+            
+            if (importAnglesDialog.ShowDialog() == true)
+            {
+                String anglesToOut = formatAnglesToString();
+                String filename = importAnglesDialog.FileName;
+                FileWriter.WriteAnglesToFile(anglesToOut, filename);
+            }
+        }
+
+        
+        private String formatAnglesToString()
+        {
+            StringBuilder anglesString = new StringBuilder(); 
+           foreach(Point3D point in targetPoints)
+            {
+                foreach (double angle in solveAngles(point))
+                {
+                    anglesString.Append(angle + "\t");
+                }
+                anglesString.Append("\n");
+            }
+            return anglesString.ToString();
+
+
+        }
+
+        //TODO может заменить лист на hashmap чтоб соотносить угол с ребром?
+        private List<double> solveAngles(Point3D point)
+        {
+            JointsChain resultedChain = Algorithm.Solve(manipulator.ManipMathModel, point);
+
+            double edje0RotateAngle = resultedChain.Joints[0].JointAxises.RotationAngle;
+            double edje0TurnAngle = resultedChain.Joints[0].JointAxises.TurnAngle;
+
+            double edje1RotateAngle = resultedChain.Joints[1].JointAxises.RotationAngle;
+            double edje1TurnAngle = resultedChain.Joints[1].JointAxises.TurnAngle;
+
+            double edje2RotateAngle = resultedChain.Joints[2].JointAxises.RotationAngle;
+            double edje2TurnAngle = resultedChain.Joints[2].JointAxises.TurnAngle;
+
+            List<double> andglesList = new List<double>();
+            andglesList.Add(edje0RotateAngle);
+            andglesList.Add(edje0TurnAngle);
+
+            andglesList.Add(edje1RotateAngle);
+            andglesList.Add(edje1TurnAngle);
+
+                andglesList.Add(edje2RotateAngle);
+            andglesList.Add(edje2TurnAngle);
+
+            return andglesList;
+        }
+
+        
+
+        private void AddPointToList_Click(object sender, RoutedEventArgs e)
+        {
+            double x, y, z;
+
+            double.TryParse(TargetPointXTextBox.Text, out x);
+            double.TryParse(TargetPointYTextBox.Text, out y);
+            double.TryParse(TargetPointZTextBox.Text, out z);
+
+            targetPoints.Add(new Point3D(x, y, z));
+
         }
     }
 }
