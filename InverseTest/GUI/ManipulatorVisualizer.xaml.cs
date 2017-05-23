@@ -97,16 +97,20 @@ namespace InverseTest.GUI
 
         public void AddModel(Model3D model)
         {
+            
             ModelVisual3D topViewModel = new ModelVisual3D() {Content = model};
             ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
-
+                        
+            
             ViewPort2DTop.Children.Add(topViewModel);
             ViewPort2DFront.Children.Add(frontViewModel);
             ViewPort2DRight.Children.Add(rightViewModel);
             ViewPort3D.Children.Add(fullViewModel);
         }
+        
+
 
         public void RemoveModel(Model3D model)
         {

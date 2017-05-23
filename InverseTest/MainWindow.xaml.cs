@@ -32,10 +32,13 @@ namespace InverseTest
 
         private Model3D targetBox;
 
+        private Model3D detail;
         double length = 10; // кубик будет размером 10 единиц
 
         private ObservableCollection<Point3D> targetPoints{get; set;}
 
+        private int selectedIndexPoint = -1;
+        private List<UIElement> childrens;
 
         public MainWindow()
         {
@@ -43,8 +46,8 @@ namespace InverseTest
             targetPoints = new ObservableCollection<Point3D>();
             InitializeComponent();
 
-            manipulator = new ManipulatorV2(@"Manip.obj");
-            ManipulatorVisualizer.RegisterManipulator(manipulator);
+         //  manipulator = new ManipulatorV2(@"Manip.obj");
+           //ManipulatorVisualizer.RegisterManipulator(manipulator);
 
             TargetPointsListView.ItemsSource = targetPoints;
 
@@ -95,8 +98,17 @@ namespace InverseTest
             double.TryParse(TargetPointXTextBox.Text, out x);
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
+
+            createTargetCube(x, y,z);
                         
            
+            
+        }
+
+
+        private void createTargetCube(double x, double y, double z)
+        {
+
             if (targetBox == null)
             {
                 // Смещаем полученную точку. Мы хотим чтобы кубик был по центру снимаемой точки
@@ -116,8 +128,8 @@ namespace InverseTest
                     new Point3D(x, y + length, z + length),
                     new Point3D(x + length, y + length, z + length)
                 };
-                
-                boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6,  2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
+
+                boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6, 2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
                 GeometryModel3D boxGeom = new GeometryModel3D();
                 boxGeom.Geometry = boxMesh;
                 DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
@@ -136,7 +148,7 @@ namespace InverseTest
                 y = y - oldLocation.Y;
                 z = z - oldLocation.Z;
                 // Смещаем кубик
-                TranslateTransform3D transform = new TranslateTransform3D(x,y,z);
+                TranslateTransform3D transform = new TranslateTransform3D(x, y, z);
                 Transform3D oldTransform = targetBox.Transform;
                 targetBox.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
             }
@@ -253,7 +265,7 @@ namespace InverseTest
             {
                 String anglesToOut = formatAnglesToString();
                 String filename = importAnglesDialog.FileName;
-                FileWriter.WriteAnglesToFile(anglesToOut, filename);
+                IOFile.WriteAnglesToFile(anglesToOut, filename);
             }
         }
 
@@ -311,7 +323,151 @@ namespace InverseTest
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
 
-            targetPoints.Add(new Point3D(x, y, z));
+
+            Point3D lastPoint = targetPoints.LastOrDefault();
+
+            if (lastPoint != null)
+            {
+                Point3D newPoint = new Point3D(x, y, z);
+                if (lastPoint.Equals(newPoint))
+                {
+                    MessageBox.Show("Точка уже в списке!", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    targetPoints.Add(new Point3D(x, y, z));
+                }
+            }
+            else
+            {
+                targetPoints.Add(new Point3D(x, y, z));
+            }
+
+
+
+        }
+
+
+
+
+        private void EditPoint_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (targetPoints.Count > 0)
+            {
+                selectedIndexPoint = TargetPointsListView.SelectedIndex;
+                Point3D point = targetPoints[selectedIndexPoint];
+                TargetPointXTextBox.Text = point.X.ToString();
+                TargetPointYTextBox.Text = point.Y.ToString();
+                TargetPointZTextBox.Text = point.Z.ToString();
+
+                createTargetCube(point.X, point.Y, point.Z);
+
+
+
+                if (selectedIndexPoint != -1)
+                {
+
+                    Button confirm = new Button();
+                    confirm.Content = "Принять";
+                    confirm.Click += new RoutedEventHandler(onConfirmChangesClick);
+
+                    Grid.SetColumn(confirm, 0);
+
+                    Button cancel = new Button();
+                    cancel.Content = "Отменить";
+                    cancel.Click += new RoutedEventHandler(onCancelChangesClick);
+
+                    Grid.SetColumn(cancel, 1);
+
+
+
+                    childrens = new List<UIElement>();
+                    for (int i = 0; i < TargetPointsListButtonsGrid.Children.Count; i++)
+                        childrens.Add(TargetPointsListButtonsGrid.Children[i]);
+
+
+
+                    TargetPointsListButtonsGrid.Children.Clear();
+                    TargetPointsListButtonsGrid.ColumnDefinitions.Clear();
+
+                    TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    TargetPointsListButtonsGrid.Children.Add(confirm);
+                    TargetPointsListButtonsGrid.Children.Add(cancel);
+
+
+                }
+            }
+
+        }
+
+
+        private void returnNormalGrid()
+        {
+            TargetPointsListButtonsGrid.Children.Clear();
+            TargetPointsListButtonsGrid.ColumnDefinitions.Clear();
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            for(int i=0; i<childrens.Count; i++)
+            TargetPointsListButtonsGrid.Children.Add(childrens[i]);
+
+
+        }
+
+        private void onCancelChangesClick(object sender, RoutedEventArgs e)
+        {
+            returnNormalGrid();
+        }
+
+
+
+        private void onConfirmChangesClick(object sender, RoutedEventArgs e)
+        {
+
+
+            double x, y, z;
+
+            double.TryParse(TargetPointXTextBox.Text, out x);
+            double.TryParse(TargetPointYTextBox.Text, out y);
+            double.TryParse(TargetPointZTextBox.Text, out z);
+
+            targetPoints[selectedIndexPoint] = new Point3D(x, y, z);
+
+            returnNormalGrid();
+        }
+
+        private void DeletePoint_Click(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = TargetPointsListView.SelectedIndex;
+            if (selectedIndex != -1)
+                targetPoints.RemoveAt(selectedIndex);
+
+        }
+
+        private void TargetPointsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedIndexPoint = TargetPointsListView.SelectedIndex;
+        }
+
+        private void LoadModel_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Blender file (*.obj)| *.obj";
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                Model3D detail = IOFile.loadObjModel(fileDialog.FileName);
+                Visual3D vis;
+                
+                ManipulatorVisualizer.AddModel(detail);
+                
+
+            }
 
         }
     }

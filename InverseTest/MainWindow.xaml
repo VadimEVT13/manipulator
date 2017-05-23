@@ -12,7 +12,7 @@
         <ToolBar DockPanel.Dock="Top">
             <Menu>
                 <MenuItem Header="Файл">
-                    <MenuItem Header="Загрузить модель"/>
+                    <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
                     <MenuItem Header="Импорт углов поворотов двигателей" Click="ImportAnglesEngine_MouseClick"/>
                     <MenuItem Header="Выход"/>
                 </MenuItem>
@@ -78,7 +78,7 @@
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
             
             <Label Content="Cписок точек" Margin="0,5,0,0"/>
-            <Grid>
+            <Grid Name="TargetPointsListButtonsGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -88,10 +88,10 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0"/>
-                <Button Content="Edit" Name="EditPoint" Grid.Column="1"/>
-                <Button Content="Delete" Name="DeletePoint" Grid.Column="2"/>
-            </Grid>
-            <ListView  Name="TargetPointsListView" ItemsSource="{Binding targetPoints}" >
+                <Button Content="Edit" Name="EditPoint" Grid.Column="1" Click="EditPoint_Click"/>
+                <Button Content="Delete" Name="DeletePoint" Grid.Column="2" Click="DeletePoint_Click"/>
+                </Grid>
+            <ListView  Name="TargetPointsListView" ItemsSource="{Binding targetPoints}" SelectionChanged="TargetPointsListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="X" Width="45" DisplayMemberBinding="{Binding X}" />
