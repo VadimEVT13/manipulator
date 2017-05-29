@@ -26,7 +26,10 @@
             <Viewport3D Name="ViewPort2DTop"/>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Grid.Row="1">
-            <Viewport3D Name="ViewPort3D"/>
+            <Viewport3D Name="ViewPort3D"  >
+                
+                
+            </Viewport3D>
         </Border>
     </Grid>
 </UserControl>

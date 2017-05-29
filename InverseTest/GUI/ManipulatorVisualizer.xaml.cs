@@ -39,7 +39,11 @@ namespace InverseTest.GUI
                 UpDirection = new Vector3D(1, 0, 0)
             };
             ViewPort2DTop.Camera = cam2DTop;
-            
+            Trackball trackbolTop = new Trackball();
+            trackbolTop.EventSource = ViewPort2DTop;
+            ViewPort2DTop.Camera.Transform = trackbolTop.Transform;
+
+
             OrthographicCamera cam2DFront = new OrthographicCamera
             {
                 Position = new Point3D(1200, 200, 0),
@@ -47,6 +51,10 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(-1, 0, 0)
             };
             ViewPort2DFront.Camera = cam2DFront;
+            Trackball trackbolFront = new Trackball();
+            trackbolFront.EventSource = ViewPort2DFront;
+            ViewPort2DFront.Camera.Transform = trackbolFront.Transform;
+
 
             OrthographicCamera cam2DRight = new OrthographicCamera
             {
@@ -55,6 +63,10 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
+            Trackball trackbolRight = new Trackball();
+            trackbolRight.EventSource = ViewPort2DRight;
+            ViewPort2DRight.Camera.Transform = trackbolRight.Transform;
+
 
             PerspectiveCamera cam3D = new PerspectiveCamera
             {
@@ -63,6 +75,10 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(-3, -3, -3)
             };
             ViewPort3D.Camera = cam3D;
+            Trackball trackbol3D = new Trackball();
+            trackbol3D.EventSource = ViewPort3D;
+            ViewPort3D.Camera.Transform = trackbol3D.Transform;
+
 
             // Настраиваем освещение
             Light ambientLight = new AmbientLight(Colors.White);

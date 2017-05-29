@@ -14,9 +14,9 @@
                 <MenuItem Header="Файл">
                     <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
                     <MenuItem Header="Импорт углов поворотов двигателей" Click="ImportAnglesEngine_MouseClick"/>
-                    <MenuItem Header="Выход"/>
+                    <MenuItem Header="Выход" Click="Exit_Click"/>
                 </MenuItem>
-                <MenuItem Header="Справка"/>
+                <MenuItem Name="Help" Header="Справка" Click="HelpMenuItem_Click"/>
             </Menu>
         </ToolBar>
         <StackPanel DockPanel.Dock="Right" Width="160">
@@ -48,7 +48,11 @@
             <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
             <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
             
+            <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
+            <Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
+
             <TextBlock Name="DebugOutput" Height="250"/>
+            
 
         </StackPanel>
         <StackPanel DockPanel.Dock="Left" Width="160" >

@@ -29,10 +29,13 @@ namespace InverseTest
     public partial class MainWindow : Window
     {
         private ManipulatorV2 manipulator;
-
+        private Model3D platform;
         private Model3D targetBox;
-
         private Model3D detail;
+
+        AxisAngleRotation3D ax3d;
+        RotateTransform3D myRotateTransform;
+        TranslateTransform3D platformTranform;
         double length = 10; // кубик будет размером 10 единиц
 
         private ObservableCollection<Point3D> targetPoints{get; set;}
@@ -46,10 +49,25 @@ namespace InverseTest
             targetPoints = new ObservableCollection<Point3D>();
             InitializeComponent();
 
-         //  manipulator = new ManipulatorV2(@"Manip.obj");
-           //ManipulatorVisualizer.RegisterManipulator(manipulator);
+             manipulator = new ManipulatorV2(@"Manip.obj");
+             ManipulatorVisualizer.RegisterManipulator(manipulator);
+
+            platform = IOFile.loadObjModel(@"cyl3.obj");
+            platformTranform =  new TranslateTransform3D(450, 0, 0);
+
+            platform.Transform = platformTranform;
+            ManipulatorVisualizer.AddModel(platform);
+
+
+
 
             TargetPointsListView.ItemsSource = targetPoints;
+
+            ax3d = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 1);
+            myRotateTransform = new RotateTransform3D(ax3d);
+            myRotateTransform.CenterX = 450;
+            myRotateTransform.CenterY = 0;
+            myRotateTransform.CenterZ = 0;
 
         }
 
@@ -317,32 +335,39 @@ namespace InverseTest
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
-            double x, y, z;
 
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-
-
-            Point3D lastPoint = targetPoints.LastOrDefault();
-
-            if (lastPoint != null)
+            if(targetPoints.Count>=10)
             {
-                Point3D newPoint = new Point3D(x, y, z);
-                if (lastPoint.Equals(newPoint))
+
+                MessageBox.Show("Уже 10 точек!!!!");
+            }
+            else
+            { double x, y, z;
+
+                double.TryParse(TargetPointXTextBox.Text, out x);
+                double.TryParse(TargetPointYTextBox.Text, out y);
+                double.TryParse(TargetPointZTextBox.Text, out z);
+
+
+                Point3D lastPoint = targetPoints.LastOrDefault();
+
+                if (lastPoint != null)
                 {
-                    MessageBox.Show("Точка уже в списке!", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Point3D newPoint = new Point3D(x, y, z);
+                    if (lastPoint.Equals(newPoint))
+                    {
+                        MessageBox.Show("Точка уже в списке!", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else
+                    {
+                        targetPoints.Add(new Point3D(x, y, z));
+                    }
                 }
                 else
                 {
                     targetPoints.Add(new Point3D(x, y, z));
                 }
             }
-            else
-            {
-                targetPoints.Add(new Point3D(x, y, z));
-            }
-
 
 
         }
@@ -457,18 +482,48 @@ namespace InverseTest
         private void LoadModel_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Blender file (*.obj)| *.obj";
+            fileDialog.Filter = "Blender file (*.obj)|*.obj";
 
             if (fileDialog.ShowDialog() == true)
             {
                 Model3D detail = IOFile.loadObjModel(fileDialog.FileName);
-                Visual3D vis;
-                
+                TranslateTransform3D transform = new TranslateTransform3D(450, 15, 0);
+                detail.Transform = transform;
+
+             
+
                 ManipulatorVisualizer.AddModel(detail);
+
+                Transform3DGroup transformGroup = new Transform3DGroup();
+
+               transformGroup.Children.Add(transform);
+                transformGroup.Children.Add(myRotateTransform);
+                detail.Transform = transformGroup;
+
                 
+                Transform3DGroup transformGroupPlatform = new Transform3DGroup();
+                transformGroupPlatform.Children.Add(platformTranform);
+                transformGroupPlatform.Children.Add(myRotateTransform);
+                platform.Transform = transform;
+
+
 
             }
 
+        }
+
+        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void DetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ax3d.Angle=e.NewValue;
+         }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
