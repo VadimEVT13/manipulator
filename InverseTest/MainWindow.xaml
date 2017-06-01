@@ -8,6 +8,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="858.065" Width="1170.968" WindowStartupLocation="CenterScreen">
 
+
+
+
     <DockPanel Margin="0,0,0,0">
         <ToolBar DockPanel.Dock="Top">
             <Menu>
@@ -16,8 +19,18 @@
                     <MenuItem Header="Импорт углов поворотов двигателей" Click="ImportAnglesEngine_MouseClick"/>
                     <MenuItem Header="Выход" Click="Exit_Click"/>
                 </MenuItem>
-                <MenuItem Name="Help" Header="Справка" Click="HelpMenuItem_Click"/>
             </Menu>
+            <Separator Width="20" ></Separator>
+            <Grid VerticalAlignment="Center">
+               
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                  <Button Content="Старт симуляции" HorizontalAlignment="Center" Name="StartSimulation"  Click="StartSimulation_Click"></Button>
+                    <Button Content="Стоп симуляция" HorizontalAlignment="Center" Name="StopSimulation"  Click="StopSimulation_Click"></Button>
+
+                </StackPanel>
+               
+            </Grid>
         </ToolBar>
         <StackPanel DockPanel.Dock="Right" Width="160">
             <Label Content="T1" HorizontalAlignment="Center"/>
@@ -31,7 +44,7 @@
             <Label Content="T3" HorizontalAlignment="Center"/>
             <Slider Name="T3Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
             <TextBox Name="T3TextBox" Text="0" Margin="5"/>
-            
+
             <Label Content="T4" HorizontalAlignment="Center"/>
             <Slider Name="T4Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
             <TextBox Name="T4TextBox" Text="0" Margin="5"/>
@@ -44,19 +57,23 @@
             <Slider Name="T6Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T6Slider_OnValueChanged"/>
             <TextBox Name="T6TextBox" Text="0" Margin="5"/>
 
-            <Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
+            <!--<Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
             <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
             <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
-            
+            -->
             <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
             <Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
 
             <TextBlock Name="DebugOutput" Height="250"/>
-            
+
 
         </StackPanel>
         <StackPanel DockPanel.Dock="Left" Width="160" >
-            <Label Content="Координаты точки съемки"/>
+            <StackPanel  Orientation="Horizontal">
+                <Label Content="Координаты точки съемки"/>
+
+            </StackPanel>
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -80,21 +97,27 @@
             <Button Content="Confirm point" Name="TargetPointAcceptButton" Click="TargetPointAcceptButton_OnClick"/>
             <Button Content="Повернуть станок!" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
-            
-            <Label Content="Cписок точек" Margin="0,5,0,0"/>
+            <StackPanel>
+                <Label Content="Cписок точек" Margin="0,5,0,0"/>
+                <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>
+                <Button FontFamily="Marlett" FontSize="20" Content="6" Click="PointDown_Click"/>
+            </StackPanel>
+
+
             <Grid Name="TargetPointsListButtonsGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="41*" />
+                    <ColumnDefinition Width="12*"/>
+                    <ColumnDefinition Width="54*" />
+                    <ColumnDefinition Width="53*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0"/>
-                <Button Content="Edit" Name="EditPoint" Grid.Column="1" Click="EditPoint_Click"/>
-                <Button Content="Delete" Name="DeletePoint" Grid.Column="2" Click="DeletePoint_Click"/>
-                </Grid>
+                <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <Button Content="Edit" Name="EditPoint" Grid.Column="2" Click="EditPoint_Click"/>
+                <Button Content="Delete" Name="DeletePoint" Grid.Column="3" Click="DeletePoint_Click"/>
+            </Grid>
             <ListView  Name="TargetPointsListView" ItemsSource="{Binding targetPoints}" SelectionChanged="TargetPointsListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
@@ -108,7 +131,7 @@
         </StackPanel>
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
-        <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer"/>
+        <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" />
 
     </DockPanel>
 </Window>

@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
+using System.Windows.Media.Animation;
+using System.Windows;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+
 
 namespace InverseTest
 {
@@ -73,6 +83,8 @@ namespace InverseTest
             {
                 // Импортируем модель и собираем её составляющие
                 Model3DGroup machine3DModel = new ModelImporter().Load(file);
+
+                
 
                 // Камера
                 Model3DGroup cam3DModel = new Model3DGroup();
@@ -157,11 +169,9 @@ namespace InverseTest
         /// </summary>
         /// <param name="part">Часть манипулятора, которую необходимо повернуть</param>
         /// <param name="angle">Угол поворота части манипулятора</param>
-        public void RotatePart(ManipulatorParts part, double angle)
+        /// 
+        public RotateTransform3D getRotateTransfofm(ManipulatorParts part, double angle, out Point3D rotatePoint, out Model3D modelToRotate, out Vector3D rotationAxis)
         {
-            Point3D rotatePoint;
-            Model3D modelToRotate;
-            Vector3D rotationAxis;
             
             // для каждой части манипулятора необходимо задать свои точки поворота, ось вращения и угол вращения
             switch (part)
@@ -172,11 +182,11 @@ namespace InverseTest
                     // Берем меш, находящийся в точке поворота ребра, получяем его позицию (она на одном из углов меша)
                     rotatePoint = _jointCubes[0].Bounds.Location;
                     // Полученную точку сдвигаем в цетр меша, получая точку вращения
-                    rotatePoint.Offset(1,1,1);
+                    rotatePoint.Offset(1, 1, 1);
                     // Ось вращения
                     rotationAxis = new Vector3D(0, 1, 0);
                     break;
-                
+
                 case ManipulatorParts.MiddleEdge:
                     modelToRotate = _edges[1];
                     rotatePoint = _jointCubes[0].Bounds.Location;
@@ -216,16 +226,36 @@ namespace InverseTest
                     throw new InvalidEnumArgumentException();
             }
             // Поворачиваем ребро в соответствии с заданными параметрами
-            Transform3D rotate = new RotateTransform3D(new AxisAngleRotation3D(rotationAxis, angle), rotatePoint);
-            modelToRotate.Transform = rotate;
+            return new RotateTransform3D(new AxisAngleRotation3D(rotationAxis, angle), rotatePoint);
             
+        }
 
+        public void RotatePart(ManipulatorParts part, double angle)
+        {
+            Point3D rotatePoint;
+            Model3D modelToRotate;
+            Vector3D rotationAxis;
+
+            RotateTransform3D rotate = getRotateTransfofm(part, angle, out rotatePoint, out modelToRotate, out rotationAxis);
+         
+            modelToRotate.Transform = rotate;
+
+            // Поворачиваем ребро в соответствии с заданными параметрами
+
+            
         }
 
         Model3D IManipulatorModel.GetManipulatorModel()
         {
             return _manipulator3DModel;
         }
+
+
+        public bool isIntersect(Model3D model)
+        {
+            return _manipulator3DModel.Bounds.IntersectsWith(model.Bounds);
+        }
+
 
 
         /*public void ResetMathModel()

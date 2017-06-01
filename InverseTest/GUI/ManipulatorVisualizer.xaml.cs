@@ -23,6 +23,9 @@ namespace InverseTest.GUI
     /// </summary>
     public partial class ManipulatorVisualizer : UserControl
     {
+
+
+
         public ManipulatorVisualizer()
         {
             InitializeComponent();
@@ -243,6 +246,10 @@ namespace InverseTest.GUI
                 }
             }
             viewPort.Children.Remove(modelToRemove);
+        }
+        public Viewport3D getViewPort()
+        {
+            return this.ViewPort2DFront;
         }
     }
 }

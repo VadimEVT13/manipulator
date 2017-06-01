@@ -33,6 +33,8 @@ namespace InverseTest
         private Model3D targetBox;
         private Model3D detail;
 
+        Animator animator;
+
         AxisAngleRotation3D ax3d;
         RotateTransform3D myRotateTransform;
         TranslateTransform3D platformTranform;
@@ -52,19 +54,24 @@ namespace InverseTest
              manipulator = new ManipulatorV2(@"Manip.obj");
              ManipulatorVisualizer.RegisterManipulator(manipulator);
 
-            platform = IOFile.loadObjModel(@"cyl3.obj");
+            MeshGeometry3D geometryMesh = new MeshGeometry3D();
+
+
+            platform = IOFile.loadObjModel(@"cyl_7.obj");
             platformTranform =  new TranslateTransform3D(450, 0, 0);
 
             platform.Transform = platformTranform;
             ManipulatorVisualizer.AddModel(platform);
 
-
+            animator = new Animator(manipulator);
 
 
             TargetPointsListView.ItemsSource = targetPoints;
 
             ax3d = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 1);
             myRotateTransform = new RotateTransform3D(ax3d);
+
+            ///центр платформы
             myRotateTransform.CenterX = 450;
             myRotateTransform.CenterY = 0;
             myRotateTransform.CenterZ = 0;
@@ -192,6 +199,14 @@ namespace InverseTest
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, thirdJointAngles[0] - secondJointAngles[0]);*/
             //manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, model.Joints[0].GetTurnAngle());
             //manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, model.Joints[0].GetRotateAngle());
+            double x, y, z;
+
+            double.TryParse(TargetPointXTextBox.Text, out x);
+            double.TryParse(TargetPointYTextBox.Text, out y);
+            double.TryParse(TargetPointZTextBox.Text, out z);
+
+            createTargetCube(x, y, z);
+
             DebugOutput.Text = "";
 
             JointsChain resultedChain = Algorithm.Solve(manipulator.ManipMathModel, GetTargetPoint() );
@@ -212,11 +227,12 @@ namespace InverseTest
 
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, edje2RotateAngle);
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, edje2TurnAngle);*/
-            T1Slider.Value = edje0RotateAngle;
-            T2Slider.Value = edje0TurnAngle;
-            T3Slider.Value = edje1TurnAngle;
-            T4Slider.Value = edje2RotateAngle;
-            T5Slider.Value = edje2TurnAngle;
+
+                T1Slider.Value = edje0RotateAngle;
+                T2Slider.Value = edje0TurnAngle;
+                T3Slider.Value = edje1TurnAngle;
+                T4Slider.Value = edje2RotateAngle;
+                T5Slider.Value = edje2TurnAngle;
 
             list = Algorithm.Points;
             listCounter = 0;
@@ -235,12 +251,7 @@ namespace InverseTest
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, 0);
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, 0);
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, 0);*/
-            manipulator.ResetMathModel();
-            T1Slider.Value = 0;
-            T2Slider.Value = 0;
-            T3Slider.Value = 0;
-            T4Slider.Value = 0;
-            T5Slider.Value = 0;
+            resetManip();
         }
 
         private void ShowMathModelBtn_OnClick(object sender, RoutedEventArgs e)
@@ -378,7 +389,7 @@ namespace InverseTest
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
 
-            if (targetPoints.Count > 0)
+            if (targetPoints.Count > 0 && selectedIndexPoint>=0)
             {
                 selectedIndexPoint = TargetPointsListView.SelectedIndex;
                 Point3D point = targetPoints[selectedIndexPoint];
@@ -524,6 +535,63 @@ namespace InverseTest
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void StartSimulation_Click(object sender, RoutedEventArgs e)
+        {
+          if (targetPoints.Count>0 && !animator.animating)
+            animator.startAnimation(targetPoints.ToList());
+
+          
+
+
+
+
+
+
+        }
+
+        private void resetManip()
+        {
+            manipulator.ResetMathModel();
+            T1Slider.Value = 0;
+            T2Slider.Value = 0;
+            T3Slider.Value = 0;
+            T4Slider.Value = 0;
+            T5Slider.Value = 0;
+        }
+
+        private void StopSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            if(animator!=null)
+            animator.stopAnimation();
+            resetManip();
+        }
+
+        private void PointDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedIndexPoint > -1 && selectedIndexPoint < targetPoints.Count-1) {
+                Point3D point = targetPoints[selectedIndexPoint];
+                int index = selectedIndexPoint;
+                targetPoints.RemoveAt(index);
+                targetPoints.Insert(index+1, point);
+            
+        }
+        }
+
+        private void PointUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint<= targetPoints.Count-1) 
+            {
+
+                
+                Point3D point = targetPoints[selectedIndexPoint];
+                int index = selectedIndexPoint;
+                targetPoints.RemoveAt(index);
+
+                targetPoints.Insert(index- 1, point);
+
+            }
         }
     }
 }
