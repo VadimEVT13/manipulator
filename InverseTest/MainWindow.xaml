@@ -56,11 +56,11 @@
             <Label Content="T6" HorizontalAlignment="Center"/>
             <Slider Name="T6Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T6Slider_OnValueChanged"/>
             <TextBox Name="T6TextBox" Text="0" Margin="5"/>
-
-            <!--<Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
+<!--
+            <Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
             <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
             <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
-            -->
+    -->        
             <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
             <Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
 
@@ -106,24 +106,23 @@
 
             <Grid Name="TargetPointsListButtonsGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="41*" />
-                    <ColumnDefinition Width="12*"/>
-                    <ColumnDefinition Width="54*" />
                     <ColumnDefinition Width="53*" />
+                    <ColumnDefinition Width="53"/>
+                    <ColumnDefinition Width="53" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <Button Content="Edit" Name="EditPoint" Grid.Column="2" Click="EditPoint_Click"/>
-                <Button Content="Delete" Name="DeletePoint" Grid.Column="3" Click="DeletePoint_Click"/>
+                <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0" Width="53"/>
+                <Button Content="Edit" Name="EditPoint" Grid.Column="1" Click="EditPoint_Click" Width="53"/>
+                <Button Content="Delete" Name="DeletePoint" Grid.Column="2" Click="DeletePoint_Click" Width="53"/>
             </Grid>
             <ListView  Name="TargetPointsListView" ItemsSource="{Binding targetPoints}" SelectionChanged="TargetPointsListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="X" Width="45" DisplayMemberBinding="{Binding X}" />
-                        <GridViewColumn Header="Y" Width="45" DisplayMemberBinding="{Binding Y}" />
-                        <GridViewColumn Header="Z" Width="45" DisplayMemberBinding="{Binding Z}" />
+                        <GridViewColumn Header="X" Width="52" DisplayMemberBinding="{Binding X}" />
+                        <GridViewColumn Header="Y" Width="52" DisplayMemberBinding="{Binding Y}" />
+                        <GridViewColumn Header="Z" Width="52" DisplayMemberBinding="{Binding Z}" />
                     </GridView>
                 </ListView.View>
             </ListView>

@@ -443,11 +443,17 @@ namespace InverseTest
         {
             TargetPointsListButtonsGrid.Children.Clear();
             TargetPointsListButtonsGrid.ColumnDefinitions.Clear();
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            ColumnDefinition column1 = new ColumnDefinition();
+            column1.Width = new GridLength(53.3);
+            ColumnDefinition column2 = new ColumnDefinition();
+            column2.Width = new GridLength(53.3);
+            ColumnDefinition column3 = new ColumnDefinition();
+            column3.Width = new GridLength(53.3);
 
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column1);
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column2);
+            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column3);
 
             for(int i=0; i<childrens.Count; i++)
             TargetPointsListButtonsGrid.Children.Add(childrens[i]);
