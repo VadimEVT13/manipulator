@@ -58,11 +58,19 @@
       <HintPath>..\packages\HelixToolkit.Wpf.2015.1.715\lib\net45\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Kinematic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Kinematic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Portal, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Portal.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -85,7 +93,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Animator.cs" />
-    <Compile Include="GUI\Trackball.cs" />
+    <Compile Include="Frame\Kinematic\DetectFrameKinematic.cs" />
+    <Compile Include="Frame\DetectorFrame.cs" />
+    <Compile Include="Frame\IDetectorFrame.cs" />
+    <Compile Include="Frame\Kinematic\DetectorFramePosition.cs" />
+    <Compile Include="Frame\Kinematic\Kinematic.cs" />
+    <Compile Include="Frame\Kinematic\PortalKinematic.cs" />
+    <Compile Include="GUI\Trackbol\3DTrackboll.cs" />
+    <Compile Include="GUI\Trackbol\FrontTrackbol.cs" />
+    <Compile Include="GUI\Trackbol\RightTrackboll.cs" />
+    <Compile Include="GUI\Trackbol\TopTrackboll.cs" />
+    <Compile Include="GUI\Trackbol\Trackball.cs" />
     <Compile Include="IOFile.cs" />
     <Compile Include="Manipulator\JointAxises.cs" />
     <Compile Include="Resource1.Designer.cs">
@@ -146,18 +164,27 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="cyl_7.mtl">
+    <None Include="3DModels\cyl_7.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="cyl_7.obj">
+    <EmbeddedResource Include="3DModels\cyl_7.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="3DModels\Frame.3ds">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Manip.mtl">
+    <None Include="3DModels\Manip.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Manip.obj">
+    <EmbeddedResource Include="3DModels\Manip.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="3DModels\Frame.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="3DModels\Frame.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

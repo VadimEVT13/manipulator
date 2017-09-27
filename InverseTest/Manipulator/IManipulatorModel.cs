@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using static InverseTest.ManipulatorV2;
 
 namespace InverseTest.Manipulator
 {
@@ -15,5 +16,9 @@ namespace InverseTest.Manipulator
         /// </summary>
         /// <returns>3D модель манипулятора</returns>
         Model3D GetManipulatorModel();
+
+
+        Model3D GetManipulatorPart(ManipulatorParts part);
+
     }
 }

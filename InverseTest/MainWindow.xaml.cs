@@ -20,6 +20,9 @@ using HelixToolkit.Wpf;
 using InverseTest.InverseAlgorithm;
 using InverseTest.Manipulator;
 using Microsoft.Win32;
+using InverseTest.Frame;
+using InverseTest.Frame.Kinematic;
+
 
 namespace InverseTest
 {
@@ -29,9 +32,19 @@ namespace InverseTest
     public partial class MainWindow : Window
     {
         private ManipulatorV2 manipulator;
+        private DetectorFrame detectorFrame;
         private Model3D platform;
+        //Точка сканирования 
         private Model3D targetBox;
+        //Точка камеры манипулятора
+        private Model3D pointManip;
+
         private Model3D detail;
+        private DetectFrameKinematic kinematic;
+
+        private Point3D scannedPoint = new Point3D(0, 0, 0);
+
+
 
         Animator animator;
 
@@ -51,13 +64,15 @@ namespace InverseTest
             targetPoints = new ObservableCollection<Point3D>();
             InitializeComponent();
 
-             manipulator = new ManipulatorV2(@"Manip.obj");
+             manipulator = new ManipulatorV2(@"./3DModels/Manip.obj");
              ManipulatorVisualizer.RegisterManipulator(manipulator);
+            detectorFrame = new DetectorFrame(@"./3DModels/Frame.obj");
+            ManipulatorVisualizer.RegisterDetectorFrame(detectorFrame);
 
             MeshGeometry3D geometryMesh = new MeshGeometry3D();
 
 
-            platform = IOFile.loadObjModel(@"cyl_7.obj");
+            platform = IOFile.loadObjModel(@"./3DModels/cyl_7.obj");
             platformTranform =  new TranslateTransform3D(450, 0, 0);
 
             platform.Transform = platformTranform;
@@ -66,7 +81,7 @@ namespace InverseTest
             animator = new Animator(manipulator);
 
 
-            TargetPointsListView.ItemsSource = targetPoints;
+         //   TargetPointsListView.ItemsSource = targetPoints;
 
             ax3d = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 1);
             myRotateTransform = new RotateTransform3D(ax3d);
@@ -75,42 +90,46 @@ namespace InverseTest
             myRotateTransform.CenterX = 450;
             myRotateTransform.CenterY = 0;
             myRotateTransform.CenterZ = 0;
+            Point3D point = ((IDetectorFrame)detectorFrame).GetDetectorFrameModel().Bounds.Location;
+            
+            
+
 
         }
 
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
             T1TextBox.Text = e.NewValue.ToString();
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
             T2TextBox.Text = e.NewValue.ToString();
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, -e.NewValue);
             T3TextBox.Text = e.NewValue.ToString();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
             T4TextBox.Text = e.NewValue.ToString();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
         }
 
         private void T6Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T6TextBox.Text = e.NewValue.ToString();
         }
 
@@ -124,121 +143,133 @@ namespace InverseTest
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
 
-            createTargetCube(x, y,z);
-                        
-           
-            
+            scannedPoint = new Point3D(x, y, z);
+            createCube(ref targetBox, new Point3D(x, y, z), Colors.Blue);
+
+
+            double manip_x, manip_y, manip_z;
+            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
+            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
+            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
+
+
+            createCube(ref pointManip, new Point3D(manip_x, manip_y, manip_z), Colors.Red);
         }
 
-
-        private void createTargetCube(double x, double y, double z)
+        private void createCube(ref Model3D model, Point3D point, Color color)
         {
 
-            if (targetBox == null)
+            if (model == null)
             {
                 // Смещаем полученную точку. Мы хотим чтобы кубик был по центру снимаемой точки
-                x = x - (length / 2);
-                y = y - (length / 2);
-                z = z - (length / 2);
+                point.X = point.X - (length / 2);
+                point.Y = point.Y - (length / 2);
+                point.Z = point.Z - (length / 2);
                 // Создаем кубик
                 MeshGeometry3D boxMesh = new MeshGeometry3D();
                 boxMesh.Positions = new Point3DCollection()
                 {
-                    new Point3D(x, y, z),
-                    new Point3D(x + length, y, z),
-                    new Point3D(x, y + length, z),
-                    new Point3D(x + length, y + length, z),
-                    new Point3D(x, y, z + length),
-                    new Point3D(x + length, y, z + length),
-                    new Point3D(x, y + length, z + length),
-                    new Point3D(x + length, y + length, z + length)
+                    new Point3D(point.X, point.Y, point.Z),
+                    new Point3D(point.X + length, point.Y, point.Z),
+                    new Point3D(point.X, point.Y + length, point.Z),
+                    new Point3D(point.X+ length, point.Y + length, point.Z),
+                    new Point3D(point.X, point.Y, point.Z + length),
+                    new Point3D(point.X+ length, point.Y, point.Z + length),
+                    new Point3D(point.X, point.Y+ length, point.Z+ length),
+                    new Point3D(point.X+ length, point.Y + length, point.Z + length)
                 };
 
                 boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6, 2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
                 GeometryModel3D boxGeom = new GeometryModel3D();
                 boxGeom.Geometry = boxMesh;
-                DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+                DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(color));
                 boxGeom.Material = mat;
 
-                targetBox = boxGeom;
+                model = boxGeom;
                 // Отображаем кубик во вьюпортах
-                ManipulatorVisualizer.AddModel(targetBox);
+
+
+                ManipulatorVisualizer.AddModel(model);
             }
             else
             {
                 // Получаем текущую точку съемки
-                Point3D oldLocation = GetTargetPoint();
+                Point3D oldLocation = GetTargetPoint(model);
                 // Вычисляем смещение для новой точки съемки относительно старой
-                x = x - oldLocation.X;
-                y = y - oldLocation.Y;
-                z = z - oldLocation.Z;
+                point.X = point.X - oldLocation.X;
+                point.Y = point.Y - oldLocation.Y;
+                point.Z= point.Z - oldLocation.Z;
                 // Смещаем кубик
-                TranslateTransform3D transform = new TranslateTransform3D(x, y, z);
-                Transform3D oldTransform = targetBox.Transform;
-                targetBox.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
+                TranslateTransform3D transform = new TranslateTransform3D(point.X, point.Y, point.Z);
+                Transform3D oldTransform = model.Transform;
+                model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
             }
-        }
 
-        public Point3D GetTargetPoint()
+        }
+        
+        public Point3D GetTargetPoint(Model3D model)
         {
-            Point3D targetPoint = targetBox.Bounds.Location;
+            Point3D targetPoint = model.Bounds.Location;
             targetPoint.Offset(length / 2, length / 2, length / 2);
             return targetPoint;
         }
 
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            /*ManipMathModel model = manipulator.ManipMathModel;
-            Point3D targetPoint = GetTargetPoint();
-            Algorithm.DoStuff(model,targetPoint);
-            double[] firstJointAngles = model.Joints[0].GetTurnAngle();
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, firstJointAngles[0]);
-            double[] secondJointAngles = model.Joints[1].GetTurnAngle();
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, secondJointAngles[0]-firstJointAngles[0]);
-            double[] thirdJointAngles = model.Joints[2].GetTurnAngle();
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, thirdJointAngles[0] - secondJointAngles[0]);*/
-            //manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, model.Joints[0].GetTurnAngle());
-            //manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, model.Joints[0].GetRotateAngle());
-            double x, y, z;
 
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
 
-            createTargetCube(x, y, z);
+            double manip_x, manip_y, manip_z;
+            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
+            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
+            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
 
-            DebugOutput.Text = "";
+            double pointX, pointY, pointZ;
+            double.TryParse(TargetPointXTextBox.Text, out pointX);
+            double.TryParse(TargetPointYTextBox.Text, out pointY);
+            double.TryParse(TargetPointZTextBox.Text, out pointZ);
 
-            JointsChain resultedChain = Algorithm.Solve(manipulator.ManipMathModel, GetTargetPoint() );
 
-            double edje0RotateAngle = resultedChain.Joints[0].JointAxises.RotationAngle;
-            double edje0TurnAngle = resultedChain.Joints[0].JointAxises.TurnAngle;
 
-            double edje1RotateAngle = resultedChain.Joints[1].JointAxises.RotationAngle;
-            double edje1TurnAngle = resultedChain.Joints[1].JointAxises.TurnAngle;
+            Kinematic k = new Kinematic();
+            Angle.o1 = 0;
+            Angle.o2 = 0;
+            Angle.o3 = 0;
+            Angle.o4 = 0;
+            Angle.o5 = 0;
+            Angle.o6 = 0;
+            Angle.a = 0;
+            Angle.b = 0;
+            Angle.g = 0;
 
-            double edje2RotateAngle = resultedChain.Joints[2].JointAxises.RotationAngle;
-            double edje2TurnAngle = resultedChain.Joints[2].JointAxises.TurnAngle;
+            
+            k.InverseNab(manip_x, manip_z, manip_y, pointX, pointY, pointZ);
 
-            /*manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, edje0RotateAngle);
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, edje0TurnAngle);
+            T1Slider.Value = Angle.o1 * 180 / Math.PI;
+            T2Slider.Value = Angle.o2 * 180 / Math.PI;
+            T3Slider.Value = Angle.o3 * 180 / Math.PI;
+            T4Slider.Value = Angle.o4 * 180 / Math.PI;
+            T5Slider.Value = Angle.o5 * 180 / Math.PI;
+            T6Slider.Value = Angle.o6 * 180 / Math.PI;
 
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, edje1TurnAngle);
+            Portal.PortalKinematic p = new Portal.PortalKinematic(1500, 1500, 1500);
+            p.setPortal(-500, -500, -500);
+            p.setPortalLen(61, 110);
+            p.setPointManip(manip_x, manip_y, manip_z);
+            p.setPointNab(400, 300, 0);
 
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, edje2RotateAngle);
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, edje2TurnAngle);*/
+            double[] angles = p.getAlfAndBet();
+            double[] pointers = p.portalPoint(1);
+            double[] point = p.ustPoint();
+            if (point != null)
+            {
+                //createTargetCube(400, 300, 0);
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(pointers[3], pointers[4], pointers[5]), angles[1], angles[0]);
+                detectorFrame.MoveDetectFrame(detectp);
 
-                T1Slider.Value = edje0RotateAngle;
-                T2Slider.Value = edje0TurnAngle;
-                T3Slider.Value = edje1TurnAngle;
-                T4Slider.Value = edje2RotateAngle;
-                T5Slider.Value = edje2TurnAngle;
+            }
+            else
+                MessageBox.Show("Не существует такой точки");
 
-            list = Algorithm.Points;
-            listCounter = 0;
-
-            DebugOutput.Text =
-                $"{edje0RotateAngle} \n {edje0TurnAngle} \n {edje1RotateAngle} \n {edje1TurnAngle} \n {edje2RotateAngle} \n {edje2TurnAngle}";
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)
@@ -378,8 +409,7 @@ namespace InverseTest
                 {
                     targetPoints.Add(new Point3D(x, y, z));
                 }
-            }
-
+            }       
 
         }
 
@@ -397,7 +427,6 @@ namespace InverseTest
                 TargetPointYTextBox.Text = point.Y.ToString();
                 TargetPointZTextBox.Text = point.Z.ToString();
 
-                createTargetCube(point.X, point.Y, point.Z);
 
 
 
@@ -547,14 +576,6 @@ namespace InverseTest
         {
           if (targetPoints.Count>0 && !animator.animating)
             animator.startAnimation(targetPoints.ToList());
-
-          
-
-
-
-
-
-
         }
 
         private void resetManip()
@@ -598,6 +619,19 @@ namespace InverseTest
                 targetPoints.Insert(index- 1, point);
 
             }
+        }
+
+        private void MeshSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.transformModel(e.NewValue);
+        }
+
+        private void MeshNumberSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            
+
+            detectorFrame.addNumberMesh((int)e.NewValue);
+            DebugOutput.Text =   e.NewValue.ToString();
         }
     }
 }

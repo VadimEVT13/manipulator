@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Александр Казанцев\Source\Repos\RoboArm\InverseTest\obj\Debug\
+C:\RoboArm\InverseTest\obj\Debug\
 InverseTest
 none
 false
 DEBUG;TRACE
-C:\Users\Александр Казанцев\Source\Repos\RoboArm\InverseTest\App.xaml
+C:\RoboArm\InverseTest\App.xaml
 2-935852810
 
-261414883023
-70-1398794524
+36-1057672354
+72-2081385441
 GUI\ManipulatorVisualizer.xaml;MainWindow.xaml;
 
-True
+False
 

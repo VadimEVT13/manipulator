@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Portal</name>
+    </assembly>
+    <members>
+        <member name="F:PortalModule.Form1.components">
+            <summary>
+            Обязательная переменная конструктора.
+            </summary>
+        </member>
+        <member name="M:PortalModule.Form1.Dispose(System.Boolean)">
+            <summary>
+            Освободить все используемые ресурсы.
+            </summary>
+            <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+        </member>
+        <member name="M:PortalModule.Form1.InitializeComponent">
+            <summary>
+            Требуемый метод для поддержки конструктора — не изменяйте 
+            содержимое этого метода с помощью редактора кода.
+            </summary>
+        </member>
+        <member name="M:PortalModule.Program.Main">
+            <summary>
+            Главная точка входа для приложения.
+            </summary>
+        </member>
+        <member name="M:Portal.PortalKinematic.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Функция задает максимальные отклонения от начальной точки портала в миллиметрах
+            </summary>
+        </member>
+        <member name="M:Portal.PortalKinematic.setPortal(System.Double,System.Double,System.Double)">
+            <summary>
+            Функция задает начало координат портала в абсолютных координатах
+            </summary>
+        </member>
+        <member name="M:Portal.PortalKinematic.setPortalLen(System.Double,System.Double)">
+            <summary>
+            Функция задает длину звеньев портала в миллиметрах
+            </summary>
+            <param name="l1">Первая от "схвата" манипулятора</param>
+            <param name="l2"></param>
+            <returns>Возвращает true если правильно задано</returns>
+        </member>
+        <member name="M:Portal.PortalKinematic.setPointManip(System.Double,System.Double,System.Double)">
+            <summary>
+            Функция задает точку в которую встал "схват" манипулятора
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:Portal.PortalKinematic.setPointNab(System.Double,System.Double,System.Double)">
+            <summary>
+            Функция задает точку на которую смотрит "схват" манипулятора, координаты точки наблюдения больше или равны координатам "схвата", возвращает ложь если не может установить
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:Portal.PortalKinematic.getAlfAndBet">
+            <summary>
+            Функция возвращает углы Альфа и Бета портала в виде массива из двух чисел в последовательности: альфа, бета. Альфа угол наклона по вертикали, а бета по горизонтали.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Portal.PortalKinematic.portalPoint(System.Double)">
+            <summary>
+            Функция возвращает точку установки портала, возвращает массив из 3 чисел (x, y, z) или возвращает null, если точка вне досягаемости портала.
+            </summary>
+            <param name="scale"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Portal.PortalKinematic.ustPoint">
+            <summary>
+            Функция возвращает массив (x, y, z) как точку, в которую нужно установить основание портала (то место, которое двигают 3 первых двигателя) в абсолютных координатах. Возвращает null, если вне досягаемости.
+            </summary>
+            <returns></returns>        
+        </member>
+        <member name="M:Portal.PortalKinematic.ustPointForPortal">
+            <summary>
+            Функция возвращает массив (x, y, z) как точку, в которую нужно установить основание портала (то место, которое двигают 3 первых двигателя) в координатах относительно портала. Возвращает null, если вне досягаемости.
+            </summary>
+            <returns></returns> 
+        </member>
+        <member name="T:Portal.Properties.Resources">
+            <summary>
+              Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+            </summary>
+        </member>
+        <member name="P:Portal.Properties.Resources.ResourceManager">
+            <summary>
+              Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+            </summary>
+        </member>
+        <member name="P:Portal.Properties.Resources.Culture">
+            <summary>
+              Перезаписывает свойство CurrentUICulture текущего потока для всех
+              обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+            </summary>
+        </member>
+    </members>
+</doc>

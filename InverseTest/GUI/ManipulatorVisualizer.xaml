@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:InverseTest.GUI"
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="202.667" d:DesignWidth="132.666">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -16,20 +16,26 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.Row="0">
-            <Viewport3D Name="ViewPort2DFront"/>
+
+        <Border Name="EventSource2DFront" BorderBrush="Black"  Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="0">
+            <Viewport3D Name="ViewPort2DFront" ClipToBounds="True" Grid.Row="0" Grid.Column="0"/>
+          <!--  <Border Name="EventSource2DFront" Background="Transparent" Grid.Row="0" Grid.Column="0"/>-->
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Grid.Row="0">
-            <Viewport3D Name="ViewPort2DRight"/>
+
+        <Border Name="EventSource2DRight" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="0">
+            <Viewport3D Name="ViewPort2DRight" ClipToBounds="True" Grid.Row="1" Grid.Column="0"/>
+            <!--<Border Name="EventSource2DRight" Background="Transparent" Grid.Row="1" Grid.Column="0"/>-->
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.Row="1" >
-            <Viewport3D Name="ViewPort2DTop"/>
+
+        <Border Name="EventSource2DTop" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="1" >
+            <Viewport3D Name="ViewPort2DTop" ClipToBounds="True" Grid.Row="0" Grid.Column="1"/>
+            <!--<Border Name="EventSource2DTop" Background="Transparent" Grid.Row="0" Grid.Column="1"/>-->
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Grid.Row="1">
-            <Viewport3D Name="ViewPort3D"  >
-                
-                
-            </Viewport3D>
+
+        <Border Name="EventSourceViewPort3D" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="1">
+
+            <Viewport3D Name="ViewPort3D" ClipToBounds="True" Grid.Row="1" Grid.Column="1"/>
+           <!-- <Border Name="EventSourceViewPort3D" Background="Transparent" Grid.Row="1" Grid.Column="1"/>-->
         </Border>
     </Grid>
 </UserControl>

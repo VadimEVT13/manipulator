@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
+using InverseTest.GUI.Trackbol;
 
 namespace InverseTest.GUI
 {
@@ -36,52 +37,53 @@ namespace InverseTest.GUI
             // Настраиваем камеры
             OrthographicCamera cam2DTop = new OrthographicCamera
             {
-                Position = new Point3D(100, 1200, 0),
-                Width = 800,
+                Position = new Point3D(450, 1800, 0),
+                Width = 900,
                 LookDirection = new Vector3D(0, -1, 0),
                 UpDirection = new Vector3D(1, 0, 0)
-            };
-            ViewPort2DTop.Camera = cam2DTop;
-            Trackball trackbolTop = new Trackball();
-            trackbolTop.EventSource = ViewPort2DTop;
+            };ViewPort2DTop.Camera = cam2DTop;
+            Trackball trackbolTop = new TopTrackboll();
+            trackbolTop.EventSource = EventSource2DTop;
             ViewPort2DTop.Camera.Transform = trackbolTop.Transform;
 
 
             OrthographicCamera cam2DFront = new OrthographicCamera
             {
-                Position = new Point3D(1200, 200, 0),
+                Position = new Point3D(1200,300, 0),
                 Width = 800,
-                LookDirection = new Vector3D(-1, 0, 0)
+                LookDirection = new Vector3D(-2, 0, 0)
             };
             ViewPort2DFront.Camera = cam2DFront;
-            Trackball trackbolFront = new Trackball();
-            trackbolFront.EventSource = ViewPort2DFront;
+            Trackball trackbolFront = new FrontTrackbol();
+            trackbolFront.EventSource = EventSource2DFront;
             ViewPort2DFront.Camera.Transform = trackbolFront.Transform;
 
 
             OrthographicCamera cam2DRight = new OrthographicCamera
             {
-                Position = new Point3D(100, 200, 1200),
-                Width = 800,
+                Position = new Point3D(450, 300, 1200),
+                Width = 1500,
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
-            Trackball trackbolRight = new Trackball();
-            trackbolRight.EventSource = ViewPort2DRight;
+            Trackball trackbolRight = new RightTrackboll();
+            trackbolRight.EventSource = EventSource2DRight;
             ViewPort2DRight.Camera.Transform = trackbolRight.Transform;
 
 
             PerspectiveCamera cam3D = new PerspectiveCamera
             {
-                Position = new Point3D(800, 900, 800),
+                Position = new Point3D(1300, 900, 800),
                 FieldOfView = 45,
-                LookDirection = new Vector3D(-3, -3, -3)
+                LookDirection = new Vector3D(-4, -4, -4)
             };
             ViewPort3D.Camera = cam3D;
-            Trackball trackbol3D = new Trackball();
-            trackbol3D.EventSource = ViewPort3D;
+            Trackball trackbol3D = new _3DTrackboll();
+            trackbol3D.EventSource = EventSourceViewPort3D;
             ViewPort3D.Camera.Transform = trackbol3D.Transform;
 
+
+            
 
             // Настраиваем освещение
             Light ambientLight = new AmbientLight(Colors.White);
@@ -113,6 +115,22 @@ namespace InverseTest.GUI
             Model3D manipulatorModel = manipulator.GetManipulatorModel();
             AddModel(manipulatorModel);
         }
+
+        public void RegisterDetectorFrame(IDetectorFrame detectorFrame)
+        {
+            Model3D detectorFrameModel = detectorFrame.GetDetectorFrameModel();
+            detectorFrameModel.Transform = new TranslateTransform3D(800, 0, 0);
+            AddModel(detectorFrameModel);
+        }
+
+
+        /// <summary>
+        /// Устанавливает камеры для отображения всех моделей во <see cref="ViewPort3D"/>
+        /// </summary>
+        private void SetCameraProperly()
+        {
+        }
+
 
         public void AddModel(Model3D model)
         {

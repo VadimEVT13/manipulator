@@ -84,8 +84,6 @@ namespace InverseTest
                 // Импортируем модель и собираем её составляющие
                 Model3DGroup machine3DModel = new ModelImporter().Load(file);
 
-                
-
                 // Камера
                 Model3DGroup cam3DModel = new Model3DGroup();
                 cam3DModel.Children.Add(machine3DModel.Children[15]);
@@ -251,12 +249,50 @@ namespace InverseTest
         }
 
 
-        public bool isIntersect(Model3D model)
+        Model3D IManipulatorModel.GetManipulatorPart(ManipulatorParts part)
         {
-            return _manipulator3DModel.Bounds.IntersectsWith(model.Bounds);
+            Model3D modelToReturn;
+            switch (part)
+            {
+                case ManipulatorParts.Table:
+                    // Ребро, которое необходимо повернуть
+                    modelToReturn = _edges[0];
+                 
+                    break;
+
+                case ManipulatorParts.MiddleEdge:
+                    modelToReturn = _edges[1];
+                    
+                    break;
+
+                case ManipulatorParts.TopEdgeBase:
+                    modelToReturn = _edges[2];
+                  
+                    break;
+
+                case ManipulatorParts.TopEdge:
+                    modelToReturn = _edges[3];
+                  
+                    break;
+
+                case ManipulatorParts.CameraBase:
+                    modelToReturn = _edges[4];
+                   
+                    break;
+
+                case ManipulatorParts.Camera:
+                    modelToReturn = _edges[5];
+                 
+                    break;
+                    default:
+                    throw new InvalidEnumArgumentException();
+            }
+
+
+            return modelToReturn;
         }
 
-
+       
 
         /*public void ResetMathModel()
         {
