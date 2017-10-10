@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("cyl3.obj")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("3dmodels/detector%20frame.obj")]
 
 

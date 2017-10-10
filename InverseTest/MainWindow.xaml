@@ -16,7 +16,6 @@
             <Menu>
                 <MenuItem Header="Файл">
                     <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
-                    <MenuItem Header="Импорт углов поворотов двигателей" Click="ImportAnglesEngine_MouseClick"/>
                     <MenuItem Header="Выход" Click="Exit_Click"/>
                 </MenuItem>
             </Menu>
@@ -32,6 +31,10 @@
 
             </Grid>
         </ToolBar>
+
+
+        <StackPanel DockPanel.Dock="Right" Width="160">
+            <Expander Header="Манипулятором">
         <StackPanel DockPanel.Dock="Right" Width="160">
             <Label Content="T1" HorizontalAlignment="Center"/>
             <Slider Name="T1Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T1Slider_OnValueChanged"/>
@@ -61,17 +64,51 @@
             <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
             <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
     -->
-            <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
+         <!--   <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
             <Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
-
-            <Label Content="Двигать меш" HorizontalAlignment="Center"/>
-            <Slider Name="MeshSlider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="MeshSlider_ValueChanged"/>
-            <Slider Name="MeshNumberSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="MeshNumberSlider_ValueChanged"/>
+            -->
+          
 
             <TextBlock Name="DebugOutput" Height="250"/>
+             </StackPanel>
+        </Expander>
+        <Expander Header="Детектором">
+            <StackPanel DockPanel.Dock="Right" Width="160">
+                <Label Content="Вертикальная рамка" HorizontalAlignment="Center"/>
+                <Slider Name="VerticalFrameSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="VerticalFrameSlider_ValueChanged"/>
+                <TextBox Name="VerticalFrameSliderTextBox" Text="0" Margin="5"/>
+
+                <Label Content="Горизонтальная планка" HorizontalAlignment="Center"/>
+                <Slider Name="HorizontalBarSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="HorizontalBarSlider_ValueChanged"/>
+                <TextBox Name="HorizontalBarTextView" Text="0" Margin="5"/>
+
+                <Label Content="Держатель экрана" HorizontalAlignment="Center"/>
+                <Slider Name="ScreenHolderSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="ScreenHolderSlider_ValueChanged"/>
+                <TextBox Name="ScreenHolderTextBox" Text="0" Margin="5"/>
+
+                <Label Content="Вертикальный угол" HorizontalAlignment="Center"/>
+                <Slider Name="ScreenVerticalAngleSlider" Minimum="-0.75" Maximum="0.75" SmallChange="0.01" Value="0" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+                <TextBox Name="ScreenVerticalAngleTextBox" Text="0" Margin="5"/>
+
+                <Label Content="Горизонтальнаый угол" HorizontalAlignment="Center"/>
+                <Slider Name="ScreenHorizontalAngleSlider" Minimum="-0.75" Maximum="0.74" SmallChange="0.01" Value="0" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+                <TextBox Name="ScreenHorizontalAngleTextBox" Text="0" Margin="5"/>
+           
+            </StackPanel>
+        </Expander>
+
+
+
+       <!--     <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
+            <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
+            <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
+-->
 
 
         </StackPanel>
+
+
+
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <StackPanel  Orientation="Horizontal">
                 <Label Content="Координаты точки съемки"/>
@@ -92,8 +129,8 @@
                 <Label Content="X" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
                 <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-                <TextBox Name="TargetPointXTextBox" Text="400" Grid.Column="1" Grid.Row="0" Margin="5"/>
-                <TextBox Name="TargetPointYTextBox" Text="300" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox Name="TargetPointXTextBox" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox Name="TargetPointYTextBox" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
                 <TextBox Name="TargetPointZTextBox" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
 
             </Grid>
@@ -113,8 +150,8 @@
                 <Label Content="X" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
                 <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-                <TextBox Name="PointManipulatorXTextBox" Text="300" Grid.Column="1" Grid.Row="0" Margin="5"/>
-                <TextBox Name="PointManipulatorYTextBox" Text="300" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox Name="PointManipulatorXTextBox" Text="-20" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox Name="PointManipulatorYTextBox" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
                 <TextBox Name="PointManipulatorZTextBox" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
 
             </Grid>
@@ -153,6 +190,10 @@
                 </ListView.View>
             </ListView>
 
+
+            <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+            <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
+        
         </StackPanel>
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->

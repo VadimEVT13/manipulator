@@ -133,7 +133,7 @@ namespace InverseTest.GUI
 
         protected void Zoom(Point point, int delta)
         {
-            double scale = Math.Exp(delta / 500d);    // e^(delta/500) is fairly arbitrary.
+            double scale = Math.Exp((double)delta / 1000);    // e^(delta/500) is fairly arbitrary.
 
             _scale.ScaleX *= scale;
             _scale.ScaleY *= scale;

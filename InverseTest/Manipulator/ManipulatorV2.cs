@@ -23,13 +23,17 @@ namespace InverseTest
     /// <summary>
     /// 
     /// </summary>
-    public class ManipulatorV2: IManipulatorModel
+    public class ManipulatorV2: IManipulatorModel, IDebugModels
     {
         // поле для хранения 3D модели манипулятора
         private readonly Model3DGroup _manipulator3DModel = new Model3DGroup();
+        int numberMesh = 0;
 
         //public ManipMathModel ManipMathModel { get; set; }
         public JointsChain ManipMathModel { get; set; }
+
+        private static Vector3D DEFAULT_CAMERA_DIRECTION = new Vector3D(1, 0, 0);
+
 
         /// <summary>
         /// Перечисление всех подвижных ребер манипулятора
@@ -77,78 +81,77 @@ namespace InverseTest
         /// Создание и конфигурация модели манипулятора
         /// </summary>
         /// <param name="file">Путь к файлу с 3D моделью станка</param>
-        public ManipulatorV2(string file)
+        public ManipulatorV2(Model3DGroup machine3DModel)
         {   
             try
             {
-                // Импортируем модель и собираем её составляющие
-                Model3DGroup machine3DModel = new ModelImporter().Load(file);
+
 
                 // Камера
-                Model3DGroup cam3DModel = new Model3DGroup();
-                cam3DModel.Children.Add(machine3DModel.Children[15]);
-                cam3DModel.Children.Add(machine3DModel.Children[1]);
+                   Model3DGroup cam3DModel = new Model3DGroup();
+                   cam3DModel.Children.Add(machine3DModel.Children[15]);
+                   cam3DModel.Children.Add(machine3DModel.Children[16]);
 
                 // Стойка камеры
                 Model3DGroup camEdge3DModel = new Model3DGroup();
-                camEdge3DModel.Children.Add(machine3DModel.Children[11]);
-                camEdge3DModel.Children.Add(machine3DModel.Children[12]);
-                
-                // Верхнее вращающееся ребро
-                Model3DGroup upperTurningEdge3DModel = new Model3DGroup();
-                upperTurningEdge3DModel.Children.Add(machine3DModel.Children[9]);
-                upperTurningEdge3DModel.Children.Add(machine3DModel.Children[10]);
-                upperTurningEdge3DModel.Children.Add(machine3DModel.Children[2]);
+                   camEdge3DModel.Children.Add(machine3DModel.Children[13]);
+                   camEdge3DModel.Children.Add(machine3DModel.Children[14]);
 
-                // Верхнее поворотное ребро
-                Model3DGroup upperEdge3DModel = new Model3DGroup();
-                upperEdge3DModel.Children.Add(machine3DModel.Children[3]);
-                upperEdge3DModel.Children.Add(machine3DModel.Children[4]);
-                upperEdge3DModel.Children.Add(machine3DModel.Children[5]);
-                
+                   // Верхнее вращающееся ребро
+                   Model3DGroup upperTurningEdge3DModel = new Model3DGroup();
+                   upperTurningEdge3DModel.Children.Add(machine3DModel.Children[12]);
 
-                // Стойка
-                Model3DGroup middleEdge3DModel = new Model3DGroup();
-                middleEdge3DModel.Children.Add(machine3DModel.Children[13]);
-                middleEdge3DModel.Children.Add(machine3DModel.Children[14]);
-                middleEdge3DModel.Children.Add(machine3DModel.Children[0]);
+                   // Верхнее поворотное ребро
+                   Model3DGroup upperEdge3DModel = new Model3DGroup();
+                   upperEdge3DModel.Children.Add(machine3DModel.Children[9]);
+                   upperEdge3DModel.Children.Add(machine3DModel.Children[10]);
+                   upperEdge3DModel.Children.Add(machine3DModel.Children[11]);
+
+
+                   // Стойка
+                   Model3DGroup middleEdge3DModel = new Model3DGroup();
+                   middleEdge3DModel.Children.Add(machine3DModel.Children[7]);
+                   middleEdge3DModel.Children.Add(machine3DModel.Children[8]);
 
                 // Столик
                 Model3DGroup table3DModel = new Model3DGroup();
+                   table3DModel.Children.Add(machine3DModel.Children[4]);
+                table3DModel.Children.Add(machine3DModel.Children[5]);
                 table3DModel.Children.Add(machine3DModel.Children[6]);
-                table3DModel.Children.Add(machine3DModel.Children[7]);
-                table3DModel.Children.Add(machine3DModel.Children[8]);
-                
+
+
                 // Основание
                 Model3DGroup base3DModel = new Model3DGroup();
-                base3DModel.Children.Add(machine3DModel.Children[16]);
-                base3DModel.Children.Add(machine3DModel.Children[17]);
-                base3DModel.Children.Add(machine3DModel.Children[18]);
-                base3DModel.Children.Add(machine3DModel.Children[19]);
-                
-                // Строим направленный граф модели
-                camEdge3DModel.Children.Add(cam3DModel);
-                upperTurningEdge3DModel.Children.Add(camEdge3DModel);
-                upperEdge3DModel.Children.Add(upperTurningEdge3DModel);
-                middleEdge3DModel.Children.Add(upperEdge3DModel);
-                table3DModel.Children.Add(middleEdge3DModel);
-                _manipulator3DModel.Children.Add(table3DModel);
-                _manipulator3DModel.Children.Add(base3DModel);
+                   base3DModel.Children.Add(machine3DModel.Children[0]);
+                   base3DModel.Children.Add(machine3DModel.Children[1]);
+                   base3DModel.Children.Add(machine3DModel.Children[2]);
+                   base3DModel.Children.Add(machine3DModel.Children[3]);
 
-                // Заполняем список мешей
-                _edges.Add(table3DModel);
-                _edges.Add(middleEdge3DModel);
-                _edges.Add(upperEdge3DModel);
-                _edges.Add(upperTurningEdge3DModel);
-                _edges.Add(camEdge3DModel);
-                _edges.Add(cam3DModel);
-                
-                // Заполняем список мешей в точках сочленений
-                _jointCubes.Add(machine3DModel.Children[0]);
-                _jointCubes.Add(machine3DModel.Children[2]);
-                _jointCubes.Add(machine3DModel.Children[1]);
+                   // Строим направленный граф модели
+                   camEdge3DModel.Children.Add(cam3DModel);
+                   upperTurningEdge3DModel.Children.Add(camEdge3DModel);
+                   upperEdge3DModel.Children.Add(upperTurningEdge3DModel);
+                   middleEdge3DModel.Children.Add(upperEdge3DModel);
+                   table3DModel.Children.Add(middleEdge3DModel);
+                   _manipulator3DModel.Children.Add(table3DModel);
+                   _manipulator3DModel.Children.Add(base3DModel);
 
-                ResetMathModel();
+                   // Заполняем список мешей
+                   _edges.Add(table3DModel);
+                   _edges.Add(middleEdge3DModel);
+                   _edges.Add(upperEdge3DModel);
+                   _edges.Add(upperTurningEdge3DModel);
+                   _edges.Add(camEdge3DModel);
+                   _edges.Add(cam3DModel);
+
+                   // Заполняем список мешей в точках сочленений
+                   _jointCubes.Add(machine3DModel.Children[17]);
+                   _jointCubes.Add(machine3DModel.Children[18]);
+                   _jointCubes.Add(machine3DModel.Children[19]);
+                   _jointCubes.Add(machine3DModel.Children[20]);
+
+               // _manipulator3DModel = machine3DModel;
+                   
             }
             catch (InvalidOperationException e)
             {
@@ -161,6 +164,8 @@ namespace InverseTest
                 throw;
             }
         }
+
+        
 
         /// <summary>
         /// Метод вращает определенное ребро манипулятора на заданный угол вращения
@@ -178,7 +183,7 @@ namespace InverseTest
                     // Ребро, которое необходимо повернуть
                     modelToRotate = _edges[0];
                     // Берем меш, находящийся в точке поворота ребра, получяем его позицию (она на одном из углов меша)
-                    rotatePoint = _jointCubes[0].Bounds.Location;
+                    rotatePoint = _jointCubes[3].Bounds.Location;
                     // Полученную точку сдвигаем в цетр меша, получая точку вращения
                     rotatePoint.Offset(1, 1, 1);
                     // Ось вращения
@@ -187,14 +192,14 @@ namespace InverseTest
 
                 case ManipulatorParts.MiddleEdge:
                     modelToRotate = _edges[1];
-                    rotatePoint = _jointCubes[0].Bounds.Location;
+                    rotatePoint = _jointCubes[3].Bounds.Location;
                     rotatePoint.Offset(1, 1, 1);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 
                 case ManipulatorParts.TopEdgeBase:
                     modelToRotate = _edges[2];
-                    rotatePoint = _jointCubes[1].Bounds.Location;
+                    rotatePoint = _jointCubes[2].Bounds.Location;
                     rotatePoint.Offset(1, 1, 1);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
@@ -202,20 +207,19 @@ namespace InverseTest
                 case ManipulatorParts.TopEdge:
                     modelToRotate = _edges[3];
                     rotatePoint = _jointCubes[1].Bounds.Location;
-                    rotatePoint.Offset(1, 1, 1);
-                    rotationAxis = new Vector3D(1, 0, 0);
+                    rotationAxis = new Vector3D(1,0,0);
                     break;
 
                 case ManipulatorParts.CameraBase:
                     modelToRotate = _edges[4];
-                    rotatePoint = _jointCubes[2].Bounds.Location;
+                    rotatePoint = _jointCubes[0].Bounds.Location;
                     rotatePoint.Offset(1, 1, 1);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 
                 case ManipulatorParts.Camera:
                     modelToRotate = _edges[5];
-                    rotatePoint = _jointCubes[2].Bounds.Location;
+                    rotatePoint = _jointCubes[0].Bounds.Location;
                     rotatePoint.Offset(1, 1, 1);
                     rotationAxis = new Vector3D(1, 0, 0);
                     break;
@@ -228,6 +232,11 @@ namespace InverseTest
             
         }
 
+        public virtual Vector3D GetCameraDirection()
+        {
+            return DEFAULT_CAMERA_DIRECTION;
+        }
+
         public void RotatePart(ManipulatorParts part, double angle)
         {
             Point3D rotatePoint;
@@ -237,6 +246,7 @@ namespace InverseTest
             RotateTransform3D rotate = getRotateTransfofm(part, angle, out rotatePoint, out modelToRotate, out rotationAxis);
          
             modelToRotate.Transform = rotate;
+            
 
             // Поворачиваем ребро в соответствии с заданными параметрами
 
@@ -361,6 +371,17 @@ namespace InverseTest
 
 
             ManipMathModel = new JointsChain(new[] { joint0, joint1, joint2 });
+        }
+
+
+        public virtual void addNumberMesh(int number)
+        {
+            this.numberMesh = number;
+        }
+
+        public virtual void transformModel(Double x)
+        {
+            _manipulator3DModel.Children[numberMesh].Transform = new TranslateTransform3D(0, x, 0);
         }
 
     }

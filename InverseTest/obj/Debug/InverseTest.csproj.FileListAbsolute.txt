@@ -77,9 +77,17 @@ C:\Users\Vadim\Desktop\RoboArm\InverseTest\obj\Debug\InverseTest.Resource1.resou
 C:\Users\Vadim\Desktop\RoboArm\InverseTest\obj\Debug\InverseTest.csproj.GenerateResource.Cache
 C:\Users\Vadim\Desktop\RoboArm\InverseTest\bin\Debug\Kinematic.dll
 C:\Users\Vadim\Desktop\RoboArm\InverseTest\bin\Debug\Kinematic.pdb
+C:\RoboArm\InverseTest\obj\Debug\GUI\ManipulatorVisualizer.g.cs
+C:\RoboArm\InverseTest\obj\Debug\MainWindow.g.cs
+C:\RoboArm\InverseTest\obj\Debug\App.g.cs
+C:\RoboArm\InverseTest\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.cache
+C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.lref
 C:\RoboArm\InverseTest\bin\Debug\3DModels\cyl_7.obj
+C:\RoboArm\InverseTest\bin\Debug\3DModels\Detector Frame.obj
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Manip.obj
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Frame.obj
+C:\RoboArm\InverseTest\bin\Debug\3DModels\Detector Frame.mtl
 C:\RoboArm\InverseTest\bin\Debug\3DModels\cyl_7.mtl
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Frame.3ds
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Manip.mtl
@@ -89,7 +97,6 @@ C:\RoboArm\InverseTest\bin\Debug\InverseTest.exe
 C:\RoboArm\InverseTest\bin\Debug\InverseTest.pdb
 C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.dll
 C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.Wpf.dll
-C:\RoboArm\InverseTest\bin\Debug\Kinematic.dll
 C:\RoboArm\InverseTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
 C:\RoboArm\InverseTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
 C:\RoboArm\InverseTest\bin\Debug\Portal.dll
@@ -97,20 +104,11 @@ C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.pdb
 C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.xml
 C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.Wpf.pdb
 C:\RoboArm\InverseTest\bin\Debug\HelixToolkit.Wpf.xml
-C:\RoboArm\InverseTest\bin\Debug\Kinematic.pdb
-C:\RoboArm\InverseTest\bin\Debug\Kinematic.dll.config
 C:\RoboArm\InverseTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
 C:\RoboArm\InverseTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
 C:\RoboArm\InverseTest\bin\Debug\Portal.pdb
 C:\RoboArm\InverseTest\bin\Debug\Portal.xml
 C:\RoboArm\InverseTest\bin\Debug\Portal.dll.config
-C:\RoboArm\InverseTest\obj\Debug\InverseTest.csprojResolveAssemblyReference.cache
-C:\RoboArm\InverseTest\obj\Debug\GUI\ManipulatorVisualizer.g.cs
-C:\RoboArm\InverseTest\obj\Debug\MainWindow.g.cs
-C:\RoboArm\InverseTest\obj\Debug\App.g.cs
-C:\RoboArm\InverseTest\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.cache
-C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.lref
 C:\RoboArm\InverseTest\obj\Debug\GUI\ManipulatorVisualizer.baml
 C:\RoboArm\InverseTest\obj\Debug\MainWindow.baml
 C:\RoboArm\InverseTest\obj\Debug\InverseTest.g.resources
@@ -119,3 +117,4 @@ C:\RoboArm\InverseTest\obj\Debug\InverseTest.Resource1.resources
 C:\RoboArm\InverseTest\obj\Debug\InverseTest.csproj.GenerateResource.Cache
 C:\RoboArm\InverseTest\obj\Debug\InverseTest.exe
 C:\RoboArm\InverseTest\obj\Debug\InverseTest.pdb
+C:\RoboArm\InverseTest\obj\Debug\InverseTest.csprojResolveAssemblyReference.cache

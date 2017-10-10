@@ -25,17 +25,28 @@ namespace InverseTest.GUI
     public partial class ManipulatorVisualizer : UserControl
     {
 
+        private PerspectiveCamera cameraFromManipulator;
+        private PerspectiveCamera cameraFromPortal;
+        private OrthographicCamera cam2DTop;
+        private OrthographicCamera cam2DFront;
+        private OrthographicCamera cam2DRight;
+        private PerspectiveCamera cam3D;
 
+        private IDetectorFrame detectorFrame;
 
+        private static int DISTANCE_TO_CAMERA = 1000;
+        private static int CAMERA_BORDER_OFFSET = 50;
+         
         public ManipulatorVisualizer()
         {
             InitializeComponent();
 
             //TODO: Подробнее разобраться с настройками камер: свойство Near/FarPlaneDistance
             //TODO: Запилить настройки камеры зависящими от размеров модели манипулятора
+            
 
             // Настраиваем камеры
-            OrthographicCamera cam2DTop = new OrthographicCamera
+            cam2DTop = new OrthographicCamera
             {
                 Position = new Point3D(450, 1800, 0),
                 Width = 900,
@@ -47,19 +58,19 @@ namespace InverseTest.GUI
             ViewPort2DTop.Camera.Transform = trackbolTop.Transform;
 
 
-            OrthographicCamera cam2DFront = new OrthographicCamera
+            cam2DFront = new OrthographicCamera
             {
                 Position = new Point3D(1200,300, 0),
                 Width = 800,
                 LookDirection = new Vector3D(-2, 0, 0)
             };
-            ViewPort2DFront.Camera = cam2DFront;
+           ViewPort2DFront.Camera = cam2DFront;
             Trackball trackbolFront = new FrontTrackbol();
-            trackbolFront.EventSource = EventSource2DFront;
-            ViewPort2DFront.Camera.Transform = trackbolFront.Transform;
+           trackbolFront.EventSource = EventSource2DFront;
+           ViewPort2DFront.Camera.Transform = trackbolFront.Transform;
 
 
-            OrthographicCamera cam2DRight = new OrthographicCamera
+            cam2DRight = new OrthographicCamera
             {
                 Position = new Point3D(450, 300, 1200),
                 Width = 1500,
@@ -71,7 +82,7 @@ namespace InverseTest.GUI
             ViewPort2DRight.Camera.Transform = trackbolRight.Transform;
 
 
-            PerspectiveCamera cam3D = new PerspectiveCamera
+            cam3D = new PerspectiveCamera
             {
                 Position = new Point3D(1300, 900, 800),
                 FieldOfView = 45,
@@ -82,8 +93,17 @@ namespace InverseTest.GUI
             trackbol3D.EventSource = EventSourceViewPort3D;
             ViewPort3D.Camera.Transform = trackbol3D.Transform;
 
+            cameraFromPortal = new PerspectiveCamera();
+            ViewPortDetectorScreenCam.Camera = cameraFromPortal;
 
-            
+            cameraFromManipulator = new PerspectiveCamera();
+            ViewPortManipulatorCam.Camera = cameraFromManipulator;
+
+
+
+
+
+
 
             // Настраиваем освещение
             Light ambientLight = new AmbientLight(Colors.White);
@@ -98,39 +118,101 @@ namespace InverseTest.GUI
             Visual3D lightVisualFront = new LightVisual3D() { Content = ambientLight };
             Visual3D lightVisual3D = new LightVisual3D() { Content = ambientLight2 };
             Visual3D pointLightVisual3D = new LightVisual3D() { Content = pointLight };
+            Visual3D lightDetectorView = new LightVisual3D() { Content = ambientLight };
+            Visual3D lightManipulatorVisual3D = new LightVisual3D() { Content = ambientLight };
 
             ViewPort2DTop.Children.Add(lightVisualTop);
             ViewPort2DRight.Children.Add(lightVisualRight);
             ViewPort2DFront.Children.Add(lightVisualFront);
             ViewPort3D.Children.Add(lightVisual3D);
             ViewPort3D.Children.Add(pointLightVisual3D);
+            ViewPortDetectorScreenCam.Children.Add(lightDetectorView);
+            ViewPortManipulatorCam.Children.Add(lightManipulatorVisual3D);
         }
 
         /// <summary>
-        /// Регистрирует манипулятор во вьюпортах, предоставляемых текущим компонентом
+        /// Регистрирует модели во вьюпортах, предоставляемых текущим компонентом
         /// </summary>
-        /// <param name="manipulator">Манипулятор, который необходимо отобразить</param>
-        public void RegisterManipulator(IManipulatorModel manipulator)
+        /// <param name="model">Модель, которыу необходимо отобразить</param>
+        public void RegisterScene(Model3D model)
         {
-            Model3D manipulatorModel = manipulator.GetManipulatorModel();
-            AddModel(manipulatorModel);
+            AddModel(model);
         }
 
-        public void RegisterDetectorFrame(IDetectorFrame detectorFrame)
+        public void setCameras(Model3D model)
         {
-            Model3D detectorFrameModel = detectorFrame.GetDetectorFrameModel();
-            detectorFrameModel.Transform = new TranslateTransform3D(800, 0, 0);
-            AddModel(detectorFrameModel);
+            Rect3D bound = model.Bounds;
+            cam2DTop.Width = model.Bounds.SizeX;
+            cam2DTop.Position = new Point3D(bound.X + bound.SizeX / 2, 2 * DISTANCE_TO_CAMERA, bound.Z + bound.SizeZ / 2);
+
+            cam2DFront.Width = model.Bounds.SizeZ;
+            cam2DFront.Position = new Point3D(DISTANCE_TO_CAMERA, bound.Y + bound.SizeY / 2, bound.Z + bound.SizeZ / 2);
+
+            cam2DRight.Width = model.Bounds.SizeX;
+            cam2DRight.Position = new Point3D(bound.X + bound.SizeX / 2, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
+
+            cam3D.LookDirection = new Vector3D(-1, -1, -1);
+            cam3D.Position = new Point3D(bound.X + bound.SizeX / 2 + DISTANCE_TO_CAMERA / 3, bound.Y + bound.SizeY / 2 + DISTANCE_TO_CAMERA / 3,
+                bound.Y + bound.SizeY / 2 + DISTANCE_TO_CAMERA / 3);
         }
 
+
+        public void setManipulatorModel(IManipulatorModel manipulatorModel)
+        {
+            Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Point3D position = new Point3D(camera.Bounds.Location.X + camera.Bounds.SizeX,
+                camera.Bounds.Location.Y + camera.Bounds.SizeY /2 ,
+                camera.Bounds.Location.Z + camera.Bounds.SizeZ / 2);
+
+            camera.Changed += ManipulatorChangedCam;
+
+            cameraFromManipulator.Position = position;
+            cameraFromManipulator.LookDirection = manipulatorModel.GetCameraDirection();
+
+            AddModel(manipulatorModel.GetManipulatorModel());
+        }
+
+        private void ManipulatorChangedCam(object sender, EventArgs e)
+        {
+            Console.WriteLine("Changed");
+        }
 
         /// <summary>
-        /// Устанавливает камеры для отображения всех моделей во <see cref="ViewPort3D"/>
+        /// Устанавливает модель портала во ViewPort-ах и камеру 
         /// </summary>
-        private void SetCameraProperly()
+        /// <param name="detectorFrame"></param>
+        public void setDetectFrameModel(IDetectorFrame detectorFrame)
         {
+            this.detectorFrame = detectorFrame;
+            Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
+            camera.Changed += ChangedCam;
+            PortalCameraTranslate(camera, detectorFrame.GetScreenDirection());
+            AddModel(detectorFrame.GetDetectorFrameModel());
+        }
+        /// <summary>
+        /// Устанавливает положение камеры на экране портала
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <param name="direction"></param>
+        private void PortalCameraTranslate(Model3D screen, Vector3D direction)
+        {
+            Point3D position = new Point3D(screen.Bounds.Location.X,
+                screen.Bounds.Location.Y + screen.Bounds.SizeY / 2,
+                screen.Bounds.Location.Z + screen.Bounds.SizeZ / 2);
+                cameraFromPortal.Position = position;
+            cameraFromPortal.LookDirection = direction;
         }
 
+        /// <summary>
+        /// EventHandler. Обработчик изменения положения экрана портала. При изменении положения экрана изменяет положение камеры
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ChangedCam(object sender, EventArgs e)
+        {
+            Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
+            PortalCameraTranslate(camera, detectorFrame.GetScreenDirection());
+        }
 
         public void AddModel(Model3D model)
         {
@@ -139,12 +221,16 @@ namespace InverseTest.GUI
             ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D cameraManipulatorModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D detectorScreenCamModel = new ModelVisual3D() { Content = model };
                         
             
             ViewPort2DTop.Children.Add(topViewModel);
             ViewPort2DFront.Children.Add(frontViewModel);
             ViewPort2DRight.Children.Add(rightViewModel);
             ViewPort3D.Children.Add(fullViewModel);
+            ViewPortDetectorScreenCam.Children.Add(cameraManipulatorModel);
+            ViewPortManipulatorCam.Children.Add(detectorScreenCamModel);
         }
         
 
@@ -174,42 +260,35 @@ namespace InverseTest.GUI
             viewport.Children.Remove(modelToRemove);
         }
 
-        public void ShowMathModel(ManipulatorV2 manip)
-        {
-            RemoveMathModel(ViewPort2DFront);
-            RemoveMathModel(ViewPort2DTop);
-            RemoveMathModel(ViewPort2DRight);
-            RemoveMathModel(ViewPort3D);
 
-            Point3DCollection points = new Point3DCollection()
-            {
-                manip.ManipMathModel.Joints[0].StartPoint,
-                manip.ManipMathModel.Joints[0].EndPoint,
-                manip.ManipMathModel.Joints[1].StartPoint,
-                manip.ManipMathModel.Joints[1].EndPoint,
-                manip.ManipMathModel.Joints[2].StartPoint,
-                manip.ManipMathModel.Joints[2].EndPoint
+        public void showBordersPortal(IDetectorFrame frame)
+        {
+            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame);
+            Rect3D rect = part.Bounds;
+
+
+            BoxVisual3D rectagnle3D = new BoxVisual3D()
+            {       
+                   Center = new Point3D(rect.Location.X+rect.SizeX/2, rect.Location.Y + rect.SizeY/ 2, rect.Location.Z + rect.SizeZ / 2),
+                   Fill = Brushes.DarkBlue,
+                   Width = rect.SizeY,
+                   Length = rect.SizeX,
+                   Height = rect.SizeZ
+                    
             };
 
-            LinesVisual3D l3d = new LinesVisual3D();
-            l3d.Thickness = 5;
-            l3d.Points = points;
 
-            LinesVisual3D l2t = new LinesVisual3D();
-            l2t.Thickness = 5;
-            l2t.Points = points;
-            LinesVisual3D l2r = new LinesVisual3D();
-            l2r.Thickness = 5;
-            l2r.Points = points;
-            LinesVisual3D l2f = new LinesVisual3D();
-            l2f.Thickness = 5;
-            l2f.Points = points;
 
-            ViewPort2DFront.Children.Add(l2f);
-            ViewPort2DTop.Children.Add(l2t);
-            ViewPort2DRight.Children.Add(l2r);
-            ViewPort3D.Children.Add(l3d);
+           // ViewPort2DFront.Children.Add(rectagnle3D);
+          //  ViewPort2DTop.Children.Add(rectagnle3D);
+         ///   ViewPort2DRight.Children.Add(rectagnle3D);
+           ViewPort3D.Children.Add(rectagnle3D);
         }
+
+
+
+
+
 
         public void ShowPoints(Point3D[] points)
         {

@@ -58,10 +58,6 @@
       <HintPath>..\packages\HelixToolkit.Wpf.2015.1.715\lib\net45\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Kinematic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Kinematic.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
@@ -93,19 +89,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Animator.cs" />
-    <Compile Include="Frame\Kinematic\DetectFrameKinematic.cs" />
+    <Compile Include="Detail\DetailModel.cs" />
+    <Compile Include="Frame\DetectFrameKinematic.cs" />
+    <Compile Include="Frame\DetectorFramePart.cs" />
+    <Compile Include="Frame\DetectorFramePartDecorator.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
+    <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
-    <Compile Include="Frame\Kinematic\DetectorFramePosition.cs" />
-    <Compile Include="Frame\Kinematic\Kinematic.cs" />
-    <Compile Include="Frame\Kinematic\PortalKinematic.cs" />
+    <Compile Include="Frame\PortalKinematic.cs" />
     <Compile Include="GUI\Trackbol\3DTrackboll.cs" />
     <Compile Include="GUI\Trackbol\FrontTrackbol.cs" />
     <Compile Include="GUI\Trackbol\RightTrackboll.cs" />
     <Compile Include="GUI\Trackbol\TopTrackboll.cs" />
     <Compile Include="GUI\Trackbol\Trackball.cs" />
+    <Compile Include="IDebugModels.cs" />
     <Compile Include="IOFile.cs" />
+    <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
     <Compile Include="Manipulator\JointAxises.cs" />
+    <Compile Include="Manipulator\Kinematic.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -168,6 +169,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <EmbeddedResource Include="3DModels\cyl_7.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="3DModels\Detector Frame.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="3DModels\Detector Frame.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="3DModels\Frame.3ds">

@@ -13,29 +13,32 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Border Name="EventSource2DFront" BorderBrush="Black"  Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="0">
+            <Border Name="ManipulatroCamEventSource" BorderBrush="Black"  Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="0">
+                <Viewport3D Name="ViewPortManipulatorCam" ClipToBounds="True" Grid.Row="0" Grid.Column="0"/>
+            </Border>
+            <Border Name="EventSourceDetectorScreen" BorderBrush="Black"  Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="0">
+                <Viewport3D Name="ViewPortDetectorScreenCam" ClipToBounds="True" Grid.Row="0" Grid.Column="0"/>
+            </Border>
+        <Border Name="EventSource2DFront" BorderBrush="Black"  Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="1">
             <Viewport3D Name="ViewPort2DFront" ClipToBounds="True" Grid.Row="0" Grid.Column="0"/>
-          <!--  <Border Name="EventSource2DFront" Background="Transparent" Grid.Row="0" Grid.Column="0"/>-->
         </Border>
 
-        <Border Name="EventSource2DRight" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="0">
+        <Border Name="EventSource2DRight" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="1">
             <Viewport3D Name="ViewPort2DRight" ClipToBounds="True" Grid.Row="1" Grid.Column="0"/>
-            <!--<Border Name="EventSource2DRight" Background="Transparent" Grid.Row="1" Grid.Column="0"/>-->
         </Border>
 
-        <Border Name="EventSource2DTop" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="1" >
+        <Border Name="EventSource2DTop" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="0" Grid.Row="2" >
             <Viewport3D Name="ViewPort2DTop" ClipToBounds="True" Grid.Row="0" Grid.Column="1"/>
-            <!--<Border Name="EventSource2DTop" Background="Transparent" Grid.Row="0" Grid.Column="1"/>-->
         </Border>
 
-        <Border Name="EventSourceViewPort3D" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="1">
+        <Border Name="EventSourceViewPort3D" BorderBrush="Black" Background="Transparent" BorderThickness="1" Grid.Column="1" Grid.Row="2">
 
             <Viewport3D Name="ViewPort3D" ClipToBounds="True" Grid.Row="1" Grid.Column="1"/>
-           <!-- <Border Name="EventSourceViewPort3D" Background="Transparent" Grid.Row="1" Grid.Column="1"/>-->
         </Border>
     </Grid>
 </UserControl>
