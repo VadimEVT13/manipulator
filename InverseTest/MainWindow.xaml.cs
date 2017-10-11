@@ -246,7 +246,8 @@ namespace InverseTest
 
 
 
-            Kinematic k = new Kinematic();
+            Kinematic k = new Kinematic(-86);
+            k.SetLength(38, 55, 63, 23);
             Angle.o1 = 0;
             Angle.o2 = 0;
             Angle.o3 = 0;
