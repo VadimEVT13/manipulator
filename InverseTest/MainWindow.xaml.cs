@@ -267,19 +267,14 @@ namespace InverseTest
             T5Slider.Value = Angle.o5 * 180 / Math.PI;
             T6Slider.Value = Angle.o6 * 180 / Math.PI;
 
-            Portal.PortalKinematic p = new Portal.PortalKinematic(150, 150, 150);
-            p.setPortal(0, 0, 0);
-            p.setPortalLen(19, 23);
-            p.setPointManip(manip_x, manip_y, manip_z);
-            p.setPointNab(pointX, pointY, pointZ);
-
-            double[] angles = p.getAlfAndBet();
+            Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+            
+            p.setPointManipAndNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
+            
             double[] pointers = p.portalPoint(1);
-            double[] point = p.ustPoint();
-            if (point != null)
+            if (pointers != null)
             {
-                //createTargetCube(400, 300, 0);
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(pointers[3], pointers[4], pointers[5]), angles[1], angles[0]);
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(pointers[5], pointers[7], pointers[6]), -pointers[4], -pointers[3]);
                 createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
 
                 detectorFrame.MoveDetectFrame(detectp);

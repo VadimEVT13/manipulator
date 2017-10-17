@@ -157,3 +157,4 @@ C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest.Properties.Resources.resources
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest.Resource1.resources
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest.csproj.GenerateResource.Cache
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\Portal.pdb
