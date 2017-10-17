@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace InverseTest.Detail
@@ -24,6 +25,12 @@ namespace InverseTest.Detail
         public Model3D GetModel()
         {
             return detailModel;
+        }
+
+        public void SetJunctionsPoints(int[] indexes)
+        {
+            ((GeometryModel3D)detailModel).Material = new MaterialGroup();
+            DiffuseMaterial material = new DiffuseMaterial(new RadialGradientBrush(Colors.Red, Colors.Transparent));
         }
 
 

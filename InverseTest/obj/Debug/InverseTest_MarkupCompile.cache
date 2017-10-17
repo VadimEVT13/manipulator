@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\
+C:\RoboArm\InverseTest\obj\Debug\
 InverseTest
 none
 false
 DEBUG;TRACE
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\App.xaml
+C:\RoboArm\InverseTest\App.xaml
 2-935852810
 
-37153692989
-71750321526
+27-2010171765
+71-8959153
 GUI\ManipulatorVisualizer.xaml;MainWindow.xaml;
 
 False

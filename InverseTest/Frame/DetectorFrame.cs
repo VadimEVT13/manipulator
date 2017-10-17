@@ -27,7 +27,7 @@ namespace InverseTest
         private Model3DCollection partsCollectoin = new Model3DCollection();
 
 
-        private static Vector3D defaultScreenDirection = new Vector3D(0,0,-1);
+        private static Vector3D defaultScreenDirection = new Vector3D(-1,0,0);
         private Vector3D currentScreenDirection = new Vector3D(-1, 0, 0);
 
        public enum Parts

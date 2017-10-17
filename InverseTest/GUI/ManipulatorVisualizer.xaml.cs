@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
-using InverseTest.GUI.Trackbol;
 
 namespace InverseTest.GUI
 {
@@ -33,6 +32,7 @@ namespace InverseTest.GUI
         private PerspectiveCamera cam3D;
 
         private IDetectorFrame detectorFrame;
+        private IManipulatorModel manipulator;
 
         private static int DISTANCE_TO_CAMERA = 1000;
         private static int CAMERA_BORDER_OFFSET = 50;
@@ -52,10 +52,9 @@ namespace InverseTest.GUI
                 Width = 900,
                 LookDirection = new Vector3D(0, -1, 0),
                 UpDirection = new Vector3D(1, 0, 0)
-            };ViewPort2DTop.Camera = cam2DTop;
-            Trackball trackbolTop = new TopTrackboll();
-            trackbolTop.EventSource = EventSource2DTop;
-            ViewPort2DTop.Camera.Transform = trackbolTop.Transform;
+            };
+            ViewPort2DTop.Camera = cam2DTop;
+         
 
 
             cam2DFront = new OrthographicCamera
@@ -65,9 +64,7 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(-2, 0, 0)
             };
            ViewPort2DFront.Camera = cam2DFront;
-            Trackball trackbolFront = new FrontTrackbol();
-           trackbolFront.EventSource = EventSource2DFront;
-           ViewPort2DFront.Camera.Transform = trackbolFront.Transform;
+        
 
 
             cam2DRight = new OrthographicCamera
@@ -77,10 +74,7 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
-            Trackball trackbolRight = new RightTrackboll();
-            trackbolRight.EventSource = EventSource2DRight;
-            ViewPort2DRight.Camera.Transform = trackbolRight.Transform;
-
+         
 
             cam3D = new PerspectiveCamera
             {
@@ -89,22 +83,14 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(-4, -4, -4)
             };
             ViewPort3D.Camera = cam3D;
-            Trackball trackbol3D = new _3DTrackboll();
-            trackbol3D.EventSource = EventSourceViewPort3D;
-            ViewPort3D.Camera.Transform = trackbol3D.Transform;
+          
 
             cameraFromPortal = new PerspectiveCamera();
             ViewPortDetectorScreenCam.Camera = cameraFromPortal;
 
             cameraFromManipulator = new PerspectiveCamera();
             ViewPortManipulatorCam.Camera = cameraFromManipulator;
-
-
-
-
-
-
-
+            
             // Настраиваем освещение
             Light ambientLight = new AmbientLight(Colors.White);
             Light ambientLight2 = new AmbientLight(Colors.DarkGray);
@@ -156,9 +142,45 @@ namespace InverseTest.GUI
                 bound.Y + bound.SizeY / 2 + DISTANCE_TO_CAMERA / 3);
         }
 
+        public void AddJunctoins(Point3D[] junctionPoint)
+        {
+
+            for (int i = 0; i < junctionPoint.Length; i++)
+            {
+                AddModel(createSmallCube(junctionPoint[i]));
+            }
+        }
+
+
+        private Model3D createSmallCube(Point3D point)
+        {
+            double length = 0.2;
+            MeshGeometry3D boxMesh = new MeshGeometry3D();
+            boxMesh.Positions = new Point3DCollection()
+                {
+                    new Point3D(point.X, point.Y, point.Z),
+                    new Point3D(point.X + length, point.Y, point.Z),
+                    new Point3D(point.X, point.Y + length, point.Z),
+                    new Point3D(point.X+ length, point.Y + length, point.Z),
+                    new Point3D(point.X, point.Y, point.Z + length),
+                    new Point3D(point.X+ length, point.Y, point.Z + length),
+                    new Point3D(point.X, point.Y+ length, point.Z+ length),
+                    new Point3D(point.X+ length, point.Y + length, point.Z + length)
+                };
+
+            boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6, 2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
+            GeometryModel3D boxGeom = new GeometryModel3D();
+            boxGeom.Geometry = boxMesh;
+            DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+            boxGeom.Material = mat;
+
+            return boxGeom;
+        }
+
 
         public void setManipulatorModel(IManipulatorModel manipulatorModel)
         {
+            this.manipulator = manipulatorModel;
             Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
             Point3D position = new Point3D(camera.Bounds.Location.X + camera.Bounds.SizeX,
                 camera.Bounds.Location.Y + camera.Bounds.SizeY /2 ,
@@ -170,11 +192,20 @@ namespace InverseTest.GUI
             cameraFromManipulator.LookDirection = manipulatorModel.GetCameraDirection();
 
             AddModel(manipulatorModel.GetManipulatorModel());
+            
         }
 
         private void ManipulatorChangedCam(object sender, EventArgs e)
         {
-            Console.WriteLine("Changed");
+            Model3D cameraModel = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Rect3D camBounds = cameraModel.Bounds;
+            Point3D cameraPosition = new Point3D(camBounds.Location.X + camBounds.SizeX,
+                camBounds.Location.Y + camBounds.SizeY/2, 
+                camBounds.Location.Z + camBounds.SizeZ/2);
+            cameraFromManipulator.Position = cameraPosition;
+            cameraFromManipulator.LookDirection = manipulator.GetCameraDirection();
+
+
         }
 
         /// <summary>
@@ -243,7 +274,7 @@ namespace InverseTest.GUI
             RemoveModelFromViewPort(ViewPort3D, model);
         }
 
-        private void RemoveModelFromViewPort(Viewport3D viewport, Model3D model)
+        private void RemoveModelFromViewPort(HelixViewport3D viewport, Model3D model)
         {
             ModelVisual3D modelToRemove = null;
             foreach (Visual3D visual3D in viewport.Children)
@@ -298,7 +329,7 @@ namespace InverseTest.GUI
             ShowPointsInViewport(points, ViewPort2DTop);
         }
 
-        private void ShowPointsInViewport(Point3D[] points, Viewport3D viewPort)
+        private void ShowPointsInViewport(Point3D[] points, HelixViewport3D viewPort)
         {
             LinesVisual3D modelToRemove = null;
             foreach (Visual3D visual3D in viewPort.Children)
@@ -331,7 +362,7 @@ namespace InverseTest.GUI
             RemoveMathModel(ViewPort3D);
         }
 
-        private void RemoveMathModel(Viewport3D viewPort)
+        private void RemoveMathModel(HelixViewport3D viewPort)
         {
             LinesVisual3D modelToRemove = null;
             foreach (Visual3D visual3D in viewPort.Children)
@@ -344,9 +375,11 @@ namespace InverseTest.GUI
             }
             viewPort.Children.Remove(modelToRemove);
         }
-        public Viewport3D getViewPort()
+        public HelixViewport3D getViewPort()
         {
             return this.ViewPort2DFront;
         }
+
+       
     }
 }

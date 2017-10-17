@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
 
-
+    <Window.Resources>
+       
+    </Window.Resources>
 
 
     <DockPanel Margin="0,0,0,0">

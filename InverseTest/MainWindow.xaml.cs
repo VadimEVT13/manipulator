@@ -17,7 +17,6 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
-using InverseTest.InverseAlgorithm;
 using InverseTest.Manipulator;
 using Microsoft.Win32;
 using InverseTest.Frame;
@@ -49,7 +48,7 @@ namespace InverseTest
         //Точка в которую должен встать экран портала
         private Model3D pointPortal;
 
-        
+
 
         private DetailModel detail;
         private DetectFrameKinematic kinematic;
@@ -65,7 +64,7 @@ namespace InverseTest
         TranslateTransform3D platformTranform;
         double length = 2; // кубик будет размером 10 единиц
 
-        private ObservableCollection<Point3D> targetPoints{get; set;}
+        private ObservableCollection<Point3D> targetPoints { get; set; }
 
         private int selectedIndexPoint = -1;
         private List<UIElement> childrens;
@@ -81,7 +80,7 @@ namespace InverseTest
             ManipulatorVisualizer.setCameras(allModels);
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(PORTAL_START_INDEX, PORTAL_END_INDEX - PORTAL_START_INDEX));
-            
+
             detectorFrame = new DetectorFrame(portal);
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
 
@@ -95,7 +94,7 @@ namespace InverseTest
 
 
             manipulator = new ManipulatorV2(manipulatorGroup);
-             ManipulatorVisualizer.setManipulatorModel(manipulator);
+            ManipulatorVisualizer.setManipulatorModel(manipulator);
             //ManipulatorVisualizer.AddModel(allModels);
 
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
@@ -152,7 +151,7 @@ namespace InverseTest
         {
             // Считываем координаты точки из полей ввода
             double x, y, z;
-            
+
             double.TryParse(TargetPointXTextBox.Text, out x);
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
@@ -199,7 +198,7 @@ namespace InverseTest
                 DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(color));
                 boxGeom.Material = mat;
 
-                
+
                 model = boxGeom;
                 // Отображаем кубик во вьюпортах
 
@@ -213,7 +212,7 @@ namespace InverseTest
                 // Вычисляем смещение для новой точки съемки относительно старой
                 point.X = point.X - oldLocation.X;
                 point.Y = point.Y - oldLocation.Y;
-                point.Z= point.Z - oldLocation.Z;
+                point.Z = point.Z - oldLocation.Z;
                 // Смещаем кубик
                 TranslateTransform3D transform = new TranslateTransform3D(point.X, point.Y, point.Z);
                 Transform3D oldTransform = model.Transform;
@@ -221,7 +220,7 @@ namespace InverseTest
             }
 
         }
-        
+
         public Point3D GetTargetPoint(Model3D model)
         {
             Point3D targetPoint = model.Bounds.Location;
@@ -258,7 +257,7 @@ namespace InverseTest
             Angle.b = 0;
             Angle.g = 0;
 
-             
+
             k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
 
             T1Slider.Value = Angle.o1 * 180 / Math.PI;
@@ -304,12 +303,12 @@ namespace InverseTest
             resetManip();
         }
 
-       
+
 
         private void HideManipModelBtn_OnClick(object sender, RoutedEventArgs e)
         {
             IManipulatorModel m = manipulator;
-            
+
             ManipulatorVisualizer.RemoveModel(m.GetManipulatorModel());
         }
 
@@ -329,24 +328,25 @@ namespace InverseTest
                 listCounter = 0;
                 ManipulatorVisualizer.RemoveAllMathModels();
             }
-            
+
         }
 
-      
-        
-    
-        
+
+
+
+
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
 
-            if(targetPoints.Count>=10)
+            if (targetPoints.Count >= 10)
             {
 
                 MessageBox.Show("Уже 10 точек!!!!");
             }
             else
-            { double x, y, z;
+            {
+                double x, y, z;
 
                 double.TryParse(TargetPointXTextBox.Text, out x);
                 double.TryParse(TargetPointYTextBox.Text, out y);
@@ -371,7 +371,7 @@ namespace InverseTest
                 {
                     targetPoints.Add(new Point3D(x, y, z));
                 }
-            }       
+            }
 
         }
 
@@ -381,7 +381,7 @@ namespace InverseTest
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
 
-            if (targetPoints.Count > 0 && selectedIndexPoint>=0)
+            if (targetPoints.Count > 0 && selectedIndexPoint >= 0)
             {
                 selectedIndexPoint = TargetPointsListView.SelectedIndex;
                 Point3D point = targetPoints[selectedIndexPoint];
@@ -441,13 +441,13 @@ namespace InverseTest
             ColumnDefinition column3 = new ColumnDefinition();
             column3.Width = new GridLength(53.3);
 
-            
+
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column1);
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column2);
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column3);
 
-            for(int i=0; i<childrens.Count; i++)
-            TargetPointsListButtonsGrid.Children.Add(childrens[i]);
+            for (int i = 0; i < childrens.Count; i++)
+                TargetPointsListButtonsGrid.Children.Add(childrens[i]);
 
 
         }
@@ -498,17 +498,17 @@ namespace InverseTest
                 TranslateTransform3D transform = new TranslateTransform3D(450, 15, 0);
                 detail.Transform = transform;
 
-             
+
 
                 ManipulatorVisualizer.AddModel(detail);
 
                 Transform3DGroup transformGroup = new Transform3DGroup();
 
-               transformGroup.Children.Add(transform);
+                transformGroup.Children.Add(transform);
                 transformGroup.Children.Add(myRotateTransform);
                 detail.Transform = transformGroup;
 
-                
+
                 Transform3DGroup transformGroupPlatform = new Transform3DGroup();
                 transformGroupPlatform.Children.Add(platformTranform);
                 transformGroupPlatform.Children.Add(myRotateTransform);
@@ -523,8 +523,8 @@ namespace InverseTest
 
         private void DetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ax3d.Angle=e.NewValue;
-         }
+            ax3d.Angle = e.NewValue;
+        }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
@@ -533,8 +533,8 @@ namespace InverseTest
 
         private void StartSimulation_Click(object sender, RoutedEventArgs e)
         {
-          if (targetPoints.Count>0 && !animator.animating)
-            animator.startAnimation(targetPoints.ToList());
+            if (targetPoints.Count > 0 && !animator.animating)
+                animator.startAnimation(targetPoints.ToList());
         }
 
         private void resetManip()
@@ -550,38 +550,39 @@ namespace InverseTest
 
         private void StopSimulation_Click(object sender, RoutedEventArgs e)
         {
-            if(animator!=null)
-            animator.stopAnimation();
+            if (animator != null)
+                animator.stopAnimation();
             resetManip();
         }
 
         private void PointDown_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedIndexPoint > -1 && selectedIndexPoint < targetPoints.Count-1) {
-                Point3D point = targetPoints[selectedIndexPoint];
-                int index = selectedIndexPoint;
-                targetPoints.RemoveAt(index);
-                targetPoints.Insert(index+1, point);
-            
-        }
-        }
-
-        private void PointUp_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint<= targetPoints.Count-1) 
+            if (selectedIndexPoint > -1 && selectedIndexPoint < targetPoints.Count - 1)
             {
-
-                
                 Point3D point = targetPoints[selectedIndexPoint];
                 int index = selectedIndexPoint;
                 targetPoints.RemoveAt(index);
-
-                targetPoints.Insert(index- 1, point);
+                targetPoints.Insert(index + 1, point);
 
             }
         }
 
-      
+        private void PointUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint <= targetPoints.Count - 1)
+            {
+
+
+                Point3D point = targetPoints[selectedIndexPoint];
+                int index = selectedIndexPoint;
+                targetPoints.RemoveAt(index);
+
+                targetPoints.Insert(index - 1, point);
+
+            }
+        }
+
+
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.showBordersPortal(detectorFrame);
@@ -616,23 +617,31 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-          ///  ((IDebugModels) manipulator).transformModel(e.NewValue);
+            ///  ((IDebugModels) manipulator).transformModel(e.NewValue);
             allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-           /// numMesh = (int)e.NewValue;
-          /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
+            /// numMesh = (int)e.NewValue;
+            /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
             //NumMeshTextBox.Text = numMesh.ToString();
         }
 
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            JunctionDetect.JunctionDetectAlgorithm.Detect(detail.GetModel());
-            watch.Stop();
-            Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
+
+            //Task task = new Task(() =>
+            //{
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                Point3D[] junctions = JunctionDetect.JunctionDetectAlgorithm.Detect(detail.GetModel());
+                watch.Stop();
+                ManipulatorVisualizer.AddJunctoins(junctions);
+
+                Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
+            //});
+
+            //task.Start();
         }
     }
 }
