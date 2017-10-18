@@ -50,6 +50,8 @@ namespace InverseTest
             screen.Children.Add(portalModel.Children[35]);
             screen.Children.Add(portalModel.Children[36]);
             screen.Children.Add(portalModel.Children[37]);
+            screen.Children.Add(portalModel.Children[38]);
+
 
             //Платформа на которой стоит вся конструкция по идее не двигается но пусть.
             Model3DGroup platform = new Model3DGroup();

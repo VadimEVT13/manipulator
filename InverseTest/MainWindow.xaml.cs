@@ -31,7 +31,7 @@ namespace InverseTest
     public partial class MainWindow : Window
     {
         private static int PORTAL_START_INDEX = 14;
-        private static int PORTAL_END_INDEX = 52;
+        private static int PORTAL_END_INDEX = 53;
         private static int MANIPULATOR_START_INDEX = 53;
         private static int MANIPULATOR_END_INDEX = 70;
         private static int LOPATKA_INDEX = 12;
@@ -51,7 +51,6 @@ namespace InverseTest
 
 
         private DetailModel detail;
-        private DetectFrameKinematic kinematic;
 
         private Point3D scannedPoint = new Point3D(0, 0, 0);
 
@@ -268,9 +267,9 @@ namespace InverseTest
             T6Slider.Value = Angle.o6 * 180 / Math.PI;
 
             Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
-            
+
             p.setPointManipAndNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
-            
+
             double[] pointers = p.portalPoint(1);
             if (pointers != null)
             {

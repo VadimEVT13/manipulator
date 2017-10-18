@@ -261,7 +261,7 @@ namespace InverseTest
 
         public virtual Vector3D GetCameraDirection()
         {
-            return DEFAULT_CAMERA_DIRECTION;
+            return currentCameraDirection;
         }
 
         public void RotatePart(ManipulatorParts part, double angle)
