@@ -86,9 +86,11 @@ namespace InverseTest.GUI
           
 
             cameraFromPortal = new PerspectiveCamera();
+            cameraFromPortal.FieldOfView = 45;
             ViewPortDetectorScreenCam.Camera = cameraFromPortal;
 
             cameraFromManipulator = new PerspectiveCamera();
+            cameraFromManipulator.FieldOfView = 45;
             ViewPortManipulatorCam.Camera = cameraFromManipulator;
             
             // Настраиваем освещение

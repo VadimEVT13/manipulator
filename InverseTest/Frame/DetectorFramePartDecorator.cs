@@ -14,7 +14,8 @@ namespace InverseTest.Frame
         private DetectorFramePart priviusPart;
         private Transform3DGroup transforms;
         private TranslateTransform3D lastTranslateTrans;
-        private RotateTransform3D rotateTransform;
+        private RotateTransform3D ZAxisRotateTransform;
+        private RotateTransform3D YAxisRotateTransform;
 
         public DetectorFramePartDecorator(Model3DGroup model, DetectorFramePartDecorator decorator)
         {
@@ -22,10 +23,12 @@ namespace InverseTest.Frame
             this.priviusPart = decorator;
             this.transforms = new Transform3DGroup();
             this.lastTranslateTrans = new TranslateTransform3D(0,0,0);
-            this.rotateTransform = new RotateTransform3D();
+            this.ZAxisRotateTransform = new RotateTransform3D();
+            this.YAxisRotateTransform = new RotateTransform3D();
 
             this.transforms.Children.Add(lastTranslateTrans);
-            this.transforms.Children.Add(rotateTransform);
+            this.transforms.Children.Add(ZAxisRotateTransform);
+            this.transforms.Children.Add(YAxisRotateTransform);
             
             if (part != null)
                 part.Transform = transforms;
@@ -49,12 +52,22 @@ namespace InverseTest.Frame
 
         public override void RotateTransform3D(RotateTransform3D rotate)
         {
-            this.rotateTransform.CenterX = rotate.CenterX;
-            this.rotateTransform.CenterY = rotate.CenterY;
-            this.rotateTransform.CenterZ = rotate.CenterZ;
+            Vector3D rotateAxis = ((AxisAngleRotation3D)rotate.Rotation).Axis;
 
-            this.rotateTransform.Rotation = rotate.Rotation;
-            
+            if (rotateAxis.Equals(DetectorFrame.YRotateAxis))
+            {
+                YAxisRotateTransform.CenterX = rotate.CenterX;
+                YAxisRotateTransform.CenterY = rotate.CenterY;
+                YAxisRotateTransform.CenterZ = rotate.CenterZ;
+                YAxisRotateTransform.Rotation = rotate.Rotation;
+            }
+            if (rotateAxis.Equals(DetectorFrame.ZRotateAxis))
+            {
+                ZAxisRotateTransform.CenterX = rotate.CenterX;
+                ZAxisRotateTransform.CenterY = rotate.CenterY;
+                ZAxisRotateTransform.CenterZ = rotate.CenterZ;
+                ZAxisRotateTransform.Rotation = rotate.Rotation;
+            }
 
             //TODO Эта фигня ниже вроде как не правильно работает
             if (priviusPart != null)
@@ -89,9 +102,10 @@ namespace InverseTest.Frame
         {
             transforms = new Transform3DGroup();
             lastTranslateTrans = new TranslateTransform3D();
-            rotateTransform = new RotateTransform3D();
+            ZAxisRotateTransform = new RotateTransform3D();
             transforms.Children.Add(lastTranslateTrans);
-            transforms.Children.Add(rotateTransform);
+            transforms.Children.Add(ZAxisRotateTransform);
+            transforms.Children.Add(YAxisRotateTransform);
 
             if (part != null)
                 part.Transform = transforms;
