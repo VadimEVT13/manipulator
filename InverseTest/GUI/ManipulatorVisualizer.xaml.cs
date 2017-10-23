@@ -322,7 +322,6 @@ namespace InverseTest.GUI
 
 
 
-
         public void ShowPoints(Point3D[] points)
         {
             ShowPointsInViewport(points, ViewPort3D);

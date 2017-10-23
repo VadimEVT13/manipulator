@@ -103,6 +103,7 @@ namespace InverseTest
             Model3DGroup others = new Model3DGroup();
             others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(8, 4));
             others.Children.Add(allModels.Children[13]);
+            platform = allModels.Children[8]; //временная платформа детали
             ManipulatorVisualizer.AddModel(others);
 
 
@@ -113,36 +114,42 @@ namespace InverseTest
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
             T1TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
             T2TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, -e.NewValue);
             T3TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
             T4TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T6Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T6TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         // Ставим в точку съемки кубик
@@ -580,33 +587,85 @@ namespace InverseTest
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.showBordersPortal(detectorFrame);
+            //ManipulatorVisualizer.showBordersManip(manipulator);
+
+
+        }
+
+        void Find_Collision()
+        {
+            TB_Alert.Text = "no collision";
+
+            //проерка столкновениия манипулятора с собой
+            if (manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera).Bounds.IntersectsWith(manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.MiddleEdge).Bounds)
+                || (manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera).Bounds.IntersectsWith(manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Table).Bounds)))
+            {
+                TB_Alert.Text = "collision manip with manip";
+                return;
+            } 
+
+            
+            foreach (ManipulatorV2.ManipulatorParts part in Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)))
+            {
+
+                if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detail.GetModel().Bounds)) //столкновение манипулятора с деталью
+                {
+                    TB_Alert.Text = "collision with detail";
+                    return;
+                }
+                foreach (DetectorFrame.Parts part_frame in Enum.GetValues(typeof(DetectorFrame.Parts)))
+                {
+                    if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detectorFrame.GetDetectorFramePart(part_frame).Bounds)) //с детектором
+                    {
+                        TB_Alert.Text = "collision with detector";
+                        return;
+                    }
+                    /*if (detectorFrame.GetDetectorFramePart(part_frame).Bounds.IntersectsWith(platform.Bounds))
+                    {
+                        TB_Alert.Text = "collision with platform";
+                        return;
+                    }*/
+                }
+                    
+
+                if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(platform.Bounds)) //с платформой
+                {
+                    TB_Alert.Text = "collision with platform";
+                    return;
+                }
+            }
+            return;
         }
 
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
+            Find_Collision();
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
+            Find_Collision();
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
+            Find_Collision();
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
+            Find_Collision();
 
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
-
+            Find_Collision();
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

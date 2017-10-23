@@ -161,7 +161,10 @@
             <Button Content="Повернуть станок" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
-
+            <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
+            <TextBox Name="TB_Alert" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
+            
+            
             <StackPanel Visibility="Hidden">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>

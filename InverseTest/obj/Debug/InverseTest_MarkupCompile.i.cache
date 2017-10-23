@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\RoboArm\InverseTest\obj\Debug\
+C:\Users\Apik\Source\Repos\manipulator-execution\InverseTest\obj\Debug\
 InverseTest
 none
 false
 DEBUG;TRACE
-C:\RoboArm\InverseTest\App.xaml
+C:\Users\Apik\Source\Repos\manipulator-execution\InverseTest\App.xaml
 2-935852810
 
-312136789412
-71-8959153
+31-1057100151
+71-152674148
 GUI\ManipulatorVisualizer.xaml;MainWindow.xaml;
 
-False
+True
 
