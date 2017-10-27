@@ -250,45 +250,38 @@ namespace InverseTest
             double.TryParse(TargetPointZTextBox.Text, out pointZ);
 
 
-
+            // местоположение манипулятора внутри программы неизвестны
             Kinematic k = new Kinematic(-86);
-            k.SetLength(38, 55, 63, 23);
-            Angle.o1 = 0;
-            Angle.o2 = 0;
-            Angle.o3 = 0;
-            Angle.o4 = 0;
-            Angle.o5 = 0;
-            Angle.o6 = 0;
-            Angle.a = 0;
-            Angle.b = 0;
-            Angle.g = 0;
+            // размеры модельки внутри программы неизвестны
+            k.setLen(38, 55, 63, 23);
 
-
-            k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
-
-            T1Slider.Value = Angle.o1 * 180 / Math.PI;
-            T2Slider.Value = Angle.o2 * 180 / Math.PI;
-            T3Slider.Value = Angle.o3 * 180 / Math.PI;
-            T4Slider.Value = Angle.o4 * 180 / Math.PI;
-            T5Slider.Value = Angle.o5 * 180 / Math.PI;
-            T6Slider.Value = Angle.o6 * 180 / Math.PI;
-
-            Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
-
-            p.setPointManipAndNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
-
-            double[] pointers = p.portalPoint(1);
-            if (pointers != null)
+            if (k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY))
             {
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(pointers[5], pointers[7], pointers[6]), -pointers[4], -pointers[3]);
-                createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
+                double[] rez = k.getAngles();
 
-                detectorFrame.MoveDetectFrame(detectp);
+                T1Slider.Value = rez[0] * 180 / Math.PI;
+                T2Slider.Value = rez[1] * 180 / Math.PI;
+                T3Slider.Value = rez[2] * 180 / Math.PI;
+                T4Slider.Value = rez[3] * 180 / Math.PI;
+                T5Slider.Value = rez[4] * 180 / Math.PI;
+                T6Slider.Value = rez[5] * 180 / Math.PI;
+                
+                // размеры модельки внутри программы неизвестны
+                Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+                p.setPointManipAndNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
 
+                rez = p.portalPoint(1);
+                if (rez != null)
+                {
+                    DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], -rez[3]);
+                    createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
+
+                    detectorFrame.MoveDetectFrame(detectp);
+
+                }
             }
             else
                 MessageBox.Show("Не существует такой точки");
-
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)

@@ -26,6 +26,11 @@
             Главная точка входа для приложения.
             </summary>
         </member>
+        <member name="T:Portal.PortalKinematic">
+            <summary>
+            Класс описывающий кинематику Портала
+            </summary>
+        </member>
         <member name="M:Portal.PortalKinematic.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>
             
