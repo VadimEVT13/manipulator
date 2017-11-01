@@ -154,8 +154,8 @@
 
             <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="True" Grid.Row="2" Grid.Column="1" 
                                ShowCoordinateSystem="True" ShowViewCube="False"
-                               BorderBrush="Black" BorderThickness="1" PanGesture="LeftClick" IsZoomEnabled="False" 
-                               CameraRotationMode="Turntable" RotationSensitivity="0.5"
+                               BorderBrush="Black" BorderThickness="1" PanGesture="LeftClick" IsZoomEnabled="true" 
+                               CameraRotationMode="Turntable" RotationSensitivity="0.5" CameraMode="WalkAround"
                                />
             <ToggleButton x:Name="View3DLabel" Content="3D" Style="{StaticResource ViewButtonStyle}"/>
 

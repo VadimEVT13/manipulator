@@ -1,22 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
-using System.Windows.Media.Animation;
-using System.Windows;
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+using System.Windows.Threading;
 
 namespace InverseTest
 {
@@ -34,7 +21,10 @@ namespace InverseTest
         private Vector3D currentCameraDirection = DEFAULT_CAMERA_DIRECTION;
 
         private Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
-        private Dictionary<ManipulatorParts, RotateTransform3D> partAngles = new Dictionary<ManipulatorParts, RotateTransform3D>();
+        private Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
+        private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
+        private ManipulatorAngles anglesToSet;
+
 
         /// <summary>
         /// Перечисление всех подвижных ребер манипулятора
@@ -78,6 +68,11 @@ namespace InverseTest
         // список мешей, представляющих ребра станка
         private readonly Model3DCollection _edges = new Model3DCollection();
 
+        private readonly Model3D _cameraposition;
+
+        DispatcherTimer timer;
+        bool isAnimated = false;
+
         /// <summary>
         /// Создание и конфигурация модели манипулятора
         /// </summary>
@@ -92,13 +87,16 @@ namespace InverseTest
                 Model3DGroup cam3DModel = new Model3DGroup();
                 cam3DModel.Children.Add(machine3DModel.Children[15]);
                 cam3DModel.Children.Add(machine3DModel.Children[16]);
+                cam3DModel.Children.Add(machine3DModel.Children[17]);
+
+                _cameraposition = machine3DModel.Children[17];
 
                 // Стойка камеры
                 Model3DGroup camEdge3DModel = new Model3DGroup();
                 camEdge3DModel.Children.Add(machine3DModel.Children[13]);
                 camEdge3DModel.Children.Add(machine3DModel.Children[14]);
 
-           ///     camEdge3DModel.Children.Add(machine3DModel.Children[17]);
+                ///     camEdge3DModel.Children.Add(machine3DModel.Children[17]);
 
                 // Верхнее вращающееся ребро
                 Model3DGroup upperTurningEdge3DModel = new Model3DGroup();
@@ -110,7 +108,7 @@ namespace InverseTest
                 upperEdge3DModel.Children.Add(machine3DModel.Children[10]);
                 upperEdge3DModel.Children.Add(machine3DModel.Children[11]);
 
-            //    upperEdge3DModel.Children.Add(machine3DModel.Children[18]);
+                //    upperEdge3DModel.Children.Add(machine3DModel.Children[18]);
 
 
                 // Стойка
@@ -118,7 +116,7 @@ namespace InverseTest
                 middleEdge3DModel.Children.Add(machine3DModel.Children[7]);
                 middleEdge3DModel.Children.Add(machine3DModel.Children[8]);
 
-            //    middleEdge3DModel.Children.Add(machine3DModel.Children[19]);
+                //    middleEdge3DModel.Children.Add(machine3DModel.Children[19]);
 
                 // Столик 
                 Model3DGroup table3DModel = new Model3DGroup();
@@ -126,7 +124,7 @@ namespace InverseTest
                 table3DModel.Children.Add(machine3DModel.Children[5]);
                 table3DModel.Children.Add(machine3DModel.Children[6]);
 
-             //   table3DModel.Children.Add(machine3DModel.Children[20]);
+                //   table3DModel.Children.Add(machine3DModel.Children[20]);
 
 
                 // Основание
@@ -150,6 +148,7 @@ namespace InverseTest
                 parts.Add(ManipulatorParts.TopEdgeBase, upperEdge);
                 parts.Add(ManipulatorParts.TopEdge, upperTurningEdge);
                 parts.Add(ManipulatorParts.Table, table);
+
                 // Заполняем список мешей
                 _edges.Add(table3DModel);
                 _edges.Add(middleEdge3DModel);
@@ -159,24 +158,26 @@ namespace InverseTest
                 _edges.Add(cam3DModel);
                 _edges.Add(base3DModel);
 
-                partAngles[ManipulatorParts.Table] = new RotateTransform3D();
-                partAngles[ManipulatorParts.MiddleEdge] = new RotateTransform3D();
-                partAngles[ManipulatorParts.TopEdgeBase] = new RotateTransform3D();
-                partAngles[ManipulatorParts.TopEdge] = new RotateTransform3D();
-                partAngles[ManipulatorParts.CameraBase] = new RotateTransform3D();
-                partAngles[ManipulatorParts.Camera] = new RotateTransform3D();
-               
+                partAngles[ManipulatorParts.Table] = 0;
+                partAngles[ManipulatorParts.MiddleEdge] = 0;
+                partAngles[ManipulatorParts.TopEdgeBase] = 0;
+                partAngles[ManipulatorParts.TopEdge] = 0;
+                partAngles[ManipulatorParts.CameraBase] = 0;
+                partAngles[ManipulatorParts.Camera] = 0;
+
 
 
                 // Заполняем список мешей в точках сочленений
-                _jointCubes.Add(machine3DModel.Children[17]);
                 _jointCubes.Add(machine3DModel.Children[18]);
                 _jointCubes.Add(machine3DModel.Children[19]);
                 _jointCubes.Add(machine3DModel.Children[20]);
-
-
+                _jointCubes.Add(machine3DModel.Children[21]);
+                
                 _manipulator3DModel.Children = _edges;
-                // _manipulator3DModel = machine3DModel;
+
+                timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromTicks(1000);
+                timer.Tick += animation_tick;
 
             }
             catch (InvalidOperationException e)
@@ -191,6 +192,75 @@ namespace InverseTest
             }
         }
 
+        public virtual void MoveManipulator(ManipulatorAngles angles, bool animate)
+        {
+            if (animate)
+                startAnimation(angles);
+            else
+                setAngles(angles);
+        }
+
+        private void startAnimation(ManipulatorAngles angles)
+        {
+            if (!isAnimated)
+            {
+                this.anglesToSet = angles;
+
+                foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+                    partDeltasToRotate[part] = (angles.partAngles[part] - partAngles[part]) / 1000;
+                timer.Start();
+                isAnimated = true;
+            }
+        }
+
+        private void setAngles(ManipulatorAngles angles)
+        {
+            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+                partAngles[part] = angles.partAngles[part];
+            ConfirmRotation();
+        }
+
+
+
+        void animation_tick(object sender, EventArgs arg)
+        {
+
+            List<bool> partOnRightPos = new List<bool>();
+            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+            {
+                bool onRightPos;
+                partAngles[part] = checkedAngle(part, out onRightPos);
+                partOnRightPos.Add(onRightPos);
+            }
+
+            ConfirmRotation();
+            if (partOnRightPos.TrueForAll(b => b))
+            {
+                Console.WriteLine("ANgimation stoped");
+                timer.Stop();
+                isAnimated = false;
+            }
+
+        }
+
+
+        private double checkedAngle(ManipulatorParts part, out bool onRightPosition)
+        {
+            double angle = partAngles[part] + partDeltasToRotate[part];
+            onRightPosition = false;
+
+            if (Math.Abs(anglesToSet.partAngles[part]) - Math.Abs(angle) <= 2*Math.Abs(partDeltasToRotate[part]))
+            {
+                angle = anglesToSet.partAngles[part];
+                onRightPosition = true;
+            }
+            return angle;
+        }
+
+
+
+
+
 
 
         /// <summary>
@@ -199,9 +269,11 @@ namespace InverseTest
         /// <param name="part">Часть манипулятора, которую необходимо повернуть</param>
         /// <param name="angle">Угол поворота части манипулятора</param>
         /// 
-        public RotateTransform3D GetRotateTransfofm(ManipulatorParts part, double angle, out Point3D rotatePoint,out  IManipulatorPart modelToRotate, out Vector3D rotationAxis)
+        public RotateTransform3D GetRotateTransfofm(ManipulatorParts part, double angle)
         {
-
+            Point3D rotatePoint;
+            IManipulatorPart modelToRotate;
+            Vector3D rotationAxis;
             // для каждой части манипулятора необходимо задать свои точки поворота, ось вращения и угол вращения
             switch (part)
             {
@@ -214,7 +286,7 @@ namespace InverseTest
                     rotatePoint.Offset(1, 1, 1);
                     // Ось вращения
                     rotationAxis = new Vector3D(0, 1, 0);
-                    
+
                     break;
 
                 case ManipulatorParts.MiddleEdge:
@@ -266,28 +338,20 @@ namespace InverseTest
 
         public void RotatePart(ManipulatorParts part, double angle)
         {
-            Point3D rotatePoint;
-            IManipulatorPart modelToRotate;
-            Vector3D rotationAxis;
-
-            RotateTransform3D rotate = GetRotateTransfofm(part, angle, out rotatePoint, out modelToRotate, out rotationAxis);
-            partAngles[part] = rotate;
+            partAngles[part] = angle;
 
             ConfirmRotation();
-            CalculateCameraDirection(rotate);
         }
 
         /// <summary>
         /// Вычисляет текущее направление камеры манипулятора
         /// </summary>
         /// <param name="rotate"></param>
-        private void CalculateCameraDirection(RotateTransform3D rotate)
+        private void CalculateCameraDirection(Transform3D transform)
         {
             Matrix3D m = Matrix3D.Identity;
-            AxisAngleRotation3D angleRotation = (AxisAngleRotation3D)rotate.Rotation;
-            Quaternion horizQuaternion = new Quaternion(angleRotation.Axis, angleRotation.Angle);
-            m.Rotate(horizQuaternion);
-            currentCameraDirection = m.Transform(DEFAULT_CAMERA_DIRECTION);
+            Matrix3D mx = transform.Value;
+            currentCameraDirection = mx.Transform(DEFAULT_CAMERA_DIRECTION);
         }
 
         private void ConfirmRotation()
@@ -297,32 +361,35 @@ namespace InverseTest
             Transform3DGroup topEdgeBaseGroup = new Transform3DGroup();
             Transform3DGroup topEdgeGroup = new Transform3DGroup();
             Transform3DGroup cameraBaseGroup = new Transform3DGroup();
-            Transform3DGroup cameraGroup= new Transform3DGroup();
+            Transform3DGroup cameraGroup = new Transform3DGroup();
 
-            
-            RotateTransform3D R = partAngles[ManipulatorParts.Table];
+
+            RotateTransform3D R = GetRotateTransfofm(ManipulatorParts.Table, partAngles[ManipulatorParts.Table]);
             tableGroup.Children.Add(R);
 
-            R = partAngles[ManipulatorParts.MiddleEdge];
+            R = GetRotateTransfofm(ManipulatorParts.MiddleEdge, partAngles[ManipulatorParts.MiddleEdge]);
             middleEdgeGroup.Children.Add(R);
             middleEdgeGroup.Children.Add(tableGroup);
 
-            R = partAngles[ManipulatorParts.TopEdgeBase];
+            R = GetRotateTransfofm(ManipulatorParts.TopEdgeBase, partAngles[ManipulatorParts.TopEdgeBase]);
             topEdgeBaseGroup.Children.Add(R);
             topEdgeBaseGroup.Children.Add(middleEdgeGroup);
 
-            R = partAngles[ManipulatorParts.TopEdge];
+            R = GetRotateTransfofm(ManipulatorParts.TopEdge, partAngles[ManipulatorParts.TopEdge]);
             topEdgeGroup.Children.Add(R);
             topEdgeGroup.Children.Add(topEdgeBaseGroup);
 
 
-            R = partAngles[ManipulatorParts.CameraBase];
+            R = GetRotateTransfofm(ManipulatorParts.CameraBase, partAngles[ManipulatorParts.CameraBase]);
             cameraBaseGroup.Children.Add(R);
             cameraBaseGroup.Children.Add(topEdgeGroup);
 
-            R = partAngles[ManipulatorParts.Camera];
+            R = GetRotateTransfofm(ManipulatorParts.Camera, partAngles[ManipulatorParts.Camera]);
             cameraGroup.Children.Add(R);
             cameraGroup.Children.Add(cameraBaseGroup);
+
+
+            CalculateCameraDirection(cameraGroup);
 
             parts[ManipulatorParts.Camera].RotateTransform3D(cameraGroup);
             parts[ManipulatorParts.CameraBase].RotateTransform3D(cameraBaseGroup);
@@ -342,7 +409,7 @@ namespace InverseTest
         {
             return parts[part].GetModel();
         }
-        
+
         public virtual void addNumberMesh(int number)
         {
             this.numberMesh = number;
@@ -351,6 +418,11 @@ namespace InverseTest
         public virtual void transformModel(Double x)
         {
             _manipulator3DModel.Children[numberMesh].Transform = new TranslateTransform3D(0, x, 0);
+        }
+
+        public virtual Point3D GetCameraPosition()
+        {
+            return _cameraposition.Bounds.Location;
         }
 
     }

@@ -4,13 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InverseTest
+namespace InverseTest.Manipulator
 {
-    public static class MathUtils
+    class MathUtils
     {
-        public static double ToRadians(double angle)
+        public static double AngleToRadians(double angle)
         {
-            return (Math.PI / 180) * angle; 
+            return (angle * Math.PI) / 180;
+
+        }
+
+
+        public static double RadiansToAngle(double radians)
+        {
+            return (radians * 180) / Math.PI;
         }
     }
 }

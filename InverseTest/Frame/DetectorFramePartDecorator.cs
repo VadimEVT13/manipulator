@@ -34,44 +34,15 @@ namespace InverseTest.Frame
                 part.Transform = transforms;
         }
 
-        public override void TranslateTransform3D(TranslateTransform3D transform)
+        public override void TranslateTransform3D(Transform3D transform)
         {
-
-            double offsetX = transform.OffsetX != 0 ? transform.OffsetX : lastTranslateTrans.OffsetX;
-            double offsetY = transform.OffsetY != 0 ? transform.OffsetY : lastTranslateTrans.OffsetY;
-            double offsetZ = transform.OffsetZ != 0 ? transform.OffsetZ : lastTranslateTrans.OffsetZ;
-
-            lastTranslateTrans.OffsetX = offsetX;
-            lastTranslateTrans.OffsetY = offsetY;
-            lastTranslateTrans.OffsetZ = offsetZ;
-
-
-            if (priviusPart != null)
-                priviusPart.TranslateTransform3D(transform);
+            part.Transform = transform;
         }
 
-        public override void RotateTransform3D(RotateTransform3D rotate)
+        public override void RotateTransform3D(Transform3D rotate)
         {
-            Vector3D rotateAxis = ((AxisAngleRotation3D)rotate.Rotation).Axis;
 
-            if (rotateAxis.Equals(DetectorFrame.YRotateAxis))
-            {
-                YAxisRotateTransform.CenterX = rotate.CenterX;
-                YAxisRotateTransform.CenterY = rotate.CenterY;
-                YAxisRotateTransform.CenterZ = rotate.CenterZ;
-                YAxisRotateTransform.Rotation = rotate.Rotation;
-            }
-            if (rotateAxis.Equals(DetectorFrame.ZRotateAxis))
-            {
-                ZAxisRotateTransform.CenterX = rotate.CenterX;
-                ZAxisRotateTransform.CenterY = rotate.CenterY;
-                ZAxisRotateTransform.CenterZ = rotate.CenterZ;
-                ZAxisRotateTransform.Rotation = rotate.Rotation;
-            }
-
-            //TODO Эта фигня ниже вроде как не правильно работает
-            if (priviusPart != null)
-                priviusPart.RotateTransform3D(rotate);
+            part.Transform = rotate;
         }
 
         public override Model3DGroup GetAllModelGroup()
@@ -112,6 +83,13 @@ namespace InverseTest.Frame
 
             if (priviusPart != null)
                 priviusPart.ResetTransforms();
+        }
+
+        public override Point3D GetCameraPosition()
+        {
+            if (priviusPart != null)
+                return priviusPart.GetCameraPosition();
+            else return part.Bounds.Location;
         }
 
     }

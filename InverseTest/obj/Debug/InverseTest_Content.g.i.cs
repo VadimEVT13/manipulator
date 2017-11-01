@@ -8,6 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("3dmodels/detector%20frame.obj")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sharpdx_direct3d11_1_effects_arm.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sharpdx_direct3d11_1_effects_x64.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sharpdx_direct3d11_1_effects_x86.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("x64/d3dcompiler_47.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("x86/d3dcompiler_47.dll")]
 
 

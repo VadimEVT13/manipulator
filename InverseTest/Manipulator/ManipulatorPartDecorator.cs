@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 
 namespace InverseTest.Manipulator
@@ -30,10 +31,8 @@ namespace InverseTest.Manipulator
         }
 
         public void RotateTransform3D(Transform3D transform)
-        {
-
-            this.part.Transform = transform;
-      
+        {           
+            this.part.Transform = transform;                 
         }
 
         

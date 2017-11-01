@@ -61,7 +61,7 @@ namespace InverseTest.GUI
             {
                 Position = new Point3D(1200,300, 0),
                 Width = 800,
-                LookDirection = new Vector3D(-2, 0, 0)
+                LookDirection = new Vector3D(-1, 0, 0)
             };
            ViewPort2DFront.Camera = cam2DFront;
         
@@ -80,7 +80,7 @@ namespace InverseTest.GUI
             {
                 Position = new Point3D(1300, 900, 800),
                 FieldOfView = 45,
-                LookDirection = new Vector3D(-4, -4, -4)
+                LookDirection = new Vector3D(-1, -1, -1)
             };
             ViewPort3D.Camera = cam3D;
           
@@ -130,30 +130,20 @@ namespace InverseTest.GUI
         public void setCameras(Model3D model)
         {
             Rect3D bound = model.Bounds;
-            cam2DTop.Width = model.Bounds.SizeX;
-            cam2DTop.Position = new Point3D(bound.X + bound.SizeX / 2, 2 * DISTANCE_TO_CAMERA, bound.Z + bound.SizeZ / 2);
+            cam2DTop.Width = model.Bounds.SizeZ;
+            cam2DTop.Position = new Point3D(0, 2 * DISTANCE_TO_CAMERA, 0);
 
             cam2DFront.Width = model.Bounds.SizeZ;
-            cam2DFront.Position = new Point3D(DISTANCE_TO_CAMERA, bound.Y + bound.SizeY / 2, bound.Z + bound.SizeZ / 2);
+            cam2DFront.Position = new Point3D(DISTANCE_TO_CAMERA,model.Bounds.SizeY/2, 0);
 
             cam2DRight.Width = model.Bounds.SizeX;
-            cam2DRight.Position = new Point3D(bound.X + bound.SizeX / 2, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
+            cam2DRight.Position = new Point3D(0, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
 
             cam3D.LookDirection = new Vector3D(-1, -1, -1);
-            cam3D.Position = new Point3D(bound.X + bound.SizeX / 2 + DISTANCE_TO_CAMERA / 3, bound.Y + bound.SizeY / 2 + DISTANCE_TO_CAMERA / 3,
-                bound.Y + bound.SizeY / 2 + DISTANCE_TO_CAMERA / 3);
+            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/3,DISTANCE_TO_CAMERA/3 ,DISTANCE_TO_CAMERA /3);
         }
 
-        public void AddJunctoins(Point3D[] junctionPoint)
-        {
-
-            for (int i = 0; i < junctionPoint.Length; i++)
-            {
-                AddModel(createSmallCube(junctionPoint[i]));
-            }
-        }
-
-
+      
         private Model3D createSmallCube(Point3D point)
         {
             double length = 0.2;
@@ -201,9 +191,7 @@ namespace InverseTest.GUI
         {
             Model3D cameraModel = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
             Rect3D camBounds = cameraModel.Bounds;
-            Point3D cameraPosition = new Point3D(camBounds.Location.X + camBounds.SizeX,
-                camBounds.Location.Y + camBounds.SizeY/2, 
-                camBounds.Location.Z + camBounds.SizeZ/2);
+            Point3D cameraPosition = manipulator.GetCameraPosition();
             cameraFromManipulator.Position = cameraPosition;
             cameraFromManipulator.LookDirection = manipulator.GetCameraDirection();
 
@@ -219,22 +207,11 @@ namespace InverseTest.GUI
             this.detectorFrame = detectorFrame;
             Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
             camera.Changed += ChangedCam;
-            PortalCameraTranslate(camera, detectorFrame.GetScreenDirection());
+            cameraFromPortal.LookDirection = detectorFrame.GetScreenDirection();
+            cameraFromPortal.Position = detectorFrame.GetCameraPosition();
             AddModel(detectorFrame.GetDetectorFrameModel());
         }
-        /// <summary>
-        /// Устанавливает положение камеры на экране портала
-        /// </summary>
-        /// <param name="screen"></param>
-        /// <param name="direction"></param>
-        private void PortalCameraTranslate(Model3D screen, Vector3D direction)
-        {
-            Point3D position = new Point3D(screen.Bounds.Location.X,
-                screen.Bounds.Location.Y + screen.Bounds.SizeY / 2,
-                screen.Bounds.Location.Z + screen.Bounds.SizeZ / 2);
-                cameraFromPortal.Position = position;
-            cameraFromPortal.LookDirection = direction;
-        }
+      
 
         /// <summary>
         /// EventHandler. Обработчик изменения положения экрана портала. При изменении положения экрана изменяет положение камеры
@@ -243,8 +220,9 @@ namespace InverseTest.GUI
         /// <param name="e"></param>
         void ChangedCam(object sender, EventArgs e)
         {
-            Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
-            PortalCameraTranslate(camera, detectorFrame.GetScreenDirection());
+            cameraFromPortal.LookDirection = detectorFrame.GetScreenDirection();
+            cameraFromPortal.Position = detectorFrame.GetCameraPosition();
+
         }
 
         public void AddModel(Model3D model)

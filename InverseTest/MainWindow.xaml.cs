@@ -30,11 +30,11 @@ namespace InverseTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static int PORTAL_START_INDEX = 14;
-        private static int PORTAL_END_INDEX = 53;
-        private static int MANIPULATOR_START_INDEX = 53;
-        private static int MANIPULATOR_END_INDEX = 70;
-        private static int LOPATKA_INDEX = 12;
+        private static int PORTAL_START_INDEX = 16;
+        private static int PORTAL_END_INDEX = 55;
+        private static int MANIPULATOR_START_INDEX = 55;
+        private static int MANIPULATOR_END_INDEX = 72;
+        private static int LOPATKA_INDEX = 14;
 
 
 
@@ -53,9 +53,6 @@ namespace InverseTest
         private DetailModel detail;
 
         private Point3D scannedPoint = new Point3D(0, 0, 0);
-
-
-
         Animator animator;
 
         AxisAngleRotation3D ax3d;
@@ -74,11 +71,14 @@ namespace InverseTest
 
         public MainWindow()
         {
+
+
             InitializeComponent();
             allModels = new ModelImporter().Load(@"./3DModels/Detector Frame.obj");
             ManipulatorVisualizer.setCameras(allModels);
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(PORTAL_START_INDEX, PORTAL_END_INDEX - PORTAL_START_INDEX));
+            portal.Children.Add(allModels.Children[0]);
 
             detectorFrame = new DetectorFrame(portal);
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
@@ -86,28 +86,29 @@ namespace InverseTest
             Model3DGroup manipulatorGroup = new Model3DGroup();
             manipulatorGroup.Children = new Model3DCollection(allModels.Children.ToList()
               .GetRange(MANIPULATOR_START_INDEX, MANIPULATOR_END_INDEX - MANIPULATOR_START_INDEX));
-            manipulatorGroup.Children.Add(allModels.Children[0]);
             manipulatorGroup.Children.Add(allModels.Children[1]);
             manipulatorGroup.Children.Add(allModels.Children[2]);
             manipulatorGroup.Children.Add(allModels.Children[3]);
+            manipulatorGroup.Children.Add(allModels.Children[4]);
+            manipulatorGroup.Children.Add(allModels.Children[5]);
+
 
 
             manipulator = new ManipulatorV2(manipulatorGroup);
             ManipulatorVisualizer.setManipulatorModel(manipulator);
-            //ManipulatorVisualizer.AddModel(allModels);
+           //ManipulatorVisualizer.AddModel(allModels);
 
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
             detail = new DetailModel(lopatka);
-            ManipulatorVisualizer.AddModel(detail.GetModel());
+           ManipulatorVisualizer.AddModel(detail.GetModel());
 
             Model3DGroup others = new Model3DGroup();
             others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(8, 4));
             others.Children.Add(allModels.Children[13]);
             platform = allModels.Children[8]; //временная платформа детали
+            others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(10, 4));
+            others.Children.Add(allModels.Children[15]);
             ManipulatorVisualizer.AddModel(others);
-
-
-
         }
 
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -224,7 +225,6 @@ namespace InverseTest
                 Transform3D oldTransform = model.Transform;
                 model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
             }
-
         }
 
         public Point3D GetTargetPoint(Model3D model)
@@ -236,8 +236,6 @@ namespace InverseTest
 
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
-
-
             double manip_x, manip_y, manip_z;
             double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
             double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
@@ -258,13 +256,18 @@ namespace InverseTest
             if (k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY))
             {
                 double[] rez = k.getAngles();
+                ManipulatorAngles angles = new ManipulatorAngles(
+                    MathUtils.RadiansToAngle(rez[0]),
+                    MathUtils.RadiansToAngle(rez[1]),
+                    MathUtils.RadiansToAngle(rez[2]),
+                    MathUtils.RadiansToAngle(rez[3]),
+                    MathUtils.RadiansToAngle(rez[4]),
+                    MathUtils.RadiansToAngle(rez[5])
+                    );
 
-                T1Slider.Value = rez[0] * 180 / Math.PI;
-                T2Slider.Value = rez[1] * 180 / Math.PI;
-                T3Slider.Value = rez[2] * 180 / Math.PI;
-                T4Slider.Value = rez[3] * 180 / Math.PI;
-                T5Slider.Value = rez[4] * 180 / Math.PI;
-                T6Slider.Value = rez[5] * 180 / Math.PI;
+                manipulator.MoveManipulator(angles, true);
+
+              
                 
                 // размеры модельки внутри программы неизвестны
                 Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
@@ -276,7 +279,7 @@ namespace InverseTest
                     DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], -rez[3]);
                     createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
 
-                    detectorFrame.MoveDetectFrame(detectp);
+                    detectorFrame.MoveDetectFrame(detectp, true);
 
                 }
             }
@@ -634,18 +637,21 @@ namespace InverseTest
         {
             detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
             Find_Collision();
+            VerticalFrameSliderTextBox.Text = e.NewValue.ToString();
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
             Find_Collision();
+            HorizontalBarTextView.Text = e.NewValue.ToString();
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
             Find_Collision();
+            ScreenHolderTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -653,12 +659,14 @@ namespace InverseTest
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
             Find_Collision();
 
+            ScreenVerticalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
             Find_Collision();
+            ScreenHorizontalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -669,9 +677,10 @@ namespace InverseTest
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            /// numMesh = (int)e.NewValue;
+             numMesh = (int)e.NewValue;
             /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
-            //NumMeshTextBox.Text = numMesh.ToString();
+            NumMeshTextBox.Text = numMesh.ToString();
+
         }
 
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
@@ -680,9 +689,10 @@ namespace InverseTest
             //Task task = new Task(() =>
             //{
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                Point3D[] junctions = JunctionDetect.JunctionDetectAlgorithm.Detect(detail.GetModel());
+            JunctionDetect.JunctionDetectAlgorithm junctiondetec = new JunctionDetect.JunctionDetectAlgorithm();
+                int[] junctions = junctiondetec.Detect(detail.GetModel());
                 watch.Stop();
-                ManipulatorVisualizer.AddJunctoins(junctions);
+            detail.SetJunctionsPoints(junctions);
 
                 Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
             //});
