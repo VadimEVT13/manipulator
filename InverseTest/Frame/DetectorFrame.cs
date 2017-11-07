@@ -335,19 +335,23 @@ namespace InverseTest
             rotateGroup.Children.Add(R);
             R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis, MathUtils.RadiansToAngle(horizontalAngle)), centerRotate);
             rotateGroup.Children.Add(R);
-            screenGroup.Children.Add(rotateGroup);
+
             screenGroup.Children.Add(screenHolderGroup);
 
-            
-
             camPositionCubeGroup.Children.Add(screenGroup);
-            
+
+            parts[Parts.Screen].TranslateTransform3D(screenGroup);
+            parts[Parts.Screen].RotateTransform3D(rotateGroup);
+
             parts[Parts.VerticalFrame].TranslateTransform3D(verticalFrameGroup);
             parts[Parts.HorizontalBar].TranslateTransform3D(horizontalBarGroup);
             parts[Parts.ScreenHolder].TranslateTransform3D(screenHolderGroup);
-            parts[Parts.Screen].TranslateTransform3D(screenGroup);
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
+
+
         }
+
+
 
         /// <summary>
         /// Вычисляет текущее направление экрана относительно положения по умолчанию

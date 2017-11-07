@@ -13,22 +13,19 @@ namespace InverseTest.Frame
         private Model3DGroup part;
         private DetectorFramePart priviusPart;
         private Transform3DGroup transforms;
-        private TranslateTransform3D lastTranslateTrans;
-        private RotateTransform3D ZAxisRotateTransform;
-        private RotateTransform3D YAxisRotateTransform;
-
+        private Transform3D translateTrans;
+        private Transform3D RotateTransform;
+        
         public DetectorFramePartDecorator(Model3DGroup model, DetectorFramePartDecorator decorator)
         {
             this.part = model;
             this.priviusPart = decorator;
             this.transforms = new Transform3DGroup();
-            this.lastTranslateTrans = new TranslateTransform3D(0,0,0);
-            this.ZAxisRotateTransform = new RotateTransform3D();
-            this.YAxisRotateTransform = new RotateTransform3D();
+            this.translateTrans = new TranslateTransform3D();
+            this.RotateTransform = new RotateTransform3D();
 
-            this.transforms.Children.Add(lastTranslateTrans);
-            this.transforms.Children.Add(ZAxisRotateTransform);
-            this.transforms.Children.Add(YAxisRotateTransform);
+            this.transforms.Children.Add(translateTrans);
+            this.transforms.Children.Add(RotateTransform);
             
             if (part != null)
                 part.Transform = transforms;
@@ -36,13 +33,14 @@ namespace InverseTest.Frame
 
         public override void TranslateTransform3D(Transform3D transform)
         {
+            part.Transform = new TranslateTransform3D();
             part.Transform = transform;
         }
 
         public override void RotateTransform3D(Transform3D rotate)
         {
-
-            part.Transform = rotate;
+            Transform3D transform = HelixToolkit.Wpf.Transform3DHelper.CombineTransform(part.Transform, rotate);
+            part.Transform = transform;
         }
 
         public override Model3DGroup GetAllModelGroup()
@@ -71,18 +69,6 @@ namespace InverseTest.Frame
 
         public override void ResetTransforms()
         {
-            transforms = new Transform3DGroup();
-            lastTranslateTrans = new TranslateTransform3D();
-            ZAxisRotateTransform = new RotateTransform3D();
-            transforms.Children.Add(lastTranslateTrans);
-            transforms.Children.Add(ZAxisRotateTransform);
-            transforms.Children.Add(YAxisRotateTransform);
-
-            if (part != null)
-                part.Transform = transforms;
-
-            if (priviusPart != null)
-                priviusPart.ResetTransforms();
         }
 
         public override Point3D GetCameraPosition()
