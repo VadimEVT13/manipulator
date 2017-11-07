@@ -679,7 +679,7 @@ namespace InverseTest
         {
              numMesh = (int)e.NewValue;
             /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
-            NumMeshTextBox.Text = numMesh.ToString();
+            //NumMeshTextBox.Text = numMesh.ToString();
 
         }
 

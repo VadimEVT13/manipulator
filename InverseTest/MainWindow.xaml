@@ -25,12 +25,12 @@
             <Grid VerticalAlignment="Center">
 
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+             <!--   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Старт симуляции" HorizontalAlignment="Center" Name="StartSimulation"  Click="StartSimulation_Click"></Button>
                     <Button Content="Стоп симуляция" HorizontalAlignment="Center" Name="StopSimulation"  Click="StopSimulation_Click"></Button>
 
                 </StackPanel>
-
+-->
             </Grid>
         </ToolBar>
 
@@ -101,10 +101,10 @@
 
 
 
-            <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
+          <!--  <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
             <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
             <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
-
+-->
 
 
         </StackPanel>
@@ -196,9 +196,10 @@
             </ListView>
 
 
-            <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+          <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
             <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
-        
+        -->
+            
         </StackPanel>
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
