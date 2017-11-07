@@ -9,9 +9,9 @@ namespace InverseTest.Frame
 {
     abstract class  DetectorFramePart
     {
-        public abstract void TranslateTransform3D(TranslateTransform3D transform);
+        public abstract void TranslateTransform3D(Transform3D transform);
 
-        public abstract void RotateTransform3D(RotateTransform3D transform);
+        public abstract void RotateTransform3D(Transform3D transform);
 
         public abstract Model3DGroup GetAllModelGroup();
 
@@ -20,6 +20,9 @@ namespace InverseTest.Frame
         public abstract Rect3D Bounds();
 
         public abstract void ResetTransforms();
-        
+
+public abstract Point3D GetCameraPosition();
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InverseTest.Manipulator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,62 +8,144 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.JunctionDetect
 {
-    class JunctionDetectAlgorithm
+    public class JunctionDetectAlgorithm
     {
 
         private static Point3D[] meshVertices;
         private static int[] meshTriangles;
 
 
-        public static Point3D[] Detect(Model3D model)
+        public int[] Detect(Model3D model)
         {
-            Point3D[] junctionPoints = new Point3D[0];
-
             MeshGeometry3D meshGeometry = ((MeshGeometry3D)((GeometryModel3D)model).Geometry);
             meshTriangles = meshGeometry.TriangleIndices.ToArray();
             meshVertices = meshGeometry.Positions.ToArray();
 
-            double[] pointsCurvature = calculatePointsCurvature();
+            int[][] neighbors = GetNeighbors(1);
 
+            Task<double[]> calculateAreaTask = new Task<double[]>(() => calculateAreas((
+                (int[][])neighbors.Clone()),
+                (Point3D[])meshVertices.Clone(),
+                (int[])meshTriangles.Clone()));
 
+            Task<double[]> calculateAnglesTask = new Task<double[]>(() => calculateAngles(neighbors, meshVertices, meshTriangles));
 
-            return junctionPoints;
+            calculateAreaTask.Start();
+            calculateAnglesTask.Start();
+
+            double[] areas = calculateAreaTask.Result;
+            double[] angles = calculateAnglesTask.Result;
+
+            calculateAreaTask.Wait();
+            calculateAnglesTask.Wait();
+
+            double[] curvatures = calculatePointsCurvature(angles, areas);
+
+            int[] curvedPoints = fillterPointsByCurvature(curvatures);
+
+            return curvedPoints;
         }
 
 
-
-
-        private static double[] calculatePointsCurvature()
+        /// <summary>
+        /// Вычисляет площадь полигонов вокруг всех точек
+        /// </summary>
+        /// <param name="neighbors"></param>
+        /// <param name="points"></param>
+        /// <param name="triangles"></param>
+        /// <returns></returns>
+        private double[] calculateAreas(int[][] neighbors, Point3D[] points, int[] triangles)
         {
-            double[] pointsCurvature = new double[meshVertices.Length];
+            List<double> areasList = new List<double>();
+
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                Point3D currentPoint = points[i];
+                double sumArreas = 0;
+                for (int j = 0; j < neighbors[i].Length; j++)
+                {
+                    int indexPoint1 = neighbors[i][j];
+                    int indexPoint2 = j == neighbors[i].Length - 1 ? indexPoint2 = 0 : indexPoint2 = j + 1;
+                    sumArreas += getArea(currentPoint, points[indexPoint1], points[indexPoint2]);
+                }
+                areasList.Add(sumArreas);
+            }
+
+            return areasList.ToArray();
+        }
+
+        /// <summary>
+        /// Вычисляет площадь полигона состоящего из точек
+        /// </summary>
+        /// <param name="currentPoint"></param>
+        /// <param name="point1"></param>
+        /// <param name="point2"></param>
+        /// <returns></returns>
+        public double getArea(Point3D currentPoint, Point3D point1, Point3D point2)
+        {
+            double AB = Distance(currentPoint, point1);
+            double AC = Distance(currentPoint, point2);
+            double BC = Distance(point1, point2);
+
+            double semiperimeter = (AB + AC + BC) / 2;
+
+            double area = Math.Sqrt((semiperimeter - AB) * (semiperimeter - AC) * (semiperimeter - BC) * semiperimeter);
+
+            return area;
+        }
+        /// <summary>
+        /// Вычисляет сумму углов вокруг всех точек
+        /// </summary>
+        /// <param name="neighbors"></param>
+        /// <param name="points"></param>
+        /// <param name="triangles"></param>
+        /// <returns></returns>
+        private double[] calculateAngles(int[][] neighbors, Point3D[] points, int[] triangles)
+        {
+            List<double> angles = new List<double>();
+
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                Point3D currentPoint = points[i];
+                double sumAngles = 0;
+                for (int j = 0; j < neighbors[i].Length; j++)
+                {
+                    int indexPoint1 = neighbors[i][j];
+                    int indexPoint2 = neighbors[i][j == neighbors[i].Length - 1 ? indexPoint2 = 0 : indexPoint2 = j + 1];
+                    double calcAngle = getAngle(currentPoint, points[indexPoint1], points[indexPoint2]);
+                    sumAngles += calcAngle;
+                }
+                angles.Add(sumAngles);
+            }
+
+            return angles.ToArray();
+        }
+
+        /// <summary>
+        /// Вычисляет угол между векторами из точки 
+        /// </summary>
+        /// <param name="currentPoint"></param>
+        /// <param name="point1"></param>
+        /// <param name="point2"></param>
+        /// <returns></returns>
+        public double getAngle(Point3D currentPoint, Point3D point1, Point3D point2)
+        {
+            Vector3D vector = new Vector3D(point1.X - currentPoint.X, point1.Y - currentPoint.Y, point1.Z - currentPoint.Z);
+            Vector3D vector2 = new Vector3D(point2.X - currentPoint.X, point2.Y - currentPoint.Y, point2.Z - currentPoint.Z);
+            return Vector3D.AngleBetween(vector, vector2);
+        }
+
+        private double[] calculatePointsCurvature(double[] angles, double[] areas)
+        {
+            List<double> pointsCurvature = new List<double>();
 
             for (int i = 0; i < meshVertices.Length; i++)
             {
-
-                double sumAnglesOfPolygons = 0f;
-                double sumAreaAdjacentFace = 0f;
-
-                List<int> indexesPolygons = getPolygonsAroundPoint(meshVertices[i]);
-
-                foreach (int indexPolygon in indexesPolygons)
-                {
-                    List<Vector3D> vectors = getVectors(indexPolygon, meshVertices[i]);
-                    sumAnglesOfPolygons += Vector3D.AngleBetween(vectors[0], vectors[1]);
-
-                    double area = getArea(indexPolygon);
-                    // Debug.Log("area: " + area);
-                    sumAreaAdjacentFace += area;
-                }
-
-                pointsCurvature[i] = (3 * (2 * Math.PI - sumAnglesOfPolygons)) / sumAreaAdjacentFace;
-
+                double curvature = (3 * (2 * Math.PI - MathUtils.AngleToRadians(angles[i]))) / areas[i];
+                pointsCurvature.Add(curvature);
             }
 
-
-
-
-
-            return pointsCurvature;
+            return pointsCurvature.ToArray();
         }
 
 
@@ -70,32 +153,22 @@ namespace InverseTest.JunctionDetect
         ///  Возвращает список соседей у каждой точки
         /// </summary>
         /// <param name="N"></param>
-        private static int[][] GetNeighbors(int N)
+        private int[][] GetNeighbors(int N)
         {
             int[][] neighbors = new int[meshVertices.Length][];
             for (int i = 0; i < meshVertices.Length; i++)
             {
-
-       //         neighbors[i] = GetPointNeighbors(i,  N);
+                neighbors[i] = getNeighborhoodLevelPoints(i, N);
             }
 
             return neighbors;
         }
 
-       // private static int[] GetPointNeighbors(int pointIndex, int N)
-     //   {
-       //     List<int> neighborsIndexex = new List<int>();
-         //   HashSet<int> viewedPoints = new HashSet<int>();
-           // viewedPoints.Add(pointIndex);
 
-//            for (int i = 0; i < N; i++)
-  //          {
-    //            meshTriangles.
-      //      }
-       // }
+
 
         //Возвращает точки вокруг заданной точки на уровне NEIGHBORHOOD_LAVEL
-        private static int[] getNeighborhoodLevelPoints(int pointIndex, int N)
+        private int[] getNeighborhoodLevelPoints(int pointIndex, int N)
         {
             HashSet<int> previousLevelPoints = new HashSet<int>();
             HashSet<int> currentLevelPoints = new HashSet<int>();
@@ -106,7 +179,7 @@ namespace InverseTest.JunctionDetect
             for (int i = 0; i < N; i++)
             {
                 neighborhoodLevelPoints.Clear();
-                
+
                 foreach (int currentPoint in currentLevelPoints)
                 {
                     List<int> pointAround = getPointsAroundPoint(currentPoint);
@@ -118,14 +191,14 @@ namespace InverseTest.JunctionDetect
                         }
                     }
                 }
-                
+
                 previousLevelPoints.UnionWith(currentLevelPoints);
                 currentLevelPoints.Clear();
                 currentLevelPoints.UnionWith(neighborhoodLevelPoints);
             }
 
             List<int> resPoints = new List<int>();
-            for (int i = 0; i < neighborhoodLevelPoints.Count; i += N) 
+            for (int i = 0; i < neighborhoodLevelPoints.Count; i += N)
                 resPoints.Add(neighborhoodLevelPoints[i]);
 
             return resPoints.ToArray();
@@ -133,71 +206,78 @@ namespace InverseTest.JunctionDetect
 
 
         //Возвращает точки вокрут заданной точки
-        private static List<int> getPointsAroundPoint(int point)
+        private List<int> getPointsAroundPoint(int pointIndex)
         {
-            List<int> points = new List<int>();
 
-            for (int pointIndex = 0; pointIndex < meshTriangles.Length; pointIndex++)
+            LinkedList<int> points = new LinkedList<int>();
+            List<int> othersTrianglePoints = new List<int>();
+            List<List<int>> pointsInTriangle = new List<List<int>>();
+            for (int index = 0; index < meshTriangles.Length; index++)
             {
-                if (point == meshTriangles[pointIndex])
+                if (meshVertices[pointIndex].Equals(meshVertices[meshTriangles[index]]))
                 {
-                    int triangleIndex = pointIndex / 3;
-                    for (int pointInTriangle = 3 * triangleIndex; pointInTriangle < pointInTriangle + 3; pointInTriangle++)
+                    int triangleIndex = index / 3;
+
+                    List<int> pointsList = new List<int>();
+                    for (int pointInTriangle = 3 * triangleIndex; pointInTriangle < 3 * triangleIndex + 3; pointInTriangle++)
                     {
                         int currentPoint = meshTriangles[pointInTriangle];
-                        if (currentPoint != point)
+                        if (!meshVertices[currentPoint].Equals(meshVertices[pointIndex]))
                         {
-                            points.Add(currentPoint);
+                            pointsList.Add(currentPoint);
                         }
                     }
+                    pointsInTriangle.Add(pointsList);
                 }
+
             }
-            return points;
+
+            int[] neighborsPoints = buildNeighborhoodLinks(pointsInTriangle);
+
+
+            return new List<int>(neighborsPoints);
         }
 
 
-        private static List<Vector3D> getVectors(int indexPolygon, Point3D point)
+        private int[] buildNeighborhoodLinks(List<List<int>> trianglePoints)
         {
-            List<Point3D> naightborPoints = new List<Point3D>();
 
-            for (int i = 0; i < 3; i++)
+            LinkedList<int> points = new LinkedList<int>();
+
+            foreach (List<int> listPoints in trianglePoints)
             {
-                Point3D currentPoint = meshVertices[meshTriangles[indexPolygon * 3 + i]];
-                if (!isSamePoints(point, currentPoint))
+                if (points.Count == 0)
                 {
-                    naightborPoints.Add(currentPoint);
+                    points.AddLast(listPoints[0]);
+                    points.AddLast(listPoints[1]);
+                    continue;
+                }
+
+                if (meshVertices[listPoints[0]].Equals(meshVertices[points.First.Value]))
+                {
+                    points.AddFirst(listPoints[1]);
+                    continue;
+                }
+                else if (meshVertices[listPoints[0]].Equals(meshVertices[points.Last.Value]))
+                {
+                    points.AddLast(listPoints[1]);
+                    continue;
+                }
+                else if (meshVertices[listPoints[1]].Equals(meshVertices[points.First.Value]))
+                {
+                    points.AddFirst(listPoints[0]);
+                    continue;
+                }
+                else if (meshVertices[listPoints[1]].Equals(meshVertices[points.Last.Value]))
+                {
+                    points.AddLast(listPoints[0]);
+                    continue;
                 }
             }
 
-            List<Vector3D> vectors = new List<Vector3D>();
-            foreach (Point3D naightborPoint in naightborPoints)
-            {
-                vectors.Add(new Vector3D(naightborPoint.X - point.X, naightborPoint.Y - point.Y, naightborPoint.Z - point.Z));
-            }
 
-            return vectors;
-        }
+            return points.ToArray();
 
-        /// <summary>
-        /// Вычисляет площадь полигона
-        /// </summary>
-        /// <param name="indexPolygon"></param>
-        /// <returns></returns>
-        private static double getArea(int indexPolygon)
-        {
-            Point3D pointA = meshVertices[meshTriangles[indexPolygon * 3 + 0]];
-            Point3D pointB = meshVertices[meshTriangles[indexPolygon * 3 + 1]];
-            Point3D pointC = meshVertices[meshTriangles[indexPolygon * 3 + 2]];
-
-            double AB = Distance(pointA, pointB);
-            double AC = Distance(pointA, pointC);
-            double BC = Distance(pointB, pointC);
-
-            double semiperimeter = (AB + AC + BC) / 2;
-
-            double area = Math.Sqrt((semiperimeter - AB) * (semiperimeter - AC) * (semiperimeter - BC) * semiperimeter);
-
-            return area;
 
         }
 
@@ -207,7 +287,7 @@ namespace InverseTest.JunctionDetect
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <returns></returns>
-        private static double Distance(Point3D point1, Point3D point2)
+        private double Distance(Point3D point1, Point3D point2)
         {
             return Math.Sqrt(Math.Pow((point2.X - point1.X), 2) +
                 Math.Pow((point2.Y - point1.Y), 2) +
@@ -215,60 +295,42 @@ namespace InverseTest.JunctionDetect
                 );
         }
 
-        private static float getSumAnglesOfPolygonsAroundPoint(List<int> indexesPolygons, Point3D point)
+        private int[] fillterPointsByCurvature(double[] curvatures)
         {
+            List<int> curvedPointsIndexes = new List<int>();
+            List<int> curveturesNegative = new List<int>();
+            List<int> curveturesPositive = new List<int>();
 
-            int POINTS = 3;
-            float sum = 0.0f;
 
-            foreach (int i in indexesPolygons)
+            double avarageNegCurv = 0;
+            double avaragePositCurv = 0;
+            for (int i = 0; i < curvatures.Length; i++)
             {
-                List<Point3D> pointsOfPolygon = new List<Point3D>();
-
-                for (int j = 0; i < POINTS; j++)
+                if (curvatures[i] >= 0)
                 {
-                    if (!isSamePoints(point, meshVertices[i * 3 + j]))
-                    {
-                        pointsOfPolygon.Add(meshVertices[i * 3 + j]);
-                    }
-
+                    curveturesPositive.Add(i);
+                    avaragePositCurv += curvatures[i];
+                }
+                else
+                {
+                    curveturesNegative.Add(i);
+                    avarageNegCurv += curvatures[i];
                 }
             }
-            return sum;
-        }
 
-        /// <summary>
-        //Возвращает список индексов полигонов вокруз точка
-        /// </summary>
-        /// <param name="point">Точка вокруг которой исщутся полигоны</param>
-        /// <returns></returns>
-        private static List<int> getPolygonsAroundPoint(Point3D point)
-        {
-            List<int> indexesOfTriangles = new List<int>();
+            avarageNegCurv = avarageNegCurv / curveturesNegative.Count;
+            avaragePositCurv = avaragePositCurv / curveturesPositive.Count;
 
-            for (int pointIndex = 0; pointIndex < meshTriangles.Length; pointIndex++)
+
+            for (int i = 0; i < curvatures.Length; i++)
             {
-                Point3D currentPoint = meshVertices[meshTriangles[pointIndex]];
-
-                if (isSamePoints(point, currentPoint))
-                {
-                    indexesOfTriangles.Add(pointIndex / 3);
-                }
-
+                if (curvatures[i] > 0 && curvatures[i] > avaragePositCurv*0.5)
+                    curvedPointsIndexes.Add(i);
+                if (curvatures[i] < 0 && curvatures[i] < avarageNegCurv*0.5)
+                    curvedPointsIndexes.Add(i);
             }
-            return indexesOfTriangles;
+
+            return curvedPointsIndexes.ToArray();
         }
-
-
-
-        private static bool isSamePoints(Point3D point1, Point3D point2)
-        {
-            return point1.X == point2.X && point1.Y == point2.Y && point1.Z == point2.Z;
-        }
-
-
-
-
-
     }
 }

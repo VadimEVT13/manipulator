@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
 
-
+    <Window.Resources>
+       
+    </Window.Resources>
 
 
     <DockPanel Margin="0,0,0,0">
@@ -23,12 +25,12 @@
             <Grid VerticalAlignment="Center">
 
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+             <!--   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Старт симуляции" HorizontalAlignment="Center" Name="StartSimulation"  Click="StartSimulation_Click"></Button>
                     <Button Content="Стоп симуляция" HorizontalAlignment="Center" Name="StopSimulation"  Click="StopSimulation_Click"></Button>
 
                 </StackPanel>
-
+-->
             </Grid>
         </ToolBar>
 
@@ -99,7 +101,7 @@
 
 
 
-       <!--     <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
+          <!--  <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
             <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
             <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
 -->
@@ -159,7 +161,10 @@
             <Button Content="Повернуть станок" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
-
+            <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
+            <TextBox Name="TB_Alert" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
+            
+            
             <StackPanel Visibility="Hidden">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>
@@ -191,9 +196,10 @@
             </ListView>
 
 
-            <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+          <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
             <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
-        
+        -->
+            
         </StackPanel>
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->

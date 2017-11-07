@@ -26,7 +26,5 @@ namespace InverseTest
 
             return machine3DModel;
         }
-
-
     }
 }

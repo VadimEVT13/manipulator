@@ -26,64 +26,43 @@
             Главная точка входа для приложения.
             </summary>
         </member>
-        <member name="M:Portal.PortalKinematic.#ctor(System.Double,System.Double,System.Double)">
+        <member name="T:Portal.PortalKinematic">
             <summary>
-            Функция задает максимальные отклонения от начальной точки портала в миллиметрах
+            Класс описывающий кинематику Портала
             </summary>
         </member>
-        <member name="M:Portal.PortalKinematic.setPortal(System.Double,System.Double,System.Double)">
+        <member name="M:Portal.PortalKinematic.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>
-            Функция задает начало координат портала в абсолютных координатах
+            
             </summary>
+            <param name="X_max">Максимально возможное положение портала по оси x</param>
+            <param name="Y_max">Максимально возможное положение портала по оси y</param>
+            <param name="Z_max">Максимально возможное положение портала по оси z</param>
+            <param name="Xp">Положение начала портала в абсолютных координатах по оси x</param>
+            <param name="Yp">Положение начала портала в абсолютных координатах по оси y</param>
+            <param name="Zp">Положение начала портала в абсолютных координатах по оси z</param>
+            <param name="L1">Длинна ближайщего к площадке портала звена</param>
+            <param name="L2">Длинна второго звена портала</param>
+            <param name="L3">Длинна ближайщего к начальной точке портала звена</param>
         </member>
-        <member name="M:Portal.PortalKinematic.setPortalLen(System.Double,System.Double)">
+        <member name="M:Portal.PortalKinematic.setPointManipAndNab(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>
-            Функция задает длину звеньев портала в миллиметрах
+            Задание точки схвата манипулятора и точки наблюдения манипулятором
             </summary>
-            <param name="l1">Первая от "схвата" манипулятора</param>
-            <param name="l2"></param>
-            <returns>Возвращает true если правильно задано</returns>
-        </member>
-        <member name="M:Portal.PortalKinematic.setPointManip(System.Double,System.Double,System.Double)">
-            <summary>
-            Функция задает точку в которую встал "схват" манипулятора
-            </summary>
-            <param name="x"></param>
-            <param name="y"></param>
-            <param name="z"></param>
-        </member>
-        <member name="M:Portal.PortalKinematic.setPointNab(System.Double,System.Double,System.Double)">
-            <summary>
-            Функция задает точку на которую смотрит "схват" манипулятора, координаты точки наблюдения больше или равны координатам "схвата", возвращает ложь если не может установить
-            </summary>
-            <param name="x"></param>
-            <param name="y"></param>
-            <param name="z"></param>
-        </member>
-        <member name="M:Portal.PortalKinematic.getAlfAndBet">
-            <summary>
-            Функция возвращает углы Альфа и Бета портала в виде массива из двух чисел в последовательности: альфа, бета. Альфа угол наклона по вертикали, а бета по горизонтали.
-            </summary>
+            <param name="Xm">Положение схвата манипулятора в абсолютных координатах по оси x</param>
+            <param name="Ym">Положение схвата манипулятора в абсолютных координатах по оси y</param>
+            <param name="Zm">Положение схвата манипулятора в абсолютных координатах по оси z</param>
+            <param name="Xn">Положение точки наблюдения манипулятора в абсолютных координатах по оси x</param>
+            <param name="Yn">Положение точки наблюдения манипулятора в абсолютных координатах по оси y</param>
+            <param name="Zn">Положение точки наблюдения манипулятора в абсолютных координатах по оси z</param>
             <returns></returns>
         </member>
         <member name="M:Portal.PortalKinematic.portalPoint(System.Double)">
             <summary>
-            Функция возвращает точку установки портала, возвращает массив из 3 чисел (x, y, z) или возвращает null, если точка вне досягаемости портала.
+            
             </summary>
-            <param name="scale"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Portal.PortalKinematic.ustPoint">
-            <summary>
-            Функция возвращает массив (x, y, z) как точку, в которую нужно установить основание портала (то место, которое двигают 3 первых двигателя) в абсолютных координатах. Возвращает null, если вне досягаемости.
-            </summary>
-            <returns></returns>        
-        </member>
-        <member name="M:Portal.PortalKinematic.ustPointForPortal">
-            <summary>
-            Функция возвращает массив (x, y, z) как точку, в которую нужно установить основание портала (то место, которое двигают 3 первых двигателя) в координатах относительно портала. Возвращает null, если вне досягаемости.
-            </summary>
-            <returns></returns> 
+            <param name="scale">Параметр задает расстояние от точки наблюдения до площадки портала в разах от расстояния схвата манипулятора до точки наблюдения</param>
+            <returns>Возвращает массив double. Первые 3 числа задают (x,y,z) точку портала, где крепится звенья портала. 4 и 5 число углы поворота звеньев alf и bet</returns>
         </member>
         <member name="T:Portal.Properties.Resources">
             <summary>

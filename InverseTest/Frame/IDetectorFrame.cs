@@ -10,7 +10,7 @@ namespace InverseTest
 
         Model3D GetDetectorFramePart(DetectorFrame.Parts part);
 
-        void MoveDetectFrame(DetectorFramePosition p);
+        void MoveDetectFrame(DetectorFramePosition p, bool animate);
 
         void MovePart(DetectorFrame.Parts part, double offset);
 
@@ -18,6 +18,9 @@ namespace InverseTest
 
         Vector3D GetScreenDirection();
 
+        Point3D GetCameraPosition();
+
         void ResetTransforms();
+
     }
 }

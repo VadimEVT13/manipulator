@@ -17,7 +17,6 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
-using InverseTest.InverseAlgorithm;
 using InverseTest.Manipulator;
 using Microsoft.Win32;
 using InverseTest.Frame;
@@ -31,11 +30,11 @@ namespace InverseTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static int PORTAL_START_INDEX = 14;
-        private static int PORTAL_END_INDEX = 52;
-        private static int MANIPULATOR_START_INDEX = 53;
-        private static int MANIPULATOR_END_INDEX = 70;
-        private static int LOPATKA_INDEX = 12;
+        private static int PORTAL_START_INDEX = 16;
+        private static int PORTAL_END_INDEX = 55;
+        private static int MANIPULATOR_START_INDEX = 55;
+        private static int MANIPULATOR_END_INDEX = 72;
+        private static int LOPATKA_INDEX = 14;
 
 
 
@@ -49,15 +48,11 @@ namespace InverseTest
         //Точка в которую должен встать экран портала
         private Model3D pointPortal;
 
-        
+
 
         private DetailModel detail;
-        private DetectFrameKinematic kinematic;
 
         private Point3D scannedPoint = new Point3D(0, 0, 0);
-
-
-
         Animator animator;
 
         AxisAngleRotation3D ax3d;
@@ -65,7 +60,7 @@ namespace InverseTest
         TranslateTransform3D platformTranform;
         double length = 2; // кубик будет размером 10 единиц
 
-        private ObservableCollection<Point3D> targetPoints{get; set;}
+        private ObservableCollection<Point3D> targetPoints { get; set; }
 
         private int selectedIndexPoint = -1;
         private List<UIElement> childrens;
@@ -76,75 +71,86 @@ namespace InverseTest
 
         public MainWindow()
         {
+
+
             InitializeComponent();
             allModels = new ModelImporter().Load(@"./3DModels/Detector Frame.obj");
             ManipulatorVisualizer.setCameras(allModels);
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(PORTAL_START_INDEX, PORTAL_END_INDEX - PORTAL_START_INDEX));
-            
+            portal.Children.Add(allModels.Children[0]);
+
             detectorFrame = new DetectorFrame(portal);
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
 
             Model3DGroup manipulatorGroup = new Model3DGroup();
             manipulatorGroup.Children = new Model3DCollection(allModels.Children.ToList()
               .GetRange(MANIPULATOR_START_INDEX, MANIPULATOR_END_INDEX - MANIPULATOR_START_INDEX));
-            manipulatorGroup.Children.Add(allModels.Children[0]);
             manipulatorGroup.Children.Add(allModels.Children[1]);
             manipulatorGroup.Children.Add(allModels.Children[2]);
             manipulatorGroup.Children.Add(allModels.Children[3]);
+            manipulatorGroup.Children.Add(allModels.Children[4]);
+            manipulatorGroup.Children.Add(allModels.Children[5]);
+
 
 
             manipulator = new ManipulatorV2(manipulatorGroup);
-             ManipulatorVisualizer.setManipulatorModel(manipulator);
-            //ManipulatorVisualizer.AddModel(allModels);
+            ManipulatorVisualizer.setManipulatorModel(manipulator);
+           //ManipulatorVisualizer.AddModel(allModels);
 
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
             detail = new DetailModel(lopatka);
-            ManipulatorVisualizer.AddModel(detail.GetModel());
+           ManipulatorVisualizer.AddModel(detail.GetModel());
 
             Model3DGroup others = new Model3DGroup();
             others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(8, 4));
             others.Children.Add(allModels.Children[13]);
+            platform = allModels.Children[8]; //временная платформа детали
+            others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(10, 4));
+            others.Children.Add(allModels.Children[15]);
             ManipulatorVisualizer.AddModel(others);
-
-
-
         }
 
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
             T1TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
             T2TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, -e.NewValue);
             T3TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
             T4TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         private void T6Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T6TextBox.Text = e.NewValue.ToString();
+            Find_Collision();
         }
 
         // Ставим в точку съемки кубик
@@ -152,7 +158,7 @@ namespace InverseTest
         {
             // Считываем координаты точки из полей ввода
             double x, y, z;
-            
+
             double.TryParse(TargetPointXTextBox.Text, out x);
             double.TryParse(TargetPointYTextBox.Text, out y);
             double.TryParse(TargetPointZTextBox.Text, out z);
@@ -199,7 +205,7 @@ namespace InverseTest
                 DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(color));
                 boxGeom.Material = mat;
 
-                
+
                 model = boxGeom;
                 // Отображаем кубик во вьюпортах
 
@@ -213,15 +219,14 @@ namespace InverseTest
                 // Вычисляем смещение для новой точки съемки относительно старой
                 point.X = point.X - oldLocation.X;
                 point.Y = point.Y - oldLocation.Y;
-                point.Z= point.Z - oldLocation.Z;
+                point.Z = point.Z - oldLocation.Z;
                 // Смещаем кубик
                 TranslateTransform3D transform = new TranslateTransform3D(point.X, point.Y, point.Z);
                 Transform3D oldTransform = model.Transform;
                 model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
             }
-
         }
-        
+
         public Point3D GetTargetPoint(Model3D model)
         {
             Point3D targetPoint = model.Bounds.Location;
@@ -231,8 +236,6 @@ namespace InverseTest
 
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
-
-
             double manip_x, manip_y, manip_z;
             double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
             double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
@@ -245,49 +248,43 @@ namespace InverseTest
             double.TryParse(TargetPointZTextBox.Text, out pointZ);
 
 
+            // местоположение манипулятора внутри программы неизвестны
+            Kinematic k = new Kinematic(-86);
+            // размеры модельки внутри программы неизвестны
+            k.setLen(38, 55, 63, 23);
 
-            Kinematic k = new Kinematic();
-            Angle.o1 = 0;
-            Angle.o2 = 0;
-            Angle.o3 = 0;
-            Angle.o4 = 0;
-            Angle.o5 = 0;
-            Angle.o6 = 0;
-            Angle.a = 0;
-            Angle.b = 0;
-            Angle.g = 0;
-
-             
-            k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
-
-            T1Slider.Value = Angle.o1 * 180 / Math.PI;
-            T2Slider.Value = Angle.o2 * 180 / Math.PI;
-            T3Slider.Value = Angle.o3 * 180 / Math.PI;
-            T4Slider.Value = Angle.o4 * 180 / Math.PI;
-            T5Slider.Value = Angle.o5 * 180 / Math.PI;
-            T6Slider.Value = Angle.o6 * 180 / Math.PI;
-
-            Portal.PortalKinematic p = new Portal.PortalKinematic(150, 150, 150);
-            p.setPortal(0, 0, 0);
-            p.setPortalLen(19, 23);
-            p.setPointManip(manip_x, manip_y, manip_z);
-            p.setPointNab(pointX, pointY, pointZ);
-
-            double[] angles = p.getAlfAndBet();
-            double[] pointers = p.portalPoint(1);
-            double[] point = p.ustPoint();
-            if (point != null)
+            if (k.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY))
             {
-                //createTargetCube(400, 300, 0);
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(pointers[3], pointers[4], pointers[5]), angles[1], angles[0]);
-                createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
+                double[] rez = k.getAngles();
+                ManipulatorAngles angles = new ManipulatorAngles(
+                    MathUtils.RadiansToAngle(rez[0]),
+                    MathUtils.RadiansToAngle(rez[1]),
+                    MathUtils.RadiansToAngle(rez[2]),
+                    MathUtils.RadiansToAngle(rez[3]),
+                    MathUtils.RadiansToAngle(rez[4]),
+                    MathUtils.RadiansToAngle(rez[5])
+                    );
 
-                detectorFrame.MoveDetectFrame(detectp);
+                manipulator.MoveManipulator(angles, true);
 
+              
+                
+                // размеры модельки внутри программы неизвестны
+                Portal.PortalKinematic p = new Portal.PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+                p.setPointManipAndNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
+
+                rez = p.portalPoint(1);
+                if (rez != null)
+                {
+                    DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], -rez[3]);
+                    createCube(ref pointPortal, detectp.pointScreen, Colors.Cyan);
+
+                    detectorFrame.MoveDetectFrame(detectp, true);
+
+                }
             }
             else
                 MessageBox.Show("Не существует такой точки");
-
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)
@@ -303,12 +300,12 @@ namespace InverseTest
             resetManip();
         }
 
-       
+
 
         private void HideManipModelBtn_OnClick(object sender, RoutedEventArgs e)
         {
             IManipulatorModel m = manipulator;
-            
+
             ManipulatorVisualizer.RemoveModel(m.GetManipulatorModel());
         }
 
@@ -328,24 +325,25 @@ namespace InverseTest
                 listCounter = 0;
                 ManipulatorVisualizer.RemoveAllMathModels();
             }
-            
+
         }
 
-      
-        
-    
-        
+
+
+
+
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
 
-            if(targetPoints.Count>=10)
+            if (targetPoints.Count >= 10)
             {
 
                 MessageBox.Show("Уже 10 точек!!!!");
             }
             else
-            { double x, y, z;
+            {
+                double x, y, z;
 
                 double.TryParse(TargetPointXTextBox.Text, out x);
                 double.TryParse(TargetPointYTextBox.Text, out y);
@@ -370,7 +368,7 @@ namespace InverseTest
                 {
                     targetPoints.Add(new Point3D(x, y, z));
                 }
-            }       
+            }
 
         }
 
@@ -380,7 +378,7 @@ namespace InverseTest
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
 
-            if (targetPoints.Count > 0 && selectedIndexPoint>=0)
+            if (targetPoints.Count > 0 && selectedIndexPoint >= 0)
             {
                 selectedIndexPoint = TargetPointsListView.SelectedIndex;
                 Point3D point = targetPoints[selectedIndexPoint];
@@ -440,13 +438,13 @@ namespace InverseTest
             ColumnDefinition column3 = new ColumnDefinition();
             column3.Width = new GridLength(53.3);
 
-            
+
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column1);
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column2);
             TargetPointsListButtonsGrid.ColumnDefinitions.Add(column3);
 
-            for(int i=0; i<childrens.Count; i++)
-            TargetPointsListButtonsGrid.Children.Add(childrens[i]);
+            for (int i = 0; i < childrens.Count; i++)
+                TargetPointsListButtonsGrid.Children.Add(childrens[i]);
 
 
         }
@@ -497,17 +495,17 @@ namespace InverseTest
                 TranslateTransform3D transform = new TranslateTransform3D(450, 15, 0);
                 detail.Transform = transform;
 
-             
+
 
                 ManipulatorVisualizer.AddModel(detail);
 
                 Transform3DGroup transformGroup = new Transform3DGroup();
 
-               transformGroup.Children.Add(transform);
+                transformGroup.Children.Add(transform);
                 transformGroup.Children.Add(myRotateTransform);
                 detail.Transform = transformGroup;
 
-                
+
                 Transform3DGroup transformGroupPlatform = new Transform3DGroup();
                 transformGroupPlatform.Children.Add(platformTranform);
                 transformGroupPlatform.Children.Add(myRotateTransform);
@@ -522,8 +520,8 @@ namespace InverseTest
 
         private void DetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ax3d.Angle=e.NewValue;
-         }
+            ax3d.Angle = e.NewValue;
+        }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
@@ -532,8 +530,8 @@ namespace InverseTest
 
         private void StartSimulation_Click(object sender, RoutedEventArgs e)
         {
-          if (targetPoints.Count>0 && !animator.animating)
-            animator.startAnimation(targetPoints.ToList());
+            if (targetPoints.Count > 0 && !animator.animating)
+                animator.startAnimation(targetPoints.ToList());
         }
 
         private void resetManip()
@@ -549,89 +547,157 @@ namespace InverseTest
 
         private void StopSimulation_Click(object sender, RoutedEventArgs e)
         {
-            if(animator!=null)
-            animator.stopAnimation();
+            if (animator != null)
+                animator.stopAnimation();
             resetManip();
         }
 
         private void PointDown_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedIndexPoint > -1 && selectedIndexPoint < targetPoints.Count-1) {
-                Point3D point = targetPoints[selectedIndexPoint];
-                int index = selectedIndexPoint;
-                targetPoints.RemoveAt(index);
-                targetPoints.Insert(index+1, point);
-            
-        }
-        }
-
-        private void PointUp_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint<= targetPoints.Count-1) 
+            if (selectedIndexPoint > -1 && selectedIndexPoint < targetPoints.Count - 1)
             {
-
-                
                 Point3D point = targetPoints[selectedIndexPoint];
                 int index = selectedIndexPoint;
                 targetPoints.RemoveAt(index);
-
-                targetPoints.Insert(index- 1, point);
+                targetPoints.Insert(index + 1, point);
 
             }
         }
 
-      
+        private void PointUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint <= targetPoints.Count - 1)
+            {
+
+
+                Point3D point = targetPoints[selectedIndexPoint];
+                int index = selectedIndexPoint;
+                targetPoints.RemoveAt(index);
+
+                targetPoints.Insert(index - 1, point);
+
+            }
+        }
+
+
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.showBordersPortal(detectorFrame);
+            //ManipulatorVisualizer.showBordersManip(manipulator);
+
+
+        }
+
+        void Find_Collision()
+        {
+            TB_Alert.Text = "no collision";
+
+            //проерка столкновениия манипулятора с собой
+            if (manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera).Bounds.IntersectsWith(manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.MiddleEdge).Bounds)
+                || (manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera).Bounds.IntersectsWith(manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Table).Bounds)))
+            {
+                TB_Alert.Text = "collision manip with manip";
+                return;
+            } 
+
+            
+            foreach (ManipulatorV2.ManipulatorParts part in Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)))
+            {
+
+                if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detail.GetModel().Bounds)) //столкновение манипулятора с деталью
+                {
+                    TB_Alert.Text = "collision with detail";
+                    return;
+                }
+                foreach (DetectorFrame.Parts part_frame in Enum.GetValues(typeof(DetectorFrame.Parts)))
+                {
+                    if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detectorFrame.GetDetectorFramePart(part_frame).Bounds)) //с детектором
+                    {
+                        TB_Alert.Text = "collision with detector";
+                        return;
+                    }
+                    /*if (detectorFrame.GetDetectorFramePart(part_frame).Bounds.IntersectsWith(platform.Bounds))
+                    {
+                        TB_Alert.Text = "collision with platform";
+                        return;
+                    }*/
+                }
+                    
+
+                if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(platform.Bounds)) //с платформой
+                {
+                    TB_Alert.Text = "collision with platform";
+                    return;
+                }
+            }
+            return;
         }
 
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
+            Find_Collision();
+            VerticalFrameSliderTextBox.Text = e.NewValue.ToString();
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
+            Find_Collision();
+            HorizontalBarTextView.Text = e.NewValue.ToString();
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
+            Find_Collision();
+            ScreenHolderTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
+            Find_Collision();
 
+            ScreenVerticalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
-
+            Find_Collision();
+            ScreenHorizontalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-          ///  ((IDebugModels) manipulator).transformModel(e.NewValue);
+            ///  ((IDebugModels) manipulator).transformModel(e.NewValue);
             allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-           /// numMesh = (int)e.NewValue;
-          /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
+             numMesh = (int)e.NewValue;
+            /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
             //NumMeshTextBox.Text = numMesh.ToString();
+
         }
 
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            JunctionDetect.JunctionDetectAlgorithm.Detect(detail.GetModel());
-            watch.Stop();
-            Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
+
+            //Task task = new Task(() =>
+            //{
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+            JunctionDetect.JunctionDetectAlgorithm junctiondetec = new JunctionDetect.JunctionDetectAlgorithm();
+                int[] junctions = junctiondetec.Detect(detail.GetModel());
+                watch.Stop();
+            detail.SetJunctionsPoints(junctions);
+
+                Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
+            //});
+
+            //task.Start();
         }
     }
 }

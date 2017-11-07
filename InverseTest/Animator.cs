@@ -1,5 +1,4 @@
 ﻿using InverseTest.GUI;
-using InverseTest.InverseAlgorithm;
 using InverseTest.Manipulator;
 using System;
 using System.Collections.Generic;
@@ -49,63 +48,7 @@ namespace InverseTest
 
         private void animate()
         {
-            if (iter.MoveNext() && animating)
-            {
-                Point3D point = iter.Current;
-                JointsChain resultedChain = Algorithm.Solve(manipulator.ManipMathModel, point);
-                Console.WriteLine($"Animate point: {1} { point.ToString()}");
-                Dictionary<ManipulatorV2.ManipulatorParts, double> currentRotateAngle = new Dictionary<ManipulatorV2.ManipulatorParts, double>()
-       {
-            {   ManipulatorV2.ManipulatorParts.Table, resultedChain.Joints[0].JointAxises.RotationAngle},
-            {   ManipulatorV2.ManipulatorParts.MiddleEdge, resultedChain.Joints[0].JointAxises.TurnAngle},
-            {   ManipulatorV2.ManipulatorParts.TopEdgeBase,  resultedChain.Joints[1].JointAxises.TurnAngle},
-            {   ManipulatorV2.ManipulatorParts.TopEdge,resultedChain.Joints[2].JointAxises.RotationAngle },
-            {   ManipulatorV2.ManipulatorParts.CameraBase, resultedChain.Joints[2].JointAxises.TurnAngle },
-            {   ManipulatorV2.ManipulatorParts.Camera, 0.0 },
-
-       };
-
-                Point3D rotatePoint;
-                Model3D modelToRotate;
-                Vector3D rotationAxis;
-
-
-
-                var allValues = (ManipulatorV2.ManipulatorParts[])Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts));
-                foreach (ManipulatorV2.ManipulatorParts part in allValues)
-                {
-                    RotateTransform3D rotate = this.manipulator.getRotateTransfofm(part,
-                        currentRotateAngle[part], out rotatePoint, out modelToRotate, out rotationAxis);
-
-                    TimeSpan duration = TimeSpan.FromSeconds(2);
-
-                    DoubleAnimation animation = new DoubleAnimation();
-                    animation.From = lastAngleOnPart[part];
-                    animation.To = currentRotateAngle[part];
-                    animation.Duration = duration;
-                    animation.Completed += Animation_Completed;
-                    animation.GetHashCode();
-                    
-
-                    modelToRotate.Transform = rotate;
-
-                    lastAngleOnPart[part] = currentRotateAngle[part];
-
-                    rotate.CenterX = rotatePoint.X;
-                    rotate.CenterY = rotatePoint.Y;
-                    rotate.CenterZ = rotatePoint.Z;
-
-
-                    rotate.Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
-
-                }
-            }
-            else
-            {
-                clearLastValues();
-                MessageBox.Show("Симуляция заверешена!");
-            }
-
+           
 
 
         }
@@ -113,20 +56,7 @@ namespace InverseTest
 
         private void clearLastValues()
         {
-             var allValues = (ManipulatorV2.ManipulatorParts[])Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts));
-
-            foreach (ManipulatorV2.ManipulatorParts part in allValues)
-            {
-                lastAngleOnPart[part] = 0.0;
-            }
-            if (iter != null)
-                iter.Dispose();
-
-            manipulator.ResetMathModel();
-            animationCounter = 0;
-            animating = false;
-
-
+           
         }
 
         private void waitAnimate()
