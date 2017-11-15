@@ -126,7 +126,13 @@
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
+    <Compile Include="GUI\ModelMover.cs" />
+    <Compile Include="GUI\Model\ConeModel.cs" />
+    <Compile Include="GUI\Model\IConeModel.cs" />
+    <Compile Include="GUI\Model\IScanPoint.cs" />
+    <Compile Include="GUI\Model\ScanPoint.cs" />
     <Compile Include="IDebugModels.cs" />
+    <Compile Include="IPositionChanged.cs" />
     <Compile Include="IOFile.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
     <Compile Include="Manipulator\IManipulatorPart.cs" />
@@ -154,7 +160,7 @@
     <Compile Include="GUI\ManipulatorVisualizer.xaml.cs">
       <DependentUpon>ManipulatorVisualizer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IMachine.cs" />
+    <Compile Include="IModel.cs" />
     <Compile Include="Manipulator\ManipulatorV2.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

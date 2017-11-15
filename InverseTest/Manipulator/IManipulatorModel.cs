@@ -8,16 +8,10 @@ using static InverseTest.ManipulatorV2;
 
 namespace InverseTest.Manipulator
 {
-    
-    public interface IManipulatorModel
-    {
-        /// <summary>
-        /// Возвращает 3D модель манипулятора
-        /// </summary>
-        /// <returns>3D модель манипулятора</returns>
-        /// 
-               
 
+
+    public interface IManipulatorModel:IPositionChanged
+    {
         Model3D GetManipulatorModel();
 
         Model3D GetManipulatorPart(ManipulatorParts part);
@@ -29,5 +23,7 @@ namespace InverseTest.Manipulator
         Point3D GetCameraPosition();
 
         void MoveManipulator(ManipulatorAngles angles, bool animate);
+
+
     }
 }

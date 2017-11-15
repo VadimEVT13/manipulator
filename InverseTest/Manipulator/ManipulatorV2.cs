@@ -62,6 +62,9 @@ namespace InverseTest
             Table
         }
 
+
+
+
         // список мешей, расположенных в точках сочленений ребер манипулятора; используются для определения точек поворота ребер
         private readonly Model3DCollection _jointCubes = new Model3DCollection();
 
@@ -72,6 +75,8 @@ namespace InverseTest
 
         DispatcherTimer timer;
         bool isAnimated = false;
+
+        public event PositionHandler onPositionChanged;
 
         /// <summary>
         /// Создание и конфигурация модели манипулятора
@@ -388,6 +393,7 @@ namespace InverseTest
             cameraGroup.Children.Add(R);
             cameraGroup.Children.Add(cameraBaseGroup);
 
+            _cameraposition.Transform = cameraGroup;
 
             CalculateCameraDirection(cameraGroup);
 
@@ -397,6 +403,8 @@ namespace InverseTest
             parts[ManipulatorParts.TopEdgeBase].RotateTransform3D(topEdgeBaseGroup);
             parts[ManipulatorParts.MiddleEdge].RotateTransform3D(middleEdgeGroup);
             parts[ManipulatorParts.Table].RotateTransform3D(tableGroup);
+
+            onPositionChanged();
         }
 
         Model3D IManipulatorModel.GetManipulatorModel()

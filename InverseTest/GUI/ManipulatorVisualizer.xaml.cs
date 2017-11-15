@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
+using InverseTest.GUI.Model;
 
 namespace InverseTest.GUI
 {
@@ -33,6 +34,9 @@ namespace InverseTest.GUI
 
         private IDetectorFrame detectorFrame;
         private IManipulatorModel manipulator;
+        private IScanPoint scanPoint;
+
+        private ModelMover mover;
 
         private static int DISTANCE_TO_CAMERA = 1000;
         private static int CAMERA_BORDER_OFFSET = 50;
@@ -211,7 +215,49 @@ namespace InverseTest.GUI
             cameraFromPortal.Position = detectorFrame.GetCameraPosition();
             AddModel(detectorFrame.GetDetectorFrameModel());
         }
-      
+
+
+        /// <summary>
+        /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
+        /// </summary>
+        /// <param name="scanPoint"></param>
+        public void setDetectoinPoint(IScanPoint scanPoint)
+        {
+            this.mover = new ModelMover(scanPoint);
+
+            ViewPort2DFront.MouseDown += mover.OnMouseDown;
+            ViewPort2DFront.MouseUp += mover.OnMouseUp;
+            ViewPort2DFront.MouseMove += mover.OnMouseMove;
+
+            ViewPort2DRight.MouseDown += mover.OnMouseDown;
+            ViewPort2DRight.MouseUp += mover.OnMouseUp;
+            ViewPort2DRight.MouseMove += mover.OnMouseMove;
+
+            ViewPort2DTop.MouseDown += mover.OnMouseDown;
+            ViewPort2DTop.MouseUp += mover.OnMouseUp;
+            ViewPort2DTop.MouseMove += mover.OnMouseMove;
+
+            ViewPort3D.MouseDown += mover.OnMouseDown;
+            ViewPort3D.MouseUp += mover.OnMouseUp;
+            ViewPort3D.MouseMove += mover.OnMouseMove;
+
+            AddModel(scanPoint.GetModel());
+        }
+
+
+        public void AddConeFromCamera(Model3D model)
+        {
+
+            ModelVisual3D topViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
+            
+            ViewPort2DTop.Children.Add(topViewModel);
+            ViewPort2DFront.Children.Add(frontViewModel);
+            ViewPort2DRight.Children.Add(rightViewModel);
+            ViewPort3D.Children.Add(fullViewModel);
+        }
 
         /// <summary>
         /// EventHandler. Обработчик изменения положения экрана портала. При изменении положения экрана изменяет положение камеры
@@ -234,8 +280,7 @@ namespace InverseTest.GUI
             ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D cameraManipulatorModel = new ModelVisual3D() { Content = model };
             ModelVisual3D detectorScreenCamModel = new ModelVisual3D() { Content = model };
-                        
-            
+
             ViewPort2DTop.Children.Add(topViewModel);
             ViewPort2DFront.Children.Add(frontViewModel);
             ViewPort2DRight.Children.Add(rightViewModel);

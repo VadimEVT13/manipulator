@@ -50,6 +50,7 @@
         </Style>
         <Style TargetType="h:HelixViewport3D">
             <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="LowQuality"/>
 
         </Style>
     </UserControl.Resources>
@@ -105,7 +106,7 @@
                 </Style>
             </Grid.Style>
             <h:HelixViewport3D Name="ViewPort2DFront" ClipToBounds="True" Grid.Row="1" Grid.Column="0"
-                               ShowViewCube="False" IsRotationEnabled="False" PanGesture="LeftClick" 
+                               ShowViewCube="False" IsRotationEnabled="False"  
                                   BorderBrush="Black" BorderThickness="1" 
                                />
                         <ToggleButton x:Name="ViewPort2DFrontLabel" Content="Front" Style="{StaticResource ViewButtonStyle}"/>
@@ -121,8 +122,7 @@
             </Grid.Style>
 
             <h:HelixViewport3D  Name="ViewPort2DRight" ClipToBounds="True" Grid.Row="1" Grid.Column="1"  
-                                ShowViewCube="False" IsRotationEnabled="False" PanGesture="LeftClick"    
-                                BorderBrush="Black" BorderThickness="1" />
+                                ShowViewCube="False" IsRotationEnabled="False" BorderBrush="Black" BorderThickness="1" />
 
             <ToggleButton x:Name="View2DRightLabel" Content="Right" Style="{StaticResource ViewButtonStyle}"/>
 
@@ -137,7 +137,7 @@
             </Grid.Style>
 
             <h:HelixViewport3D Name="ViewPort2DTop" ClipToBounds="True" Grid.Row="2" Grid.Column="0"
-                                ShowViewCube="False" IsRotationEnabled="False" PanGesture="LeftClick"
+                                ShowViewCube="False" IsRotationEnabled="False" 
                                BorderBrush="Black" BorderThickness="1"
                                />
             <ToggleButton x:Name="View2DTopLabel" Content="Top" Style="{StaticResource ViewButtonStyle}"/>
@@ -154,7 +154,7 @@
 
             <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="True" Grid.Row="2" Grid.Column="1" 
                                ShowCoordinateSystem="True" ShowViewCube="False"
-                               BorderBrush="Black" BorderThickness="1" PanGesture="LeftClick" IsZoomEnabled="true" 
+                               BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true" 
                                CameraRotationMode="Turntable" RotationSensitivity="0.5" CameraMode="Inspect"
                                
                                />

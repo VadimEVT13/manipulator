@@ -59,6 +59,7 @@ namespace InverseTest
         DispatcherTimer timer;
         bool isAnimated = false;
 
+        public event PositionHandler onPositionChanged;
 
         public DetectorFrame(Model3DGroup portal)
         {
@@ -348,6 +349,7 @@ namespace InverseTest
             parts[Parts.ScreenHolder].TranslateTransform3D(screenHolderGroup);
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
 
+            onPositionChanged();
 
         }
 

@@ -4,7 +4,7 @@ using static InverseTest.DetectorFrame;
 
 namespace InverseTest
 {
-    public interface IDetectorFrame
+    public interface IDetectorFrame:IPositionChanged
     {
         Model3D GetDetectorFrameModel();
 
