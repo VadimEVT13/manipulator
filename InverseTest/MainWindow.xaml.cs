@@ -43,7 +43,7 @@ namespace InverseTest
         private IDetectorFrame detectorFrame;
         private IScanPoint scanPoint;
         private IConeModel coneModel;
-        private Model3D platform;
+        private Model3DGroup platform=new Model3DGroup();
         //Точка сканирования 
         private Model3D targetBox;
         //Точка камеры манипулятора
@@ -95,9 +95,11 @@ namespace InverseTest
             manipulatorGroup.Children.Add(allModels.Children[5]);
 
 
-
+            Collision collisions = new Collision();
             manipulator = new ManipulatorV2(manipulatorGroup);
-            manipulator.onPositionChanged += OnManipulatorPisitionChanged; 
+            manipulator.onPositionChanged += OnManipulatorPisitionChanged;
+            manipulator.onPositionChanged += collisions.OnManipulatorPosChanged;
+
             ManipulatorVisualizer.setManipulatorModel(manipulator);
             //ManipulatorVisualizer.AddModel(allModels);
 
@@ -108,7 +110,8 @@ namespace InverseTest
             Model3DGroup others = new Model3DGroup();
             others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(8, 4));
             others.Children.Add(allModels.Children[13]);
-            platform = allModels.Children[8]; //временная платформа детали
+            //platform = allModels.Children[10]; //временная платформа детали
+            platform.Children.Add(allModels.Children[10]);
             others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(10, 4));
             others.Children.Add(allModels.Children[15]);
             ManipulatorVisualizer.AddModel(others);
@@ -120,7 +123,26 @@ namespace InverseTest
 
             coneModel = new ConeModel();
             ManipulatorVisualizer.AddConeFromCamera(coneModel.GetModel());
-            
+
+          
+
+
+
+            foreach (ManipulatorV2.ManipulatorParts part in Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)))
+            {
+                collisions.BuildShell((Model3DGroup)manipulator.GetManipulatorPart(part));
+            }
+            foreach (DetectorFrame.Parts part_frame in Enum.GetValues(typeof(DetectorFrame.Parts)))
+            {
+                collisions.BuildShell((Model3DGroup)detectorFrame.GetDetectorFramePart(part_frame));
+            }
+
+            collisions.BuildShell(detail.GetModel() as Model3DGroup);
+
+            collisions.BuildShell(platform);
+
+            //collisions.myTemp();
+            collisions.DisplayConvexHull();
 
         }
 
@@ -130,7 +152,7 @@ namespace InverseTest
         /// </summary>
         public void OnDetectorFramePositionChanged()
         {
-
+            Find_Collision();
         }
 
 
@@ -723,14 +745,14 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ///  ((IDebugModels) manipulator).transformModel(e.NewValue);
-            allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+            ((IDebugModels) manipulator).transformModel(e.NewValue);
+            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            /// ((IDebugModels)manipulator).addNumberMesh(numMesh);
+            ((IDebugModels)manipulator).addNumberMesh(numMesh);
             //NumMeshTextBox.Text = numMesh.ToString();
 
         }
