@@ -287,3 +287,4 @@ C:\Users\Apik\Source\Repos\RoboArm\manipulator-execution\InverseTest\obj\Debug\I
 C:\Users\Apik\Source\Repos\RoboArm\manipulator-execution\InverseTest\obj\Debug\InverseTest.exe
 C:\Users\Apik\Source\Repos\RoboArm\manipulator-execution\InverseTest\obj\Debug\InverseTest.pdb
 C:\Users\Apik\Source\Repos\RoboArm\manipulator-execution\InverseTest\bin\Debug\MIConvexHull.dll
+C:\RoboArm\InverseTest\bin\Debug\MIConvexHull.dll

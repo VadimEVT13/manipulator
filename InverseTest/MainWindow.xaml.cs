@@ -137,12 +137,14 @@ namespace InverseTest
                 collisions.BuildShell((Model3DGroup)detectorFrame.GetDetectorFramePart(part_frame));
             }
 
-            collisions.BuildShell(detail.GetModel() as Model3DGroup);
+            Model3DGroup detailNewGroup = new Model3DGroup();
+            detailNewGroup.Children.Add(detail.GetModel());
+            collisions.BuildShell(detailNewGroup);
 
             collisions.BuildShell(platform);
 
             //collisions.myTemp();
-            collisions.DisplayConvexHull();
+           // collisions.DisplayConvexHull();
 
         }
 
