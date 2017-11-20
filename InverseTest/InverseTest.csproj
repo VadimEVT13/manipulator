@@ -133,8 +133,8 @@
     <Compile Include="GUI\ModelMover.cs" />
     <Compile Include="GUI\Model\ConeModel.cs" />
     <Compile Include="GUI\Model\IConeModel.cs" />
-    <Compile Include="GUI\Model\IScanPoint.cs" />
-    <Compile Include="GUI\Model\ScanPoint.cs" />
+    <Compile Include="GUI\Model\IMovementPoint.cs" />
+    <Compile Include="GUI\Model\MovementPoint.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="IOFile.cs" />

@@ -9,6 +9,8 @@ namespace InverseTest.GUI.Model
 {
     interface IConeModel:IModel
     {
-        void ChangePosition(Point3D origin, Vector3D directoin);
+        void ChangePosition(Point3D origin, Vector3D directoin, double focusDistance);
+
+        void SetVisibility(bool visible);
     }
 }

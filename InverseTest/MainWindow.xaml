@@ -163,6 +163,11 @@
 
             <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
             <TextBox Name="TB_Alert" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
+
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <Label Content="Область камеры"/>
+                <CheckBox x:Name="CameraVisibleArea" Checked="CameraVisibleArea_Checked" Unchecked="CameraVisibleArea_Unchecked" VerticalAlignment="Center"/>
+            </StackPanel>
             
             
             <StackPanel Visibility="Hidden">

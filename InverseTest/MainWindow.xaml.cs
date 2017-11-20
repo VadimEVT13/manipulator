@@ -41,7 +41,8 @@ namespace InverseTest
 
         private IManipulatorModel manipulator;
         private IDetectorFrame detectorFrame;
-        private IScanPoint scanPoint;
+        private IMovementPoint scanPoint;
+        private IMovementPoint manipulatorCamPoint;
         private IConeModel coneModel;
         private Model3DGroup platform=new Model3DGroup();
         //Точка сканирования 
@@ -117,15 +118,22 @@ namespace InverseTest
             ManipulatorVisualizer.AddModel(others);
 
 
-            scanPoint = new ScanPoint();
-            ManipulatorVisualizer.setDetectoinPoint(scanPoint);
+            scanPoint = new MovementPoint(Colors.Blue);
+            ManipulatorVisualizer.SetPoint(scanPoint);
             scanPoint.PositoinChanged += OnScanPointPositoinChanged;
 
+            manipulatorCamPoint = new MovementPoint(Colors.Red);
+            ManipulatorVisualizer.SetManipulatorPoint(manipulatorCamPoint);
+            manipulatorCamPoint.PositoinChanged += OnManipulatorCamPointPositoinChanged;
+            
             coneModel = new ConeModel();
             ManipulatorVisualizer.AddConeFromCamera(coneModel.GetModel());
+            coneModel.ChangePosition(manipulator.GetCameraPosition(), 
+                manipulator.GetCameraDirection(), 
+                manipulatorCamPoint.GetTargetPoint().DistanceTo(scanPoint.GetTargetPoint()));
 
-          
-
+            manipulatorCamPoint.MoveToPositoin(new Point3D(-10, 60, 0));
+            scanPoint.MoveToPositoin(new Point3D(10, 60, 0));
 
 
             foreach (ManipulatorV2.ManipulatorParts part in Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)))
@@ -154,25 +162,32 @@ namespace InverseTest
         /// </summary>
         public void OnDetectorFramePositionChanged()
         {
-            Find_Collision();
+            
         }
-
-
-
+        
         /// <summary>
         /// Вызывается каждый раз когда манипулятор меняет свое положение
         /// </summary>
         public void OnManipulatorPisitionChanged()
         {
-            coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection());
+            double distanceToPoint = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
+            coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
+        }
+        
+        /// <summary>
+        /// Вызываетсяс каждый раз когда изменяется позиция точки в которую становится манипулятор
+        /// </summary>
+        /// <param name="newPosition"></param>
+        public void OnManipulatorCamPointPositoinChanged(Point3D newPosition)
+        {
+            SolveManipulatorKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+            SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
         }
 
         public void OnScanPointPositoinChanged(Point3D newPosition)
         {
-            float focusDistance = 30;
-            Point3D manipPoint = new Point3D(newPosition.X - focusDistance, newPosition.Y, newPosition.Z);
-            SolveManipulatorKinematic(manipPoint, newPosition, false);
-            SolvePortalKinematic(manipPoint, newPosition, false);
+            SolveManipulatorKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+            SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
         }
 
 
@@ -237,8 +252,8 @@ namespace InverseTest
             double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
             double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
 
+            manipulatorCamPoint.MoveToPositoin(new Point3D(manip_x, manip_y, manip_z));
 
-            createCube(ref pointManip, new Point3D(manip_x, manip_y, manip_z), Colors.Red);
         }
 
         private void createCube(ref Model3D model, Point3D point, Color color)
@@ -774,6 +789,16 @@ namespace InverseTest
             //});
 
             //task.Start();
+        }
+        
+        private void CameraVisibleArea_Checked(object sender, RoutedEventArgs e)
+        {
+            coneModel.SetVisibility(true);
+        }
+
+        private void CameraVisibleArea_Unchecked(object sender, RoutedEventArgs e)
+        {
+            coneModel.SetVisibility(false);
         }
     }
 }

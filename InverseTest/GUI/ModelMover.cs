@@ -14,18 +14,17 @@ namespace InverseTest.GUI
 {
     public class ModelMover
     {
-        private IScanPoint scannedPoint;
+        private IMovementPoint point;
         private bool onMousePressed = false;
         private bool onModelHit = false;
         private Point3D lastPointPosition;
+        public Model3D modelToDetect { get; set; }
 
-
-        public ModelMover(IScanPoint point)
+        public ModelMover(IMovementPoint point)
         {
-            this.scannedPoint = point;
+            this.point = point;
         }
-
-
+        
         public void OnMouseDown(object sender, MouseEventArgs e)
         {
             onMousePressed = true;
@@ -36,8 +35,6 @@ namespace InverseTest.GUI
             Console.WriteLine("Camera:" + viewPort.Camera.LookDirection.ToString());
             Matrix3D matrix = Viewport3DHelper.GetProjectionMatrix(viewPort.Viewport);
             Console.WriteLine("Matrix:" + matrix.ToString());
-
-
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
@@ -45,14 +42,13 @@ namespace InverseTest.GUI
             RayHitTestResult rayResult = result as RayHitTestResult;
             if (rayResult != null)
             {
-                if (rayResult.ModelHit.Equals(scannedPoint.GetModel()))
+                if (rayResult.ModelHit.Equals(modelToDetect))
                 {
                     onModelHit = true;
-                    lastPointPosition = scannedPoint.GetTargetPoint();
-                    scannedPoint.ChangeSize(2d);
+                    lastPointPosition = point.GetTargetPoint();
+                    point.ChangeSize(2d);
                 }
             }
-
             return HitTestResultBehavior.Continue;
         }
 
@@ -60,7 +56,7 @@ namespace InverseTest.GUI
         {
             onMousePressed = false;
             onModelHit = false;
-            scannedPoint.ChangeSize(1d);
+            point.ChangeSize(1d);
 
             HelixViewport3D viewPort = sender as HelixViewport3D;
             HitTestResult result = VisualTreeHelper.HitTest(viewPort.Viewport, e.GetPosition(viewPort));
@@ -68,9 +64,9 @@ namespace InverseTest.GUI
 
             if (mesh_result != null)
             {
-                if (mesh_result.ModelHit.Equals(scannedPoint.GetModel()))
+                if (mesh_result.ModelHit.Equals(modelToDetect))
                 {
-                    scannedPoint.ChangeSize(0.5d);
+                    point.ChangeSize(0.5d);
                 }
             }
         }
@@ -82,26 +78,15 @@ namespace InverseTest.GUI
             Point3D pointNear;
             Point3D pointFar;
             Viewport3DHelper.Point2DtoPoint3D(viewPort.Viewport, mousePos, out pointNear, out pointFar);
-
-
+            
             Point3D? point = Viewport3DHelper.UnProject(viewPort.Viewport, mousePos, lastPointPosition, viewPort.Camera.LookDirection);
             Point3D newPoint = point.GetValueOrDefault();
 
             if (onMousePressed && onModelHit)
             {
                 Console.WriteLine("PointNear: " + newPoint.ToString());
-
-                scannedPoint.MoveToPositoin(newPoint);
+                this.point.MoveToPositoin(newPoint);
             }
         }
-
-
-        private Point3D GetPointOnPlain(Vector3D cameraLookDirection)
-        {
-            //Просто потому что работает!!!!
-            return new Point3D(0, 50, 0);
-        }
-
-
     }
 }

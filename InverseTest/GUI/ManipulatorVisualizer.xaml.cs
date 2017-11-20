@@ -34,9 +34,11 @@ namespace InverseTest.GUI
 
         private IDetectorFrame detectorFrame;
         private IManipulatorModel manipulator;
-        private IScanPoint scanPoint;
+        private IMovementPoint scanPoint;
+
 
         private ModelMover mover;
+        private ModelMover manipulatorMover;
 
         private static int DISTANCE_TO_CAMERA = 1000;
         private static int CAMERA_BORDER_OFFSET = 50;
@@ -217,14 +219,30 @@ namespace InverseTest.GUI
         }
 
 
+
+        public void SetManipulatorPoint(IMovementPoint point)
+        {
+            manipulatorMover = new ModelMover(point);
+            Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[1];
+            AddListeners(manipulatorMover);
+            AddModel(point.GetModel());
+        }
+
         /// <summary>
         /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
         /// </summary>
         /// <param name="scanPoint"></param>
-        public void setDetectoinPoint(IScanPoint scanPoint)
+        public void SetPoint(IMovementPoint scanPoint)
         {
             this.mover = new ModelMover(scanPoint);
+            this.mover.modelToDetect = scanPoint.GetModel();
+            AddListeners(mover);
+            AddModel(scanPoint.GetModel());
+        }
 
+        private void AddListeners(ModelMover mover)
+        {
             ViewPort2DFront.MouseDown += mover.OnMouseDown;
             ViewPort2DFront.MouseUp += mover.OnMouseUp;
             ViewPort2DFront.MouseMove += mover.OnMouseMove;
@@ -240,9 +258,8 @@ namespace InverseTest.GUI
             ViewPort3D.MouseDown += mover.OnMouseDown;
             ViewPort3D.MouseUp += mover.OnMouseUp;
             ViewPort3D.MouseMove += mover.OnMouseMove;
-
-            AddModel(scanPoint.GetModel());
         }
+      
 
 
         public void AddConeFromCamera(Model3D model)
