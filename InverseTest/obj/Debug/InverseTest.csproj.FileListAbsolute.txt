@@ -83,15 +83,8 @@ C:\RoboArm\InverseTest\obj\Debug\App.g.cs
 C:\RoboArm\InverseTest\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.cache
 C:\RoboArm\InverseTest\obj\Debug\InverseTest_MarkupCompile.lref
-C:\RoboArm\InverseTest\bin\Debug\3DModels\cyl_7.obj
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Detector Frame.obj
-C:\RoboArm\InverseTest\bin\Debug\3DModels\Manip.obj
-C:\RoboArm\InverseTest\bin\Debug\3DModels\Frame.obj
 C:\RoboArm\InverseTest\bin\Debug\3DModels\Detector Frame.mtl
-C:\RoboArm\InverseTest\bin\Debug\3DModels\cyl_7.mtl
-C:\RoboArm\InverseTest\bin\Debug\3DModels\Frame.3ds
-C:\RoboArm\InverseTest\bin\Debug\3DModels\Manip.mtl
-C:\RoboArm\InverseTest\bin\Debug\3DModels\Frame.mtl
 C:\RoboArm\InverseTest\bin\Debug\InverseTest.exe.config
 C:\RoboArm\InverseTest\bin\Debug\InverseTest.exe
 C:\RoboArm\InverseTest\bin\Debug\InverseTest.pdb
