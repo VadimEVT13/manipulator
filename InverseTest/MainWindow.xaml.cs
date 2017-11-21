@@ -162,7 +162,7 @@ namespace InverseTest
         /// </summary>
         public void OnDetectorFramePositionChanged()
         {
-            
+            Find_Collision();
         }
         
         /// <summary>
@@ -172,6 +172,7 @@ namespace InverseTest
         {
             double distanceToPoint = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
+            Find_Collision();
         }
         
         /// <summary>
@@ -195,42 +196,36 @@ namespace InverseTest
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
             T1TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
             T2TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, -e.NewValue);
             T3TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
             T4TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         private void T6Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T6TextBox.Text = e.NewValue.ToString();
-            Find_Collision();
         }
 
         // Ставим в точку съемки кубик
@@ -697,21 +692,26 @@ namespace InverseTest
 
                 if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detail.GetModel().Bounds)) //столкновение манипулятора с деталью
                 {
-                    TB_Alert.Text = "collision with detail";
+                    TB_Alert.Text = "manip with detail";
                     return;
                 }
                 foreach (DetectorFrame.Parts part_frame in Enum.GetValues(typeof(DetectorFrame.Parts)))
                 {
                     if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(detectorFrame.GetDetectorFramePart(part_frame).Bounds)) //с детектором
                     {
-                        TB_Alert.Text = "collision with detector";
+                        TB_Alert.Text = "manip with detector";
                         return;
                     }
-                    /*if (detectorFrame.GetDetectorFramePart(part_frame).Bounds.IntersectsWith(platform.Bounds))
+                    if (detectorFrame.GetDetectorFramePart(part_frame).Bounds.IntersectsWith(detail.GetModel().Bounds))
                     {
-                        TB_Alert.Text = "collision with platform";
+                        TB_Alert.Text = "detector with detail";
                         return;
-                    }*/
+                    }
+                    if (manipulator.GetManipulatorPart(part).Bounds.IntersectsWith(platform.Bounds)) //с платформой
+                    {
+                        TB_Alert.Text = "manip with platform";
+                        return;
+                    }
                 }
 
 
@@ -727,28 +727,24 @@ namespace InverseTest
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
-            Find_Collision();
             VerticalFrameSliderTextBox.Text = e.NewValue.ToString();
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
-            Find_Collision();
             HorizontalBarTextView.Text = e.NewValue.ToString();
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
-            Find_Collision();
             ScreenHolderTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
-            Find_Collision();
 
             ScreenVerticalAngleTextBox.Text = e.NewValue.ToString();
         }
@@ -756,7 +752,6 @@ namespace InverseTest
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
-            Find_Collision();
             ScreenHorizontalAngleTextBox.Text = e.NewValue.ToString();
         }
 

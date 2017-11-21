@@ -357,7 +357,7 @@ namespace InverseTest.GUI
          ///   ViewPort2DRight.Children.Add(rectagnle3D);
            ViewPort3D.Children.Add(rectagnle3D);
         }
-
+        
 
 
 

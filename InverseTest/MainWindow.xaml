@@ -201,7 +201,7 @@
             </ListView>
 
 
-          <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+            <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
             <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
         -->
             
