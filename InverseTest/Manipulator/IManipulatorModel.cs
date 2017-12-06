@@ -24,6 +24,8 @@ namespace InverseTest.Manipulator
 
         void MoveManipulator(ManipulatorAngles angles, bool animate);
 
+        Point3D GetPointJoint(ManipulatorRotatePoints point);
+
 
     }
 }

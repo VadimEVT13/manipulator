@@ -17,7 +17,7 @@ namespace InverseTest.GUI.Model
 
         public ConeModel()
         {
-            material = MaterialHelper.CreateMaterial(Colors.Aqua, opacity:0.4d);
+            material = MaterialHelper.CreateMaterial(Colors.Chocolate, opacity:0.2d);
            
             cone = new TruncatedConeVisual3D()
             {

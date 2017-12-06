@@ -50,13 +50,10 @@
         </Style>
         <Style TargetType="h:HelixViewport3D">
             <Setter Property="Background" Value="WhiteSmoke"/>
-            <Setter Property="RenderOptions.BitmapScalingMode" Value="LowQuality"/>
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
 
         </Style>
     </UserControl.Resources>
-
-
-
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -80,7 +77,7 @@
             </Grid.Style>
             <h:HelixViewport3D Name="ViewPortManipulatorCam" ClipToBounds="True" Grid.Row="0" Grid.Column="0" 
                                ShowViewCube="False" IsRotationEnabled="False" IsManipulationEnabled="False"
-                                  BorderBrush="Black" BorderThickness="1" IsZoomEnabled="False"
+                                  BorderBrush="Black" BorderThickness="1" IsZoomEnabled="False" IsMoveEnabled="False"
                                >
             </h:HelixViewport3D>
             <ToggleButton x:Name="ManipulatorCamLabel" Content="Камера" Style="{StaticResource ViewButtonStyle}"/>
@@ -94,7 +91,7 @@
             </Grid.Style>
             <h:HelixViewport3D Name="ViewPortDetectorScreenCam" ClipToBounds="True" Grid.Row="0" Grid.Column="1" 
                                ShowViewCube="False" IsRotationEnabled="False" IsMoveEnabled="False" IsManipulationEnabled="False"
-                                  BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="False" />
+                                  BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="False"  />
 
             <ToggleButton x:Name="FrameCamLabel" Content="Камера" Style="{StaticResource ViewButtonStyle}"/>
         </Grid>
@@ -152,10 +149,10 @@
             </Grid.Style>
 
 
-            <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="True" Grid.Row="2" Grid.Column="1" 
+            <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="False" Grid.Row="2" Grid.Column="1" 
                                ShowCoordinateSystem="True" ShowViewCube="False"
-                               BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true" 
-                               CameraRotationMode="Turntable" RotationSensitivity="0.5" CameraMode="Inspect"
+                               BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true" CameraMode="Inspect"
+                               CameraRotationMode="Turntable" 
                                
                                />
             <ToggleButton x:Name="View3DLabel" Content="3D" Style="{StaticResource ViewButtonStyle}"/>

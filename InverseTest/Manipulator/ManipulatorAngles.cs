@@ -12,15 +12,14 @@ namespace InverseTest.Manipulator
 
         public readonly Dictionary<ManipulatorParts, double> partAngles;      
 
-        public ManipulatorAngles(double angle1, double angle2, double angle3, double angle4, double angle5, double angle6)
+        public ManipulatorAngles(double angle1, double angle2, double angle3, double angle4, double angle5)
         {
             partAngles = new Dictionary<ManipulatorParts, double>();
             partAngles[ManipulatorParts.Table] = -angle1;
             partAngles[ManipulatorParts.MiddleEdge] = -angle2;
-            partAngles[ManipulatorParts.TopEdgeBase] = -angle3;
-            partAngles[ManipulatorParts.TopEdge] = -angle4;
-            partAngles[ManipulatorParts.CameraBase] = -angle5;
-            partAngles[ManipulatorParts.Camera] = -angle6;
+            partAngles[ManipulatorParts.TopEdge] = -angle3;
+            partAngles[ManipulatorParts.CameraBase] = -angle4;
+            partAngles[ManipulatorParts.Camera] = -angle5;
         }
       
     }

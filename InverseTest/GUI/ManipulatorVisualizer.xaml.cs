@@ -65,7 +65,7 @@ namespace InverseTest.GUI
 
             cam2DFront = new OrthographicCamera
             {
-                Position = new Point3D(1200,300, 0),
+                Position = new Point3D(500,0, 0),
                 Width = 800,
                 LookDirection = new Vector3D(-1, 0, 0)
             };
@@ -80,15 +80,24 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
-         
 
-            cam3D = new PerspectiveCamera
+
+
+            cam3D = new PerspectiveCamera()
             {
-                Position = new Point3D(1300, 900, 800),
-                FieldOfView = 45,
-                LookDirection = new Vector3D(-1, -1, -1)
+                Position = new Point3D(1000, 1000, 1000),
+                FieldOfView = 61,
+                LookDirection = new Vector3D(-1, -1, -1),
+                UpDirection = new Vector3D(0, 1, 0),
+                NearPlaneDistance = 0.001
             };
+            
             ViewPort3D.Camera = cam3D;
+            ViewPort3D.CameraMode = CameraMode.Inspect;
+            ViewPort3D.CameraRotationMode = CameraRotationMode.Turnball;
+            
+
+
           
 
             cameraFromPortal = new PerspectiveCamera();
@@ -146,34 +155,23 @@ namespace InverseTest.GUI
             cam2DRight.Position = new Point3D(0, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
 
             cam3D.LookDirection = new Vector3D(-1, -1, -1);
-            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/3,DISTANCE_TO_CAMERA/3 ,DISTANCE_TO_CAMERA /3);
+            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/10,DISTANCE_TO_CAMERA/10 ,DISTANCE_TO_CAMERA /10);
         }
 
-      
-        private Model3D createSmallCube(Point3D point)
+        public void AddCountur(IList<Point3D> visual)
         {
-            double length = 0.2;
-            MeshGeometry3D boxMesh = new MeshGeometry3D();
-            boxMesh.Positions = new Point3DCollection()
-                {
-                    new Point3D(point.X, point.Y, point.Z),
-                    new Point3D(point.X + length, point.Y, point.Z),
-                    new Point3D(point.X, point.Y + length, point.Z),
-                    new Point3D(point.X+ length, point.Y + length, point.Z),
-                    new Point3D(point.X, point.Y, point.Z + length),
-                    new Point3D(point.X+ length, point.Y, point.Z + length),
-                    new Point3D(point.X, point.Y+ length, point.Z+ length),
-                    new Point3D(point.X+ length, point.Y + length, point.Z + length)
-                };
 
-            boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6, 2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
-            GeometryModel3D boxGeom = new GeometryModel3D();
-            boxGeom.Geometry = boxMesh;
-            DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-            boxGeom.Material = mat;
+            var combine = MeshGeometryHelper.CombineSegments(visual, 1e-6);
 
-            return boxGeom;
+            foreach (var contour in combine.ToList())
+            {
+                if (contour.Count == 0)
+                    continue;
+                ViewPortManipulatorCam.Children.Add(new TubeVisual3D { Diameter = 0.1, Path = new Point3DCollection(contour), Fill = Brushes.Green });
+            }
+
         }
+        
 
 
         public void setManipulatorModel(IManipulatorModel manipulatorModel)
@@ -218,13 +216,11 @@ namespace InverseTest.GUI
             AddModel(detectorFrame.GetDetectorFrameModel());
         }
 
-
-
         public void SetManipulatorPoint(IMovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
             Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[1];
+            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
             AddListeners(manipulatorMover);
             AddModel(point.GetModel());
         }
@@ -262,6 +258,10 @@ namespace InverseTest.GUI
       
 
 
+        /// <summary>
+        /// Добавляет модель конуса из камеры
+        /// </summary>
+        /// <param name="model"></param>
         public void AddConeFromCamera(Model3D model)
         {
 
@@ -289,8 +289,7 @@ namespace InverseTest.GUI
         }
 
         public void AddModel(Model3D model)
-        {
-            
+        {            
             ModelVisual3D topViewModel = new ModelVisual3D() {Content = model};
             ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
@@ -305,7 +304,6 @@ namespace InverseTest.GUI
             ViewPortDetectorScreenCam.Children.Add(cameraManipulatorModel);
             ViewPortManipulatorCam.Children.Add(detectorScreenCamModel);
         }
-        
 
 
         public void RemoveModel(Model3D model)
@@ -336,7 +334,7 @@ namespace InverseTest.GUI
 
         public void showBordersPortal(IDetectorFrame frame)
         {
-            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame);
+            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
             Rect3D rect = part.Bounds;
 
 
@@ -357,7 +355,32 @@ namespace InverseTest.GUI
          ///   ViewPort2DRight.Children.Add(rectagnle3D);
            ViewPort3D.Children.Add(rectagnle3D);
         }
-        
+
+        public void showBordersPortal(IManipulatorModel frame)
+        {
+            Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Rect3D rect = part.Bounds;
+
+
+            BoxVisual3D rectagnle3D = new BoxVisual3D()
+            {
+                Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
+                Fill = Brushes.DarkBlue,
+                Width = rect.SizeY,
+                Length = rect.SizeX,
+                Height = rect.SizeZ
+
+            };
+
+
+
+            // ViewPort2DFront.Children.Add(rectagnle3D);
+            //  ViewPort2DTop.Children.Add(rectagnle3D);
+            ///   ViewPort2DRight.Children.Add(rectagnle3D);
+            ViewPort3D.Children.Add(rectagnle3D);
+        }
+
+
 
 
 

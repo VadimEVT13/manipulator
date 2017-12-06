@@ -58,9 +58,6 @@
             <Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
             <TextBox Name="T5TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T6" HorizontalAlignment="Center"/>
-            <Slider Name="T6Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T6Slider_OnValueChanged"/>
-            <TextBox Name="T6TextBox" Text="0" Margin="5"/>
             <!--
             <Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
             <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
@@ -74,7 +71,7 @@
             <TextBlock Name="DebugOutput" Height="250"/>
              </StackPanel>
         </Expander>
-        <Expander Header="Детектором">
+            <Expander Header="Детектором">
             <StackPanel DockPanel.Dock="Right" Width="160">
                 <Label Content="Вертикальная рамка" HorizontalAlignment="Center"/>
                 <Slider Name="VerticalFrameSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="VerticalFrameSlider_ValueChanged"/>
@@ -98,17 +95,19 @@
            
             </StackPanel>
         </Expander>
-
-
-
-            <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
-            <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
-            <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
-
-
+          
+            
+            
+            <StackPanel Visibility="Visible">
+                <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
+                <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
+                <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
+            </StackPanel>
 
         </StackPanel>
 
+
+       
 
 
         <StackPanel DockPanel.Dock="Left" Width="160" >
@@ -168,8 +167,12 @@
                 <Label Content="Область камеры"/>
                 <CheckBox x:Name="CameraVisibleArea" Checked="CameraVisibleArea_Checked" Unchecked="CameraVisibleArea_Unchecked" VerticalAlignment="Center"/>
             </StackPanel>
-            
-            
+           <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <Label Content="Проекция детали"/>
+                <CheckBox x:Name="DetailProjection" Checked="DetailProjection_Checked" Unchecked="DetailProjection_Unchecked" VerticalAlignment="Center"/>
+            </StackPanel>
+
+
             <StackPanel Visibility="Hidden">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>
@@ -201,9 +204,9 @@
             </ListView>
 
 
-            <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+          <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
             <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
-        -->
+        
             
         </StackPanel>
 

@@ -42,7 +42,7 @@ namespace InverseTest.GUI.Model
             TranslateTransform3D transform = new TranslateTransform3D(newPositoin.X, newPositoin.Y, newPositoin.Z);
             Transform3D oldTransform = point.Model.Transform;
             point.Model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
-            PositoinChanged(GetTargetPoint());
+            PositoinChanged?.Invoke(GetTargetPoint());
         }
 
         public Point3D GetTargetPoint()

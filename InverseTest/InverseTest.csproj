@@ -59,9 +59,6 @@
     <Reference Include="HelixToolkit.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.1.0.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=1.0.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.1.0.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -84,26 +81,17 @@
     <Reference Include="SharpDX.D3DCompiler, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.D3DCompiler.4.0.1\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct2D1, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct2D1.4.0.1\lib\net45\SharpDX.Direct2D1.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct3D11.4.0.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11.Effects, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct3D11.Effects.4.0.1\lib\net45\SharpDX.Direct3D11.Effects.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Direct3D9.4.0.1\lib\net45\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.DXGI.4.0.1\lib\net45\SharpDX.DXGI.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -122,10 +110,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Animator.cs" />
     <Compile Include="Collision\Collision.cs" />
     <Compile Include="Detail\DetailModel.cs" />
-    <Compile Include="Frame\DetectorFramePart.cs" />
+    <Compile Include="Frame\IDetectorFramePart.cs" />
     <Compile Include="Frame\DetectorFramePartDecorator.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
@@ -137,7 +124,6 @@
     <Compile Include="GUI\Model\MovementPoint.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
-    <Compile Include="IOFile.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
     <Compile Include="Manipulator\IManipulatorPart.cs" />
     <Compile Include="Manipulator\Kinematic.cs" />
@@ -211,13 +197,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="sharpdx_direct3d11_1_effects_arm.dll" />
-    <Content Include="sharpdx_direct3d11_1_effects_x64.dll" />
-    <Content Include="sharpdx_direct3d11_1_effects_x86.dll" />
-    <Content Include="x64\d3dcompiler_47.dll" />
-    <Content Include="x86\d3dcompiler_47.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

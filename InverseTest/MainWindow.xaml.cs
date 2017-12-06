@@ -31,11 +31,11 @@ namespace InverseTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static int PORTAL_START_INDEX = 16;
-        private static int PORTAL_END_INDEX = 55;
-        private static int MANIPULATOR_START_INDEX = 55;
-        private static int MANIPULATOR_END_INDEX = 72;
-        private static int LOPATKA_INDEX = 14;
+        private static int PORTAL_START_INDEX = 29;
+        private static int PORTAL_END_INDEX = 59;
+        private static int MANIPULATOR_START_INDEX = 9;
+        private static int MANIPULATOR_END_INDEX = 29;
+        private static int LOPATKA_INDEX = 8;
 
 
 
@@ -57,7 +57,6 @@ namespace InverseTest
         private DetailModel detail;
 
         private Point3D scannedPoint = new Point3D(0, 0, 0);
-        Animator animator;
 
         AxisAngleRotation3D ax3d;
         RotateTransform3D myRotateTransform;
@@ -68,19 +67,19 @@ namespace InverseTest
 
         private int selectedIndexPoint = -1;
         private List<UIElement> childrens;
-
-
+        
         Model3DGroup allModels;
         int numMesh = 0;
 
         public MainWindow()
         {
             InitializeComponent();
-            allModels = new ModelImporter().Load(@"./3DModels/Detector Frame.obj");
+            allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
             ManipulatorVisualizer.setCameras(allModels);
+
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(PORTAL_START_INDEX, PORTAL_END_INDEX - PORTAL_START_INDEX));
-            portal.Children.Add(allModels.Children[0]);
+            portal.Children.Add(allModels.Children[62]);
 
             detectorFrame = new DetectorFrame(portal);
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
@@ -88,48 +87,44 @@ namespace InverseTest
 
             Model3DGroup manipulatorGroup = new Model3DGroup();
             manipulatorGroup.Children = new Model3DCollection(allModels.Children.ToList()
-              .GetRange(MANIPULATOR_START_INDEX, MANIPULATOR_END_INDEX - MANIPULATOR_START_INDEX));
-            manipulatorGroup.Children.Add(allModels.Children[1]);
-            manipulatorGroup.Children.Add(allModels.Children[2]);
-            manipulatorGroup.Children.Add(allModels.Children[3]);
-            manipulatorGroup.Children.Add(allModels.Children[4]);
-            manipulatorGroup.Children.Add(allModels.Children[5]);
-
-
-            Collision collisions = new Collision();
+             .GetRange(MANIPULATOR_START_INDEX, MANIPULATOR_END_INDEX - MANIPULATOR_START_INDEX));
+            manipulatorGroup.Children.Add(allModels.Children[0]);
+            manipulatorGroup.Children.Add(allModels.Children[59]);
+            manipulatorGroup.Children.Add(allModels.Children[60]);
+            manipulatorGroup.Children.Add(allModels.Children[61]);
             manipulator = new ManipulatorV2(manipulatorGroup);
             manipulator.onPositionChanged += OnManipulatorPisitionChanged;
-            manipulator.onPositionChanged += collisions.OnManipulatorPosChanged;
-
+            //manipulator.onPositionChanged += collisions.OnManipulatorPosChanged;
             ManipulatorVisualizer.setManipulatorModel(manipulator);
-            //ManipulatorVisualizer.AddModel(allModels);
+
+            Collision collisions = new Collision();
 
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
             detail = new DetailModel(lopatka);
-            ManipulatorVisualizer.AddModel(detail.GetModel());
+            //ManipulatorVisualizer.AddModel(detail.GetModel());
 
+
+            //Добавляем остальные мешы
             Model3DGroup others = new Model3DGroup();
-            others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(8, 4));
-            others.Children.Add(allModels.Children[13]);
-            //platform = allModels.Children[10]; //временная платформа детали
-            platform.Children.Add(allModels.Children[10]);
-            others.Children = new Model3DCollection(allModels.Children.ToList().GetRange(10, 4));
-            others.Children.Add(allModels.Children[15]);
+            List<Model3D> othersModels = new List<Model3D>();
+            othersModels.AddRange(allModels.Children.ToList().GetRange(0, LOPATKA_INDEX-1));
+            othersModels.AddRange(allModels.Children.ToList().GetRange(LOPATKA_INDEX + 1, MANIPULATOR_START_INDEX - (LOPATKA_INDEX - 1)));
+            others.Children = new Model3DCollection(othersModels);
             ManipulatorVisualizer.AddModel(others);
 
 
             scanPoint = new MovementPoint(Colors.Blue);
             ManipulatorVisualizer.SetPoint(scanPoint);
-            scanPoint.PositoinChanged += OnScanPointPositoinChanged;
+            // scanPoint.PositoinChanged += OnScanPointPositoinChanged;
 
             manipulatorCamPoint = new MovementPoint(Colors.Red);
-            ManipulatorVisualizer.SetManipulatorPoint(manipulatorCamPoint);
-            manipulatorCamPoint.PositoinChanged += OnManipulatorCamPointPositoinChanged;
-            
+            //ManipulatorVisualizer.SetManipulatorPoint(manipulatorCamPoint);
+            // manipulatorCamPoint.PositoinChanged += OnManipulatorCamPointPositoinChanged;
+
             coneModel = new ConeModel();
             ManipulatorVisualizer.AddConeFromCamera(coneModel.GetModel());
-            coneModel.ChangePosition(manipulator.GetCameraPosition(), 
-                manipulator.GetCameraDirection(), 
+            coneModel.ChangePosition(manipulator.GetCameraPosition(),
+                manipulator.GetCameraDirection(),
                 manipulatorCamPoint.GetTargetPoint().DistanceTo(scanPoint.GetTargetPoint()));
 
             manipulatorCamPoint.MoveToPositoin(new Point3D(-10, 60, 0));
@@ -146,13 +141,12 @@ namespace InverseTest
             }
 
             Model3DGroup detailNewGroup = new Model3DGroup();
-            detailNewGroup.Children.Add(detail.GetModel());
-            collisions.BuildShell(detailNewGroup);
+            //  detailNewGroup.Children.Add(detail.GetModel());
+            // collisions.BuildShell(detailNewGroup);
 
-            collisions.BuildShell(platform);
+            // collisions.BuildShell(platform);
 
-            //collisions.myTemp();
-           // collisions.DisplayConvexHull();
+            //   collisions.DisplayConvexHull();
 
         }
 
@@ -162,7 +156,7 @@ namespace InverseTest
         /// </summary>
         public void OnDetectorFramePositionChanged()
         {
-            Find_Collision();
+            //Find_Collision();
         }
         
         /// <summary>
@@ -170,9 +164,10 @@ namespace InverseTest
         /// </summary>
         public void OnManipulatorPisitionChanged()
         {
+            manipulatorCamPoint.MoveToPositoin(manipulator.GetCameraPosition());
             double distanceToPoint = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
-            Find_Collision();
+            //Find_Collision();
         }
         
         /// <summary>
@@ -206,27 +201,22 @@ namespace InverseTest
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, -e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
             T3TextBox.Text = e.NewValue.ToString();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
             T4TextBox.Text = e.NewValue.ToString();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
+            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
         }
-
-        private void T6Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
-            T6TextBox.Text = e.NewValue.ToString();
-        }
+     
 
         // Ставим в точку съемки кубик
         private void TargetPointAcceptButton_OnClick(object sender, RoutedEventArgs e)
@@ -345,8 +335,7 @@ namespace InverseTest
                     MathUtils.RadiansToAngle(rez[1]),
                     MathUtils.RadiansToAngle(rez[2]),
                     MathUtils.RadiansToAngle(rez[3]),
-                    MathUtils.RadiansToAngle(rez[4]),
-                    MathUtils.RadiansToAngle(rez[5])
+                    MathUtils.RadiansToAngle(rez[4])
                     );
 
                 manipulator.MoveManipulator(angles, animate);
@@ -413,10 +402,7 @@ namespace InverseTest
             }
 
         }
-
-
-
-
+        
 
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
@@ -539,13 +525,9 @@ namespace InverseTest
         {
             returnNormalGrid();
         }
-
-
-
+        
         private void onConfirmChangesClick(object sender, RoutedEventArgs e)
         {
-
-
             double x, y, z;
 
             double.TryParse(TargetPointXTextBox.Text, out x);
@@ -577,12 +559,10 @@ namespace InverseTest
 
             if (fileDialog.ShowDialog() == true)
             {
-                Model3D detail = IOFile.loadObjModel(fileDialog.FileName);
+                Model3D detail = this.detail.GetModel();
                 TranslateTransform3D transform = new TranslateTransform3D(450, 15, 0);
                 detail.Transform = transform;
-
-
-
+                
                 ManipulatorVisualizer.AddModel(detail);
 
                 Transform3DGroup transformGroup = new Transform3DGroup();
@@ -614,13 +594,7 @@ namespace InverseTest
             Application.Current.Shutdown();
         }
 
-        private void StartSimulation_Click(object sender, RoutedEventArgs e)
-        {
-            if (targetPoints.Count > 0 && !animator.animating)
-                animator.startAnimation(targetPoints.ToList());
-        }
-
-        private void resetManip()
+       private void resetManip()
         {
             T1Slider.Value = 0;
             T2Slider.Value = 0;
@@ -629,13 +603,6 @@ namespace InverseTest
             T5Slider.Value = 0;
 
             detectorFrame.ResetTransforms();
-        }
-
-        private void StopSimulation_Click(object sender, RoutedEventArgs e)
-        {
-            if (animator != null)
-                animator.stopAnimation();
-            resetManip();
         }
 
         private void PointDown_Click(object sender, RoutedEventArgs e)
@@ -654,8 +621,6 @@ namespace InverseTest
         {
             if (selectedIndexPoint > -1 && selectedIndexPoint > 0 && selectedIndexPoint <= targetPoints.Count - 1)
             {
-
-
                 Point3D point = targetPoints[selectedIndexPoint];
                 int index = selectedIndexPoint;
                 targetPoints.RemoveAt(index);
@@ -669,9 +634,7 @@ namespace InverseTest
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.showBordersPortal(detectorFrame);
-            //ManipulatorVisualizer.showBordersManip(manipulator);
-
-
+            ManipulatorVisualizer.showBordersPortal(manipulator);
         }
 
         void Find_Collision()
@@ -745,7 +708,6 @@ namespace InverseTest
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
-
             ScreenVerticalAngleTextBox.Text = e.NewValue.ToString();
         }
 
@@ -757,15 +719,15 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ((IDebugModels) manipulator).transformModel(e.NewValue);
-            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+         //   ((IDebugModels)detectorFrame).transformModel(e.NewValue);
+            allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            ((IDebugModels)manipulator).addNumberMesh(numMesh);
-            //NumMeshTextBox.Text = numMesh.ToString();
+           // ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
+            NumMeshTextBox.Text = numMesh.ToString();
 
         }
 
@@ -794,6 +756,21 @@ namespace InverseTest
         private void CameraVisibleArea_Unchecked(object sender, RoutedEventArgs e)
         {
             coneModel.SetVisibility(false);
+        }
+
+        private void DetailProjection_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var rect = detail.GetModel().Bounds;
+            Point3D point = new Point3D(0, 0, rect.Z + rect.SizeZ);
+
+            MeshGeometry3D meshGeometry = detail.GetCountours(point, manipulator.GetCameraDirection());
+            GeometryModel3D model = new GeometryModel3D(meshGeometry, Materials.Green);
+            ManipulatorVisualizer.AddModel(model);
+        }
+
+        private void DetailProjection_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

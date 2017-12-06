@@ -10,11 +10,9 @@ namespace InverseTest.JunctionDetect
 {
     public class JunctionDetectAlgorithm
     {
-
         private static Point3D[] meshVertices;
         private static int[] meshTriangles;
-
-
+        
         public int[] Detect(Model3D model)
         {
             MeshGeometry3D meshGeometry = ((MeshGeometry3D)((GeometryModel3D)model).Geometry);
@@ -300,12 +298,19 @@ namespace InverseTest.JunctionDetect
             List<int> curvedPointsIndexes = new List<int>();
             List<int> curveturesNegative = new List<int>();
             List<int> curveturesPositive = new List<int>();
-
-
+            
             double avarageNegCurv = 0;
             double avaragePositCurv = 0;
+            double maxCurve = curvatures.Max();
+            double minCurve = curvatures.Min();
+
+
+
             for (int i = 0; i < curvatures.Length; i++)
             {
+                Console.Write(curvatures[i] + " ");
+
+
                 if (curvatures[i] >= 0)
                 {
                     curveturesPositive.Add(i);
@@ -324,9 +329,9 @@ namespace InverseTest.JunctionDetect
 
             for (int i = 0; i < curvatures.Length; i++)
             {
-                if (curvatures[i] > 0 && curvatures[i] > avaragePositCurv*0.5)
+                if (curvatures[i] > avaragePositCurv)
                     curvedPointsIndexes.Add(i);
-                if (curvatures[i] < 0 && curvatures[i] < avarageNegCurv*0.5)
+                if (curvatures[i] < avarageNegCurv)
                     curvedPointsIndexes.Add(i);
             }
 

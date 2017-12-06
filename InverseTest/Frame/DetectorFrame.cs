@@ -9,6 +9,7 @@ using InverseTest.Frame.Kinematic;
 using InverseTest.Frame;
 using System.Windows.Threading;
 using InverseTest.Manipulator;
+using System.Linq;
 
 namespace InverseTest
 {
@@ -20,13 +21,13 @@ namespace InverseTest
 
         private Model3DGroup detectorFrameGraph = new Model3DGroup();
         private Model3DGroup portalModel;
-        private Model3D camPositionCube;
+        private Model3DGroup screenCameraPos;
         private int numberMesh = 0;
 
 
 
         /// Части 
-        private Dictionary<Parts, DetectorFramePart> parts = new Dictionary<Parts, DetectorFramePart>();
+        private Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
         private Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
         private Dictionary<Parts, double> partDeltas = new Dictionary<Parts, double>();
         private Dictionary<Parts, Point3D> partStartPosition = new Dictionary<Parts, Point3D>();
@@ -67,67 +68,28 @@ namespace InverseTest
             portalModel = portal;
             //Экран
             Model3DGroup screen = new Model3DGroup();
-            screen.Children.Add(portalModel.Children[34]);
-            screen.Children.Add(portalModel.Children[35]);
-            screen.Children.Add(portalModel.Children[36]);
-            screen.Children.Add(portalModel.Children[37]);
-            screen.Children.Add(portalModel.Children[38]);
-
-            Model3DGroup screenCameraPos = new Model3DGroup();
-            screenCameraPos.Children.Add(portalModel.Children[39]);
+            screen.Children = new Model3DCollection(portal.Children.ToList().GetRange(23,7));
+            
+            screenCameraPos = new Model3DGroup();
+            screenCameraPos.Children.Add(portal.Children[30]);
 
             //Платформа на которой стоит вся конструкция по идее не двигается но пусть.
             Model3DGroup platform = new Model3DGroup();
-            platform.Children.Add(portalModel.Children[0]);
-            platform.Children.Add(portalModel.Children[1]);
-            platform.Children.Add(portalModel.Children[2]);
-            platform.Children.Add(portalModel.Children[3]);
-            platform.Children.Add(portalModel.Children[4]);
-            platform.Children.Add(portalModel.Children[5]);
-            platform.Children.Add(portalModel.Children[6]);
-            platform.Children.Add(portalModel.Children[7]);
-            platform.Children.Add(portalModel.Children[8]);
-            platform.Children.Add(portalModel.Children[9]);
-
+            platform.Children = new Model3DCollection(portal.Children.ToList().GetRange(0, 6));
 
 
             ///Вертикальная рамка
             Model3DGroup verticalFrame = new Model3DGroup();
-            verticalFrame.Children.Add(portalModel.Children[10]);
-            verticalFrame.Children.Add(portalModel.Children[11]);
-            verticalFrame.Children.Add(portalModel.Children[12]);
-            verticalFrame.Children.Add(portalModel.Children[13]);
-            verticalFrame.Children.Add(portalModel.Children[14]);
-            verticalFrame.Children.Add(portalModel.Children[15]);
-            verticalFrame.Children.Add(portalModel.Children[16]);
-            verticalFrame.Children.Add(portalModel.Children[17]);
-            verticalFrame.Children.Add(portalModel.Children[18]);
-            verticalFrame.Children.Add(portalModel.Children[19]);
+            verticalFrame.Children = new Model3DCollection(portal.Children.ToList().GetRange(7, 4));
 
             ///Горизонтальная платка на которой крепится держатель для экрана
             Model3DGroup horizontalBar = new Model3DGroup();
-            horizontalBar.Children.Add(portalModel.Children[20]);
-            horizontalBar.Children.Add(portalModel.Children[21]);
-            horizontalBar.Children.Add(portalModel.Children[22]);
-            horizontalBar.Children.Add(portalModel.Children[23]);
-            horizontalBar.Children.Add(portalModel.Children[24]);
-            horizontalBar.Children.Add(portalModel.Children[25]);
-            horizontalBar.Children.Add(portalModel.Children[26]);
-            horizontalBar.Children.Add(portalModel.Children[27]);
-            horizontalBar.Children.Add(portalModel.Children[28]);
-
-
-
+            horizontalBar.Children = new Model3DCollection(portal.Children.ToList().GetRange(11, 10));
+            
             //Держатель для экрана, относительно него вращается экран
             Model3DGroup screenHolder = new Model3DGroup();
-            screenHolder.Children.Add(portalModel.Children[29]);
-            screenHolder.Children.Add(portalModel.Children[30]);
-            screenHolder.Children.Add(portalModel.Children[31]);
-            screenHolder.Children.Add(portalModel.Children[32]);
-            screenHolder.Children.Add(portalModel.Children[33]);
-
-
-
+            screenHolder.Children = new Model3DCollection(portal.Children.ToList().GetRange(19, 4));
+            
             DetectorFramePartDecorator screenCameraPart = new DetectorFramePartDecorator(screenCameraPos, null);
             DetectorFramePartDecorator screenPart = new DetectorFramePartDecorator(screen, screenCameraPart);
             DetectorFramePartDecorator screenHolderPart = new DetectorFramePartDecorator(screenHolder, screenPart);
@@ -159,8 +121,7 @@ namespace InverseTest
             partOffset.Add(Parts.ScreenHolder, 0);
             partOffset.Add(Parts.VerticalFrame, 0);
             partOffset.Add(Parts.HorizontalBar, 0);
-
-
+            
             detectorFrameGraph.Children = partsCollectoin;
 
             timer = new DispatcherTimer();
@@ -289,10 +250,10 @@ namespace InverseTest
             double offsetX = p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X;
             partOffset[Parts.VerticalFrame] = offsetX;
 
-            double offsetY = p.pointScreen.Y - partStartPosition[Parts.ScreenCameraPos].Y;
+            double offsetY = p.pointScreen.Y -(partStartPosition[Parts.ScreenCameraPos].Y + parts[Parts.ScreenCameraPos].Bounds().SizeY/2);
             partOffset[Parts.HorizontalBar] = offsetY;
 
-            double offsetZ = p.pointScreen.Z - partStartPosition[Parts.ScreenCameraPos].Z;
+            double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
             partOffset[Parts.ScreenHolder] = offsetZ;
 
             verticalAngle = p.verticalAngle;
@@ -323,9 +284,6 @@ namespace InverseTest
             T = new TranslateTransform3D(0, 0, partOffset[Parts.ScreenHolder]);
             screenHolderGroup.Children.Add(T);
             screenHolderGroup.Children.Add(horizontalBarGroup);
-
-
-
 
             Transform3DGroup rotateGroup = new Transform3DGroup();
 

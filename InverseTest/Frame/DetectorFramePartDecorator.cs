@@ -7,11 +7,11 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.Frame
 {
-    class DetectorFramePartDecorator:DetectorFramePart
+    class DetectorFramePartDecorator:IDetectorFramePart
     {
 
         private Model3DGroup part;
-        private DetectorFramePart priviusPart;
+        private IDetectorFramePart priviusPart;
         private Transform3DGroup transforms;
         private Transform3D translateTrans;
         private Transform3D RotateTransform;
