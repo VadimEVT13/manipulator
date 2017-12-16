@@ -51,11 +51,11 @@
             <TextBox Name="T3TextBox" Text="0" Margin="5"/>
 
             <Label Content="T4" HorizontalAlignment="Center"/>
-            <Slider Name="T4Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
+            <Slider Name="T4Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
             <TextBox Name="T4TextBox" Text="0" Margin="5"/>
 
             <Label Content="T5" HorizontalAlignment="Center"/>
-            <Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
+            <Slider Name="T5Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
             <TextBox Name="T5TextBox" Text="0" Margin="5"/>
 
             <!--

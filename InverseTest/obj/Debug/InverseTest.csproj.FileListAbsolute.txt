@@ -113,15 +113,8 @@ C:\RoboArm\InverseTest\obj\Debug\InverseTest.pdb
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\InverseTest.exe.config
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest.exe
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\obj\Debug\InverseTest.pdb
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\cyl_7.obj
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Detector Frame.obj
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Manip.obj
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Frame.obj
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Detector Frame.mtl
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\cyl_7.mtl
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Frame.3ds
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Manip.mtl
-C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\3DModels\Frame.mtl
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\InverseTest.exe
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\InverseTest.pdb
 C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\HelixToolkit.dll
@@ -270,3 +263,17 @@ C:\Users\Apik\Source\Repos\RoboArm\manipulator-execution\InverseTest\bin\Debug\M
 C:\RoboArm\InverseTest\bin\Debug\MIConvexHull.dll
 C:\RoboArm\InverseTest\bin\Debug\System.Windows.Interactivity.dll
 C:\RoboArm\InverseTest\obj\Debug\InverseTest.csprojResolveAssemblyReference.cache
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\Cyotek.Drawing.BitmapFont.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\log4net.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\MIConvexHull.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.D3DCompiler.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.DXGI.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\Cyotek.Drawing.BitmapFont.xml
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\log4net.xml
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.xml
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.D3DCompiler.xml
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.Direct3D9.xml
+C:\Users\Vadim\Documents\manipulator-execution\InverseTest\bin\Debug\SharpDX.DXGI.xml

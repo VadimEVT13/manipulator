@@ -131,6 +131,10 @@ namespace InverseTest
             scanPoint.MoveToPositoin(new Point3D(10, 60, 0));
 
 
+            
+
+
+
             foreach (ManipulatorV2.ManipulatorParts part in Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)))
             {
                 collisions.BuildShell((Model3DGroup)manipulator.GetManipulatorPart(part));
@@ -176,14 +180,14 @@ namespace InverseTest
         /// <param name="newPosition"></param>
         public void OnManipulatorCamPointPositoinChanged(Point3D newPosition)
         {
-            SolveManipulatorKinematic(newPosition, scanPoint.GetTargetPoint(), false);
-            SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+            /*SolveManipulatorKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+            SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);*/
         }
 
         public void OnScanPointPositoinChanged(Point3D newPosition)
         {
-            SolveManipulatorKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
-            SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+            /*SolveManipulatorKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+            SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);*/
         }
 
 
@@ -318,38 +322,65 @@ namespace InverseTest
                 MessageBox.Show("Не существует такой точки");
             }
         }
-
+        
         private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animate)
         {
+            createCube(ref pointManip, manip, Colors.Green);
 
-            // местоположение манипулятора внутри программы неизвестны
-            Kinematic k = new Kinematic(-86);
-            // размеры модельки внутри программы неизвестны
-            k.setLen(38, 55, 63, 23);
-
-            if (k.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y))
+            Kinematic k = new Kinematic(-80.789909);
+            k.setLen(48.962414,
+                    79.952166366024,
+                    80.6361240151171,
+                    18.9182295,
+                    14.745087);
+            Stack<double[]> rezults = new Stack<double[]>();
+            rezults = k.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
+            
+            if (rezults.Count > 0)
             {
-                double[] rez = k.getAngles();
-                ManipulatorAngles angles = new ManipulatorAngles(
-                    MathUtils.RadiansToAngle(rez[0]),
-                    MathUtils.RadiansToAngle(rez[1]),
-                    MathUtils.RadiansToAngle(rez[2]),
-                    MathUtils.RadiansToAngle(rez[3]),
-                    MathUtils.RadiansToAngle(rez[4])
-                    );
+                double[] rez = rezults.Pop();
+                Stack<double[]> satisfied = new Stack<double[]>();
 
-                manipulator.MoveManipulator(angles, animate);
-            }
+                foreach(double[] one in rezults)
+                {
+                    if (
+                       (rez[0] <  90 & rez[0] >  -90) &
+                       (rez[1] <  90 & rez[1] >  -90) &
+                       (rez[2] <  90 & rez[2] >  -90) &
+                       (rez[3] < 220 & rez[3] > -220) &
+                       (rez[4] <  90 & rez[4] >  -90)
+                       )
+                    {
+                        satisfied.Push(one);
+                    }
+                }
+
+                if (satisfied.Count > 0)
+                {
+                    ManipulatorAngles angles = new ManipulatorAngles(
+                        MathUtils.RadiansToAngle(rez[0]),
+                        MathUtils.RadiansToAngle(rez[1]),
+                        MathUtils.RadiansToAngle(rez[2]),
+                        MathUtils.RadiansToAngle(rez[3]),
+                        MathUtils.RadiansToAngle(rez[4])
+                        );
+
+                    manipulator.MoveManipulator(angles, animate);                    
+                }
+                else
+                {
+                    MessageBox.Show(String.Format("Ошибка: манипулятор не может достигнуть позиции [{0}; {1}; {2}]\nи наблюдать за точкой [{3}; {4}; {5}]",
+                        manip.X, manip.Y, manip.Z, scannedPoint.X, scannedPoint.X, scannedPoint.X));
+                }
+            }            
         }
-
-
+        
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             double manip_x, manip_y, manip_z;
             double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
             double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
             double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-
 
             double pointX, pointY, pointZ;
             double.TryParse(TargetPointXTextBox.Text, out pointX);
@@ -358,8 +389,7 @@ namespace InverseTest
 
             SolveManipulatorKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), true);
             SolvePortalKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), true);
-                        // размеры модельки внутри программы неизвестны
-
+            
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)
