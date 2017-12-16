@@ -12,6 +12,5 @@ namespace InverseTest.Manipulator
         void RotateTransform3D(Transform3D transform);
 
         Model3D GetModel();
-
     }
 }

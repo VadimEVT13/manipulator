@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
 using InverseTest.GUI.Model;
+using InverseTest.Detail;
 
 namespace InverseTest.GUI
 {
@@ -37,7 +38,7 @@ namespace InverseTest.GUI
         private IMovementPoint scanPoint;
 
 
-        private ModelMover mover;
+        private ModelMoverAboveSurf mover;
         private ModelMover manipulatorMover;
 
         private static int DISTANCE_TO_CAMERA = 1000;
@@ -83,29 +84,33 @@ namespace InverseTest.GUI
 
 
 
-            cam3D = new PerspectiveCamera()
-            {
-                Position = new Point3D(1000, 1000, 1000),
-                FieldOfView = 61,
-                LookDirection = new Vector3D(-1, -1, -1),
-                UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = 0.001
-            };
-            
+
+            cam3D = CameraHelper.CreateDefaultCamera();
+            cam3D.FieldOfView = 61;
+            cam3D.LookDirection = new Vector3D(-1, -1, -1);
+            cam3D.Position = new Point3D(1000, 1000, 1000);
+            cam3D.UpDirection = new Vector3D(0, 1, 0);
+            cam3D.NearPlaneDistance = 0.1;
+            cam3D.FarPlaneDistance = double.PositiveInfinity;
+
             ViewPort3D.Camera = cam3D;
             ViewPort3D.CameraMode = CameraMode.Inspect;
-            ViewPort3D.CameraRotationMode = CameraRotationMode.Turnball;
+            ViewPort3D.CameraRotationMode = CameraRotationMode.Turntable;
+            ViewPort3D.DefaultCamera = cam3D;
+            ViewPort3D.RotateAroundMouseDownPoint = false;
+            ViewPort3D.ModelUpDirection = new Vector3D(0, 1, 0);
+            
             
 
 
           
 
             cameraFromPortal = new PerspectiveCamera();
-            cameraFromPortal.FieldOfView = 45;
+            cameraFromPortal.FieldOfView = 60;
             ViewPortDetectorScreenCam.Camera = cameraFromPortal;
 
             cameraFromManipulator = new PerspectiveCamera();
-            cameraFromManipulator.FieldOfView = 45;
+            cameraFromManipulator.FieldOfView = 60;
             ViewPortManipulatorCam.Camera = cameraFromManipulator;
             
             // Настраиваем освещение
@@ -154,24 +159,29 @@ namespace InverseTest.GUI
             cam2DRight.Width = model.Bounds.SizeX;
             cam2DRight.Position = new Point3D(0, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
 
-            cam3D.LookDirection = new Vector3D(-1, -1, -1);
-            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/10,DISTANCE_TO_CAMERA/10 ,DISTANCE_TO_CAMERA /10);
+
+            cam3D.LookDirection = new Vector3D(-DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5);
+            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/5,DISTANCE_TO_CAMERA/5 ,DISTANCE_TO_CAMERA /5);
         }
 
-        public void AddCountur(IList<Point3D> visual)
+
+        /// <summary>
+        /// Добавляте контур детали на вид с камеры манипулятора
+        /// </summary>
+        /// <param name="detail"></param>
+
+        public void AddCountur(DetailModel detail)
         {
-
-            var combine = MeshGeometryHelper.CombineSegments(visual, 1e-6);
-
-            foreach (var contour in combine.ToList())
-            {
-                if (contour.Count == 0)
-                    continue;
-                ViewPortManipulatorCam.Children.Add(new TubeVisual3D { Diameter = 0.1, Path = new Point3DCollection(contour), Fill = Brushes.Green });
-            }
-
+            RemoveModelFromViewPort(ViewPortManipulatorCam, detail.GetModel());
+            ViewPortManipulatorCam.Children.Add(detail.counturVisual);
         }
-        
+
+        public void DeleteCountur(DetailModel detail)
+        {
+            RemoveModelFromViewPort(ViewPortManipulatorCam, (detail.counturVisual as ModelVisual3D).Content);
+            ModelVisual3D modelVisual = new ModelVisual3D() { Content = detail.GetModel() };
+            ViewPortManipulatorCam.Children.Add(modelVisual);
+        }
 
 
         public void setManipulatorModel(IManipulatorModel manipulatorModel)
@@ -221,23 +231,24 @@ namespace InverseTest.GUI
             manipulatorMover = new ModelMover(point);
             Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
             manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
-            AddListeners(manipulatorMover);
+         //   AddListeners(manipulatorMover);
             AddModel(point.GetModel());
         }
+
 
         /// <summary>
         /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
         /// </summary>
         /// <param name="scanPoint"></param>
-        public void SetPoint(IMovementPoint scanPoint)
+        public void SetPoint(IMovementPoint scanPoint, Model3D model)
         {
-            this.mover = new ModelMover(scanPoint);
+            this.mover = new ModelMoverAboveSurf(scanPoint, model);
             this.mover.modelToDetect = scanPoint.GetModel();
             AddListeners(mover);
             AddModel(scanPoint.GetModel());
         }
 
-        private void AddListeners(ModelMover mover)
+        private void AddListeners(ModelMoverAboveSurf mover)
         {
             ViewPort2DFront.MouseDown += mover.OnMouseDown;
             ViewPort2DFront.MouseUp += mover.OnMouseUp;
@@ -329,6 +340,26 @@ namespace InverseTest.GUI
                 }
             }
             viewport.Children.Remove(modelToRemove);
+        }
+
+
+        public Visual3D FindVisual(HelixViewport3D viewport, Model3D model)
+        {
+            ModelVisual3D modelToRemove = null;
+
+            foreach (Visual3D visual3D in viewport.Children)
+            {
+                if (visual3D is ModelVisual3D)
+                {
+                    ModelVisual3D modelVisual3D = visual3D as ModelVisual3D;
+                    if (modelVisual3D.Content == model)
+                    {
+                        modelToRemove = modelVisual3D;
+                    }
+                }
+            }
+
+            return modelToRemove;
         }
 
 

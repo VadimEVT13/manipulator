@@ -52,8 +52,6 @@ namespace InverseTest
         //Точка в которую должен встать экран портала
         private Model3D pointPortal;
 
-
-
         private DetailModel detail;
 
         private Point3D scannedPoint = new Point3D(0, 0, 0);
@@ -101,9 +99,8 @@ namespace InverseTest
 
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
             detail = new DetailModel(lopatka);
-            //ManipulatorVisualizer.AddModel(detail.GetModel());
-
-
+            ManipulatorVisualizer.AddModel(detail.GetModel());
+            
             //Добавляем остальные мешы
             Model3DGroup others = new Model3DGroup();
             List<Model3D> othersModels = new List<Model3D>();
@@ -112,9 +109,11 @@ namespace InverseTest
             others.Children = new Model3DCollection(othersModels);
             ManipulatorVisualizer.AddModel(others);
 
+            
+
 
             scanPoint = new MovementPoint(Colors.Blue);
-            ManipulatorVisualizer.SetPoint(scanPoint);
+            ManipulatorVisualizer.SetPoint(scanPoint, detail.GetModel());
             // scanPoint.PositoinChanged += OnScanPointPositoinChanged;
 
             manipulatorCamPoint = new MovementPoint(Colors.Red);
@@ -128,7 +127,7 @@ namespace InverseTest
                 manipulatorCamPoint.GetTargetPoint().DistanceTo(scanPoint.GetTargetPoint()));
 
             manipulatorCamPoint.MoveToPositoin(new Point3D(-10, 60, 0));
-            scanPoint.MoveToPositoin(new Point3D(10, 60, 0));
+            scanPoint.MoveToPositoin(new Point3D(0, 60, 0));
 
 
             
@@ -790,17 +789,12 @@ namespace InverseTest
 
         private void DetailProjection_Unchecked(object sender, RoutedEventArgs e)
         {
-            var rect = detail.GetModel().Bounds;
-            Point3D point = new Point3D(0, 0, rect.Z + rect.SizeZ);
-
-            MeshGeometry3D meshGeometry = detail.GetCountours(point, manipulator.GetCameraDirection());
-            GeometryModel3D model = new GeometryModel3D(meshGeometry, Materials.Green);
-            ManipulatorVisualizer.AddModel(model);
+            ManipulatorVisualizer.DeleteCountur(detail);
         }
 
         private void DetailProjection_Checked(object sender, RoutedEventArgs e)
         {
-
+            ManipulatorVisualizer.AddCountur(detail);
         }
     }
 }

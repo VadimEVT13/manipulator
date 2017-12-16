@@ -118,10 +118,12 @@
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
     <Compile Include="GUI\ModelMover.cs" />
+    <Compile Include="GUI\ModelMoverAboveSurf.cs" />
     <Compile Include="GUI\Model\ConeModel.cs" />
     <Compile Include="GUI\Model\IConeModel.cs" />
     <Compile Include="GUI\Model\IMovementPoint.cs" />
     <Compile Include="GUI\Model\MovementPoint.cs" />
+    <Compile Include="GUI\TestModelMover.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
@@ -186,7 +188,9 @@
     <EmbeddedResource Include="3DModels\Detector Frame.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
