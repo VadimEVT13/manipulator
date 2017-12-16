@@ -76,7 +76,7 @@ namespace InverseTest
             /// <summary>
             /// Точка на ребре под камерой
             /// </summary>
-            POINT_ABOVE_BELOW,
+            POINT_BELOW_CAMERA,
 
             /// <summary>
             /// Точка в которой стоит камера
@@ -423,7 +423,7 @@ namespace InverseTest
                 case ManipulatorRotatePoints.POINT_ON_MAIN_EDGE:
                     bounds = _jointCubes[1].Bounds;
                     break;
-                case ManipulatorRotatePoints.POINT_ABOVE_BELOW:
+                case ManipulatorRotatePoints.POINT_BELOW_CAMERA:
                     bounds = _jointCubes[2].Bounds;
                     break;
                 case ManipulatorRotatePoints.POINT_ON_CAMERA:

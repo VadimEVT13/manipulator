@@ -25,7 +25,7 @@ namespace InverseTest.GUI.Model
 
             point = new SphereVisual3D()
             {
-                Center = new Point3D(0,0,0),
+                Center = new Point3D(0,60,0),
                 Material = material,
                 Radius = length
             };

@@ -769,6 +769,7 @@ namespace InverseTest.Manipulator
         {
             // Начальные данные
 
+
             double[] P34 = null;                                    // Точка P34
             Stack<double[]> rezultAngles = new Stack<double[]>();   // Стек решений кинематики
             double[][] mat = mbase();                               /* Положение манипулятора при работе системы Манипулятор-Портал
@@ -852,6 +853,8 @@ namespace InverseTest.Manipulator
 
         public Stack<double[]> InverseNab(double X, double Y, double Z, double X2, double Y2, double Z2)
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
             // Начальные данные
 
             double[] P34 = null;                                    // Точка P34
@@ -945,6 +948,9 @@ namespace InverseTest.Manipulator
                     }
                 }
             }
+
+            watch.Stop();
+            Console.WriteLine("Time calculate kinematic: " + watch.ElapsedMilliseconds);
 
             return rezultAngles;
         }
