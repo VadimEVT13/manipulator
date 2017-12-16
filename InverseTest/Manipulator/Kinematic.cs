@@ -872,7 +872,7 @@ namespace InverseTest.Manipulator
             double[] Pn = new double[3] { x_, y_, z_ };
 
             double[] aandb = getAandB(P4, Pn);                      // Получение углов альфа и бета
-            double alf = aandb[0];
+            double alf = -aandb[0];
             double bet = aandb[1];
 
             double[][] T = mt(alf, bet, P4);                        // Определение матрицы манипулятора
@@ -905,7 +905,6 @@ namespace InverseTest.Manipulator
                         go5(P34);
                         angle5[1] = -o5 + Math.PI / 2;
                         //-----------------------------
-
 
 
                         /* double[][] R = matrix(m1(o1, l1), m2(o2, l2));
