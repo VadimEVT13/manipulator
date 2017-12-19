@@ -291,23 +291,21 @@ namespace InverseTest
         
         private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animate)
         {
-           
             Stack<double[]> rezults;
             rezults = this.manipKinematic.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
             
             if (rezults.Count > 0)
             {
-                double[] rez = rezults.Pop();
                 Stack<double[]> satisfied = new Stack<double[]>();
 
                 foreach(double[] one in rezults)
                 {
                     if (
-                       (rez[0] <  90 & rez[0] >  -90) &
-                       (rez[1] <  90 & rez[1] >  -90) &
-                       (rez[2] <  90 & rez[2] >  -90) &
-                       (rez[3] < 220 & rez[3] > -220) &
-                       (rez[4] <  90 & rez[4] >  -90)
+                       (MathUtils.RadiansToAngle(one[0]) <  90 & MathUtils.RadiansToAngle(one[0]) >  -90) &
+                       (MathUtils.RadiansToAngle(one[1]) <  90 & MathUtils.RadiansToAngle(one[1]) >  -90) &
+                       (MathUtils.RadiansToAngle(one[2]) <  70 & MathUtils.RadiansToAngle(one[2]) >  -70) &
+                       (MathUtils.RadiansToAngle(one[3]) < 220 & MathUtils.RadiansToAngle(one[3]) > -220) &
+                       (MathUtils.RadiansToAngle(one[4]) < 170 & MathUtils.RadiansToAngle(one[4]) >   0)
                        )
                     {
                         satisfied.Push(one);
@@ -316,6 +314,7 @@ namespace InverseTest
 
                 if (satisfied.Count > 0)
                 {
+                    double[] rez = satisfied.Pop();
                     ManipulatorAngles angles = new ManipulatorAngles(
                         MathUtils.RadiansToAngle(rez[0]),
                         MathUtils.RadiansToAngle(rez[1]),
@@ -333,7 +332,10 @@ namespace InverseTest
                 }
             }            
         }
-        
+
+        bool flag = false;
+        Stack<double[]> rezults;
+
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             double manip_x, manip_y, manip_z;
@@ -346,9 +348,36 @@ namespace InverseTest
             double.TryParse(TargetPointYTextBox.Text, out pointY);
             double.TryParse(TargetPointZTextBox.Text, out pointZ);
 
+            /*if (flag == false)
+            {
+                rezults = this.manipKinematic.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
+                flag = true;
+            }
+            else
+            {
+                if (rezults.Count > 0)
+                {
+                    double[] rez = rezults.Pop();
+
+                    ManipulatorAngles angles = new ManipulatorAngles(
+                        MathUtils.RadiansToAngle(rez[0]),
+                        MathUtils.RadiansToAngle(rez[1]),
+                        MathUtils.RadiansToAngle(rez[2]),
+                        MathUtils.RadiansToAngle(rez[3]),
+                        MathUtils.RadiansToAngle(rez[4])
+                        );
+
+                    manipulator.MoveManipulator(angles, false);
+                }
+                else
+                {
+                    flag = false;
+                    MessageBox.Show("Точек нет");
+                }
+            }*/
+
             SolveManipulatorKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), false);
-            SolvePortalKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), false);
-            
+            SolvePortalKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), false);           
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)
