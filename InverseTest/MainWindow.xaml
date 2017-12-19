@@ -15,14 +15,13 @@
 
     <DockPanel Margin="0,0,0,0">
         <ToolBar DockPanel.Dock="Top">
-            <Menu>
-                <MenuItem Header="Файл">
-                    <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
-                    <MenuItem Header="Выход" Click="Exit_Click"/>
-                </MenuItem>
-            </Menu>
-            <Separator Width="20" ></Separator>
-            <Grid VerticalAlignment="Center">
+			<Menu>
+				<MenuItem Header="Файл">
+					<MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
+					<MenuItem Header="Выход" Click="Exit_Click"/>
+				</MenuItem>
+			</Menu>
+			<Grid VerticalAlignment="Center">
 
 
              <!--   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
