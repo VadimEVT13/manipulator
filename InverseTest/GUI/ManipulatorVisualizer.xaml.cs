@@ -38,7 +38,7 @@ namespace InverseTest.GUI
         private IMovementPoint scanPoint;
 
 
-        private ModelMover mover;
+        private ModelMoverAboveSurf mover;
         private ModelMover manipulatorMover;
 
         private static int DISTANCE_TO_CAMERA = 1000;
@@ -230,9 +230,9 @@ namespace InverseTest.GUI
         {
             manipulatorMover = new ModelMover(point);
             Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            manipulatorMover.modelToDetect = point.GetModel();
+            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
             AddListeners(manipulatorMover);
-            AddModel(point.GetModel());
+           // AddModel(point.GetModel());
         }
 
 
@@ -242,13 +242,13 @@ namespace InverseTest.GUI
         /// <param name="scanPoint"></param>
         public void SetPoint(IMovementPoint scanPoint, Model3D model)
         {
-            this.mover = new ModelMover(scanPoint);
+            this.mover = new ModelMoverAboveSurf(scanPoint, model);
             this.mover.modelToDetect = scanPoint.GetModel();
             AddListeners(mover);
             AddModel(scanPoint.GetModel());
         }
 
-        private void AddListeners(ModelMover mover)
+        private void AddListeners(IModelMover mover)
         {
             ViewPort2DFront.MouseDown += mover.OnMouseDown;
             ViewPort2DFront.MouseUp += mover.OnMouseUp;

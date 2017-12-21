@@ -12,7 +12,7 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI
 {
-    public class ModelMover
+    public class ModelMover:IModelMover
     {
         private IMovementPoint point;
         private bool onMousePressed = false;

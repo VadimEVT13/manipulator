@@ -333,8 +333,6 @@ namespace InverseTest
         {
             partOffset[partToMove] = offsetToMove;
             ConfirmPosition();
-
-
         }
 
         public virtual void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
@@ -375,10 +373,14 @@ namespace InverseTest
 
         public virtual void ResetTransforms()
         {
-            parts[Parts.Platform].ResetTransforms();
-            currentScreenDirection = defaultScreenDirection;
-        }
+            
+            foreach (Parts part in Enum.GetValues(typeof(Parts)))
+                partOffset[part] = 0;
+            verticalAngle = 0;
+            horizontalAngle = 0;
 
+            ConfirmPosition();
+        }
     }
 
 

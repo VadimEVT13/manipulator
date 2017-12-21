@@ -11,7 +11,6 @@ namespace InverseTest
     {
         void addNumberMesh(int number);
 
-        void transformModel(Double x);
-       
+        void transformModel(Double x);       
     }
 }

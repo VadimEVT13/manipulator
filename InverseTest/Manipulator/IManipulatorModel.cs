@@ -26,6 +26,8 @@ namespace InverseTest.Manipulator
 
         Point3D GetPointJoint(ManipulatorRotatePoints point);
 
+        void ResetModel();
+
 
     }
 }

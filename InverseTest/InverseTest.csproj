@@ -189,13 +189,13 @@
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
+    <Compile Include="GUI\IModelMover.cs" />
     <Compile Include="GUI\ModelMover.cs" />
     <Compile Include="GUI\ModelMoverAboveSurf.cs" />
     <Compile Include="GUI\Model\ConeModel.cs" />
     <Compile Include="GUI\Model\IConeModel.cs" />
     <Compile Include="GUI\Model\IMovementPoint.cs" />
     <Compile Include="GUI\Model\MovementPoint.cs" />
-    <Compile Include="GUI\TestModelMover.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />

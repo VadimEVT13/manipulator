@@ -12,9 +12,8 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI
 {
-    class ModelMoverAboveSurf
+    class ModelMoverAboveSurf:IModelMover
     {
-
         private IMovementPoint point;
         private Model3D surf;
 
@@ -36,9 +35,6 @@ namespace InverseTest.GUI
             Point mousePos = e.GetPosition(viewPort);
             PointHitTestParameters hitParam = new PointHitTestParameters(mousePos);
             VisualTreeHelper.HitTest(viewPort, null, ResultCallback, hitParam);
-            Console.WriteLine("Camera:" + viewPort.Camera.LookDirection.ToString());
-            Matrix3D matrix = Viewport3DHelper.GetProjectionMatrix(viewPort.Viewport);
-            Console.WriteLine("Matrix:" + matrix.ToString());
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
@@ -79,26 +75,33 @@ namespace InverseTest.GUI
         {
             HelixViewport3D viewPort = sender as HelixViewport3D;
             Point mousePos = e.GetPosition(viewPort);
-            Point3D pointNear;
-            Point3D pointFar;
-            Viewport3DHelper.Point2DtoPoint3D(viewPort.Viewport, mousePos, out pointNear, out pointFar);
-
-            Point3D? point = Viewport3DHelper.UnProject(viewPort.Viewport, mousePos, lastPointPosition, viewPort.Camera.LookDirection);
-            Point3D newPoint = point.GetValueOrDefault();
-
-            if (onMousePressed && onModelHit && Intersects(this.point, surf))
-            {
-                Console.WriteLine("PointNear: " + newPoint.ToString());
-                this.point.MoveToPositoin(newPoint);
-            }
+            PointHitTestParameters pointHitTestParams = new PointHitTestParameters(mousePos);
+            VisualTreeHelper.HitTest(viewPort, null, DetailResultCallback, pointHitTestParams);
         }
 
-        private bool Intersects(IMovementPoint point, Model3D surf)
+
+        public HitTestResultBehavior DetailResultCallback(HitTestResult result)
         {
-            
-            return point.GetModel().Bounds.IntersectsWith(surf.Bounds);
 
+            RayHitTestResult hitResult = result as RayHitTestResult;
+            if (hitResult != null)
+            {
+                if (hitResult.ModelHit.Equals(surf))
+                {
+                    Point3D newPoint = hitResult.PointHit;
+
+                    if (onMousePressed && onModelHit)
+                    {
+                        Console.WriteLine("PointNear: " + newPoint.ToString());
+                        this.point.MoveToPositoin(newPoint);
+                    }
+                }
+            }
+            return HitTestResultBehavior.Continue;
         }
+
+
+
     }
 }
 

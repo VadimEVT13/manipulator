@@ -405,6 +405,14 @@ namespace InverseTest
             return _cameraposition.Bounds.Location;
         }
 
+        public virtual void ResetModel()
+        {
+            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+                partAngles[part] = 0;
+
+            ConfirmRotation();
+        }
+
 
         /// <summary>
         /// Возвращает одну из точек вращения

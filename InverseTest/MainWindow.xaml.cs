@@ -11,6 +11,7 @@ using InverseTest.Manipulator;
 using InverseTest.Detail;
 using InverseTest.Frame.Kinematic;
 using InverseTest.GUI.Model;
+using InverseTest.GUI;
 
 namespace InverseTest
 {
@@ -40,6 +41,9 @@ namespace InverseTest
         /// </summary>
         private static Point3D MANIPULATOR_OFFSET = new Point3D(-80, 0, 0);
 
+
+        private bool solveKinematics = true;
+        private bool animate = false;
 
 
         private Kinematic manipKinematic;
@@ -87,6 +91,8 @@ namespace InverseTest
             Model3DGroup manipulatorGroup = new Model3DGroup();
             manipulatorGroup.Children = new Model3DCollection(allModels.Children.ToList()
              .GetRange(MANIPULATOR_START_INDEX, MANIPULATOR_END_INDEX - MANIPULATOR_START_INDEX));
+            
+            //Точки в узлах манипулятора. Каждая точка это кубик 1 на 1 на 1
             manipulatorGroup.Children.Add(allModels.Children[0]);
             manipulatorGroup.Children.Add(allModels.Children[59]);
             manipulatorGroup.Children.Add(allModels.Children[60]);
@@ -113,9 +119,7 @@ namespace InverseTest
             othersModels.AddRange(allModels.Children.ToList().GetRange(0, LOPATKA_INDEX-1));
             othersModels.AddRange(allModels.Children.ToList().GetRange(LOPATKA_INDEX + 1, MANIPULATOR_START_INDEX - (LOPATKA_INDEX - 1)));
             others.Children = new Model3DCollection(othersModels);
-            ManipulatorVisualizer.AddModel(others);
-
-            
+            ManipulatorVisualizer.AddModel(others);            
 
             //Точка сканирования
             scanPoint = new MovementPoint(Colors.Blue);
@@ -155,6 +159,8 @@ namespace InverseTest
 
             //   collisions.DisplayConvexHull();
 
+
+            
         }
 
 
@@ -197,8 +203,6 @@ namespace InverseTest
         /// </summary>
         public void OnManipulatorPisitionChanged()
         {
-
-            //manipulatorCamPoint.MoveToPositoin(manipulator.GetCameraPosition());
             double distanceToPoint = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
             //Find_Collision();
@@ -210,19 +214,30 @@ namespace InverseTest
         /// <param name="newPosition"></param>
         public void OnManipulatorCamPointPositoinChanged(Point3D newPosition)
         {
-            Console.WriteLine("On manipulator cam changed");
-            SolveManipulatorKinematic(newPosition, scanPoint.GetTargetPoint(), false);
-            SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+            PointManipulatorXTextBox.Text = Math.Round(newPosition.X, 3).ToString();
+            PointManipulatorYTextBox.Text = Math.Round(newPosition.Y, 3).ToString();
+            PointManipulatorZTextBox.Text = Math.Round(newPosition.Z, 3).ToString();
+
+            if (solveKinematics)
+            {
+                SolveManipulatorKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+                SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
+            }
         }
 
         public void OnScanPointPositoinChanged(Point3D newPosition)
         {
-            Console.WriteLine("On portal cam changed");
-            SolveManipulatorKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
-            SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+            TargetPointXTextBox.Text = Math.Round(newPosition.X, 3).ToString();
+            TargetPointYTextBox.Text = Math.Round(newPosition.Y, 3).ToString();
+            TargetPointZTextBox.Text = Math.Round(newPosition.Z, 3).ToString();
+
+            if (solveKinematics)
+            {
+                SolveManipulatorKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+                SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
+            }
         }
-
-
+        
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
@@ -251,26 +266,32 @@ namespace InverseTest
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
             T5TextBox.Text = e.NewValue.ToString();
-        }
-     
+        }     
 
-        // Ставим в точку съемки кубик
-        private void TargetPointAcceptButton_OnClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Считываем координаты точки из полей ввода
+        /// </summary>
+        private void ParsePointsAndMove()
         {
-            // Считываем координаты точки из полей ввода
-            double x, y, z;
+            try
+            {
+                double x, y, z;
+                Console.WriteLine("ParsePointAndMove");
+                double.TryParse(TargetPointXTextBox.Text, out x);
+                double.TryParse(TargetPointYTextBox.Text, out y);
+                double.TryParse(TargetPointZTextBox.Text, out z);
+                scanPoint.MoveToPositoin(new Point3D(x, y, z));
 
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-            scanPoint.MoveToPositoin(new Point3D(x,y,z));
-            
-            double manip_x, manip_y, manip_z;
-            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-            manipulatorCamPoint.MoveToPositoin(new Point3D(manip_x, manip_y, manip_z));
+                double manip_x, manip_y, manip_z;
+                double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
+                double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
+                double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
+                manipulatorCamPoint.MoveToPositoin(new Point3D(manip_x, manip_y, manip_z));
+            }
+            catch (NullReferenceException ex)
+            {}
         }
+
         
         private void SolvePortalKinematic(Point3D manip, Point3D scannedPoint, bool animate)
         {
@@ -289,11 +310,15 @@ namespace InverseTest
             }
         }
         
-        private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animate)
+        private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animatation)
         {
             Stack<double[]> rezults;
             rezults = this.manipKinematic.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
-            
+
+
+            //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
+            // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение
+            // PositionUnattainableException
             if (rezults.Count > 0)
             {
                 Stack<double[]> satisfied = new Stack<double[]>();
@@ -323,13 +348,13 @@ namespace InverseTest
                         MathUtils.RadiansToAngle(rez[4])
                         );
 
-                    manipulator.MoveManipulator(angles, animate);                    
+                    manipulator.MoveManipulator(angles, animatation);                    
                 }
-                else
-                {
-                    MessageBox.Show(String.Format("Ошибка: манипулятор не может достигнуть позиции [{0}; {1}; {2}]\nи наблюдать за точкой [{3}; {4}; {5}]",
-                        manip.X, manip.Y, manip.Z, scannedPoint.X, scannedPoint.X, scannedPoint.X));
-                }
+                //else
+                //{
+                //    MessageBox.Show(String.Format("Ошибка: манипулятор не может достигнуть позиции [{0}; {1}; {2}]\nи наблюдать за точкой [{3}; {4}; {5}]",
+                //        manip.X, manip.Y, manip.Z, scannedPoint.X, scannedPoint.X, scannedPoint.X));
+                //}
             }            
         }
 
@@ -338,58 +363,15 @@ namespace InverseTest
 
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            double manip_x, manip_y, manip_z;
-            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
+            Point3D manip = manipulatorCamPoint.GetTargetPoint();
+            Point3D targetPoint = scanPoint.GetTargetPoint();
 
-            double pointX, pointY, pointZ;
-            double.TryParse(TargetPointXTextBox.Text, out pointX);
-            double.TryParse(TargetPointYTextBox.Text, out pointY);
-            double.TryParse(TargetPointZTextBox.Text, out pointZ);
-
-            /*if (flag == false)
-            {
-                rezults = this.manipKinematic.InverseNab(manip_x, manip_z, manip_y, pointX, pointZ, pointY);
-                flag = true;
-            }
-            else
-            {
-                if (rezults.Count > 0)
-                {
-                    double[] rez = rezults.Pop();
-
-                    ManipulatorAngles angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez[0]),
-                        MathUtils.RadiansToAngle(rez[1]),
-                        MathUtils.RadiansToAngle(rez[2]),
-                        MathUtils.RadiansToAngle(rez[3]),
-                        MathUtils.RadiansToAngle(rez[4])
-                        );
-
-                    manipulator.MoveManipulator(angles, false);
-                }
-                else
-                {
-                    flag = false;
-                    MessageBox.Show("Точек нет");
-                }
-            }*/
-
-            SolveManipulatorKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), false);
-            SolvePortalKinematic(new Point3D(manip_x, manip_y, manip_z), new Point3D(pointX, pointY, pointZ), false);           
+            SolveManipulatorKinematic(manip, targetPoint, animate);
+            SolvePortalKinematic(manip, targetPoint, animate);           
         }
 
         private void ResetManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            /*ManipMathModel model = manipulator.ManipMathModel;
-            foreach (Joint modelJoint in model.Joints)
-            {
-                modelJoint.Reset();
-            }
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, 0);
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdgeBase, 0);
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, 0);*/
             resetManip();
         }
 
@@ -421,8 +403,6 @@ namespace InverseTest
 
         }
         
-
-
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
 
@@ -461,9 +441,6 @@ namespace InverseTest
             }
 
         }
-
-
-
 
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
@@ -589,12 +566,7 @@ namespace InverseTest
 
        private void resetManip()
         {
-            T1Slider.Value = 0;
-            T2Slider.Value = 0;
-            T3Slider.Value = 0;
-            T4Slider.Value = 0;
-            T5Slider.Value = 0;
-
+            manipulator.ResetModel();            
             detectorFrame.ResetTransforms();
         }
 
@@ -759,6 +731,36 @@ namespace InverseTest
         private void DetailProjection_Checked(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.AddCountur(detail);
+        }
+              
+
+        private void ToggleAnimation_Checked(object sender, RoutedEventArgs e)
+        {
+            solveKinematics = false;
+            animate = true;
+        }
+
+        private void ToggleAnimation_Unchecked(object sender, RoutedEventArgs e)
+        {
+            solveKinematics = true;
+            animate = false;
+        }
+     
+
+        private void TargetPointTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                ParsePointsAndMove();
+            }
+        }
+
+        private void PointManipulatorTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                ParsePointsAndMove();
+            }
         }
     }
 }
