@@ -273,23 +273,19 @@ namespace InverseTest
         /// </summary>
         private void ParsePointsAndMove()
         {
-            try
-            {
-                double x, y, z;
-                Console.WriteLine("ParsePointAndMove");
-                double.TryParse(TargetPointXTextBox.Text, out x);
-                double.TryParse(TargetPointYTextBox.Text, out y);
-                double.TryParse(TargetPointZTextBox.Text, out z);
-                scanPoint.MoveToPositoin(new Point3D(x, y, z));
+            double.TryParse(TargetPointXTextBox.Text, out double x);
+            double.TryParse(TargetPointYTextBox.Text, out double y);
+            double.TryParse(TargetPointZTextBox.Text, out double z);
 
-                double manip_x, manip_y, manip_z;
-                double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-                double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-                double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-                manipulatorCamPoint.MoveToPositoin(new Point3D(manip_x, manip_y, manip_z));
-            }
-            catch (NullReferenceException ex)
-            {}
+            double.TryParse(PointManipulatorXTextBox.Text, out double manip_x);
+            double.TryParse(PointManipulatorYTextBox.Text, out double manip_y);
+            double.TryParse(PointManipulatorZTextBox.Text, out double manip_z);
+
+            Point3D scanPosition = new Point3D(x, y, z);
+            scanPoint.MoveToPositoin(scanPosition);
+
+            Point3D manipulatorPosition = new Point3D(manip_x, manip_y, manip_z);
+            manipulatorCamPoint.MoveToPositoin(manipulatorPosition);
         }
 
         
