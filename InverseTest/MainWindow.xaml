@@ -9,114 +9,87 @@
         Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-       
+
     </Window.Resources>
 
 
     <DockPanel Margin="0,0,0,0">
-        <ToolBar DockPanel.Dock="Top">
-            <Menu>
-                <MenuItem Header="Файл">
-                    <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
-                    <MenuItem Header="Выход" Click="Exit_Click"/>
-                </MenuItem>
-            </Menu>
-            <Separator Width="20" ></Separator>
-            <Grid VerticalAlignment="Center">
-
-
-             <!--   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Старт симуляции" HorizontalAlignment="Center" Name="StartSimulation"  Click="StartSimulation_Click"></Button>
-                    <Button Content="Стоп симуляция" HorizontalAlignment="Center" Name="StopSimulation"  Click="StopSimulation_Click"></Button>
-
-                </StackPanel>
--->
-            </Grid>
-        </ToolBar>
-
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл" Margin="1" Padding="15,2">
+                <MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
+                <MenuItem Header="Выход" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
 
         <StackPanel DockPanel.Dock="Right" Width="160">
             <Expander Header="Манипулятором">
-        <StackPanel DockPanel.Dock="Right" Width="160">
-            <Label Content="T1" HorizontalAlignment="Center"/>
-            <Slider Name="T1Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T1Slider_OnValueChanged"/>
-            <TextBox Name="T1TextBox" Text="0" Margin="5"/>
+                <StackPanel DockPanel.Dock="Right" Width="160">
+                    <Label Content="T1" HorizontalAlignment="Center"/>
+                    <Slider Name="T1Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T1Slider_OnValueChanged"/>
+                    <TextBox Name="T1TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T2" HorizontalAlignment="Center"/>
-            <Slider Name="T2Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged"/>
-            <TextBox Name="T2TextBox" Text="0" Margin="5"/>
+                    <Label Content="T2" HorizontalAlignment="Center"/>
+                    <Slider Name="T2Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged"/>
+                    <TextBox Name="T2TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T3" HorizontalAlignment="Center"/>
-            <Slider Name="T3Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
-            <TextBox Name="T3TextBox" Text="0" Margin="5"/>
+                    <Label Content="T3" HorizontalAlignment="Center"/>
+                    <Slider Name="T3Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
+                    <TextBox Name="T3TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T4" HorizontalAlignment="Center"/>
-            <Slider Name="T4Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
-            <TextBox Name="T4TextBox" Text="0" Margin="5"/>
+                    <Label Content="T4" HorizontalAlignment="Center"/>
+                    <Slider Name="T4Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
+                    <TextBox Name="T4TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T5" HorizontalAlignment="Center"/>
-            <Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
-            <TextBox Name="T5TextBox" Text="0" Margin="5"/>
+                    <Label Content="T5" HorizontalAlignment="Center"/>
+                    <Slider Name="T5Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
+                    <TextBox Name="T5TextBox" Text="0" Margin="5"/>
 
-            <Label Content="T6" HorizontalAlignment="Center"/>
-            <Slider Name="T6Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T6Slider_OnValueChanged"/>
-            <TextBox Name="T6TextBox" Text="0" Margin="5"/>
-            <!--
-            <Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
-            <Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
-            <Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
-    -->
-         <!--   <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
-            <Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
-            -->
-          
+                    <!--
+					<Button Name ="ShowMathModelBtn" Content="Show Math Model" Click="ShowMathModelBtn_OnClick" Margin="0,20,0,0"/>
+					<Button Name="HideManipModelBtn" Content="Hide Manipulator" Click="HideManipModelBtn_OnClick"/>
+					<Button Name="NextIteration" Content="NEXT" Click="NextIteration_OnClick"/>
+			-->
+                    <!--   <Label Content="Вращать деталь" HorizontalAlignment="Center"/>
+					<Slider Name="DetailSlider" Minimum="0" Maximum="360" SmallChange="1" Value="0" ValueChanged="DetailSlider_ValueChanged"/>
+					-->
 
-            <TextBlock Name="DebugOutput" Height="250"/>
-             </StackPanel>
-        </Expander>
-        <Expander Header="Детектором">
-            <StackPanel DockPanel.Dock="Right" Width="160">
-                <Label Content="Вертикальная рамка" HorizontalAlignment="Center"/>
-                <Slider Name="VerticalFrameSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="VerticalFrameSlider_ValueChanged"/>
-                <TextBox Name="VerticalFrameSliderTextBox" Text="0" Margin="5"/>
 
-                <Label Content="Горизонтальная планка" HorizontalAlignment="Center"/>
-                <Slider Name="HorizontalBarSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="HorizontalBarSlider_ValueChanged"/>
-                <TextBox Name="HorizontalBarTextView" Text="0" Margin="5"/>
+                    <TextBlock Name="DebugOutput" Height="250"/>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Детектором">
+                <StackPanel DockPanel.Dock="Right" Width="160">
+                    <Label Content="Вертикальная рамка" HorizontalAlignment="Center"/>
+                    <Slider Name="VerticalFrameSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="VerticalFrameSlider_ValueChanged"/>
+                    <TextBox Name="VerticalFrameSliderTextBox" Text="0" Margin="5"/>
 
-                <Label Content="Держатель экрана" HorizontalAlignment="Center"/>
-                <Slider Name="ScreenHolderSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="ScreenHolderSlider_ValueChanged"/>
-                <TextBox Name="ScreenHolderTextBox" Text="0" Margin="5"/>
+                    <Label Content="Горизонтальная планка" HorizontalAlignment="Center"/>
+                    <Slider Name="HorizontalBarSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="HorizontalBarSlider_ValueChanged"/>
+                    <TextBox Name="HorizontalBarTextView" Text="0" Margin="5"/>
 
-                <Label Content="Вертикальный угол" HorizontalAlignment="Center"/>
-                <Slider Name="ScreenVerticalAngleSlider" Minimum="-0.75" Maximum="0.75" SmallChange="0.01" Value="0" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
-                <TextBox Name="ScreenVerticalAngleTextBox" Text="0" Margin="5"/>
+                    <Label Content="Держатель экрана" HorizontalAlignment="Center"/>
+                    <Slider Name="ScreenHolderSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="ScreenHolderSlider_ValueChanged"/>
+                    <TextBox Name="ScreenHolderTextBox" Text="0" Margin="5"/>
 
-                <Label Content="Горизонтальнаый угол" HorizontalAlignment="Center"/>
-                <Slider Name="ScreenHorizontalAngleSlider" Minimum="-0.75" Maximum="0.74" SmallChange="0.01" Value="0" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
-                <TextBox Name="ScreenHorizontalAngleTextBox" Text="0" Margin="5"/>
-           
+                    <Label Content="Вертикальный угол" HorizontalAlignment="Center"/>
+                    <Slider Name="ScreenVerticalAngleSlider" Minimum="-0.75" Maximum="0.75" SmallChange="0.01" Value="0" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+                    <TextBox Name="ScreenVerticalAngleTextBox" Text="0" Margin="5"/>
+
+                    <Label Content="Горизонтальнаый угол" HorizontalAlignment="Center"/>
+                    <Slider Name="ScreenHorizontalAngleSlider" Minimum="-0.75" Maximum="0.74" SmallChange="0.01" Value="0" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+                    <TextBox Name="ScreenHorizontalAngleTextBox" Text="0" Margin="5"/>
+                </StackPanel>
+            </Expander>
+            <StackPanel Visibility="Visible">
+                <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
+                <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
+                <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
             </StackPanel>
-        </Expander>
-
-
-
-          <!--  <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
-            <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
-            <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
--->
-
-
         </StackPanel>
-
-
-
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <StackPanel  Orientation="Horizontal">
                 <Label Content="Координаты точки съемки"/>
-
             </StackPanel>
-
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -131,13 +104,11 @@
                 <Label Content="X" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
                 <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-                <TextBox Name="TargetPointXTextBox" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
-                <TextBox Name="TargetPointYTextBox" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
-                <TextBox Name="TargetPointZTextBox" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
-
+                <TextBox Name="TargetPointXTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox Name="TargetPointYTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox Name="TargetPointZTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
             </Grid>
             <Label Content="Координаты наконечника"/>
-
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -152,25 +123,35 @@
                 <Label Content="X" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
                 <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-                <TextBox Name="PointManipulatorXTextBox" Text="-20" Grid.Column="1" Grid.Row="0" Margin="5"/>
-                <TextBox Name="PointManipulatorYTextBox" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
-                <TextBox Name="PointManipulatorZTextBox" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
+                <TextBox Name="PointManipulatorXTextBox" KeyDown="PointManipulatorTextBox_KeyDown" Text="-20" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox Name="PointManipulatorYTextBox" KeyDown="PointManipulatorTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox Name="PointManipulatorZTextBox" KeyDown="PointManipulatorTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
 
             </Grid>
-            <Button Content="Подтвердить точку" Name="TargetPointAcceptButton" Click="TargetPointAcceptButton_OnClick"/>
+            
             <Button Content="Повернуть станок" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
             <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
             <TextBox Name="TB_Alert" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
-            
-            
+
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <Label Content="Область камеры"/>
+                <CheckBox x:Name="CameraVisibleArea" Checked="CameraVisibleArea_Checked" Unchecked="CameraVisibleArea_Unchecked" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <Label Content="Проекция детали"/>
+                <CheckBox x:Name="DetailProjection" Checked="DetailProjection_Checked" Unchecked="DetailProjection_Unchecked" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ToggleButton Content="Анимация" Name="AnimationTogleButton" Checked="ToggleAnimation_Checked" Unchecked="ToggleAnimation_Unchecked"/>
+            </StackPanel>
+
             <StackPanel Visibility="Hidden">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="6" Click="PointDown_Click"/>
             </StackPanel>
-
 
             <Grid Visibility="Hidden" Name="TargetPointsListButtonsGrid">
                 <Grid.ColumnDefinitions>
@@ -195,15 +176,11 @@
                 </ListView.View>
             </ListView>
 
-
-          <!--  <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+            <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
             <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
-        -->
-            
         </StackPanel>
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
         <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
-
     </DockPanel>
 </Window>

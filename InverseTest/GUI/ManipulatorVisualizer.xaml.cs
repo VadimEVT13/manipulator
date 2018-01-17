@@ -15,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
+using InverseTest.GUI.Model;
+using InverseTest.Detail;
 
 namespace InverseTest.GUI
 {
@@ -33,6 +35,11 @@ namespace InverseTest.GUI
 
         private IDetectorFrame detectorFrame;
         private IManipulatorModel manipulator;
+        private IMovementPoint scanPoint;
+
+
+        private ModelMoverAboveSurf mover;
+        private ModelMover manipulatorMover;
 
         private static int DISTANCE_TO_CAMERA = 1000;
         private static int CAMERA_BORDER_OFFSET = 50;
@@ -59,7 +66,7 @@ namespace InverseTest.GUI
 
             cam2DFront = new OrthographicCamera
             {
-                Position = new Point3D(1200,300, 0),
+                Position = new Point3D(500,0, 0),
                 Width = 800,
                 LookDirection = new Vector3D(-1, 0, 0)
             };
@@ -74,23 +81,36 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
-         
 
-            cam3D = new PerspectiveCamera
-            {
-                Position = new Point3D(1300, 900, 800),
-                FieldOfView = 45,
-                LookDirection = new Vector3D(-1, -1, -1)
-            };
+
+
+
+            cam3D = CameraHelper.CreateDefaultCamera();
+            cam3D.FieldOfView = 61;
+            cam3D.LookDirection = new Vector3D(-1, -1, -1);
+            cam3D.Position = new Point3D(1000, 1000, 1000);
+            cam3D.UpDirection = new Vector3D(0, 1, 0);
+            cam3D.NearPlaneDistance = 0.1;
+            cam3D.FarPlaneDistance = double.PositiveInfinity;
+
             ViewPort3D.Camera = cam3D;
+            ViewPort3D.CameraMode = CameraMode.Inspect;
+            ViewPort3D.CameraRotationMode = CameraRotationMode.Turntable;
+            ViewPort3D.DefaultCamera = cam3D;
+            ViewPort3D.RotateAroundMouseDownPoint = false;
+            ViewPort3D.ModelUpDirection = new Vector3D(0, 1, 0);
+            
+            
+
+
           
 
             cameraFromPortal = new PerspectiveCamera();
-            cameraFromPortal.FieldOfView = 45;
+            cameraFromPortal.FieldOfView = 60;
             ViewPortDetectorScreenCam.Camera = cameraFromPortal;
 
             cameraFromManipulator = new PerspectiveCamera();
-            cameraFromManipulator.FieldOfView = 45;
+            cameraFromManipulator.FieldOfView = 60;
             ViewPortManipulatorCam.Camera = cameraFromManipulator;
             
             // Настраиваем освещение
@@ -139,34 +159,28 @@ namespace InverseTest.GUI
             cam2DRight.Width = model.Bounds.SizeX;
             cam2DRight.Position = new Point3D(0, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
 
-            cam3D.LookDirection = new Vector3D(-1, -1, -1);
-            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/3,DISTANCE_TO_CAMERA/3 ,DISTANCE_TO_CAMERA /3);
+
+            cam3D.LookDirection = new Vector3D(-DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5);
+            cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/5,DISTANCE_TO_CAMERA/5 ,DISTANCE_TO_CAMERA /5);
         }
 
-      
-        private Model3D createSmallCube(Point3D point)
+
+        /// <summary>
+        /// Добавляте контур детали на вид с камеры манипулятора
+        /// </summary>
+        /// <param name="detail"></param>
+
+        public void AddCountur(DetailModel detail)
         {
-            double length = 0.2;
-            MeshGeometry3D boxMesh = new MeshGeometry3D();
-            boxMesh.Positions = new Point3DCollection()
-                {
-                    new Point3D(point.X, point.Y, point.Z),
-                    new Point3D(point.X + length, point.Y, point.Z),
-                    new Point3D(point.X, point.Y + length, point.Z),
-                    new Point3D(point.X+ length, point.Y + length, point.Z),
-                    new Point3D(point.X, point.Y, point.Z + length),
-                    new Point3D(point.X+ length, point.Y, point.Z + length),
-                    new Point3D(point.X, point.Y+ length, point.Z+ length),
-                    new Point3D(point.X+ length, point.Y + length, point.Z + length)
-                };
+            RemoveModelFromViewPort(ViewPortManipulatorCam, detail.GetModel());
+            ViewPortManipulatorCam.Children.Add(detail.counturVisual);
+        }
 
-            boxMesh.TriangleIndices = new Int32Collection() { 2, 3, 1, 2, 1, 0, 7, 1, 3, 7, 5, 1, 6, 5, 7, 6, 4, 5, 6, 2, 0, 6, 0, 4, 2, 7, 3, 2, 6, 7, 0, 1, 5, 0, 5, 4 };
-            GeometryModel3D boxGeom = new GeometryModel3D();
-            boxGeom.Geometry = boxMesh;
-            DiffuseMaterial mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-            boxGeom.Material = mat;
-
-            return boxGeom;
+        public void DeleteCountur(DetailModel detail)
+        {
+            RemoveModelFromViewPort(ViewPortManipulatorCam, (detail.counturVisual as ModelVisual3D).Content);
+            ModelVisual3D modelVisual = new ModelVisual3D() { Content = detail.GetModel() };
+            ViewPortManipulatorCam.Children.Add(modelVisual);
         }
 
 
@@ -211,7 +225,67 @@ namespace InverseTest.GUI
             cameraFromPortal.Position = detectorFrame.GetCameraPosition();
             AddModel(detectorFrame.GetDetectorFrameModel());
         }
+
+        public void SetManipulatorPoint(IMovementPoint point)
+        {
+            manipulatorMover = new ModelMover(point);
+            Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
+            AddListeners(manipulatorMover);
+           // AddModel(point.GetModel());
+        }
+
+
+        /// <summary>
+        /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
+        /// </summary>
+        /// <param name="scanPoint"></param>
+        public void SetPoint(IMovementPoint scanPoint, Model3D model)
+        {
+            this.mover = new ModelMoverAboveSurf(scanPoint, model);
+            this.mover.modelToDetect = scanPoint.GetModel();
+            AddListeners(mover);
+            AddModel(scanPoint.GetModel());
+        }
+
+        private void AddListeners(IModelMover mover)
+        {
+            ViewPort2DFront.MouseDown += mover.OnMouseDown;
+            ViewPort2DFront.MouseUp += mover.OnMouseUp;
+            ViewPort2DFront.MouseMove += mover.OnMouseMove;
+
+            ViewPort2DRight.MouseDown += mover.OnMouseDown;
+            ViewPort2DRight.MouseUp += mover.OnMouseUp;
+            ViewPort2DRight.MouseMove += mover.OnMouseMove;
+
+            ViewPort2DTop.MouseDown += mover.OnMouseDown;
+            ViewPort2DTop.MouseUp += mover.OnMouseUp;
+            ViewPort2DTop.MouseMove += mover.OnMouseMove;
+
+            ViewPort3D.MouseDown += mover.OnMouseDown;
+            ViewPort3D.MouseUp += mover.OnMouseUp;
+            ViewPort3D.MouseMove += mover.OnMouseMove;
+        }
       
+
+
+        /// <summary>
+        /// Добавляет модель конуса из камеры
+        /// </summary>
+        /// <param name="model"></param>
+        public void AddConeFromCamera(Model3D model)
+        {
+
+            ModelVisual3D topViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
+            ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
+            
+            ViewPort2DTop.Children.Add(topViewModel);
+            ViewPort2DFront.Children.Add(frontViewModel);
+            ViewPort2DRight.Children.Add(rightViewModel);
+            ViewPort3D.Children.Add(fullViewModel);
+        }
 
         /// <summary>
         /// EventHandler. Обработчик изменения положения экрана портала. При изменении положения экрана изменяет положение камеры
@@ -226,16 +300,14 @@ namespace InverseTest.GUI
         }
 
         public void AddModel(Model3D model)
-        {
-            
+        {            
             ModelVisual3D topViewModel = new ModelVisual3D() {Content = model};
             ModelVisual3D frontViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D rightViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D fullViewModel = new ModelVisual3D() { Content = model };
             ModelVisual3D cameraManipulatorModel = new ModelVisual3D() { Content = model };
             ModelVisual3D detectorScreenCamModel = new ModelVisual3D() { Content = model };
-                        
-            
+
             ViewPort2DTop.Children.Add(topViewModel);
             ViewPort2DFront.Children.Add(frontViewModel);
             ViewPort2DRight.Children.Add(rightViewModel);
@@ -243,7 +315,6 @@ namespace InverseTest.GUI
             ViewPortDetectorScreenCam.Children.Add(cameraManipulatorModel);
             ViewPortManipulatorCam.Children.Add(detectorScreenCamModel);
         }
-        
 
 
         public void RemoveModel(Model3D model)
@@ -272,9 +343,29 @@ namespace InverseTest.GUI
         }
 
 
+        public Visual3D FindVisual(HelixViewport3D viewport, Model3D model)
+        {
+            ModelVisual3D modelToRemove = null;
+
+            foreach (Visual3D visual3D in viewport.Children)
+            {
+                if (visual3D is ModelVisual3D)
+                {
+                    ModelVisual3D modelVisual3D = visual3D as ModelVisual3D;
+                    if (modelVisual3D.Content == model)
+                    {
+                        modelToRemove = modelVisual3D;
+                    }
+                }
+            }
+
+            return modelToRemove;
+        }
+
+
         public void showBordersPortal(IDetectorFrame frame)
         {
-            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame);
+            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
             Rect3D rect = part.Bounds;
 
 
@@ -295,6 +386,31 @@ namespace InverseTest.GUI
          ///   ViewPort2DRight.Children.Add(rectagnle3D);
            ViewPort3D.Children.Add(rectagnle3D);
         }
+
+        public void showBordersPortal(IManipulatorModel frame)
+        {
+            Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Rect3D rect = part.Bounds;
+
+
+            BoxVisual3D rectagnle3D = new BoxVisual3D()
+            {
+                Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
+                Fill = Brushes.DarkBlue,
+                Width = rect.SizeY,
+                Length = rect.SizeX,
+                Height = rect.SizeZ
+
+            };
+
+
+
+            // ViewPort2DFront.Children.Add(rectagnle3D);
+            //  ViewPort2DTop.Children.Add(rectagnle3D);
+            ///   ViewPort2DRight.Children.Add(rectagnle3D);
+            ViewPort3D.Children.Add(rectagnle3D);
+        }
+
 
 
 

@@ -14,14 +14,25 @@ namespace InverseTest.Detail
     /// <summary>
     /// Класс для представления трехмерной детали которую будут сканировать
     /// </summary>
-    class DetailModel
+    public class DetailModel
     {
-        private readonly Model3D detailModel;
+
+        private readonly Visual3D detailVisual;
+        public readonly Model3D detailModel;
+        public readonly Visual3D counturVisual;
+
 
         public DetailModel(Model3D detailModel)
         {
+            this.detailVisual = new ModelVisual3D() { Content = detailModel };
             this.detailModel = detailModel;
 
+            GeometryModel3D model = new GeometryModel3D(GetCountours(), Materials.Green);
+
+            this.counturVisual = new ModelVisual3D()
+            {
+                Content = model
+            };
         }
 
         public Model3D GetModel()
@@ -29,6 +40,70 @@ namespace InverseTest.Detail
             return detailModel;
         }
 
+        private MeshGeometry3D GetCountours()
+        {
+            const int counturCount = 10;
+            const double diametrTube = 0.05;
+
+            MeshBuilder meshBuilder = new MeshBuilder();
+            
+            var bounds = detailModel.Bounds;
+
+            double start = bounds.Location.X;
+            double end = bounds.Location.X + bounds.SizeX;
+
+            for (int i = 1; i < counturCount; i++)
+            {
+                Point3D counturPoint = new Point3D(bounds.Location.X + bounds.SizeX * i/counturCount, 0, 0);
+                IList<Point3D> points = MeshGeometryHelper.GetContourSegments((detailModel as GeometryModel3D).Geometry as MeshGeometry3D, counturPoint, new Vector3D(1, 0, 0));
+                var combine = MeshGeometryHelper.CombineSegments(points, 1e-6);
+                foreach (var contour in combine.ToList())
+                {
+                    if (contour.Count == 0)
+                        continue;
+                    meshBuilder.AddTube(contour, diametrTube, counturCount, true);
+                }
+            }
+
+            start = bounds.Location.Y;
+            end = bounds.Location.Y + bounds.SizeY;
+            
+            for (int i =1; i < counturCount; i++)
+            {
+                Point3D counturPoint = new Point3D(0, bounds.Location.Y + bounds.SizeY * i / counturCount, 0);
+                IList<Point3D> points = MeshGeometryHelper.GetContourSegments((detailModel as GeometryModel3D).Geometry as MeshGeometry3D, counturPoint, new Vector3D(0, 1, 0));
+                var combine = MeshGeometryHelper.CombineSegments(points, 1e-6);
+                foreach (var contour in combine.ToList())
+                {
+                    if (contour.Count == 0)
+                        continue;
+                    meshBuilder.AddTube(contour, diametrTube, counturCount, true);
+
+                }
+
+            }
+            start = bounds.Location.Z;
+            end= bounds.Location.Z + bounds.SizeZ;
+            
+            for (int i = 1; i < counturCount; i++)
+            {
+                Point3D counturPoint = new Point3D(0, 0, bounds.Location.Z + bounds.Size.Z * i/counturCount);
+                IList<Point3D> points = MeshGeometryHelper.GetContourSegments((detailModel as GeometryModel3D).Geometry as MeshGeometry3D, counturPoint, new Vector3D(0, 0, 1));
+                var combine = MeshGeometryHelper.CombineSegments(points, 1e-6);
+                foreach (var contour in combine.ToList())
+                {
+                    if (contour.Count == 0)
+                        continue;
+                    meshBuilder.AddTube(contour, diametrTube, counturCount, true);
+
+                }
+            }
+
+
+            return meshBuilder.ToMesh();
+        }
+
+        
         public void SetJunctionsPoints(int[] indexes)
         {
             

@@ -10,6 +10,17 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+./InverseTest/obj/*
+./InverseTest/[Dd]ebug/
+./InverseTest/[Dd]ebugPublic/
+./InverseTest/[Rr]elease/
+./InverseTest/[Rr]eleases/
+./InverseTest/[Xx]64/
+./InverseTest/[Xx]86/
+./InverseTest/[Bb]uild/
+./InverseTest/bld/
+./InverseTest/[Bb]in/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -20,6 +31,7 @@
 [Bb]uild/
 bld/
 [Bb]in/
+
 
 
 # Visual Studio 2015 cache/options directory
