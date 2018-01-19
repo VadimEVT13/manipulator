@@ -12,9 +12,9 @@ namespace InverseTest.GUI.Model
     class MovementPoint:IMovementPoint
     {
 
-        const int length = 2;
+        private const int length = 2;
 
-        SphereVisual3D point;
+        private SphereVisual3D point;
 
         public event PositoinHandler PositoinChanged;
 
@@ -25,7 +25,7 @@ namespace InverseTest.GUI.Model
 
             point = new SphereVisual3D()
             {
-                Center = new Point3D(0,60,0),
+                Center = new Point3D(0, 60, 0),
                 Material = material,
                 Radius = length
             };
@@ -48,7 +48,7 @@ namespace InverseTest.GUI.Model
         public Point3D GetTargetPoint()
         {
             Point3D targetPoint = point.Model.Bounds.Location;
-            targetPoint.Offset(length / 2, length / 2, length / 2);
+            targetPoint.Offset(length / 2.0, length / 2.0, length / 2.0);
             return targetPoint;
         }
 

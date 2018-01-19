@@ -12,8 +12,8 @@ namespace InverseTest.GUI.Model
 {
     class ConeModel:IConeModel
     {
-        TruncatedConeVisual3D cone;
-        Material material;
+        private TruncatedConeVisual3D cone;
+        private Material material;
 
         public ConeModel()
         {

@@ -1,14 +1,9 @@
-﻿using HelixToolkit.Wpf;
-using InverseTest.GUI.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+using InverseTest.GUI.Model;
 
 namespace InverseTest.GUI
 {
@@ -19,13 +14,12 @@ namespace InverseTest.GUI
 
         private bool onMousePressed = false;
         private bool onModelHit = false;
-        private Point3D lastPointPosition;
-        public Model3D modelToDetect { get; set; }
+        public Model3D ModelToDetect { get; set; }
 
-        public ModelMoverAboveSurf(IMovementPoint point, Model3D modelSurf)
+        public ModelMoverAboveSurf(IMovementPoint setPoint, Model3D setSurf)
         {
-            this.point = point;
-            this.surf = modelSurf;
+            point = setPoint;
+            surf = setSurf;
         }
 
         public void OnMouseDown(object sender, MouseEventArgs e)
@@ -39,15 +33,10 @@ namespace InverseTest.GUI
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
         {
-            RayHitTestResult rayResult = result as RayHitTestResult;
-            if (rayResult != null)
+            if (result is RayHitTestResult rayResult && rayResult.ModelHit.Equals(ModelToDetect))
             {
-                if (rayResult.ModelHit.Equals(modelToDetect))
-                {
-                    onModelHit = true;
-                    lastPointPosition = point.GetTargetPoint();
-                    point.ChangeSize(2d);
-                }
+                onModelHit = true;
+                point.ChangeSize(2d);
             }
             return HitTestResultBehavior.Continue;
         }
@@ -57,17 +46,11 @@ namespace InverseTest.GUI
             onMousePressed = false;
             onModelHit = false;
             point.ChangeSize(1d);
-
             HelixViewport3D viewPort = sender as HelixViewport3D;
             HitTestResult result = VisualTreeHelper.HitTest(viewPort.Viewport, e.GetPosition(viewPort));
-            RayMeshGeometry3DHitTestResult mesh_result = result as RayMeshGeometry3DHitTestResult;
-
-            if (mesh_result != null)
+            if (result is RayMeshGeometry3DHitTestResult mesh_result && mesh_result.ModelHit.Equals(ModelToDetect))
             {
-                if (mesh_result.ModelHit.Equals(modelToDetect))
-                {
-                    point.ChangeSize(0.5d);
-                }
+                point.ChangeSize(0.5d);
             }
         }
 
@@ -79,29 +62,15 @@ namespace InverseTest.GUI
             VisualTreeHelper.HitTest(viewPort, null, DetailResultCallback, pointHitTestParams);
         }
 
-
         public HitTestResultBehavior DetailResultCallback(HitTestResult result)
         {
-
-            RayHitTestResult hitResult = result as RayHitTestResult;
-            if (hitResult != null)
+            if (result is RayHitTestResult hitResult && hitResult.ModelHit.Equals(surf)
+                && onMousePressed && onModelHit)
             {
-                if (hitResult.ModelHit.Equals(surf))
-                {
-                    Point3D newPoint = hitResult.PointHit;
-
-                    if (onMousePressed && onModelHit)
-                    {
-                        Console.WriteLine("PointNear: " + newPoint.ToString());
-                        this.point.MoveToPositoin(newPoint);
-                    }
-                }
+                point.MoveToPositoin(hitResult.PointHit);
             }
             return HitTestResultBehavior.Continue;
         }
-
-
-
     }
 }
 

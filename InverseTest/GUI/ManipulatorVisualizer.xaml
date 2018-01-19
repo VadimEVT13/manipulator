@@ -50,9 +50,8 @@
         </Style>
         <Style TargetType="h:HelixViewport3D">
             <Setter Property="Background" Value="WhiteSmoke"/>
-            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-
-        </Style>
+			<Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+		</Style>
     </UserControl.Resources>
 
     <Grid>

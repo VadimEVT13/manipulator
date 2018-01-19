@@ -18,7 +18,7 @@ namespace InverseTest.JunctionDetect.Tests
 
             JunctionDetectAlgorithm junctionDetect = new JunctionDetectAlgorithm();
 
-            double area = junctionDetect.getArea(new Point3D(1, 4, 4), new Point3D(2, 2, 2), new Point3D(3, 0, 3));
+            double area = junctionDetect.GetArea(new Point3D(1, 4, 4), new Point3D(2, 2, 2), new Point3D(3, 0, 3));
             Console.WriteLine(area);
 
 
@@ -30,7 +30,7 @@ namespace InverseTest.JunctionDetect.Tests
 
             JunctionDetectAlgorithm junctionDetect = new JunctionDetectAlgorithm();
 
-            double area = junctionDetect.getAngle(new Point3D(1, 4, 4), new Point3D(2, 2, 2), new Point3D(3, 0, 3));
+            double area = junctionDetect.GetAngle(new Point3D(1, 4, 4), new Point3D(2, 2, 2), new Point3D(3, 0, 3));
             Console.WriteLine(area);
 
         }

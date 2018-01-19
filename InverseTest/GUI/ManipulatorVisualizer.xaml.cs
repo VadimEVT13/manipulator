@@ -230,7 +230,7 @@ namespace InverseTest.GUI
         {
             manipulatorMover = new ModelMover(point);
             Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
+            manipulatorMover.ModelToDetect = (modelGroup as Model3DGroup).Children[4];
             AddListeners(manipulatorMover);
            // AddModel(point.GetModel());
         }
@@ -243,7 +243,7 @@ namespace InverseTest.GUI
         public void SetPoint(IMovementPoint scanPoint, Model3D model)
         {
             this.mover = new ModelMoverAboveSurf(scanPoint, model);
-            this.mover.modelToDetect = scanPoint.GetModel();
+            this.mover.ModelToDetect = scanPoint.GetModel();
             AddListeners(mover);
             AddModel(scanPoint.GetModel());
         }

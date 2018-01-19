@@ -104,7 +104,7 @@ namespace InverseTest
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             CalculateEdgesLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
-            this.manipKinematic.setLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
+            this.manipKinematic.SetLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
             this.manipKinematic.det = 8.137991;
 
             Collision collisions = new Collision();
