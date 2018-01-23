@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InverseTest.Manipulator.Models
 {
-    class Point3D
+    public class Vertex3D
     {
         public double X { get; set; }
         public double Y { get; set; }

@@ -12,6 +12,7 @@ using InverseTest.Detail;
 using InverseTest.Frame.Kinematic;
 using InverseTest.GUI.Model;
 using InverseTest.GUI;
+using InverseTest.Manipulator.Models;
 
 namespace InverseTest
 {
@@ -308,7 +309,7 @@ namespace InverseTest
         
         private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animatation)
         {
-            Stack<double[]> rezults;
+            Stack<Angle3D> rezults;
             rezults = this.manipKinematic.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
 
 
@@ -317,16 +318,16 @@ namespace InverseTest
             // PositionUnattainableException
             if (rezults.Count > 0)
             {
-                Stack<double[]> satisfied = new Stack<double[]>();
+                Stack<Angle3D> satisfied = new Stack<Angle3D>();
 
-                foreach(double[] one in rezults)
+                foreach(Angle3D one in rezults)
                 {
                     if (
-                       (MathUtils.RadiansToAngle(one[0]) <  90 & MathUtils.RadiansToAngle(one[0]) >  -90) &
-                       (MathUtils.RadiansToAngle(one[1]) <  90 & MathUtils.RadiansToAngle(one[1]) >  -90) &
-                       (MathUtils.RadiansToAngle(one[2]) <  70 & MathUtils.RadiansToAngle(one[2]) >  -70) &
-                       (MathUtils.RadiansToAngle(one[3]) < 220 & MathUtils.RadiansToAngle(one[3]) > -220) &
-                       (MathUtils.RadiansToAngle(one[4]) < 170 & MathUtils.RadiansToAngle(one[4]) >   0)
+                       (MathUtils.RadiansToAngle(one.O1) <  90 && MathUtils.RadiansToAngle(one.O1) >  -90) &&
+                       (MathUtils.RadiansToAngle(one.O2) <  90 && MathUtils.RadiansToAngle(one.O2) >  -90) &&
+                       (MathUtils.RadiansToAngle(one.O3) <  70 && MathUtils.RadiansToAngle(one.O3) >  -70) &&
+                       (MathUtils.RadiansToAngle(one.O4) < 220 && MathUtils.RadiansToAngle(one.O4) > -220) &&
+                       (MathUtils.RadiansToAngle(one.O5) < 170 && MathUtils.RadiansToAngle(one.O5) >   0)
                        )
                     {
                         satisfied.Push(one);
@@ -335,13 +336,13 @@ namespace InverseTest
 
                 if (satisfied.Count > 0)
                 {
-                    double[] rez = satisfied.Pop();
+                    Angle3D rez = satisfied.Pop();
                     ManipulatorAngles angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez[0]),
-                        MathUtils.RadiansToAngle(rez[1]),
-                        MathUtils.RadiansToAngle(rez[2]),
-                        MathUtils.RadiansToAngle(rez[3]),
-                        MathUtils.RadiansToAngle(rez[4])
+                        MathUtils.RadiansToAngle(rez.O1),
+                        MathUtils.RadiansToAngle(rez.O2),
+                        MathUtils.RadiansToAngle(rez.O3),
+                        MathUtils.RadiansToAngle(rez.O4),
+                        MathUtils.RadiansToAngle(rez.O5)
                         );
 
                     manipulator.MoveManipulator(angles, animatation);                    
