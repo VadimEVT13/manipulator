@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InverseTest.Manipulator.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -253,9 +254,9 @@ namespace InverseTest.Manipulator
         /// </summary>
         /// <param name="P3"></param>
         /// <returns></returns>
-        private double[] GP1(double[] P3)
+        private Point3D GP1(Point3D P3)
         {
-            o1 = GetAngle(P3[0], P3[1]);
+            o1 = GetAngle(P3.X, P3.Y);
             if (o1 > Math.PI / 4)
             {
                 o1 = o1 - Math.PI;
@@ -265,27 +266,30 @@ namespace InverseTest.Manipulator
                 o1 = o1 + Math.PI;
             }
             Manipulator.Matrix.m1 = M1(o1, l1);
-            return new double[] { Manipulator.Matrix.m1[0][3], Manipulator.Matrix.m1[1][3], Manipulator.Matrix.m1[2][3] };
+            Point3D point = new Point3D
+            {
+                X = Manipulator.Matrix.m1[0][3],
+                Y = Manipulator.Matrix.m1[1][3],
+                Z = Manipulator.Matrix.m1[2][3]
+            };
+            return point;
         }
 
-        private double[] GP2(double[] P3)
+        private Point3D GP2(Point3D P3)
         {
-            double x = Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1]);
-            if (P3[0] < 0)
+            double x = Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y);
+            if (P3.X < 0)
             {
                 x = -x;
             }
-            double z = P3[2] - l1;
+            double z = P3.Z - l1;
 
-            double L = Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] +
-                (P3[2] - l1) * (P3[2] - l1));
+            double L = Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - l1) * (P3.Z - l1));
             double L3 = Math.Sqrt(l3 * l3 + det * det);             // Так как появлиось det, то и длинны меняются
 
             //углы по трём сторонам
             if (L != 0)
             {
-                //double A = Math.Acos((l2 * l2 + L * L - l3 * l3) / (2 * l2 * L));
-                //double B = Math.Acos((l3 * l3 + L * L - l2 * l2) / (2 * l3 * L));
                 double A = Math.Acos((l2 * l2 + L * L - L3 * L3) / (2 * l2 * L));
                 double B = Math.Acos((L3 * L3 + L * L - l2 * l2) / (2 * L3 * L));
                 double G = Math.PI - A - B;
@@ -296,7 +300,15 @@ namespace InverseTest.Manipulator
                 Manipulator.Matrix.m2 = M2(o2, l2);
 
                 double[][] R = Matrix(Manipulator.Matrix.m1, Manipulator.Matrix.m2);
-                double[] rez = { R[0][3], R[1][3], R[2][3] };
+
+                Point3D point = new Point3D
+                {
+                    X = R[0][3],
+                    Y = R[1][3],
+                    Z = R[2][3]
+                };
+
+
 
                 double t = GetAngle(l3, det);
                 o3 = Math.PI / 2 - G + GetAngle(l3, det);
@@ -304,13 +316,15 @@ namespace InverseTest.Manipulator
 
                 R = Matrix(R, Manipulator.Matrix.m3);
 
-                return rez;
+                return point;
             }
             else
+            {
                 return null;
+            }
         }
 
-        void go4(double[] P4)
+        private void Go4(double[] P4)
         {
             double[][] R2 = Matrix(Manipulator.Matrix.m1, Manipulator.Matrix.m2);
             R2 = Matrix(R2, Manipulator.Matrix.m3);
@@ -500,7 +514,7 @@ namespace InverseTest.Manipulator
             return m;
         }
 
-        Stack<double[]> newgP3(double[] P4, out double[] P34, double a, double b)
+        Stack<Point3D> newgP3(double[] P4, out double[] P34, double a, double b)
         {
             double[] rez = { P4[0], P4[1], P4[2] };
             rez[0] = P4[0] - l5 * Math.Cos(a) * Math.Cos(b);
@@ -516,15 +530,19 @@ namespace InverseTest.Manipulator
 
             R = Matrix(R, mmove_X(-l5));
 
-            Stack<double[]> P3stack = new Stack<double[]>();
+            Stack<Point3D> P3stack = new Stack<Point3D>();
 
             for (double i = -180 / 180.0 * Math.PI; i < 180 / 180.0 * Math.PI; i += 0.1 / 180.0 * Math.PI)
             {
                 double[][] Rt = Matrix(R, mrotate_X(i));
                 Rt = Matrix(Rt, mmove_Z(-l4));
-                P3stack.Push(new double[] { Rt[0][3], Rt[1][3], Rt[2][3] });
-            }
+                Point3D point = new Point3D();
+                point.X = Rt[0][3];
+                point.Y = Rt[1][3];
+                point.Z = Rt[2][3];
 
+                P3stack.Push(point);
+            }
             return P3stack;
         }
 
@@ -564,19 +582,19 @@ namespace InverseTest.Manipulator
             double[][] T = mt(alf, bet, P4);                        // Определение матрицы манипулятора
 
             //----------------------------------------------------------------------------------------------------------------------
-            Stack<double[]> P3mass = newgP3(P4, out P34, alf, bet); // Получение множества точек P3
+            Stack<Point3D> P3mass = newgP3(P4, out P34, alf, bet); // Получение множества точек P3
 
-            foreach (double[] point in P3mass)                      // Для каждой такой точки P3 ищем решение кинематики
+            foreach (Point3D point in P3mass)                      // Для каждой такой точки P3 ищем решение кинематики
             {
                 // Ниже идёт проверка на достижимость до точки P3 манипулятором                
-                if (Math.Sqrt(point[0] * point[0] + point[1] * point[1] + (point[2] - l1) * (point[2] - l1)) <= l2 + l3)
+                if (Math.Sqrt(point.X * point.X + point.Y * point.Y + (point.Z - l1) * (point.Z - l1)) <= l2 + l3)
                 {
-                    double[] P1 = GP1(point);                       // Получение точки P1 и получение обобщенной координаты O1
-                    double[] P2 = GP2(point);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
+                    Point3D P1 = GP1(point);                       // Получение точки P1 и получение обобщенной координаты O1
+                    Point3D P2 = GP2(point);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
                     // Ниже условие, если получили точку то продолжаем 
                     if (P2 != null)
                     {
-                        go4(P34);
+                        Go4(P34);
                         go5(P34);
 
                         double[] angle4 = { o4, 0 };
@@ -672,9 +690,9 @@ namespace InverseTest.Manipulator
                 decimal leftmid = (left + mid) / (decimal)2;    // значение левее середины
                 decimal rightmid = (right + mid) / (decimal)2;    // значение правее середины
 
-                double[] P1 = { 0, 0, 0 };
-                double[] P2 = { 0, 0, 0 };
-                double[] P3 = { 0, 0, 0 };
+                Point3D P1 = new Point3D();
+                Point3D P2 = new Point3D();
+                Point3D P3 = new Point3D();
                 double[] P34 = { 0, 0, 0 };
 
                 List<double[]> leftrez = new List<double[]>();
@@ -684,15 +702,15 @@ namespace InverseTest.Manipulator
                 {
                     List<double[]> midonly = new List<double[]>();
 
-                    P3 = getP3((double)leftmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
+                    P3 = GetP3((double)leftmid, P4, out P34, alf, bet);
+                    if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - l1) * (P3.Z - l1)) <= l2 + l3)
                     {
                         P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
                         P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
                                                             // Ниже условие, если получили точку то продолжаем 
                         if (P2 != null)
                         {
-                            go4(P34);                                   // Получение обобщенной координаты O4
+                            Go4(P34);                                   // Получение обобщенной координаты O4
                             go5(P34);                                   // Получение обобщенной координаты O5
 
                             double[] angle4 = { o4, 0 };
@@ -730,194 +748,28 @@ namespace InverseTest.Manipulator
                             if (ml1_length < ml2_length & ml1_length <= pogr)
                             {
                                 rezult.Push(midonly[0]);
-                                /*
-                                if (mid < (decimal)Math.PI)
-                                    mid = mid + (decimal)Math.PI;
-                                else
-                                    mid = mid - (decimal)Math.PI;
-
-                                P3 = getP3((double)mid, P4, out P34, alf, bet);
-                                if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                                {
-                                    P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                                    P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                                        // Ниже условие, если получили точку то продолжаем 
-                                    if (P2 != null)
-                                    {
-                                        go4(P34);                                   // Получение обобщенной координаты O4
-                                        go5(P34);                                   // Получение обобщенной координаты O5
-
-                                        double[] angl4 = { o4, 0 };
-                                        double[] angl5 = { -o5 + Math.PI / 2, 0 };
-                                        if (o4 > Math.PI)
-                                            o4 = o4 - Math.PI;
-                                        else
-                                        {
-                                            o4 = o4 + Math.PI;
-                                        }
-                                        angl4[1] = o4;
-                                        go5(P34);
-                                        angl5[1] = -o5 + Math.PI / 2;
-
-                                        o4 = angl4[0];
-                                        o5 = angl5[0];
-
-                                        double[][] R = DirectKinematic(getAngles());
-
-                                        double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                               + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                               + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                                        o4 = angl4[1];
-                                        o5 = angl5[1];
-
-                                        R = DirectKinematic(getAngles());
-
-                                        double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                               + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                               + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                                        if (l1 < l2)
-                                        {
-                                            o4 = angl4[0];
-                                            o5 = angl5[0];
-                                            rezult.Push(getAngles());
-                                        }
-                                        else
-                                            rezult.Push(getAngles());
-                                    }
-                                }*/
-
                                 return rezult;
                             }
                             if (ml1_length > ml2_length & ml2_length <= pogr)
                             {
-                                rezult.Push(midonly[1]);/*
-                                if (mid < (decimal)Math.PI)
-                                    mid = mid + (decimal)Math.PI;
-                                else
-                                    mid = mid - (decimal)Math.PI;
-
-                                P3 = getP3((double)mid, P4, out P34, alf, bet);
-                                if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                                {
-                                    P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                                    P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                                        // Ниже условие, если получили точку то продолжаем 
-                                    if (P2 != null)
-                                    {
-                                        go4(P34);                                   // Получение обобщенной координаты O4
-                                        go5(P34);                                   // Получение обобщенной координаты O5
-
-                                        double[] angl4 = { o4, 0 };
-                                        double[] angl5 = { -o5 + Math.PI / 2, 0 };
-                                        if (o4 > Math.PI)
-                                            o4 = o4 - Math.PI;
-                                        else
-                                        {
-                                            o4 = o4 + Math.PI;
-                                        }
-                                        angl4[1] = o4;
-                                        go5(P34);
-                                        angl5[1] = -o5 + Math.PI / 2;
-
-                                        o4 = angl4[0];
-                                        o5 = angl5[0];
-
-                                        double[][] R = DirectKinematic(getAngles());
-
-                                        double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                               + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                               + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                                        o4 = angl4[1];
-                                        o5 = angl5[1];
-
-                                        R = DirectKinematic(getAngles());
-
-                                        double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                               + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                               + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                                        if (l1 < l2)
-                                        {
-                                            o4 = angl4[0];
-                                            o5 = angl5[0];
-                                            rezult.Push(getAngles());
-                                        }
-                                        else
-                                            rezult.Push(getAngles());
-                                    }
-                                }
-                                */
+                                rezult.Push(midonly[1]);
                                 return rezult;
                             }
 
                         }
                     }
                 }
-                /*string[] strmass = new string[3];
-                for (double ind = 0; ind < Math.PI * 2; ind += 1 * Math.PI / 180)
-                {
-                    P3 = getP3(ind, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = this.DirectKinematic(getAngles());
-                            double l = Math.Sqrt((R[0][3] - P4[0]) * (R[0][3] - P4[0]) +
-                                                 (R[1][3] - P4[1]) * (R[1][3] - P4[1]) +
-                                                 (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            strmass[0] += String.Format("{0} ", ind);
-                            strmass[1] += String.Format("{0} ", l);
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = this.DirectKinematic(getAngles());
-
-                            l = Math.Sqrt((R[0][3] - P4[0]) * (R[0][3] - P4[0]) +
-                                                 (R[1][3] - P4[1]) * (R[1][3] - P4[1]) +
-                                                 (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            strmass[2] += String.Format("{0} ", l);
-                        }
-                    }
-                }
-                strmass[0] += " ______________ИНДЕКС";
-                strmass[1] += " ______________1";
-                strmass[2] += " ______________2";
-                System.IO.File.WriteAllLines("tmp.txt", strmass);*/
 
                 // ДЛЯ ЛЕВОГО
-                P3 = getP3((double)leftmid, P4, out P34, alf, bet);
-                if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
+                P3 = GetP3((double)leftmid, P4, out P34, alf, bet);
+                if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - l1) * (P3.Z - l1)) <= l2 + l3)
                 {
                     P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
                     P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
                     // Ниже условие, если получили точку то продолжаем 
                     if (P2 != null)
                     {
-                        go4(P34);                                   // Получение обобщенной координаты O4
+                        Go4(P34);                                   // Получение обобщенной координаты O4
                         go5(P34);                                   // Получение обобщенной координаты O5
 
                         double[] angle4 = { o4, 0 };
@@ -945,15 +797,15 @@ namespace InverseTest.Manipulator
                 }
 
                 // ДЛЯ ПРАВОГО
-                P3 = getP3((double)rightmid, P4, out P34, alf, bet);
-                if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
+                P3 = GetP3((double)rightmid, P4, out P34, alf, bet);
+                if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - l1) * (P3.Z - l1)) <= l2 + l3)
                 {
                     P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
                     P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
                     // Ниже условие, если получили точку то продолжаем 
                     if (P2 != null)
                     {
-                        go4(P34);                                   // Получение обобщенной координаты O4
+                        Go4(P34);                                   // Получение обобщенной координаты O4
                         go5(P34);                                   // Получение обобщенной координаты O5
 
                         double[] angle4 = { o4, 0 };
@@ -1005,243 +857,22 @@ namespace InverseTest.Manipulator
                 }
                 if (l1_length <= pogr || flag1)
                 {
-                    rezult.Push(leftrez[0]);/*
-                    if (leftmid < (decimal)Math.PI)
-                        leftmid = leftmid + (decimal)Math.PI;
-                    else
-                        leftmid = leftmid - (decimal)Math.PI;
-
-                    P3 = getP3((double)leftmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = DirectKinematic(getAngles());
-
-                            double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = DirectKinematic(getAngles());
-
-                            double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            if (l1 < l2)
-                            {
-                                o4 = angle4[0];
-                                o5 = angle5[0];
-                                rezult.Push(getAngles());
-                            }
-                            else
-                                rezult.Push(getAngles());
-                        }
-                    }
-                    */
+                    rezult.Push(leftrez[0]);
                     return rezult;
                 }
                 if (l2_length <= pogr || flag2)
                 {
-                    rezult.Push(leftrez[1]);/*
-                    if (leftmid < (decimal)Math.PI)
-                        leftmid = leftmid + (decimal)Math.PI;
-                    else
-                        leftmid = leftmid - (decimal)Math.PI;
-
-                    P3 = getP3((double)leftmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = DirectKinematic(getAngles());
-
-                            double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = DirectKinematic(getAngles());
-
-                            double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            if (l1 < l2)
-                            {
-                                o4 = angle4[0];
-                                o5 = angle5[0];
-                                rezult.Push(getAngles());
-                            }
-                            else
-                                rezult.Push(getAngles());
-                        }
-                    }*/
+                    rezult.Push(leftrez[1]);
                     return rezult;
                 }
                 if (r1_length <= pogr)
                 {
-                    rezult.Push(rightrez[0]);/*
-                    if (rightmid < (decimal)Math.PI)
-                        rightmid = rightmid + (decimal)Math.PI;
-                    else
-                        rightmid = rightmid - (decimal)Math.PI;
-
-                    P3 = getP3((double)rightmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = DirectKinematic(getAngles());
-
-                            double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = DirectKinematic(getAngles());
-
-                            double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            if (l1 < l2)
-                            {
-                                o4 = angle4[0];
-                                o5 = angle5[0];
-                                rezult.Push(getAngles());
-                            }
-                            else
-                                rezult.Push(getAngles());
-                        }
-                    }*/
+                    rezult.Push(rightrez[0]);
                     return rezult;
                 }
                 if (r2_length <= pogr)
                 {
-                    rezult.Push(rightrez[1]);/*
-                    if (rightmid < (decimal)Math.PI)
-                        rightmid = rightmid + (decimal)Math.PI;
-                    else
-                        rightmid = rightmid - (decimal)Math.PI;
-
-                    P3 = getP3((double)rightmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = DirectKinematic(getAngles());
-
-                            double l1 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = DirectKinematic(getAngles());
-
-                            double l2 = Math.Abs((R[0][3] - P4[0]) * (R[0][3] - P4[0])
-                                   + (R[1][3] - P4[1]) * (R[1][3] - P4[1])
-                                   + (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            if (l1 < l2)
-                            {
-                                o4 = angle4[0];
-                                o5 = angle5[0];
-                                rezult.Push(getAngles());
-                            }
-                            else
-                                rezult.Push(getAngles());
-                        }
-                    }*/
+                    rezult.Push(rightrez[1]);
                     return rezult;
                 }
 
@@ -1257,60 +888,6 @@ namespace InverseTest.Manipulator
                     prev_deviation = deviation;
                     deviation = Math.Min(r1_length, r2_length);
                 }
-                /*for (double ind = 0; ind < Math.PI; ind += 1 * Math.PI / 180)
-                {
-                    P3 = getP3(ind, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3[0] * P3[0] + P3[1] * P3[1] + (P3[2] - l1) * (P3[2] - l1)) <= l2 + l3)
-                    {
-                        P1 = gP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = gP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            go4(P34);                                   // Получение обобщенной координаты O4
-                            go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { o4, 0 };
-                            double[] angle5 = { -o5 + Math.PI / 2, 0 };
-                            if (o4 > Math.PI)
-                                o4 = o4 - Math.PI;
-                            else
-                            {
-                                o4 = o4 + Math.PI;
-                            }
-                            angle4[1] = o4;
-                            go5(P34);
-                            angle5[1] = -o5 + Math.PI / 2;
-
-                            o4 = angle4[0];
-                            o5 = angle5[0];
-
-                            double[][] R = this.DirectKinematic(getAngles());
-                            double l = Math.Sqrt((R[0][3] - P4[0]) * (R[0][3] - P4[0]) +
-                                                 (R[1][3] - P4[1]) * (R[1][3] - P4[1]) +
-                                                 (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-
-                            strmass[0] += String.Format("{0} ", ind);
-                            strmass[1] += String.Format("{0} ", l);
-
-                            o4 = angle4[1];
-                            o5 = angle5[1];
-
-                            R = this.DirectKinematic(getAngles());
-
-                            l = Math.Sqrt((R[0][3] - P4[0]) * (R[0][3] - P4[0]) +
-                                                 (R[1][3] - P4[1]) * (R[1][3] - P4[1]) +
-                                                 (R[2][3] - P4[2]) * (R[2][3] - P4[2]));
-                            strmass[2] += String.Format("{0} ", l);
-                        }
-                    }
-                }
-                strmass[0] += " ______________ИНДЕКС";
-                strmass[1] += " ______________1";
-                strmass[2] += " ______________2";
-                System.IO.File.WriteAllLines("tmp.txt", strmass);*/
-
-
             }   // конец while
 
             return new Stack<double[]>();
@@ -1329,15 +906,16 @@ namespace InverseTest.Manipulator
         /// <returns></returns>
         private Stack<double[]> FindOnInterval(int inter, double[] P4, double alf, double bet, double tochnost, double leftboard, double rightboard)
         {
-            Stack<double[]> rez = new Stack<double[]>();
             for (int i = 1; i < inter; i++)
             {
                 double delta = (rightboard - leftboard) / (double)i;
                 for (int j = 0; j < i; j++)
                 {
-                    rez = Search(P4, alf, bet, tochnost, delta * j + leftboard, delta * (j + 1) + leftboard);
+                    Stack<double[]> rez = Search(P4, alf, bet, tochnost, delta * j + leftboard, delta * (j + 1) + leftboard);
                     if (rez.Count != 0)
+                    {
                         return rez;
+                    }
                 }
             }
 
@@ -1481,7 +1059,7 @@ namespace InverseTest.Manipulator
                 return false;
         }
 
-        double[] getP3(double i, double[] P4, out double[] P34, double alf, double bet)
+        private Point3D GetP3(double i, double[] P4, out double[] P34, double alf, double bet)
         {
             double[] rez = { P4[0], P4[1], P4[2] };
             rez[0] = P4[0] - l5 * Math.Cos(alf) * Math.Cos(bet);
@@ -1500,7 +1078,13 @@ namespace InverseTest.Manipulator
             double[][] Rt = Matrix(R, mrotate_X(i));
             Rt = Matrix(Rt, mmove_Z(-l4));
 
-            return new double[] { Rt[0][3], Rt[1][3], Rt[2][3] };
+            Point3D point = new Point3D
+            {
+                X = Rt[0][3],
+                Y = Rt[1][3],
+                Z = Rt[2][3]
+            };
+            return point;
         }
     }
 
