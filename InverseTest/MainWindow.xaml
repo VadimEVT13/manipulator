@@ -9,10 +9,10 @@
         Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-
+        <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="TargetPointsListView_MouseDoubleClick"/>
+        </Style>
     </Window.Resources>
-
-
     <DockPanel Margin="0,0,0,0">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл" Margin="1" Padding="15,2">
@@ -80,11 +80,14 @@
                     <TextBox Name="ScreenHorizontalAngleTextBox" Text="0" Margin="5"/>
                 </StackPanel>
             </Expander>
-            <StackPanel Visibility="Visible">
+           
+            <!--<StackPanel Visibility="Visible">
                 <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
                 <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
                 <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
-            </StackPanel>
+            </StackPanel>-->
+       
+        
         </StackPanel>
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <StackPanel  Orientation="Horizontal">
@@ -133,7 +136,7 @@
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
             <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
-            <TextBox Name="TB_Alert" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
+            <TextBox Name="CollisionTextBox" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
@@ -147,13 +150,44 @@
                 <ToggleButton Content="Анимация" Name="AnimationTogleButton" Checked="ToggleAnimation_Checked" Unchecked="ToggleAnimation_Unchecked"/>
             </StackPanel>
 
-            <StackPanel Visibility="Hidden">
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
+                      Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
+                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto"  >
+                    <StackPanel Orientation="Horizontal" Background="WhiteSmoke">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBox Grid.Column="0" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocusDistanceTextBox" Text="{Binding ElementName=FocusDistanceSlider, Path=Value, Mode=TwoWay}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocueEnlargmentTextBox" Text="{Binding ElementName=FocusEnlargementSlider, Path=Value, Mode=TwoWay}"/>
+                            <Slider Grid.Column="0" Grid.Row="1" Name="FocusDistanceSlider"  Width="100" Maximum="100"
+                                    Minimum="0" Margin="0,0,8,8"  AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"  ValueChanged="FocusDistanceSlider_ValueChanged" ></Slider>
+                            <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1"
+                                    Width="100" SmallChange="0.5" LargeChange="0.5" Maximum="3" Margin="0,0,8,8"
+                            Minimum="0" Ticks="0,0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
+                            AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"
+                            ValueChanged="FocusEnlargementSlider_ValueChanged">
+                            </Slider>
+                        </Grid>
+
+                    </StackPanel>
+                </Popup>
+            </StackPanel>
+            
+
+            <StackPanel Visibility="Visible">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="5" Click="PointUp_Click"/>
                 <Button FontFamily="Marlett" FontSize="20" Content="6" Click="PointDown_Click"/>
             </StackPanel>
 
-            <Grid Visibility="Hidden" Name="TargetPointsListButtonsGrid">
+            <Grid Visibility="Visible" Name="TargetPointsListButtonsGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="53*" />
                     <ColumnDefinition Width="53"/>
@@ -162,25 +196,33 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Content="Add" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0" Width="53"/>
-                <Button Content="Edit" Name="EditPoint" Grid.Column="1" Click="EditPoint_Click" Width="53"/>
-                <Button Content="Delete" Name="DeletePoint" Grid.Column="2" Click="DeletePoint_Click" Width="53"/>
+                <Button Content="Добавить" Name="AddPointToList" Click="AddPointToList_Click" Grid.Column="0" Width="53"/>
+                <Button Content="Править" Name="EditPoint" Grid.Column="1" Click="EditPoint_Click" Width="53"/>
+                <Button Content="Удалить" Name="DeletePoint" Grid.Column="2" Click="DeletePoint_Click" Width="53"/>
             </Grid>
-            <ListView  Visibility="Hidden" Name="TargetPointsListView" ItemsSource="{Binding targetPoints}" SelectionChanged="TargetPointsListView_SelectionChanged">
+            <ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" ItemsSource="{Binding targetPoints}" 
+                       SelectionChanged="TargetPointsListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="X" Width="52" DisplayMemberBinding="{Binding X}" />
-                        <GridViewColumn Header="Y" Width="52" DisplayMemberBinding="{Binding Y}" />
-                        <GridViewColumn Header="Z" Width="52" DisplayMemberBinding="{Binding Z}" />
+                        <GridViewColumn Header="X" Width="auto" DisplayMemberBinding="{Binding targetPoint.X}" />
+                        <GridViewColumn Header="Y" Width="auto" DisplayMemberBinding="{Binding targetPoint.Y}" />
+                        <GridViewColumn Header="Z" Width="auto" DisplayMemberBinding="{Binding targetPoint.Z}" />
+                        <GridViewColumn Header="X" Width="auto" DisplayMemberBinding="{Binding manipPoint.X}" />
+                        <GridViewColumn Header="Y" Width="auto" DisplayMemberBinding="{Binding manipPoint.Y}" />
+                        <GridViewColumn Header="Z" Width="auto" DisplayMemberBinding="{Binding manipPoint.Z}" />
                     </GridView>
                 </ListView.View>
             </ListView>
 
-            <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
-            <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>
+            
         </StackPanel>
 
+        <!--<Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+        <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>-->
+
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
+       
+        <TextBox DockPanel.Dock="Top"  Name="Position" HorizontalAlignment="Center" Width="400"  Background="Red" />
         <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

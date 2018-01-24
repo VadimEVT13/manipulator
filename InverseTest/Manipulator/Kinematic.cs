@@ -607,7 +607,7 @@ namespace InverseTest.Manipulator
             return new double[2] { a, b };
         }
 
-        public Stack<double[]> Inverse(double X, double Y, double Z, double alf = 0, double bet = 0)
+        public Stack<double[]> Inverse(double X, double Y, double Z, double alf = 0, double bet = 0) 
         {
             // Начальные данные
 
@@ -694,6 +694,8 @@ namespace InverseTest.Manipulator
                     }
                 }
             }
+
+            
 
             return rezultAngles;
         }

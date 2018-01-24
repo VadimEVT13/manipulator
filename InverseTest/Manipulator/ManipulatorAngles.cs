@@ -21,6 +21,17 @@ namespace InverseTest.Manipulator
             partAngles[ManipulatorParts.CameraBase] = -angle4;
             partAngles[ManipulatorParts.Camera] = -angle5;
         }
-      
+
+        public override string ToString()
+        {
+            String resString = "Angles: ";
+
+            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+            {
+                resString += part.ToString() + " :  " + partAngles[part].ToString();
+            }
+
+            return resString;
+        }
     }
 }

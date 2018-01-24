@@ -208,8 +208,6 @@ namespace InverseTest.GUI
             Point3D cameraPosition = manipulator.GetCameraPosition();
             cameraFromManipulator.Position = cameraPosition;
             cameraFromManipulator.LookDirection = manipulator.GetCameraDirection();
-
-
         }
 
         /// <summary>
@@ -229,10 +227,9 @@ namespace InverseTest.GUI
         public void SetManipulatorPoint(IMovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
-            Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
+            manipulatorMover.modelToDetect = point.GetModel();
             AddListeners(manipulatorMover);
-           // AddModel(point.GetModel());
+            AddModelWithoutCamView(point.GetModel());
         }
 
 
@@ -270,10 +267,10 @@ namespace InverseTest.GUI
 
 
         /// <summary>
-        /// Добавляет модель конуса из камеры
+        /// Добавляет модель на все виды кроме видов из камер
         /// </summary>
         /// <param name="model"></param>
-        public void AddConeFromCamera(Model3D model)
+        public void AddModelWithoutCamView(Model3D model)
         {
 
             ModelVisual3D topViewModel = new ModelVisual3D() { Content = model };
@@ -376,7 +373,6 @@ namespace InverseTest.GUI
                    Width = rect.SizeY,
                    Length = rect.SizeX,
                    Height = rect.SizeZ
-                    
             };
 
 
