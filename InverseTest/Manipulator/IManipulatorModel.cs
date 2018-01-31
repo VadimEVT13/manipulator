@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
+﻿using System.Windows.Media.Media3D;
 using static InverseTest.ManipulatorV2;
 
 namespace InverseTest.Manipulator
 {
-
-
     public interface IManipulatorModel:IPositionChanged
     {
         Model3D GetManipulatorModel();
@@ -27,7 +20,5 @@ namespace InverseTest.Manipulator
         Point3D GetPointJoint(ManipulatorRotatePoints point);
 
         void ResetModel();
-
-
     }
 }

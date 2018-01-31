@@ -18,7 +18,7 @@ namespace InverseTest.GUI
         private bool onMousePressed = false;
         private bool onModelHit = false;
         private Point3D lastPointPosition;
-        public Model3D modelToDetect { get; set; }
+        public Model3D ModelToDetect { get; set; }
 
         public ModelMover(IMovementPoint point)
         {
@@ -39,10 +39,9 @@ namespace InverseTest.GUI
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
         {
-            RayHitTestResult rayResult = result as RayHitTestResult;
-            if (rayResult != null)
+            if (result is RayHitTestResult rayResult)
             {
-                if (rayResult.ModelHit.Equals(modelToDetect))
+                if (rayResult.ModelHit.Equals(ModelToDetect))
                 {
                     onModelHit = true;
                     lastPointPosition = point.GetTargetPoint();
@@ -60,11 +59,10 @@ namespace InverseTest.GUI
 
             HelixViewport3D viewPort = sender as HelixViewport3D;
             HitTestResult result = VisualTreeHelper.HitTest(viewPort.Viewport, e.GetPosition(viewPort));
-            RayMeshGeometry3DHitTestResult mesh_result = result as RayMeshGeometry3DHitTestResult;
 
-            if (mesh_result != null)
+            if (result is RayMeshGeometry3DHitTestResult mesh_result)
             {
-                if (mesh_result.ModelHit.Equals(modelToDetect))
+                if (mesh_result.ModelHit.Equals(ModelToDetect))
                 {
                     point.ChangeSize(0.5d);
                 }
@@ -75,9 +73,8 @@ namespace InverseTest.GUI
         {
             HelixViewport3D viewPort = sender as HelixViewport3D;
             Point mousePos = e.GetPosition(viewPort);
-            Point3D pointNear;
             Point3D pointFar;
-            Viewport3DHelper.Point2DtoPoint3D(viewPort.Viewport, mousePos, out pointNear, out pointFar);
+            Viewport3DHelper.Point2DtoPoint3D(viewPort.Viewport, mousePos, out Point3D pointNear, out pointFar);
             
             Point3D? point = Viewport3DHelper.UnProject(viewPort.Viewport, mousePos, lastPointPosition, viewPort.Camera.LookDirection);
             Point3D newPoint = point.GetValueOrDefault();

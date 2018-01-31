@@ -14,8 +14,5 @@ namespace InverseTest.GUI
         void OnMouseUp(object sender, MouseEventArgs e);
 
         void OnMouseMove(object sender, MouseEventArgs e);
-
-
-
     }
 }
