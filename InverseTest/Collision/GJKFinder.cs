@@ -41,6 +41,8 @@ namespace InverseTest.Collision
             resultSimplex[3] = sc.supportFunction(a, -forward) -sc.supportFunction(b, forward);
 
         }
+        
+
 
         public Vector3D[] getSimplex()
         {

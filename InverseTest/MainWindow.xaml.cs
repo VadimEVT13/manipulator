@@ -18,6 +18,10 @@ using InverseTest.Workers;
 using System.Threading;
 using System.Windows.Threading;
 using static InverseTest.Collision.AABB;
+using InverseTest.Manipulator.Models;
+using InverseTest.Collision.Model;
+using InverseTest.Collision;
+using static InverseTest.DetectorFrame;
 
 namespace InverseTest
 {
@@ -65,7 +69,8 @@ namespace InverseTest
         private DetailModel detail;
 
         private ManipulatorKinematicWorker<SystemPosition> manipWorker;
-        private CollisionWorker<DummyCrutch> collisionWorker;
+        private GJKWorker<CollisionPair> collisionWorker;
+        private CollisionDetector collisoinDetector;
 
         private double distanceToScreen = 50;
         private double focuseEnlagment = 1;
@@ -96,9 +101,6 @@ namespace InverseTest
 
             ManipulatorVisualizer.setCameras(allModels);
 
-
-
-
             ModelParser parser = new ModelParser(allModels);
             parser.Parse();
             detectorFrame = parser.frame;
@@ -114,36 +116,24 @@ namespace InverseTest
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             CalculateEdgesLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
-            this.manipKinematic.setLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
+            this.manipKinematic.SetLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
             this.manipKinematic.det = 8.137991;
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
 
             detail = parser.detail;
-
-
-
-
-            Model3DGroup mg = new Model3DGroup();
-            mg.Children = new Model3DCollection();
-            mg.Children.Add(detail.GetModel());
-
-
-            //ModelPreprocessor prerpocessor = new ModelPreprocessor(mg);
-            //var f = new Func<Model3DGroup>(delegate ()
-            //{
-            //    return prerpocessor.Simplify(0.1).GetProccessedModel();
-            //});
-            //DispatcherOperation<Model3DGroup> dispOper = Dispatcher.InvokeAsync<Model3DGroup>(f);
-            //dispOper.Wait();
-            //Model3DGroup simplDetail = dispOper.Result;
-
-
-
             ManipulatorVisualizer.AddModel(detail.GetModel());
 
             ManipulatorVisualizer.AddModel(parser.others);
-            collisionWorker = new CollisionWorker<DummyCrutch>(this.manipulator, this.detectorFrame, this.detail, new Model3DGroup());
+
+
+            //Коллизии
+            GJKSolver gjkSolver = new GJKSolver();
+            collisionWorker = new GJKWorker<CollisionPair>(gjkSolver, this.Dispatcher);
+            AABB aabb = new AABB(manipulator, detectorFrame, detail, new Model3DGroup());
+            aabb.MakeListExcept();
+            collisoinDetector = new CollisionDetector(aabb, collisionWorker);
+
 
             //Точка сканирования
             scanPoint = new MovementPoint(Colors.Blue);
@@ -162,23 +152,18 @@ namespace InverseTest
                 manipulator.GetCameraDirection(),
                 manipulatorCamPoint.GetTargetPoint().DistanceTo(scanPoint.GetTargetPoint()));
 
-            manipulatorCamPoint.MoveToPositoin(new Point3D(-10, 60, 0));
-            scanPoint.MoveToPositoin(new Point3D(0, 60, 0));
+            manipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
+            scanPoint.MoveAndNotify(new Point3D(0, 60, 0));
 
-            collisionWorker.onCollision += OnCollisoinsDetected;
-
-
+            collisionWorker.onCollision += OnCollisoinsDetected;            
         }
 
-        public void OnCollisoinsDetected(List<Except> collisions)
+        public void OnCollisoinsDetected(CollisionPair pair)
         {
-            if (collisions?.Count > 0)
-            {
-                CollisionTextBox.Text = collisions[0].S1 + " " + collisions[0].S2;
-            }
+            CollisionTextBox.Text = pair.modelCollision1.meshName + " intersects with  " + pair.modelCollision2.meshName;
         }
 
-     
+
         /// <summary>
         /// Вычисляет размеры ребер манипулятора
         /// </summary>
@@ -206,7 +191,10 @@ namespace InverseTest
 
         public void manipulatorSolved(ManipulatorAngles angles)
         {
-            manipulator.MoveManipulator(angles, false);
+            if (angles.isValid)
+                PositionValid.Background = Brushes.Green;
+            else PositionValid.Background = Brushes.Red;
+                manipulator.MoveManipulator(angles, false);
         }
 
         /// <summary>
@@ -214,8 +202,13 @@ namespace InverseTest
         /// </summary>
         public void OnDetectorFramePositionChanged()
         {
-            collisionWorker.findCollision(new DummyCrutch(this.manipulator, this.detectorFrame, this.detail, new Model3DGroup()));
+            SetPortalPositionsTextBoxes();
+        }
 
+        public void SetDistanceToPoint()
+        {
+            this.distanceToScreen = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
+            FocusDistanceTextBox.Text = Math.Round(distanceToScreen, 3).ToString(); 
         }
 
         /// <summary>
@@ -228,7 +221,6 @@ namespace InverseTest
 
             this.distanceToScreen = distanceToPoint;
 
-
             var anglesState = ((ManipulatorV2)manipulator).partAngles;
 
             T1TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.Table], 3).ToString();
@@ -236,7 +228,30 @@ namespace InverseTest
             T3TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.TopEdge], 3).ToString();
             T4TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.CameraBase], 3).ToString();
             T5TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.Camera], 3).ToString();
-            collisionWorker.findCollision(new DummyCrutch(this.manipulator, this.detectorFrame, this.detail, new Model3DGroup()));
+            collisoinDetector.FindCollisoins();
+
+            SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
+            SetDistanceToPoint();
+        }
+
+        public void SetPortalPositionsTextBoxes()
+        {
+            Dictionary<Parts, double> partOffset = (detectorFrame as DetectorFrame).partOffset;
+            var verticalAngle = (detectorFrame as DetectorFrame).verticalAngle;
+            var horizontalAngle = (detectorFrame as DetectorFrame).horizontalAngle;
+
+            VerticalFrameSliderTextBox.Text = Math.Round(partOffset[Parts.VerticalFrame], 3).ToString();
+            ScreenHolderTextBox.Text = Math.Round(partOffset[Parts.ScreenHolder], 3).ToString();
+            HorizontalBarTextView.Text = Math.Round(partOffset[Parts.HorizontalBar], 3).ToString();
+            ScreenVerticalAngleTextBox.Text = Math.Round(verticalAngle, 3).ToString();
+            ScreenHorizontalAngleTextBox.Text = Math.Round(horizontalAngle, 3).ToString();
+        }
+
+        public void SetManipCamPointTextBoxes(Point3D point)
+        {
+            PointManipulatorXTextBox.Text = Math.Round(point.X, 3).ToString();
+            PointManipulatorYTextBox.Text = Math.Round(point.Y, 3).ToString();
+            PointManipulatorZTextBox.Text = Math.Round(point.Z, 3).ToString();
         }
 
         /// <summary>
@@ -245,17 +260,11 @@ namespace InverseTest
         /// <param name="newPosition"></param>
         public void OnManipulatorCamPointPositoinChanged(Point3D newPosition)
         {
-            PointManipulatorXTextBox.Text = Math.Round(newPosition.X, 3).ToString();
-            PointManipulatorYTextBox.Text = Math.Round(newPosition.Y, 3).ToString();
-            PointManipulatorZTextBox.Text = Math.Round(newPosition.Z, 3).ToString();
-
             if (solveKinematics)
             {
-
                 this.manipWorker.solve(new SystemPosition(newPosition, scanPoint.GetTargetPoint()));
                 SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
             }
-
         }
 
         public void OnScanPointPositoinChanged(Point3D newPosition)
@@ -314,13 +323,13 @@ namespace InverseTest
                 double.TryParse(TargetPointXTextBox.Text, out x);
                 double.TryParse(TargetPointYTextBox.Text, out y);
                 double.TryParse(TargetPointZTextBox.Text, out z);
-                scanPoint.MoveToPositoin(new Point3D(x, y, z));
+                scanPoint.Move(new Point3D(x, y, z));
 
                 double manip_x, manip_y, manip_z;
                 double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
                 double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
                 double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-                manipulatorCamPoint.MoveToPositoin(new Point3D(manip_x, manip_y, manip_z));
+                manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
             }
             catch (NullReferenceException ex)
             { }
@@ -341,61 +350,6 @@ namespace InverseTest
             else
             {
                 MessageBox.Show("Не существует такой точки");
-            }
-        }
-
-        private void SolveManipulatorKinematic(Point3D manip, Point3D scannedPoint, bool animatation)
-        {
-            Stack<double[]> rezults;
-            Console.WriteLine("ScanndedPOint: " + scannedPoint.ToString());
-            rezults = this.manipKinematic.InverseNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
-
-            //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
-            // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение
-            // PositionUnattainableException
-            if (rezults.Count > 0)
-            {
-                Stack<double[]> satisfied = new Stack<double[]>();
-
-                foreach (double[] one in rezults)
-                {
-
-                    if (
-                       (MathUtils.RadiansToAngle(one[0]) < 90 && MathUtils.RadiansToAngle(one[0]) > -90) &
-                       (MathUtils.RadiansToAngle(one[1]) < 90 && MathUtils.RadiansToAngle(one[1]) > -90) &
-                       (MathUtils.RadiansToAngle(one[2]) < 70 && MathUtils.RadiansToAngle(one[2]) > -70) &
-                       (MathUtils.RadiansToAngle(one[3]) < 220 && MathUtils.RadiansToAngle(one[3]) > -220) &
-                       (MathUtils.RadiansToAngle(one[4]) < 170 && MathUtils.RadiansToAngle(one[4]) > 0)
-                       )
-                    {
-                        satisfied.Push(one);
-                        Position.Background = Brushes.Green;
-                    }
-                    else
-                    {
-                        satisfied.Push(one);
-                        Position.Background = Brushes.Red;
-                    }
-                }
-
-                if (satisfied.Count > 0)
-                {
-                    double[] rez = satisfied.Pop();
-                    ManipulatorAngles angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez[0]),
-                        MathUtils.RadiansToAngle(rez[1]),
-                        MathUtils.RadiansToAngle(rez[2]),
-                        MathUtils.RadiansToAngle(rez[3]),
-                        MathUtils.RadiansToAngle(rez[4])
-                        );
-
-                    manipulator.MoveManipulator(angles, animatation);
-                }
-                //else
-                //{
-                //    MessageBox.Show(String.Format("Ошибка: манипулятор не может достигнуть позиции [{0}; {1}; {2}]\nи наблюдать за точкой [{3}; {4}; {5}]",
-                //        manip.X, manip.Y, manip.Z, scannedPoint.X, scannedPoint.X, scannedPoint.X));
-                //}
             }
         }
 
@@ -437,8 +391,6 @@ namespace InverseTest
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
-
-
             double x, y, z;
 
             double.TryParse(TargetPointXTextBox.Text, out x);
@@ -753,8 +705,8 @@ namespace InverseTest
 
             if (point != null)
             {
-                manipulatorCamPoint.MoveToPositoin(point.manipPoint);
-                scanPoint.MoveToPositoin(point.targetPoint);
+                manipulatorCamPoint.Move(point.manipPoint);
+                scanPoint.Move(point.targetPoint);
             }
         }
 
@@ -763,7 +715,7 @@ namespace InverseTest
             Point3D manip = manipulatorCamPoint.GetTargetPoint();
             Point3D targetPoint = scanPoint.GetTargetPoint();
 
-            SolveManipulatorKinematic(manip, targetPoint, animate);
+            manipWorker.solve(new SystemPosition(manip, targetPoint));
             SolvePortalKinematic(manip, targetPoint, animate);
         }
 

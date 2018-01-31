@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Media.Media3D;
 using System.Threading;
+using InverseTest.Manipulator.Models;
 
 namespace InverseTest.Workers
 {
@@ -21,7 +22,7 @@ namespace InverseTest.Workers
         public event ManipulatorKinematicError kinematicError;
 
 
-        public ManipulatorKinematicWorker(Kinematic kinematic):base()
+        public ManipulatorKinematicWorker(Kinematic kinematic) : base()
         {
             this.kinematic = kinematic;
         }
@@ -33,16 +34,9 @@ namespace InverseTest.Workers
 
         protected override void workerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Console.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
-
-            if (e.Result == null)
-                return;
-
-            
-
-            kinematicSolved?.Invoke((ManipulatorAngles)e.Result);
+           
         }
-        
+
         protected override void workerProgressUpdate(object sender, ProgressChangedEventArgs e)
         {
             ManipulatorAngles pos = e.UserState as ManipulatorAngles;
@@ -52,64 +46,61 @@ namespace InverseTest.Workers
         protected override void DoWork(T elem, DoWorkEventArgs arg)
         {
             SystemPosition sp = elem as SystemPosition;
-            Stack<double[]> rezults;
-
-
-
-             rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.manipPoint.Z, sp.manipPoint.Y);
+            Stack<Angle3D> rezults;
+            
+            rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.targetPoint.Z, sp.targetPoint.Y);
 
             //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
             // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение
             // PositionUnattainableException
-
-
             if (rezults.Count > 0)
-
             {
-                Stack<double[]> satisfied = new Stack<double[]>();
-
-                foreach (double[] one in rezults)
+                Stack<Angle3D> satisfied = new Stack<Angle3D>();
+                Stack<Angle3D> unsatisfied = new Stack<Angle3D>();
+                foreach (Angle3D one in rezults)
                 {
 
                     if (
-                       (MathUtils.RadiansToAngle(one[0]) < 90 && MathUtils.RadiansToAngle(one[0]) > -90) &
-                       (MathUtils.RadiansToAngle(one[1]) < 90 && MathUtils.RadiansToAngle(one[1]) > -90) &
-                       (MathUtils.RadiansToAngle(one[2]) < 70 && MathUtils.RadiansToAngle(one[2]) > -70) &
-                       (MathUtils.RadiansToAngle(one[3]) < 220 && MathUtils.RadiansToAngle(one[3]) > -220) &
-                       (MathUtils.RadiansToAngle(one[4]) < 170 && MathUtils.RadiansToAngle(one[4]) > 0)
+                       (MathUtils.RadiansToAngle(one.O1) < 90 && MathUtils.RadiansToAngle(one.O1) > -90) &
+                       (MathUtils.RadiansToAngle(one.O2) < 90 && MathUtils.RadiansToAngle(one.O2) > -90) &
+                       (MathUtils.RadiansToAngle(one.O3) < 70 && MathUtils.RadiansToAngle(one.O3) > -70) &
+                       (MathUtils.RadiansToAngle(one.O4) < 220 && MathUtils.RadiansToAngle(one.O4) > -220) &
+                       (MathUtils.RadiansToAngle(one.O5) < 170 && MathUtils.RadiansToAngle(one.O5) > 0)
                        )
                     {
                         satisfied.Push(one);
                     }
-                  
+                    else
+                    {
+                        unsatisfied.Push(one);
+                    }
                 }
 
+                ManipulatorAngles angles;
                 if (satisfied.Count > 0)
                 {
-                    double[] rez = satisfied.Pop();
-                    ManipulatorAngles angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez[0]),
-                        MathUtils.RadiansToAngle(rez[1]),
-                        MathUtils.RadiansToAngle(rez[2]),
-                        MathUtils.RadiansToAngle(rez[3]),
-                        MathUtils.RadiansToAngle(rez[4])
+                    Angle3D rez = satisfied.Pop();
+                    angles = new ManipulatorAngles(
+                        MathUtils.RadiansToAngle(rez.O1),
+                        MathUtils.RadiansToAngle(rez.O2),
+                        MathUtils.RadiansToAngle(rez.O3),
+                        MathUtils.RadiansToAngle(rez.O4),
+                        MathUtils.RadiansToAngle(rez.O5)
                         );
-
-                    worker.ReportProgress(0, angles);
                 }
-                else
-                {
-                    double[] rez = rezults.Pop();
-                    ManipulatorAngles angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez[0]),
-                        MathUtils.RadiansToAngle(rez[1]),
-                        MathUtils.RadiansToAngle(rez[2]),
-                        MathUtils.RadiansToAngle(rez[3]),
-                        MathUtils.RadiansToAngle(rez[4])
+                else {
+                    Angle3D rez = unsatisfied.Pop();
+                    angles = new ManipulatorAngles(
+                        MathUtils.RadiansToAngle(rez.O1),
+                        MathUtils.RadiansToAngle(rez.O2),
+                        MathUtils.RadiansToAngle(rez.O3),
+                        MathUtils.RadiansToAngle(rez.O4),
+                        MathUtils.RadiansToAngle(rez.O5),
+                        false
                         );
-
-                    worker.ReportProgress(0, angles);
                 }
+
+                worker.ReportProgress(0, angles);
             }
         }
 

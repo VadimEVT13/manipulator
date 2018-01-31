@@ -82,7 +82,7 @@ namespace InverseTest.GUI
             if (onMousePressed && onModelHit)
             {
                 Console.WriteLine("PointNear: " + newPoint.ToString());
-                this.point.MoveToPositoin(newPoint);
+                this.point.MoveAndNotify(newPoint);
             }
         }
     }

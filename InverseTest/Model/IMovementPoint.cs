@@ -14,10 +14,14 @@ namespace InverseTest.GUI.Model
     {
         event PositoinHandler PositoinChanged;
 
-        void MoveToPositoin(Point3D newPositoin);
+        void Move(Point3D newPositoin);
+
+        void MoveAndNotify(Point3D newPosition);
 
         Point3D GetTargetPoint();
         
         void ChangeSize(double scale);
+
+
     }
 }

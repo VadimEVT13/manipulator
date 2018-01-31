@@ -333,8 +333,6 @@ namespace InverseTest
             currentCameraDirection = mx.Transform(DEFAULT_CAMERA_DIRECTION);
         }
 
-
-
         /// <summary>
         /// Устанавливает манипулятор в положение углов заданных в <see cref="partAngles"/>
         /// </summary>

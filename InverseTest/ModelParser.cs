@@ -36,7 +36,7 @@ namespace InverseTest
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(PORTAL_START_INDEX, PORTAL_END_INDEX - PORTAL_START_INDEX));
             portal.Children.Add(allModels.Children[62]);
-            frame = new DetectorFrame(portal);            
+            frame = new DetectorFrame(portal);
 
             //Определяем модельку манипулятора
             Model3DGroup manipulatorGroup = new Model3DGroup();
@@ -49,16 +49,18 @@ namespace InverseTest
             manipulatorGroup.Children.Add(allModels.Children[60]);
             manipulatorGroup.Children.Add(allModels.Children[61]);
             manipulator = new ManipulatorV2(manipulatorGroup);
-            
+
             Model3D lopatka = allModels.Children[LOPATKA_INDEX];
             detail = new DetailModel(lopatka);
 
             //Добавляем остальные мешы
             Model3DGroup others = new Model3DGroup();
             List<Model3D> othersModels = new List<Model3D>();
-            othersModels.AddRange(allModels.Children.ToList().GetRange(0, LOPATKA_INDEX - 1));
-            othersModels.AddRange(allModels.Children.ToList().GetRange(LOPATKA_INDEX + 1, MANIPULATOR_START_INDEX - (LOPATKA_INDEX - 1)));
+            othersModels.AddRange(allModels.Children.ToList().GetRange(0, LOPATKA_INDEX-1));
+            othersModels.AddRange(allModels.Children.ToList().GetRange(LOPATKA_INDEX + 1, MANIPULATOR_START_INDEX - (LOPATKA_INDEX-1)));
             others.Children = new Model3DCollection(othersModels);
+            this.others = others;
         }
     }
 }
+;

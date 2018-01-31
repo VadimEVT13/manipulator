@@ -136,7 +136,7 @@
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
             <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
-            <TextBox Name="CollisionTextBox" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5"/>
+            <TextBox Name="CollisionTextBox" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5" MaxLines="3" AcceptsReturn="True" TextWrapping="Wrap"/>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
@@ -150,7 +150,7 @@
                 <ToggleButton Content="Анимация" Name="AnimationTogleButton" Checked="ToggleAnimation_Checked" Unchecked="ToggleAnimation_Unchecked"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
                 <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto"  >
@@ -167,12 +167,17 @@
                             <TextBox Grid.Column="0" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocusDistanceTextBox" Text="{Binding ElementName=FocusDistanceSlider, Path=Value, Mode=TwoWay}"/>
                             <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocueEnlargmentTextBox" Text="{Binding ElementName=FocusEnlargementSlider, Path=Value, Mode=TwoWay}"/>
                             <Slider Grid.Column="0" Grid.Row="1" Name="FocusDistanceSlider"  Width="100" Maximum="100"
-                                    Minimum="0" Margin="0,0,8,8"  AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"  ValueChanged="FocusDistanceSlider_ValueChanged" ></Slider>
+                                    Minimum="0" Margin="0,0,8,8"  AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight" 
+                                    ValueChanged="FocusDistanceSlider_ValueChanged" 
+                                    Value="{Binding ElementName=FocusDistanceTextBox, Path=Text}"
+                                    />
                             <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1"
                                     Width="100" SmallChange="0.5" LargeChange="0.5" Maximum="3" Margin="0,0,8,8"
                             Minimum="0" Ticks="0,0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"
-                            ValueChanged="FocusEnlargementSlider_ValueChanged">
+                            ValueChanged="FocusEnlargementSlider_ValueChanged"
+                                    Value="{Binding ElementName=FocueEnlargmentTextBox, Path=Text}"
+                                    >
                             </Slider>
                         </Grid>
 
@@ -222,7 +227,7 @@
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
        
-        <TextBox DockPanel.Dock="Top"  Name="Position" HorizontalAlignment="Center" Width="400"  Background="Red" />
+        <TextBox DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center" Width="400"  Background="Red" />
         <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

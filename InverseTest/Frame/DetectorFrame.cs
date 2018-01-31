@@ -33,8 +33,8 @@ namespace InverseTest
 
 
         private DetectorFramePosition position;
-        private double verticalAngle;
-        private double horizontalAngle;
+        public double verticalAngle { get; set; }
+        public double horizontalAngle { get; set; }
         private double verticalAngleDelta;
         private double horizontalAngleDelta;
         private Model3DCollection partsCollectoin = new Model3DCollection();
@@ -379,7 +379,13 @@ namespace InverseTest
 
             ConfirmPosition();
         }
-    }
+
+        public Dictionary<Parts, double> GetCurrentOffsets()
+        {
+            return partOffset;
+        }
+
+}
 
 
 

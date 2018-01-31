@@ -31,7 +31,7 @@ namespace InverseTest.GUI.Model
             };
         }
 
-        void IMovementPoint.MoveToPositoin(Point3D newPositoin)
+        public void Move(Point3D newPositoin)
         {
             Point3D oldLocation = GetTargetPoint();
             // Вычисляем смещение для новой точки съемки относительно старой
@@ -42,6 +42,11 @@ namespace InverseTest.GUI.Model
             TranslateTransform3D transform = new TranslateTransform3D(newPositoin.X, newPositoin.Y, newPositoin.Z);
             Transform3D oldTransform = point.Model.Transform;
             point.Model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
+        }
+
+        public void MoveAndNotify(Point3D newPosition)
+        {
+            this.Move(newPosition);
             PositoinChanged?.Invoke(GetTargetPoint());
         }
 
@@ -61,6 +66,7 @@ namespace InverseTest.GUI.Model
         {
             return point.Model;
         }
-        
+
+       
     }
 }

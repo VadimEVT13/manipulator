@@ -67,7 +67,7 @@ namespace InverseTest.GUI
             if (result is RayHitTestResult hitResult && hitResult.ModelHit.Equals(surf)
                 && onMousePressed && onModelHit)
             {
-                point.MoveToPositoin(hitResult.PointHit);
+                point.MoveAndNotify(hitResult.PointHit);
             }
             return HitTestResultBehavior.Continue;
         }
