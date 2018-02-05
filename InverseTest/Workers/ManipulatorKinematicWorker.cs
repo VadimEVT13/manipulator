@@ -46,7 +46,7 @@ namespace InverseTest.Workers
         protected override void DoWork(T elem, DoWorkEventArgs arg)
         {
             SystemPosition sp = elem as SystemPosition;
-            Stack<Angle3D> rezults;
+            Stack<Vector5D> rezults;
             
             rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.targetPoint.Z, sp.targetPoint.Y);
 
@@ -55,17 +55,17 @@ namespace InverseTest.Workers
             // PositionUnattainableException
             if (rezults.Count > 0)
             {
-                Stack<Angle3D> satisfied = new Stack<Angle3D>();
-                Stack<Angle3D> unsatisfied = new Stack<Angle3D>();
-                foreach (Angle3D one in rezults)
+                Stack<Vector5D> satisfied = new Stack<Vector5D>();
+                Stack<Vector5D> unsatisfied = new Stack<Vector5D>();
+                foreach (Vector5D one in rezults)
                 {
 
                     if (
-                       (MathUtils.RadiansToAngle(one.O1) < 90 && MathUtils.RadiansToAngle(one.O1) > -90) &
-                       (MathUtils.RadiansToAngle(one.O2) < 90 && MathUtils.RadiansToAngle(one.O2) > -90) &
-                       (MathUtils.RadiansToAngle(one.O3) < 70 && MathUtils.RadiansToAngle(one.O3) > -70) &
-                       (MathUtils.RadiansToAngle(one.O4) < 220 && MathUtils.RadiansToAngle(one.O4) > -220) &
-                       (MathUtils.RadiansToAngle(one.O5) < 170 && MathUtils.RadiansToAngle(one.O5) > 0)
+                       (MathUtils.RadiansToAngle(one.K1) < 90 && MathUtils.RadiansToAngle(one.K1) > -90) &
+                       (MathUtils.RadiansToAngle(one.K2) < 90 && MathUtils.RadiansToAngle(one.K2) > -90) &
+                       (MathUtils.RadiansToAngle(one.K3) < 70 && MathUtils.RadiansToAngle(one.K3) > -70) &
+                       (MathUtils.RadiansToAngle(one.K4) < 220 && MathUtils.RadiansToAngle(one.K4) > -220) &
+                       (MathUtils.RadiansToAngle(one.K5) < 170 && MathUtils.RadiansToAngle(one.K5) > 0)
                        )
                     {
                         satisfied.Push(one);
@@ -79,23 +79,23 @@ namespace InverseTest.Workers
                 ManipulatorAngles angles;
                 if (satisfied.Count > 0)
                 {
-                    Angle3D rez = satisfied.Pop();
+                    Vector5D rez = satisfied.Pop();
                     angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez.O1),
-                        MathUtils.RadiansToAngle(rez.O2),
-                        MathUtils.RadiansToAngle(rez.O3),
-                        MathUtils.RadiansToAngle(rez.O4),
-                        MathUtils.RadiansToAngle(rez.O5)
+                        MathUtils.RadiansToAngle(rez.K1),
+                        MathUtils.RadiansToAngle(rez.K2),
+                        MathUtils.RadiansToAngle(rez.K3),
+                        MathUtils.RadiansToAngle(rez.K4),
+                        MathUtils.RadiansToAngle(rez.K5)
                         );
                 }
                 else {
-                    Angle3D rez = unsatisfied.Pop();
+                    Vector5D rez = unsatisfied.Pop();
                     angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez.O1),
-                        MathUtils.RadiansToAngle(rez.O2),
-                        MathUtils.RadiansToAngle(rez.O3),
-                        MathUtils.RadiansToAngle(rez.O4),
-                        MathUtils.RadiansToAngle(rez.O5),
+                        MathUtils.RadiansToAngle(rez.K1),
+                        MathUtils.RadiansToAngle(rez.K2),
+                        MathUtils.RadiansToAngle(rez.K3),
+                        MathUtils.RadiansToAngle(rez.K4),
+                        MathUtils.RadiansToAngle(rez.K5),
                         false
                         );
                 }
