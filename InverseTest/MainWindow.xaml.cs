@@ -126,7 +126,7 @@ namespace InverseTest
                 K5 = MANIP_EDGE_LENGTH_5
             };
 
-            manipKinematic.SetLen(len);
+            manipKinematic.Len = len;
             this.manipKinematic.det = 8.137991;
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
