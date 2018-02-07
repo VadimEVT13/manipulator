@@ -3,6 +3,7 @@ using InverseTest.Collision.Model;
 using InverseTest.Detail;
 using InverseTest.Manipulator;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -29,7 +30,13 @@ namespace InverseTest.Workers
 
         public void findCollision(T elem)
         {
+            if (!queue.IsEmpty)
+            {
+                clearQueue(queue);
+            }
             queue.Enqueue(elem);
+
+
             if (!worker.IsBusy)
             {
                 worker.RunWorkerAsync();
@@ -74,6 +81,12 @@ namespace InverseTest.Workers
             {
                 onCollision?.Invoke((CollisionPair)e.UserState);
             }
+        }
+
+        private void clearQueue(ConcurrentQueue<T> queue)
+        {
+            T res;
+            while (queue.TryDequeue(out res)) { }
         }
     }
 }
