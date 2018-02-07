@@ -179,6 +179,7 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="Manipulator\Models\ManipulatorParts.cs" />
     <Compile Include="Manipulator\Models\Matrix4D.cs" />
     <Compile Include="ModelPreprocessor.cs" />
     <Compile Include="ModelParser.cs" />
@@ -205,7 +206,7 @@
     <Compile Include="Manipulator\ManipulatorAngles.cs" />
     <Compile Include="Manipulator\ManipulatorPartDecorator.cs" />
     <Compile Include="Manipulator\Models\Vector5D.cs" />
-    <Compile Include="Manipulator\Models\Vector3D.cs" />
+    <Compile Include="Manipulator\Models\Vertex3D.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>

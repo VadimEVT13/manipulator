@@ -131,7 +131,7 @@ namespace InverseTest.Manipulator.Models
         }
 
         // Матрица T или матрица манипулятора
-        public static Matrix4D Mt(double alfa, double beta, Vector3D point)
+        public static Matrix4D Mt(double alfa, double beta, Vertex3D point)
         {
             return new Matrix4D
             {
