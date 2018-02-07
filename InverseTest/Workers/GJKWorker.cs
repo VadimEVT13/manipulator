@@ -40,12 +40,13 @@ namespace InverseTest.Workers
         {
             SceneSnapshot scs = elem as SceneSnapshot;
 
-            List<CollisionPair> pairs = aabb.Find(scs);
+            Queue<CollisionPair> pairs = new Queue<CollisionPair> (aabb.Find(scs));
 
             if (pairs.Count > 0)
             {
-                foreach (CollisionPair pair in pairs)
+                while(pairs.Count>0)
                 {
+                    CollisionPair pair = pairs.Dequeue();
                     if (solver.IntersectGJK(pair))
                     {
                         worker.ReportProgress(0, pair);
