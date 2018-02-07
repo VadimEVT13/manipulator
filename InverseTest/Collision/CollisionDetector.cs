@@ -1,10 +1,13 @@
-﻿using InverseTest.Collision.Model;
+﻿using InverseTest.Collision.Mappers;
+using InverseTest.Collision.Model;
+using InverseTest.Detail;
 using InverseTest.Workers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 using static InverseTest.Collision.AABB;
 
 namespace InverseTest.Collision
@@ -14,28 +17,34 @@ namespace InverseTest.Collision
 
     class CollisionDetector
     {
-        private AABB aabb;
-        private GJKWorker<CollisionPair> worker;
+
+        ManipulatorV2 Manipulator;
+        DetectorFrame Portal;
+        DetailModel Detail;
+        Model3DGroup Platform;
+
+        private GJKWorker<SceneSnapshot> worker;
 
         public event OnCollisionDetected OnCollision;
 
-        public CollisionDetector(AABB aabb, GJKWorker<CollisionPair> worker)
+        public CollisionDetector(ManipulatorV2 Manipulator,
+            DetectorFrame DetectorFrame,
+            DetailModel Detail,
+            Model3DGroup Platform,
+            GJKWorker<SceneSnapshot> worker)
         {
-            this.aabb = aabb;
+            this.Manipulator = Manipulator;
+            this.Portal = DetectorFrame;
+            this.Detail = Detail;
+            this.Platform = Platform;
+
             this.worker = worker;
-            this.worker.onCollision += OnCollision;
         }
 
         public void FindCollisoins()
         {
-            List<CollisionPair> pairs = aabb.Find();
-
-            foreach (CollisionPair p in pairs)
-            {                
-                worker.findCollision(p);
-            }
+            SceneSnapshot sc = SceneMapper.CreateSceneSnapshot(this.Manipulator, this.Portal, this.Detail);
+            worker.findCollision(sc);
         }
-
-
     }
 }

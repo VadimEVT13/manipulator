@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.Frame
 {
-    abstract class  IDetectorFramePart
+    abstract public class IDetectorFramePart
     {
         public abstract void TranslateTransform3D(Transform3D transform);
 
@@ -21,7 +21,7 @@ namespace InverseTest.Frame
 
         public abstract void ResetTransforms();
 
-public abstract Point3D GetCameraPosition();
+        public abstract Point3D GetCameraPosition();
 
 
     }

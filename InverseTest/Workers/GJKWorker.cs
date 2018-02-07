@@ -19,38 +19,61 @@ namespace InverseTest.Workers
     {
         public event OnCollisionDetected onCollision;
         private GJKSolver solver;
-        private Dispatcher dispatcher;
+        private AABB aabb;
 
-        public GJKWorker(GJKSolver solver, Dispatcher dispatcher) : base()
+        public GJKWorker(AABB aabb, GJKSolver solver) : base()
         {
             this.solver = solver;
-            this.dispatcher = dispatcher;
+            this.aabb = aabb;
         }
 
         public void findCollision(T elem)
         {
             queue.Enqueue(elem);
+            if (!worker.IsBusy)
+            {
+                worker.RunWorkerAsync();
+            }
         }
 
         protected override void DoWork(T elem, DoWorkEventArgs arg)
         {
-            CollisionPair c = elem as CollisionPair;
-            dispatcher.InvokeAsync(new Action(() => 
+            SceneSnapshot scs = elem as SceneSnapshot;
+
+            List<CollisionPair> pairs = aabb.Find(scs);
+
+            if (pairs.Count > 0)
             {
-                if (solver.IntersectGJK(c))
-                    worker.ReportProgress(0, c);
-            }), DispatcherPriority.Background);
-}
+                foreach (CollisionPair pair in pairs)
+                {
+                    if (solver.IntersectGJK(pair))
+                    {
+                        worker.ReportProgress(0, pair);
+                    }
+                }
+            }
+            else
+            {
+                worker.ReportProgress(0, null);
+            }
+
+        }
 
         protected override void workerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            Console.Error.WriteLine(e.Error);
         }
 
         protected override void workerProgressUpdate(object sender, ProgressChangedEventArgs e)
         {
-            onCollision?.Invoke((CollisionPair)e.UserState);
+            if (e.UserState == null)
+            {
+                onCollision?.Invoke(null);
+            }
+            else
+            {
+                onCollision?.Invoke((CollisionPair)e.UserState);
+            }
         }
-
     }
 }

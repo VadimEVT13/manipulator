@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Portal</name>
+    </assembly>
+    <members>
+        <member name="F:PortalModule.Form1.components">
+            <summary>
+            Обязательная переменная конструктора.
+            </summary>
+        </member>
+        <member name="M:PortalModule.Form1.Dispose(System.Boolean)">
+            <summary>
+            Освободить все используемые ресурсы.
+            </summary>
+            <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+        </member>
+        <member name="M:PortalModule.Form1.InitializeComponent">
+            <summary>
+            Требуемый метод для поддержки конструктора — не изменяйте 
+            содержимое этого метода с помощью редактора кода.
+            </summary>
+        </member>
+        <member name="M:PortalModule.Program.Main">
+            <summary>
+            Главная точка входа для приложения.
+            </summary>
+        </member>
+        <member name="T:Portal.PortalKinematic">
+            <summary>
+            Класс описывающий кинематику Портала
+            </summary>
+        </member>
+        <member name="M:Portal.PortalKinematic.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="X_max">Максимально возможное положение портала по оси x</param>
+            <param name="Y_max">Максимально возможное положение портала по оси y</param>
+            <param name="Z_max">Максимально возможное положение портала по оси z</param>
+            <param name="Xp">Положение начала портала в абсолютных координатах по оси x</param>
+            <param name="Yp">Положение начала портала в абсолютных координатах по оси y</param>
+            <param name="Zp">Положение начала портала в абсолютных координатах по оси z</param>
+            <param name="L1">Длинна ближайщего к площадке портала звена</param>
+            <param name="L2">Длинна второго звена портала</param>
+            <param name="L3">Длинна ближайщего к начальной точке портала звена</param>
+        </member>
+        <member name="M:Portal.PortalKinematic.setPointManipAndNab(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Задание точки схвата манипулятора и точки наблюдения манипулятором
+            </summary>
+            <param name="Xm">Положение схвата манипулятора в абсолютных координатах по оси x</param>
+            <param name="Ym">Положение схвата манипулятора в абсолютных координатах по оси y</param>
+            <param name="Zm">Положение схвата манипулятора в абсолютных координатах по оси z</param>
+            <param name="Xn">Положение точки наблюдения манипулятора в абсолютных координатах по оси x</param>
+            <param name="Yn">Положение точки наблюдения манипулятора в абсолютных координатах по оси y</param>
+            <param name="Zn">Положение точки наблюдения манипулятора в абсолютных координатах по оси z</param>
+            <returns></returns>
+        </member>
+        <member name="M:Portal.PortalKinematic.portalPoint(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="scale">Параметр задает расстояние от точки наблюдения до площадки портала в разах от расстояния схвата манипулятора до точки наблюдения</param>
+            <returns>Возвращает массив double. Первые 3 числа задают (x,y,z) точку портала, где крепится звенья портала. 4 и 5 число углы поворота звеньев alf и bet</returns>
+        </member>
+        <member name="T:Portal.Properties.Resources">
+            <summary>
+              Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+            </summary>
+        </member>
+        <member name="P:Portal.Properties.Resources.ResourceManager">
+            <summary>
+              Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+            </summary>
+        </member>
+        <member name="P:Portal.Properties.Resources.Culture">
+            <summary>
+              Перезаписывает свойство CurrentUICulture текущего потока для всех
+              обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+            </summary>
+        </member>
+    </members>
+</doc>

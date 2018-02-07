@@ -13,15 +13,13 @@ namespace InverseTest.Collision.Model
     /// </summary>
     public class Model3DCollision
     {
-        public String meshName;
-        public Model3DGroup model{ get; }
+        public String meshName { get; }
+        public PartShape shape{ get; }
 
-        public Model3DCollision(string modelName, Model3DGroup modelGroup)
+        public Model3DCollision(string modelName, PartShape shape)
         {
             this.meshName = modelName;
-            this.model = modelGroup;
+            this.shape = shape;
         }
-
-
     }
 }

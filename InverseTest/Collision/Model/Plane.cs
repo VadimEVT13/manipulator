@@ -9,7 +9,6 @@ namespace InverseTest.Collision
 {
     public class Plane
     {
-
         public Plane()
         {
             points = new Vector3D[3];
