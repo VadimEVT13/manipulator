@@ -1,0 +1,27 @@
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\ru\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.resources.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\ru\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\3DModels\Detector Frame.obj
+C:\RoboArm\InverseTetsUnitTests\bin\Release\3DModels\Detector Frame.mtl
+C:\RoboArm\InverseTetsUnitTests\bin\Release\InverseTetsUnitTests.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\InverseTetsUnitTests.pdb
+C:\RoboArm\InverseTetsUnitTests\bin\Release\InverseTest.exe
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\MIConvexHull.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.Wpf.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.dll
+C:\RoboArm\InverseTetsUnitTests\bin\Release\InverseTest.pdb
+C:\RoboArm\InverseTetsUnitTests\bin\Release\InverseTest.exe.config
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\RoboArm\InverseTetsUnitTests\bin\Release\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.Wpf.pdb
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.Wpf.xml
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.pdb
+C:\RoboArm\InverseTetsUnitTests\bin\Release\HelixToolkit.xml
+C:\RoboArm\InverseTetsUnitTests\obj\Release\InverseTetsUnitTests.dll
+C:\RoboArm\InverseTetsUnitTests\obj\Release\InverseTetsUnitTests.pdb
+C:\RoboArm\InverseTetsUnitTests\obj\Release\InverseTetsUnitTests.csprojResolveAssemblyReference.cache
