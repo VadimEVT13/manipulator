@@ -39,8 +39,7 @@ namespace InverseTest
                     DoWork(elem, e);
                 }
             }
-
-        }
+                    }
 
         protected abstract void DoWork(T elem, DoWorkEventArgs arg);
 
