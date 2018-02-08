@@ -53,9 +53,9 @@ namespace InverseTest
 
         private Kinematic manipKinematic;
 
-        public ManipulatorV2 manipulator;
-        public DetectorFrame detectorFrame;
-        public IMovementPoint scanPoint;
+        private IManipulatorModel manipulator;
+        private IDetectorFrame detectorFrame;
+        private IMovementPoint scanPoint;
         private IMovementPoint manipulatorCamPoint;
         private IConeModel coneModel;
         private Model3DGroup platform = new Model3DGroup();
@@ -69,7 +69,7 @@ namespace InverseTest
         private DetailModel detail;
 
         private ManipulatorKinematicWorker<SystemPosition> manipWorker;
-        private GJKWorker<SceneSnapshot> collisionWorker;
+        private GJKWorker<CollisionPair> collisionWorker;
         private CollisionDetector collisoinDetector;
 
         private double distanceToScreen = 50;
@@ -116,8 +116,18 @@ namespace InverseTest
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             CalculateEdgesLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
-            this.manipKinematic.SetLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
-            this.manipKinematic.det = 8.137991;
+
+            Vector5D len = new Vector5D()
+            {
+                K1 = MANIP_EDGE_LENGTH_1,
+                K2 = MANIP_EDGE_LENGTH_2,
+                K3 = MANIP_EDGE_LENGTH_3,
+                K4 = MANIP_EDGE_LENGTH_4,
+                K5 = MANIP_EDGE_LENGTH_5
+            };
+
+            manipKinematic.Len = len;
+            this.manipKinematic.Det = 8.137991;
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
 
@@ -129,11 +139,10 @@ namespace InverseTest
 
             //Коллизии
             GJKSolver gjkSolver = new GJKSolver();
-
-            AABB aabb = new AABB();
-            aabb.MakeListExcept(manipulator, detectorFrame, detail, new Model3DGroup());
-            collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
-            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, new Model3DGroup(), collisionWorker);
+            collisionWorker = new GJKWorker<CollisionPair>(gjkSolver, this.Dispatcher);
+            AABB aabb = new AABB(manipulator, detectorFrame, detail, new Model3DGroup());
+            aabb.MakeListExcept();
+            collisoinDetector = new CollisionDetector(aabb, collisionWorker);
 
 
             //Точка сканирования
@@ -156,19 +165,12 @@ namespace InverseTest
             manipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
             scanPoint.MoveAndNotify(new Point3D(0, 60, 0));
 
-            collisionWorker.onCollision += OnCollisoinsDetected;
+            collisionWorker.onCollision += OnCollisoinsDetected;            
         }
 
         public void OnCollisoinsDetected(CollisionPair pair)
         {
-            if (pair == null)
-            {
-                CollisionTextBox.Clear();
-            }
-            else
-            {
-                CollisionTextBox.Text = pair.modelCollision1.meshName + " intersects with  " + pair.modelCollision2.meshName;
-            }
+            CollisionTextBox.Text = pair.modelCollision1.meshName + " intersects with  " + pair.modelCollision2.meshName;
         }
 
 
@@ -202,7 +204,7 @@ namespace InverseTest
             if (angles.isValid)
                 PositionValid.Background = Brushes.Green;
             else PositionValid.Background = Brushes.Red;
-            manipulator.MoveManipulator(angles, false);
+                manipulator.MoveManipulator(angles, false);
         }
 
         /// <summary>
@@ -216,7 +218,7 @@ namespace InverseTest
         public void SetDistanceToPoint()
         {
             this.distanceToScreen = scanPoint.GetTargetPoint().DistanceTo(manipulatorCamPoint.GetTargetPoint());
-            FocusDistanceTextBox.Text = Math.Round(distanceToScreen, 3).ToString();
+            FocusDistanceTextBox.Text = Math.Round(distanceToScreen, 3).ToString(); 
         }
 
         /// <summary>
@@ -273,8 +275,6 @@ namespace InverseTest
                 this.manipWorker.solve(new SystemPosition(newPosition, scanPoint.GetTargetPoint()));
                 SolvePortalKinematic(newPosition, scanPoint.GetTargetPoint(), false);
             }
-
-            collisoinDetector.FindCollisoins();
         }
 
         public void OnScanPointPositoinChanged(Point3D newPosition)
@@ -288,7 +288,6 @@ namespace InverseTest
                 this.manipWorker.solve(new SystemPosition(manipulatorCamPoint.GetTargetPoint(), newPosition));
                 SolvePortalKinematic(manipulatorCamPoint.GetTargetPoint(), newPosition, false);
             }
-
 
         }
 
@@ -327,21 +326,23 @@ namespace InverseTest
         /// </summary>
         private void ParsePointsAndMove()
         {
+            try
+            {
+                double x, y, z;
+                Console.WriteLine("ParsePointAndMove");
+                double.TryParse(TargetPointXTextBox.Text, out x);
+                double.TryParse(TargetPointYTextBox.Text, out y);
+                double.TryParse(TargetPointZTextBox.Text, out z);
+                scanPoint.Move(new Point3D(x, y, z));
 
-            double x, y, z;
-            Console.WriteLine("ParsePointAndMove");
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-            scanPoint.Move(new Point3D(x, y, z));
-
-            double manip_x, manip_y, manip_z;
-            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-            manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
-
-
+                double manip_x, manip_y, manip_z;
+                double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
+                double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
+                double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
+                manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
+            }
+            catch (NullReferenceException ex)
+            { }
         }
 
 
@@ -600,39 +601,44 @@ namespace InverseTest
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
+            VerticalFrameSliderTextBox.Text = e.NewValue.ToString();
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
+            HorizontalBarTextView.Text = e.NewValue.ToString();
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
+            ScreenHolderTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
+            ScreenVerticalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
+            ScreenHorizontalAngleTextBox.Text = e.NewValue.ToString();
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             //   ((IDebugModels)detectorFrame).transformModel(e.NewValue);
-            allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+            // allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
             // ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
-            NumMeshTextBox.Text = numMesh.ToString();
+            //NumMeshTextBox.Text = numMesh.ToString();
 
         }
 

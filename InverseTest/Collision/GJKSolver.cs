@@ -17,12 +17,15 @@ namespace InverseTest.Collision
 
         public bool IntersectGJK(CollisionPair pair) // отправка данных на GJK
         {
+            return false;
+            /*
             HullsV2 hull = new HullsV2();
 
-            var shell1 = hull.BuildShell(pair.modelCollision1);
-            var shell2 = hull.BuildShell(pair.modelCollision2);
+            hull.BuildShell(pair.modelCollision1.model);
+            hull.BuildShell(pair.modelCollision2.model);
 
-            return hull.find(shell1, shell2);  //поиск пересечений GJK            
+            return hull.find();  //поиск пересечений GJK
+            //*/
         }
     }
 }
