@@ -26,7 +26,6 @@ namespace InverseTest
         private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
         private ManipulatorAngles anglesToSet;
 
-
         /// <summary>
         /// Перечисление всех подвижных ребер манипулятора
         /// </summary>
@@ -406,8 +405,9 @@ namespace InverseTest
         public virtual void ResetModel()
         {
             foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+            {
                 partAngles[part] = 0;
-
+            }
             ConfirmRotation();
         }
 
@@ -442,11 +442,9 @@ namespace InverseTest
             return resPoint;
         }
 
-
         public override string ToString()
         {
             return parts[ManipulatorParts.Camera].GetModel().Bounds.ToString();
-
         }
     }
 }
