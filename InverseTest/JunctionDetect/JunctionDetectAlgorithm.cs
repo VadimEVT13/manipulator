@@ -1,32 +1,32 @@
-﻿using InverseTest.Manipulator;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using InverseTest.Manipulator;
 
 namespace InverseTest.JunctionDetect
 {
     public class JunctionDetectAlgorithm
     {
-        private static Point3D[] meshVertices;
-        private static int[] meshTriangles;
+        private Point3D[] vertices;
+        private int[] triangles;
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public int[] Detect(Model3D model)
         {
             MeshGeometry3D meshGeometry = ((MeshGeometry3D)((GeometryModel3D)model).Geometry);
-            meshTriangles = meshGeometry.TriangleIndices.ToArray();
-            meshVertices = meshGeometry.Positions.ToArray();
+            triangles = meshGeometry.TriangleIndices.ToArray();
+            vertices = meshGeometry.Positions.ToArray();
 
             int[][] neighbors = GetNeighbors(1);
 
-            Task<double[]> calculateAreaTask = new Task<double[]>(() => calculateAreas((
-                (int[][])neighbors.Clone()),
-                (Point3D[])meshVertices.Clone(),
-                (int[])meshTriangles.Clone()));
-
-            Task<double[]> calculateAnglesTask = new Task<double[]>(() => calculateAngles(neighbors, meshVertices, meshTriangles));
+            Task<double[]> calculateAreaTask = new Task<double[]>(() => CalculateAreas((int[][]) neighbors.Clone(), (Point3D[]) vertices.Clone()));
+            Task<double[]> calculateAnglesTask = new Task<double[]>(() => CalculateAngles(neighbors, vertices));
 
             calculateAreaTask.Start();
             calculateAnglesTask.Start();
@@ -37,38 +37,30 @@ namespace InverseTest.JunctionDetect
             calculateAreaTask.Wait();
             calculateAnglesTask.Wait();
 
-            double[] curvatures = calculatePointsCurvature(angles, areas);
-
-            int[] curvedPoints = fillterPointsByCurvature(curvatures);
-
-            return curvedPoints;
+            double[] curvatures = CalculatePointsCurvature(angles, areas);
+            return FillterPointsByCurvature(curvatures);
         }
-
 
         /// <summary>
         /// Вычисляет площадь полигонов вокруг всех точек
         /// </summary>
         /// <param name="neighbors"></param>
         /// <param name="points"></param>
-        /// <param name="triangles"></param>
         /// <returns></returns>
-        private double[] calculateAreas(int[][] neighbors, Point3D[] points, int[] triangles)
+        private double[] CalculateAreas(int[][] neighbors, Point3D[] points)
         {
             List<double> areasList = new List<double>();
-
             for (int i = 0; i < neighbors.Length; i++)
             {
-                Point3D currentPoint = points[i];
-                double sumArreas = 0;
-                for (int j = 0; j < neighbors[i].Length; j++)
+                double areas = 0;
+                int last = neighbors[i].Length - 1;
+                for (int j = 0; j < last; j++)
                 {
-                    int indexPoint1 = neighbors[i][j];
-                    int indexPoint2 = j == neighbors[i].Length - 1 ? indexPoint2 = 0 : indexPoint2 = j + 1;
-                    sumArreas += getArea(currentPoint, points[indexPoint1], points[indexPoint2]);
+                    areas += GetArea(points[i], points[neighbors[i][j]], points[neighbors[i][j + 1]]);
                 }
-                areasList.Add(sumArreas);
+                areas += GetArea(points[i], points[neighbors[i][last]], points[neighbors[i][0]]);
+                areasList.Add(areas);
             }
-
             return areasList.ToArray();
         }
 
@@ -76,46 +68,38 @@ namespace InverseTest.JunctionDetect
         /// Вычисляет площадь полигона состоящего из точек
         /// </summary>
         /// <param name="currentPoint"></param>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
+        /// <param name="pointA"></param>
+        /// <param name="pointB"></param>
         /// <returns></returns>
-        public double getArea(Point3D currentPoint, Point3D point1, Point3D point2)
+        public double GetArea(Point3D currentPoint, Point3D pointA, Point3D pointB)
         {
-            double AB = Distance(currentPoint, point1);
-            double AC = Distance(currentPoint, point2);
-            double BC = Distance(point1, point2);
-
+            double AB = Distance(currentPoint, pointA);
+            double AC = Distance(currentPoint, pointB);
+            double BC = Distance(pointA, pointB);
             double semiperimeter = (AB + AC + BC) / 2;
-
-            double area = Math.Sqrt((semiperimeter - AB) * (semiperimeter - AC) * (semiperimeter - BC) * semiperimeter);
-
-            return area;
+            return Math.Sqrt((semiperimeter - AB) * (semiperimeter - AC) * (semiperimeter - BC) * semiperimeter);
         }
+
         /// <summary>
         /// Вычисляет сумму углов вокруг всех точек
         /// </summary>
         /// <param name="neighbors"></param>
         /// <param name="points"></param>
-        /// <param name="triangles"></param>
         /// <returns></returns>
-        private double[] calculateAngles(int[][] neighbors, Point3D[] points, int[] triangles)
+        private double[] CalculateAngles(int[][] neighbors, Point3D[] points)
         {
             List<double> angles = new List<double>();
-
             for (int i = 0; i < neighbors.Length; i++)
             {
-                Point3D currentPoint = points[i];
                 double sumAngles = 0;
-                for (int j = 0; j < neighbors[i].Length; j++)
+                int last = neighbors[i].Length - 1;
+                for (int j = 0; j < last; j++)
                 {
-                    int indexPoint1 = neighbors[i][j];
-                    int indexPoint2 = neighbors[i][j == neighbors[i].Length - 1 ? indexPoint2 = 0 : indexPoint2 = j + 1];
-                    double calcAngle = getAngle(currentPoint, points[indexPoint1], points[indexPoint2]);
-                    sumAngles += calcAngle;
+                    sumAngles += GetAngle(points[i], points[neighbors[i][j]], points[neighbors[i][j + 1]]);
                 }
+                sumAngles += GetAngle(points[i], points[neighbors[i][last]], points[neighbors[i][0]]);
                 angles.Add(sumAngles);
             }
-
             return angles.ToArray();
         }
 
@@ -126,61 +110,64 @@ namespace InverseTest.JunctionDetect
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <returns></returns>
-        public double getAngle(Point3D currentPoint, Point3D point1, Point3D point2)
+        public double GetAngle(Point3D currentPoint, Point3D point1, Point3D point2)
         {
             Vector3D vector = new Vector3D(point1.X - currentPoint.X, point1.Y - currentPoint.Y, point1.Z - currentPoint.Z);
             Vector3D vector2 = new Vector3D(point2.X - currentPoint.X, point2.Y - currentPoint.Y, point2.Z - currentPoint.Z);
             return Vector3D.AngleBetween(vector, vector2);
         }
 
-        private double[] calculatePointsCurvature(double[] angles, double[] areas)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="angles"></param>
+        /// <param name="areas"></param>
+        /// <returns></returns>
+        private double[] CalculatePointsCurvature(double[] angles, double[] areas)
         {
             List<double> pointsCurvature = new List<double>();
-
-            for (int i = 0; i < meshVertices.Length; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
                 double curvature = (3 * (2 * Math.PI - MathUtils.AngleToRadians(angles[i]))) / areas[i];
                 pointsCurvature.Add(curvature);
             }
-
             return pointsCurvature.ToArray();
         }
-
 
         /// <summary>
         ///  Возвращает список соседей у каждой точки
         /// </summary>
-        /// <param name="N"></param>
-        private int[][] GetNeighbors(int N)
+        /// <param name="level"></param>
+        private int[][] GetNeighbors(int level)
         {
-            int[][] neighbors = new int[meshVertices.Length][];
-            for (int i = 0; i < meshVertices.Length; i++)
+            int[][] neighbors = new int[vertices.Length][];
+            for (int i = 0; i < vertices.Length; i++)
             {
-                neighbors[i] = getNeighborhoodLevelPoints(i, N);
+                neighbors[i] = GetNeighborhoodLevelPoints(i, level);
             }
-
             return neighbors;
         }
 
-
-
-
-        //Возвращает точки вокруг заданной точки на уровне NEIGHBORHOOD_LAVEL
-        private int[] getNeighborhoodLevelPoints(int pointIndex, int N)
+        /// <summary>
+        /// Возвращает точки вокруг заданной точки на уровне NEIGHBORHOOD_LAVEL
+        /// </summary>
+        /// <param name="pointIndex"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        private int[] GetNeighborhoodLevelPoints(int pointIndex, int level)
         {
             HashSet<int> previousLevelPoints = new HashSet<int>();
-            HashSet<int> currentLevelPoints = new HashSet<int>();
-            currentLevelPoints.Add(pointIndex);
-
+            HashSet<int> currentLevelPoints = new HashSet<int>
+            {
+                pointIndex
+            };
             List<int> neighborhoodLevelPoints = new List<int>();
-
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < level; i++)
             {
                 neighborhoodLevelPoints.Clear();
-
                 foreach (int currentPoint in currentLevelPoints)
                 {
-                    List<int> pointAround = getPointsAroundPoint(currentPoint);
+                    List<int> pointAround = GetPointsAroundPoint(currentPoint);
                     foreach (int point2 in pointAround)
                     {
                         if (!previousLevelPoints.Contains(point2) && !currentLevelPoints.Contains(point2))
@@ -189,128 +176,110 @@ namespace InverseTest.JunctionDetect
                         }
                     }
                 }
-
                 previousLevelPoints.UnionWith(currentLevelPoints);
                 currentLevelPoints.Clear();
                 currentLevelPoints.UnionWith(neighborhoodLevelPoints);
             }
-
             List<int> resPoints = new List<int>();
-            for (int i = 0; i < neighborhoodLevelPoints.Count; i += N)
+            for (int i = 0; i < neighborhoodLevelPoints.Count; i += level)
+            {
                 resPoints.Add(neighborhoodLevelPoints[i]);
-
+            }
             return resPoints.ToArray();
         }
 
-
-        //Возвращает точки вокрут заданной точки
-        private List<int> getPointsAroundPoint(int pointIndex)
+        /// <summary>
+        /// Возвращает точки вокрут заданной точки
+        /// </summary>
+        /// <param name="pointIndex"></param>
+        /// <returns></returns>
+        private List<int> GetPointsAroundPoint(int pointIndex)
         {
-
-            LinkedList<int> points = new LinkedList<int>();
-            List<int> othersTrianglePoints = new List<int>();
             List<List<int>> pointsInTriangle = new List<List<int>>();
-            for (int index = 0; index < meshTriangles.Length; index++)
+            for (int index = 0; index < triangles.Length; index++)
             {
-                if (meshVertices[pointIndex].Equals(meshVertices[meshTriangles[index]]))
+                if (vertices[pointIndex].Equals(vertices[triangles[index]]))
                 {
                     int triangleIndex = index / 3;
-
                     List<int> pointsList = new List<int>();
                     for (int pointInTriangle = 3 * triangleIndex; pointInTriangle < 3 * triangleIndex + 3; pointInTriangle++)
                     {
-                        int currentPoint = meshTriangles[pointInTriangle];
-                        if (!meshVertices[currentPoint].Equals(meshVertices[pointIndex]))
+                        int currentPoint = triangles[pointInTriangle];
+                        if (!vertices[currentPoint].Equals(vertices[pointIndex]))
                         {
                             pointsList.Add(currentPoint);
                         }
                     }
                     pointsInTriangle.Add(pointsList);
                 }
-
             }
-
-            int[] neighborsPoints = buildNeighborhoodLinks(pointsInTriangle);
-
-
+            int[] neighborsPoints = BuildNeighborhoodLinks(pointsInTriangle);
             return new List<int>(neighborsPoints);
         }
 
-
-        private int[] buildNeighborhoodLinks(List<List<int>> trianglePoints)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trianglePoints"></param>
+        /// <returns></returns>
+        private int[] BuildNeighborhoodLinks(List<List<int>> trianglePoints)
         {
-
             LinkedList<int> points = new LinkedList<int>();
-
             foreach (List<int> listPoints in trianglePoints)
             {
                 if (points.Count == 0)
                 {
                     points.AddLast(listPoints[0]);
                     points.AddLast(listPoints[1]);
-                    continue;
                 }
-
-                if (meshVertices[listPoints[0]].Equals(meshVertices[points.First.Value]))
+                else if (vertices[listPoints[0]].Equals(vertices[points.First.Value]))
                 {
                     points.AddFirst(listPoints[1]);
-                    continue;
                 }
-                else if (meshVertices[listPoints[0]].Equals(meshVertices[points.Last.Value]))
+                else if (vertices[listPoints[0]].Equals(vertices[points.Last.Value]))
                 {
                     points.AddLast(listPoints[1]);
-                    continue;
                 }
-                else if (meshVertices[listPoints[1]].Equals(meshVertices[points.First.Value]))
+                else if (vertices[listPoints[1]].Equals(vertices[points.First.Value]))
                 {
                     points.AddFirst(listPoints[0]);
-                    continue;
                 }
-                else if (meshVertices[listPoints[1]].Equals(meshVertices[points.Last.Value]))
+                else if (vertices[listPoints[1]].Equals(vertices[points.Last.Value]))
                 {
                     points.AddLast(listPoints[0]);
-                    continue;
                 }
             }
-
-
             return points.ToArray();
-
-
         }
 
         /// <summary>
-        /// Вычисляет расстаяние между двумя точками
+        /// Вычисляет расстояние между двумя точками A и B.
         /// </summary>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
+        /// <param name="pointA">точка A</param>
+        /// <param name="pointB">точка B</param>
         /// <returns></returns>
-        private double Distance(Point3D point1, Point3D point2)
+        private double Distance(Point3D pointA, Point3D pointB)
         {
-            return Math.Sqrt(Math.Pow((point2.X - point1.X), 2) +
-                Math.Pow((point2.Y - point1.Y), 2) +
-                Math.Pow((point2.Z - point1.Z), 2)
-                );
+            double dx = pointB.X - pointA.X;
+            double dy = pointB.Y - pointA.Y;
+            double dz = pointB.Z - pointA.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
-        private int[] fillterPointsByCurvature(double[] curvatures)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="curvatures"></param>
+        /// <returns></returns>
+        private int[] FillterPointsByCurvature(double[] curvatures)
         {
             List<int> curvedPointsIndexes = new List<int>();
             List<int> curveturesNegative = new List<int>();
             List<int> curveturesPositive = new List<int>();
-            
             double avarageNegCurv = 0;
             double avaragePositCurv = 0;
-            double maxCurve = curvatures.Max();
-            double minCurve = curvatures.Min();
-
-
-
             for (int i = 0; i < curvatures.Length; i++)
             {
-                Console.Write(curvatures[i] + " ");
-
-
                 if (curvatures[i] >= 0)
                 {
                     curveturesPositive.Add(i);
@@ -322,19 +291,19 @@ namespace InverseTest.JunctionDetect
                     avarageNegCurv += curvatures[i];
                 }
             }
-
             avarageNegCurv = avarageNegCurv / curveturesNegative.Count;
             avaragePositCurv = avaragePositCurv / curveturesPositive.Count;
-
-
             for (int i = 0; i < curvatures.Length; i++)
             {
                 if (curvatures[i] > avaragePositCurv)
+                {
                     curvedPointsIndexes.Add(i);
+                }
                 if (curvatures[i] < avarageNegCurv)
+                {
                     curvedPointsIndexes.Add(i);
+                }
             }
-
             return curvedPointsIndexes.ToArray();
         }
     }

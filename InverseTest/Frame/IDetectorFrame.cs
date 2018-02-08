@@ -21,6 +21,6 @@ namespace InverseTest
         Point3D GetCameraPosition();
 
         void ResetTransforms();
-
+        
     }
 }

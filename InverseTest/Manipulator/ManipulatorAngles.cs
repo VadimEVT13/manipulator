@@ -10,9 +10,10 @@ namespace InverseTest.Manipulator
     public class ManipulatorAngles
     {
 
-        public readonly Dictionary<ManipulatorParts, double> partAngles;      
+        public readonly Dictionary<ManipulatorParts, double> partAngles;
+        public bool isValid { get; }
 
-        public ManipulatorAngles(double angle1, double angle2, double angle3, double angle4, double angle5)
+        public ManipulatorAngles(double angle1, double angle2, double angle3, double angle4, double angle5, bool isValid = true)
         {
             partAngles = new Dictionary<ManipulatorParts, double>();
             partAngles[ManipulatorParts.Table] = -angle1;
@@ -20,7 +21,19 @@ namespace InverseTest.Manipulator
             partAngles[ManipulatorParts.TopEdge] = -angle3;
             partAngles[ManipulatorParts.CameraBase] = -angle4;
             partAngles[ManipulatorParts.Camera] = -angle5;
+            this.isValid = isValid;
         }
-      
+
+        public override string ToString()
+        {
+            String resString = "Angles: ";
+
+            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+            {
+                resString += part.ToString() + " :  " + partAngles[part].ToString();
+            }
+
+            return resString;
+        }
     }
 }

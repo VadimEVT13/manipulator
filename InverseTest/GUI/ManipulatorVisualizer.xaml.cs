@@ -100,11 +100,6 @@ namespace InverseTest.GUI
             ViewPort3D.RotateAroundMouseDownPoint = false;
             ViewPort3D.ModelUpDirection = new Vector3D(0, 1, 0);
             
-            
-
-
-          
-
             cameraFromPortal = new PerspectiveCamera();
             cameraFromPortal.FieldOfView = 60;
             ViewPortDetectorScreenCam.Camera = cameraFromPortal;
@@ -158,8 +153,7 @@ namespace InverseTest.GUI
 
             cam2DRight.Width = model.Bounds.SizeX;
             cam2DRight.Position = new Point3D(0, bound.Y + bound.SizeY / 2, DISTANCE_TO_CAMERA);
-
-
+            
             cam3D.LookDirection = new Vector3D(-DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5, -DISTANCE_TO_CAMERA / 5);
             cam3D.Position = new Point3D(DISTANCE_TO_CAMERA/5,DISTANCE_TO_CAMERA/5 ,DISTANCE_TO_CAMERA /5);
         }
@@ -208,8 +202,6 @@ namespace InverseTest.GUI
             Point3D cameraPosition = manipulator.GetCameraPosition();
             cameraFromManipulator.Position = cameraPosition;
             cameraFromManipulator.LookDirection = manipulator.GetCameraDirection();
-
-
         }
 
         /// <summary>
@@ -229,10 +221,9 @@ namespace InverseTest.GUI
         public void SetManipulatorPoint(IMovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
-            Model3D modelGroup = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            manipulatorMover.modelToDetect = (modelGroup as Model3DGroup).Children[4];
+            manipulatorMover.ModelToDetect = point.GetModel();
             AddListeners(manipulatorMover);
-           // AddModel(point.GetModel());
+            AddModelWithoutCamView(point.GetModel());
         }
 
 
@@ -243,7 +234,7 @@ namespace InverseTest.GUI
         public void SetPoint(IMovementPoint scanPoint, Model3D model)
         {
             this.mover = new ModelMoverAboveSurf(scanPoint, model);
-            this.mover.modelToDetect = scanPoint.GetModel();
+            this.mover.ModelToDetect = scanPoint.GetModel();
             AddListeners(mover);
             AddModel(scanPoint.GetModel());
         }
@@ -270,10 +261,10 @@ namespace InverseTest.GUI
 
 
         /// <summary>
-        /// Добавляет модель конуса из камеры
+        /// Добавляет модель на все виды кроме видов из камер
         /// </summary>
         /// <param name="model"></param>
-        public void AddConeFromCamera(Model3D model)
+        public void AddModelWithoutCamView(Model3D model)
         {
 
             ModelVisual3D topViewModel = new ModelVisual3D() { Content = model };
@@ -376,7 +367,6 @@ namespace InverseTest.GUI
                    Width = rect.SizeY,
                    Length = rect.SizeX,
                    Height = rect.SizeZ
-                    
             };
 
 

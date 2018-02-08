@@ -140,21 +140,7 @@
       <HintPath>..\packages\Microsoft.Xaml.4.0.0.1\lib\System.Design.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Threading, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-XAML.2.2.5\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SDK.Expression.Blend.1.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -182,20 +168,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Collision\Collision.cs" />
+    <Compile Include="Collision\AABB.cs" />
+    <Compile Include="Collision\CollisionDetector.cs" />
+    <Compile Include="Collision\GJKFinder.cs" />
+    <Compile Include="Collision\GJKSolver.cs" />
+    <Compile Include="Collision\HullsV2.cs" />
+    <Compile Include="Collision\Model\CollisionPair.cs" />
+    <Compile Include="Collision\Model\Model3DCollision.cs" />
+    <Compile Include="Collision\Model\Plane.cs" />
+    <Compile Include="Collision\PointComparer.cs" />
+    <Compile Include="Collision\Support.cs" />
+    <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="ModelPreprocessor.cs" />
+    <Compile Include="ModelParser.cs" />
+    <Compile Include="Workers\BackgroundCalculations.cs" />
     <Compile Include="Detail\DetailModel.cs" />
     <Compile Include="Frame\IDetectorFramePart.cs" />
     <Compile Include="Frame\DetectorFramePartDecorator.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
+    <Compile Include="Frame\PortalKinematic.cs" />
     <Compile Include="GUI\IModelMover.cs" />
     <Compile Include="GUI\ModelMover.cs" />
     <Compile Include="GUI\ModelMoverAboveSurf.cs" />
-    <Compile Include="GUI\Model\ConeModel.cs" />
-    <Compile Include="GUI\Model\IConeModel.cs" />
-    <Compile Include="GUI\Model\IMovementPoint.cs" />
-    <Compile Include="GUI\Model\MovementPoint.cs" />
+    <Compile Include="Model\ConeModel.cs" />
+    <Compile Include="Model\IConeModel.cs" />
+    <Compile Include="Model\IMovementPoint.cs" />
+    <Compile Include="Model\MovementPoint.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
@@ -203,12 +203,17 @@
     <Compile Include="Manipulator\Kinematic.cs" />
     <Compile Include="Manipulator\ManipulatorAngles.cs" />
     <Compile Include="Manipulator\ManipulatorPartDecorator.cs" />
+    <Compile Include="Manipulator\Models\Angle3D.cs" />
+    <Compile Include="Manipulator\Models\Vertex3D.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="SystemPosition.cs" />
+    <Compile Include="Workers\GJKWorker.cs" />
+    <Compile Include="Workers\ManipulatorKinematicWorker.cs" />
     <Page Include="GUI\ManipulatorVisualizer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

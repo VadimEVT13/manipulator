@@ -24,19 +24,17 @@ namespace InverseTest
         private Model3DGroup screenCameraPos;
         private int numberMesh = 0;
 
-
-
         /// Части 
         private Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
-        private Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
+        public  Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
         private Dictionary<Parts, double> partDeltas = new Dictionary<Parts, double>();
         private Dictionary<Parts, Point3D> partStartPosition = new Dictionary<Parts, Point3D>();
         private Dictionary<Parts, double> positionsToSet = new Dictionary<Parts, double>();
 
 
         private DetectorFramePosition position;
-        private double verticalAngle;
-        private double horizontalAngle;
+        public double verticalAngle { get; set; }
+        public double horizontalAngle { get; set; }
         private double verticalAngleDelta;
         private double horizontalAngleDelta;
         private Model3DCollection partsCollectoin = new Model3DCollection();
@@ -125,7 +123,7 @@ namespace InverseTest
             detectorFrameGraph.Children = partsCollectoin;
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromTicks(1000);
+            timer.Interval = TimeSpan.FromTicks(5000);
             timer.Tick += animation_tick;
         }
 
@@ -194,7 +192,7 @@ namespace InverseTest
             verticalAngle = checkedAngleVertical(out onRightAngle);
             partOnRightPos.Add(onRightAngle);
 
-            horizontalAngle= checkedAngleHorizontal(out onRightAngle);
+            horizontalAngle = checkedAngleHorizontal(out onRightAngle);
             partOnRightPos.Add(onRightAngle);
 
             ConfirmPosition();
@@ -381,7 +379,13 @@ namespace InverseTest
 
             ConfirmPosition();
         }
-    }
+
+        public Dictionary<Parts, double> GetCurrentOffsets()
+        {
+            return partOffset;
+        }
+
+}
 
 
 
