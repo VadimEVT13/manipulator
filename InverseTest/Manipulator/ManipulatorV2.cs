@@ -21,7 +21,7 @@ namespace InverseTest
 
         private Vector3D currentCameraDirection = DEFAULT_CAMERA_DIRECTION;
 
-        public readonly Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
+        private Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
         public readonly Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
         private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
         private ManipulatorAngles anglesToSet;
@@ -448,7 +448,5 @@ namespace InverseTest
             return parts[ManipulatorParts.Camera].GetModel().Bounds.ToString();
 
         }
-
-      
     }
 }

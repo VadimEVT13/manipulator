@@ -7,12 +7,14 @@ using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using MIConvexHull;
 using InverseTest.Collision;
-using InverseTest.Collision.Model;
 
 namespace InverseTest
 {
     class HullsV2
     {
+        private List<Point3D> verts = new List<Point3D>(); //верршины меша
+        private List<Point3D> verts_2;
+
         private List<DefaultConvexFace<Vertex>> CVXfaces; //коллекция треугольников меша
         private List<Vertex> CVXvertices; //колекция вершин (Vertex) меша
 
@@ -29,18 +31,28 @@ namespace InverseTest
 
         //~HullsV2() { }
 
-        public List<Point3D> BuildShell(Model3DCollision Model)//, Transform3D trans)
+        public void BuildShell(Model3DGroup Model)//, Transform3D trans)
         {
-            List<Point3D> verts = new List<Point3D>();
-            Transform3D trans = new MatrixTransform3D(Model.shape.transform);
-            List<Point3D>  points = Model.shape.points;
-           
-                CVXvertices = points.Distinct(new PointComparer()).Select(p => new Vertex(p)).ToList(); //точки для построения оболочки
-          
+            Transform3D trans = Model.Transform;
+            verts_2 = new List<Point3D>(verts);
+            verts.Clear();
+            foreach (var model in Model.Children)
+            {
+                if (typeof(GeometryModel3D).IsInstanceOfType(model))
+                    if (typeof(MeshGeometry3D).IsInstanceOfType(((GeometryModel3D)model).Geometry))
+                    {
+                        mesh = (MeshGeometry3D)((GeometryModel3D)model).Geometry; //получаем меш модели
+                        verts.AddRange(mesh.Positions); //получаем все вершины меша
+                    }
+            }
+            //verts = verts.Distinct().ToList();
+            CVXvertices = verts.Distinct(new PointComparer()).Select(p => new Vertex(p)).ToList(); //точки для построения оболочки
+            
             var hull = ConvexHull.Create(CVXvertices); //построение оболочки
             ConvHulls.Add(hull);
             meshs.Add(mesh);
 
+            verts.Clear();
             CVXvertices = hull.Points.ToList();  //получаем точки оболочки
             verts.AddRange(CVXvertices.Select(p => new Point3D(p.Position[0], p.Position[1], p.Position[2]))); //преобразуем в Point3D
             for (int j = 0; j < verts.Count; j++) //применяем трансформ к точкам оболочки
@@ -48,7 +60,6 @@ namespace InverseTest
                 Point3D p = trans.Value.Transform(verts[j]);
                 verts[j] = p;
             }
-            return verts;
         }
 
         public void DisplayConvexHull()
@@ -71,11 +82,14 @@ namespace InverseTest
                 points.Clear();
                 //faceTriCollection.Clear();
             }
+
+            
+
         }
 
-        public bool find(List<Point3D> verts1, List<Point3D> verts2)
+        public bool find()
         {
-            GJKFinder finderGJK = new GJKFinder(verts1, verts2);
+            GJKFinder finderGJK = new GJKFinder(verts_2, verts);
 
             if (finderGJK.testGJKIntersection())
             {

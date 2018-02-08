@@ -30,10 +30,6 @@ namespace InverseTest.Workers
         public void solve(T elem)
         {
             queue.Enqueue(elem);
-            if (!worker.IsBusy)
-            {
-                worker.RunWorkerAsync();
-            }
         }
 
         protected override void workerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -52,7 +48,7 @@ namespace InverseTest.Workers
             SystemPosition sp = elem as SystemPosition;
             Stack<Angle3D> rezults;
             
-            rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.manipPoint.Z, sp.manipPoint.Y);
+            rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.targetPoint.Z, sp.targetPoint.Y);
 
             //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
             // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение

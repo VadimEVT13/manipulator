@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Media.Media3D;
+﻿using System.Windows.Media.Media3D;
 using static InverseTest.ManipulatorV2;
 
 namespace InverseTest.Manipulator

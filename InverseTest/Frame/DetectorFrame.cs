@@ -25,7 +25,7 @@ namespace InverseTest
         private int numberMesh = 0;
 
         /// Части 
-        public readonly Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
+        private Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
         public  Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
         private Dictionary<Parts, double> partDeltas = new Dictionary<Parts, double>();
         private Dictionary<Parts, Point3D> partStartPosition = new Dictionary<Parts, Point3D>();
@@ -39,7 +39,7 @@ namespace InverseTest
         private double horizontalAngleDelta;
         private Model3DCollection partsCollectoin = new Model3DCollection();
         private Parts[] movedParts = { Parts.VerticalFrame, Parts.HorizontalBar, Parts.ScreenHolder };
-        private Model3D meshCenterRotateScreen;
+
 
 
         private static Vector3D defaultScreenDirection = new Vector3D(-1, 0, 0);
@@ -87,10 +87,7 @@ namespace InverseTest
             //Держатель для экрана, относительно него вращается экран
             Model3DGroup screenHolder = new Model3DGroup();
             screenHolder.Children = new Model3DCollection(portal.Children.ToList().GetRange(19, 4));
-           
-
-
-
+            
             DetectorFramePartDecorator screenCameraPart = new DetectorFramePartDecorator(screenCameraPos, null);
             DetectorFramePartDecorator screenPart = new DetectorFramePartDecorator(screen, screenCameraPart);
             DetectorFramePartDecorator screenHolderPart = new DetectorFramePartDecorator(screenHolder, screenPart);
