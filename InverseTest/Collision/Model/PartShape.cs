@@ -14,8 +14,9 @@ namespace InverseTest.Collision.Model
         public List<Point3D> points { get; }
         public Matrix3D transform { get; }
 
-        public PartShape(Rect3D bounds, List<Point3D> points, Matrix3D transform)
+        public PartShape(string partName, Rect3D bounds, List<Point3D> points, Matrix3D transform)
         {
+            this.partName = partName;
             this.bounds = bounds;
             this.points = points;
             this.transform = transform;

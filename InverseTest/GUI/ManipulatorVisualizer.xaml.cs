@@ -381,11 +381,11 @@ namespace InverseTest.GUI
         public void showBordersPortal(ManipulatorSnapshot frame)
         {
             //Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> s in frame.bounds)
+            foreach (PartShape s in frame.parts)
             {
 
-                Rect3D rect = s.Value.bounds;
-            BoxVisual3D rectagnle3D = new BoxVisual3D()
+                Rect3D rect = s.bounds;
+                BoxVisual3D rectagnle3D = new BoxVisual3D()
             {
                 Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
                 Fill = Brushes.DarkBlue,

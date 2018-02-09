@@ -4,6 +4,7 @@ using System.Windows.Media.Media3D;
 using InverseTest.Manipulator;
 using InverseTest.Detail;
 using InverseTest.Collision.Model;
+using InverseTest.Collision.Mappers;
 
 namespace InverseTest.Collision
 {
@@ -12,7 +13,7 @@ namespace InverseTest.Collision
         bool rdy = false;
 
         //private List<Except> _ListExcept = new List<Except>(); //лист исключений
-        private HashSet <Except> _ListExcept = new HashSet<Except>();
+        private HashSet<Except> _ListExcept = new HashSet<Except>();
         private Except _exc;
 
 
@@ -20,19 +21,30 @@ namespace InverseTest.Collision
         {
         }
 
-        public struct Except //структура для хранения исключений
+        public struct Except : IEquatable<Except> //структура для хранения исключений
         {
             public string S1;
             public string S2;
+
 
             public Except(string s1, string s2)
             {
                 this.S1 = s1;
                 this.S2 = s2;
             }
+
+            public override int GetHashCode()
+            {
+                return 31 * this.S1.GetHashCode() + 31 * this.S2.GetHashCode();
+            }
+            
+            public bool Equals(Except exept)
+            {
+                return (this.S1.Equals(exept.S1) && this.S2.Equals(exept.S2)) || (this.S2.Equals(exept.S1) && (this.S1.Equals(exept.S2)));
+            }
         }
 
-        
+
         public void MakeListExcept(IManipulatorModel manipulator, IDetectorFrame detectorFrame, DetailModel detail, Model3D platform)//создаем список исключений самопересечений манипулятора и детектора
         {
 
@@ -62,51 +74,46 @@ namespace InverseTest.Collision
                 }
 
             }
-            _exc = new Except("Platform", "Det_platform"); //дополнительные исключений найденые при тесте
+            _exc = new Except(DetectorFrame.Parts.Platform.ToString(), DetailPlatformMapper.platformName); //дополнительные исключений найденые при тесте
             _ListExcept.Add(_exc);
-            _exc = new Except("Screen", "ScreenCameraPos");
+            _exc = new Except(DetectorFrame.Parts.Screen.ToString(), DetectorFrame.Parts.ScreenCameraPos.ToString());
             _ListExcept.Add(_exc);
             rdy = true;
         }
 
         private bool CompareExcept(Except e) //проверка со списком исключений
         {
-            //bool IsExcec = false;
-            //for (int i = 0; i < _ListExcept.Count; i++)
-            //{
-            if (_ListExcept.Contains(e)) return true; else return false;
-                //if ((_ListExcept[i].S1 == e.S1 && _ListExcept[i].S2 == e.S2) || (_ListExcept[i].S1 == e.S2 && _ListExcept[i].S2 == e.S1) || (e.S1 == e.S2))
-                //{ IsExcec = true; break; }
-            //}
-
-            //return IsExcec;
+            return _ListExcept.Contains(e);
         }
 
         public List<CollisionPair> Find(SceneSnapshot sceneSnapshot) //поиск коллизий ААВВ
         {
             if (rdy)
             {
-                
+
                 DetailSnapshot detail = sceneSnapshot.detailSnapshot;
                 ManipulatorSnapshot manipulator = sceneSnapshot.manipSnapshot;
                 PortalSnapshot portal = sceneSnapshot.portalSnapshot;
                 DetailPlatformSnapshot detailPlatform = sceneSnapshot.detailPlatformSnapshot;
 
                 List<CollisionPair> collisoins = new List<CollisionPair>();
-               
-                foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part1 in manipulator.bounds) //все части манипулятора...
+
+                /*foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part1 in manipulator.bounds) //все части манипулятора...
                 {
-                    foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part2 in manipulator.bounds) //...со всеми частями манипулятора
+                    foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part2 in manipulator.bounds) //...со всеми частями манипулятора*/
+                for (int i = 0; i < manipulator.parts.Count; i++) //самопересечение манипулятора
+                {
+                    for (int j = i; j < manipulator.parts.Count; j++)
                     {
 
-                        if (Intersects(part1.Value,part2.Value))
+                        if (Intersects(manipulator.parts[i], manipulator.parts[j]))
                         {
-                            _exc = new Except(part1.Key.ToString(), part2.Key.ToString());
+                            _exc = new Except(manipulator.parts[i].partName, manipulator.parts[j].partName);
                             if (!CompareExcept(_exc))
                             {
                                 CollisionPair pair = new CollisionPair(
-                                    new Model3DCollision(part1.Key.ToString(), part1.Value),
-                                    new Model3DCollision(part2.Key.ToString(), part2.Value)
+                                    new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
+                                    new Model3DCollision(manipulator.parts[j].partName, manipulator.parts[j])
                                     );
 
                                 collisoins.Add(pair);
@@ -115,14 +122,14 @@ namespace InverseTest.Collision
                         }
                     }
 
-                    if (Intersects(part1.Value,detail.detailShape)) //манипулятор с моделью
+                    if (Intersects(manipulator.parts[i], detail.detailShape)) //манипулятор с моделью
                     {
-                        _exc = new Except(part1.ToString(), detail.name);
+                        _exc = new Except(manipulator.parts[i].partName, detail.detailShape.partName);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                                new Model3DCollision(part1.Key.ToString(), part1.Value),
-                                new Model3DCollision(detail.name, detail.detailShape)
+                                new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
+                                new Model3DCollision(detail.detailShape.partName, detail.detailShape)
                                 );
 
                             collisoins.Add(pair);
@@ -134,14 +141,14 @@ namespace InverseTest.Collision
                     //TODO МАНИПУЛЯТОР И ПЛАТФОРМА
 
                     //part2 = Det_platform;
-                    if (Intersects(part1.Value, detailPlatform.detailPlatformShape)) //манипулятор с платформой
+                    if (Intersects(manipulator.parts[i], detailPlatform.detailPlatformShape)) //манипулятор с платформой
                     {
-                        _exc = new Except(part1.ToString(), detailPlatform.name);
+                        _exc = new Except(manipulator.parts[i].partName, detailPlatform.detailPlatformShape.partName);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(part1.ToString(), part1.Value),
-                            new Model3DCollision(detailPlatform.name, detailPlatform.detailPlatformShape)
+                            new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
+                            new Model3DCollision(detailPlatform.detailPlatformShape.partName, detailPlatform.detailPlatformShape)
                             );
 
                             collisoins.Add(pair);
@@ -149,18 +156,18 @@ namespace InverseTest.Collision
                     }
                 }
 
-                foreach (KeyValuePair<DetectorFrame.Parts, PartShape> portalPart1 in portal.bounds)
+                for (int i = 0; i < portal.parts.Count; i++) //детектор
                 {
-                    foreach (KeyValuePair<DetectorFrame.Parts, PartShape> portalPart2 in portal.bounds) //детектор со всеми частями детектора
+                    for (int j = i; j < portal.parts.Count; j++) //с детектором
                     {
-                        if (Intersects(portalPart1.Value, portalPart2.Value))
+                        if (Intersects(portal.parts[i], portal.parts[j]))
                         {
-                            _exc = new Except(portalPart1.Key.ToString(), portalPart2.Key.ToString());
+                            _exc = new Except(portal.parts[i].partName, portal.parts[j].partName);
                             if (!CompareExcept(_exc))
                             {
                                 CollisionPair pair = new CollisionPair(
-                                new Model3DCollision(portalPart1.Key.ToString(), portalPart1.Value),
-                                new Model3DCollision(portalPart2.Key.ToString(), portalPart2.Value)
+                                new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
+                                new Model3DCollision(portal.parts[j].partName, portal.parts[j])
                                 );
                                 collisoins.Add(pair);
                             }
@@ -169,54 +176,53 @@ namespace InverseTest.Collision
 
                     }
 
-                                     
-                    if (Intersects(portalPart1.Value, detail.detailShape)) //детектор с деталью
+
+                    if (Intersects(portal.parts[i], detail.detailShape)) //детектор с деталью
                     {
-                        _exc = new Except(portalPart1.ToString(), detail.name);
+                        _exc = new Except(portal.parts[i].partName, detail.detailShape.partName);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(portalPart1.Key.ToString(), portalPart1.Value),
-                            new Model3DCollision(detail.name, detail.detailShape)
+                            new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
+                            new Model3DCollision(detail.detailShape.partName, detail.detailShape)
                             );
                             collisoins.Add(pair);
                         }
                     }
 
                     // ДЕТЕКТОР С ПЛАТФОРМОЙ
-                    if (Intersects(portalPart1.Value, detailPlatform.detailPlatformShape)) //детектор с платформой 
+                    if (Intersects(portal.parts[i], detailPlatform.detailPlatformShape)) //детектор с платформой 
                     {
-                        _exc = new Except(portalPart1.Key.ToString(), detailPlatform.name);
+                        _exc = new Except(portal.parts[i].partName, detailPlatform.detailPlatformShape.partName);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(portalPart1.Key.ToString(), portalPart1.Value),
-                            new Model3DCollision(detailPlatform.name, detailPlatform.detailPlatformShape)
+                            new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
+                            new Model3DCollision(detailPlatform.detailPlatformShape.partName, detailPlatform.detailPlatformShape)
                             );
                             collisoins.Add(pair);
                         }
                     }
-                
+                }
 
-                foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part in manipulator.bounds) //все части манипулятора...
+
+                for (int i = 0; i < manipulator.parts.Count; i++) //манипулятор
+                {
+                    for (int j = 0; j < portal.parts.Count; j++) //с детектором
                     {
-                        foreach (KeyValuePair<DetectorFrame.Parts, PartShape> portalPart in portal.bounds) //со всеми частями детектора
-                        {                           
-                            if (Intersects(part.Value,portalPart.Value))
+                        if (Intersects(manipulator.parts[i], portal.parts[j]))
+                        {
+                            _exc = new Except(manipulator.parts[i].partName, portal.parts[j].partName);
+                            if (!CompareExcept(_exc))
                             {
-                                _exc = new Except(part.Key.ToString(), portalPart.Key.ToString());
-                                if (!CompareExcept(_exc))
-                                {
-                                    CollisionPair pair = new CollisionPair(
-                                    new Model3DCollision(part.Key.ToString(), part.Value),
-                                    new Model3DCollision(portalPart.Key.ToString(), portalPart.Value)
-                                    );
-                                    collisoins.Add(pair);
-                                }
+                                CollisionPair pair = new CollisionPair(
+                                new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
+                                new Model3DCollision(portal.parts[j].partName, portal.parts[j])
+                                );
+                                collisoins.Add(pair);
                             }
                         }
                     }
-
                 }
                 return collisoins;
 

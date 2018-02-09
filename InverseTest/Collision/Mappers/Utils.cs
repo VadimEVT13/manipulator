@@ -26,7 +26,7 @@ namespace InverseTest.Collision.Mappers
             else {
                 points.AddRange(GetPointsFromModel(model));
             }
-            return new PartShape(model.Bounds, points, model.Transform.Value);
+            return new PartShape(Name, model.Bounds, points, model.Transform.Value);
         }
 
         private static List<Point3D> GetPointsFromModel(Model3D model)
