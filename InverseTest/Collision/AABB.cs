@@ -9,9 +9,10 @@ namespace InverseTest.Collision
 {
     public class AABB
     {
-        bool rdy = true;
+        bool rdy = false;
 
-        private List<Except> _ListExcept = new List<Except>(); //лист исключений
+        //private List<Except> _ListExcept = new List<Except>(); //лист исключений
+        private HashSet <Except> _ListExcept = new HashSet<Except>();
         private Except _exc;
 
 
@@ -37,7 +38,7 @@ namespace InverseTest.Collision
 
             for (int i = 0; i < Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).Length; i++) //самопересечение манипулятора
             {
-                for (int j = i + 1; j < Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).Length; j++)
+                for (int j = i; j < Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).Length; j++)
                 {
                     if (manipulator.GetManipulatorPart((ManipulatorV2.ManipulatorParts)(Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).GetValue(i))).Bounds.
                         IntersectsWith(manipulator.GetManipulatorPart((ManipulatorV2.ManipulatorParts)(Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).GetValue(j))).Bounds))
@@ -50,7 +51,7 @@ namespace InverseTest.Collision
 
             for (int i = 0; i < Enum.GetValues(typeof(DetectorFrame.Parts)).Length; i++) //самопересечение детектора
             {
-                for (int j = i + 1; j < Enum.GetValues(typeof(DetectorFrame.Parts)).Length; j++)
+                for (int j = i; j < Enum.GetValues(typeof(DetectorFrame.Parts)).Length; j++)
                 {
                     if (detectorFrame.GetDetectorFramePart((DetectorFrame.Parts)(Enum.GetValues(typeof(DetectorFrame.Parts)).GetValue(i))).Bounds.
                         IntersectsWith(detectorFrame.GetDetectorFramePart((DetectorFrame.Parts)(Enum.GetValues(typeof(DetectorFrame.Parts)).GetValue(j))).Bounds))
@@ -70,14 +71,15 @@ namespace InverseTest.Collision
 
         private bool CompareExcept(Except e) //проверка со списком исключений
         {
-            bool IsExcec = false;
-            for (int i = 0; i < _ListExcept.Count; i++)
-            {
-                if ((_ListExcept[i].S1 == e.S1 && _ListExcept[i].S2 == e.S2) || (_ListExcept[i].S1 == e.S2 && _ListExcept[i].S2 == e.S1) || (e.S1 == e.S2))
-                { IsExcec = true; break; }
-            }
+            //bool IsExcec = false;
+            //for (int i = 0; i < _ListExcept.Count; i++)
+            //{
+            if (_ListExcept.Contains(e)) return true; else return false;
+                //if ((_ListExcept[i].S1 == e.S1 && _ListExcept[i].S2 == e.S2) || (_ListExcept[i].S1 == e.S2 && _ListExcept[i].S2 == e.S1) || (e.S1 == e.S2))
+                //{ IsExcec = true; break; }
+            //}
 
-            return IsExcec;
+            //return IsExcec;
         }
 
         public List<CollisionPair> Find(SceneSnapshot sceneSnapshot) //поиск коллизий ААВВ
@@ -94,7 +96,6 @@ namespace InverseTest.Collision
                
                 foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part1 in manipulator.bounds) //все части манипулятора...
                 {
-
                     foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part2 in manipulator.bounds) //...со всеми частями манипулятора
                     {
 
@@ -225,7 +226,7 @@ namespace InverseTest.Collision
 
         private bool Intersects(PartShape s1, PartShape s2)
         {
-            return s1.bounds.IntersectsWith(s1.bounds);
+            return s1.bounds.IntersectsWith(s2.bounds);
         }
 
 
