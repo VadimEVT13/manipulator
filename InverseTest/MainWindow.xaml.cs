@@ -22,6 +22,7 @@ using InverseTest.Manipulator.Models;
 using InverseTest.Collision.Model;
 using InverseTest.Collision;
 using static InverseTest.DetectorFrame;
+using InverseTest.Collision.Mappers;
 
 namespace InverseTest
 {
@@ -58,7 +59,10 @@ namespace InverseTest
         public IMovementPoint scanPoint;
         private IMovementPoint manipulatorCamPoint;
         private IConeModel coneModel;
-        private Model3DGroup platform = new Model3DGroup();
+
+        //private Model3DGroup platform = new Model3DGroup();
+        private Model3D platform;
+
         //Точка сканирования 
         private Model3D targetBox;
         //Точка камеры манипулятора
@@ -107,6 +111,8 @@ namespace InverseTest
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
 
+            platform = parser.others.Children[4];
+
             manipulator = parser.manipulator;
             manipulator.onPositionChanged += OnManipulatorPisitionChanged;
             ManipulatorVisualizer.setManipulatorModel(manipulator);
@@ -131,9 +137,9 @@ namespace InverseTest
             GJKSolver gjkSolver = new GJKSolver();
 
             AABB aabb = new AABB();
-            aabb.MakeListExcept(manipulator, detectorFrame, detail, new Model3DGroup());
+            aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);//new Model3DGroup());
             collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
-            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, new Model3DGroup(), collisionWorker);
+            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);//new Model3DGroup(), collisionWorker);
 
 
             //Точка сканирования
@@ -593,8 +599,8 @@ namespace InverseTest
 
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
-            ManipulatorVisualizer.showBordersPortal(detectorFrame);
-            ManipulatorVisualizer.showBordersPortal(manipulator);
+            ManipulatorVisualizer.showBorders(platform);
+            //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
         }
 
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

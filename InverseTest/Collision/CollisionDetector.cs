@@ -21,7 +21,7 @@ namespace InverseTest.Collision
         ManipulatorV2 Manipulator;
         DetectorFrame Portal;
         DetailModel Detail;
-        Model3DGroup Platform;
+        Model3D Platform;
 
         private GJKWorker<SceneSnapshot> worker;
 
@@ -30,7 +30,7 @@ namespace InverseTest.Collision
         public CollisionDetector(ManipulatorV2 Manipulator,
             DetectorFrame DetectorFrame,
             DetailModel Detail,
-            Model3DGroup Platform,
+            Model3D Platform,
             GJKWorker<SceneSnapshot> worker)
         {
             this.Manipulator = Manipulator;
@@ -43,7 +43,7 @@ namespace InverseTest.Collision
 
         public void FindCollisoins()
         {
-            SceneSnapshot sc = SceneMapper.CreateSceneSnapshot(this.Manipulator, this.Portal, this.Detail);
+            SceneSnapshot sc = SceneMapper.CreateSceneSnapshot(this.Manipulator, this.Portal, this.Detail, this.Platform);
             worker.findCollision(sc);
         }
     }

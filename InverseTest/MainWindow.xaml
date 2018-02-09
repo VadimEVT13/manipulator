@@ -222,8 +222,8 @@
             
         </StackPanel>
 
-        <!--<Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
-        <Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>-->
+        <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+        <!--<Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>-->
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
        

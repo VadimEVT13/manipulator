@@ -17,6 +17,7 @@ using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
 using InverseTest.GUI.Model;
 using InverseTest.Detail;
+using InverseTest.Collision.Model;
 
 namespace InverseTest.GUI
 {
@@ -354,9 +355,9 @@ namespace InverseTest.GUI
         }
 
 
-        public void showBordersPortal(IDetectorFrame frame)
+        public void showBorders(Model3D frame)
         {
-            Model3D part = frame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
+            Model3D part = frame;//.GetDetectorFramePart(DetectorFrame.Parts.Screen);
             Rect3D rect = part.Bounds;
 
 
@@ -377,12 +378,13 @@ namespace InverseTest.GUI
            ViewPort3D.Children.Add(rectagnle3D);
         }
 
-        public void showBordersPortal(IManipulatorModel frame)
+        public void showBordersPortal(ManipulatorSnapshot frame)
         {
-            Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            Rect3D rect = part.Bounds;
+            //Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> s in frame.bounds)
+            {
 
-
+                Rect3D rect = s.Value.bounds;
             BoxVisual3D rectagnle3D = new BoxVisual3D()
             {
                 Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
@@ -395,12 +397,12 @@ namespace InverseTest.GUI
 
 
 
-            // ViewPort2DFront.Children.Add(rectagnle3D);
-            //  ViewPort2DTop.Children.Add(rectagnle3D);
-            ///   ViewPort2DRight.Children.Add(rectagnle3D);
-            ViewPort3D.Children.Add(rectagnle3D);
+                // ViewPort2DFront.Children.Add(rectagnle3D);
+                //  ViewPort2DTop.Children.Add(rectagnle3D);
+                ///   ViewPort2DRight.Children.Add(rectagnle3D);
+                ViewPort3D.Children.Add(rectagnle3D);
+            }
         }
-
 
 
 
