@@ -48,6 +48,7 @@ namespace InverseTest.Workers
             SceneSnapshot scs = elem as SceneSnapshot;
 
             Queue<CollisionPair> pairs = new Queue<CollisionPair> (aabb.Find(scs));
+            List<CollisionPair> collisions = new List<CollisionPair>();
 
             if (pairs.Count > 0)
             {
@@ -56,7 +57,7 @@ namespace InverseTest.Workers
                     CollisionPair pair = pairs.Dequeue();
                     if (solver.IntersectGJK(pair))
                     {
-                        worker.ReportProgress(0, pair);
+                        collisions.Add(pair);
                     }
                 }
             }
@@ -64,6 +65,8 @@ namespace InverseTest.Workers
             {
                 worker.ReportProgress(0, null);
             }
+
+            worker.ReportProgress(0, collisions);
 
         }
 
@@ -80,7 +83,7 @@ namespace InverseTest.Workers
             }
             else
             {
-                onCollision?.Invoke((CollisionPair)e.UserState);
+                onCollision?.Invoke((List<CollisionPair>)e.UserState);
             }
         }
 

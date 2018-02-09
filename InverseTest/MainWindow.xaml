@@ -227,7 +227,25 @@
 
         <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
        
-        <TextBox DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center" Width="400"  Background="Red" />
+        <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center" Width="400"  Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
+        <Popup Name="CollisionPopup" Placement="MousePoint" Width="auto" Height="auto"  >
+            <StackPanel>
+                <ListBox Name="CollisionListBox">
+                    <ListBox.ItemTemplate >
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision1.meshName}" HorizontalAlignment="Left" />
+                                <TextBlock FontSize="16" Text="intersects" HorizontalAlignment="Center" />
+                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision2.meshName}" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </DataTemplate>
+                        
+                    </ListBox.ItemTemplate>
+
+                </ListBox>      
+            </StackPanel>
+            
+        </Popup>
         <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

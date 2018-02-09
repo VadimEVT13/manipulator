@@ -12,7 +12,7 @@ using static InverseTest.Collision.AABB;
 
 namespace InverseTest.Collision
 {
-    public delegate void OnCollisionDetected(CollisionPair collision);
+    public delegate void OnCollisionDetected(List<CollisionPair> collision);
 
 
     class CollisionDetector

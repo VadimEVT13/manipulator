@@ -165,15 +165,15 @@ namespace InverseTest
             collisionWorker.onCollision += OnCollisoinsDetected;
         }
 
-        public void OnCollisoinsDetected(CollisionPair pair)
+        public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
             if (pair == null)
             {
-                CollisionTextBox.Clear();
+                CollisionListBox.ItemsSource = null;
             }
             else
             {
-                CollisionTextBox.Text = pair.modelCollision1.meshName + " intersects with  " + pair.modelCollision2.meshName;
+                CollisionListBox.ItemsSource  = pair;
             }
         }
 
@@ -752,6 +752,14 @@ namespace InverseTest
 
         }
 
+        private void PositionValid_Checked(object sender, RoutedEventArgs e)
+        {
+            CollisionPopup.IsOpen = true;
+        }
 
+        private void PositionValid_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CollisionPopup.IsOpen = false;
+        }
     }
 }
