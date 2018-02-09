@@ -10,7 +10,6 @@ namespace InverseTest.Collision.Model
     public class DetailSnapshot
     {
         public PartShape detailShape;
-        public string name { get { return "Detail"; } }
 
         public DetailSnapshot(PartShape shape)
         {

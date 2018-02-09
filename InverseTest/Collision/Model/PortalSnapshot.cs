@@ -9,12 +9,11 @@ namespace InverseTest.Collision.Model
 {
     public class PortalSnapshot
     {
-        public Dictionary<DetectorFrame.Parts, PartShape> bounds { get;}
+        public List<PartShape> bounds { get;}
 
-        public PortalSnapshot(Dictionary<DetectorFrame.Parts, PartShape> bounds)
+        public PortalSnapshot(List<PartShape> bounds)
         {
             this.bounds = bounds;
         }
-
     }
 }

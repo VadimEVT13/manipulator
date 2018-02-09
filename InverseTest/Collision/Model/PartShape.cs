@@ -9,6 +9,7 @@ namespace InverseTest.Collision.Model
 {
     public class PartShape
     {
+        public string partName { get; }
         public Rect3D bounds { get; }
         public List<Point3D> points { get; }
         public Matrix3D transform { get; }

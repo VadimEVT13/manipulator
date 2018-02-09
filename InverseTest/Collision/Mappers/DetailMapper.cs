@@ -11,9 +11,11 @@ namespace InverseTest.Collision.Mappers
 {
     public class DetailMapper
     {
+        public const string detailName = "Detail";
+
         public static DetailSnapshot DetailToSnapshot(DetailModel detail)
         {
-            return new DetailSnapshot(Utils.ExtractShapeFromModel(detail.GetModel()));
+            return new DetailSnapshot(Utils.ExtractShapeFromModel(detailName, detail.GetModel()));
         }
     }
 }

@@ -12,13 +12,13 @@ namespace InverseTest.Collision.Mappers
     {
         public static PortalSnapshot PortalToSnapshot(DetectorFrame frame)
         {
-            var shapes = new Dictionary<DetectorFrame.Parts, PartShape>();
+            var shapes = new List<PartShape>();
 
             var frameParts = frame.parts;
 
             foreach (KeyValuePair<DetectorFrame.Parts, IDetectorFramePart> part in frameParts) 
             {
-                shapes.Add(part.Key, Utils.ExtractShapeFromModel(part.Value.GetModelPart()));
+                shapes.Add(Utils.ExtractShapeFromModel(part.Key.ToString(),part.Value.GetModelPart()));
             }
             
             return new PortalSnapshot(shapes);

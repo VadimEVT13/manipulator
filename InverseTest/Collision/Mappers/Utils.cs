@@ -10,7 +10,7 @@ namespace InverseTest.Collision.Mappers
 {
     public class Utils 
     {
-        public static PartShape ExtractShapeFromModel(Model3D model)
+        public static PartShape ExtractShapeFromModel(string Name, Model3D model)
         {
             var points = new Point3DCollection().ToList();
 

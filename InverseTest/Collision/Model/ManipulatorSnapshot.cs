@@ -9,11 +9,10 @@ namespace InverseTest.Collision.Model
 {
    public class ManipulatorSnapshot
     {
-        public Dictionary<ManipulatorV2.ManipulatorParts, PartShape> bounds { get; }
-
-        public ManipulatorSnapshot(Dictionary<ManipulatorV2.ManipulatorParts, PartShape> bounds)
+        public List<PartShape> parts;
+        public ManipulatorSnapshot(List<PartShape> parts)
         {
-            this.bounds = bounds;
+            this.parts = parts;
         }
     }
 }

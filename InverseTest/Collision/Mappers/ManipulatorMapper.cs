@@ -12,13 +12,13 @@ namespace InverseTest.Collision.Mappers
     class ManipulatorMapper
     {
         public static ManipulatorSnapshot ManipulatorToSnapshot(ManipulatorV2 manip) {
-            var shapes = new Dictionary<ManipulatorV2.ManipulatorParts, PartShape>();
+            var shapes = new List<PartShape>();
 
             var manipupParts = manip.parts;
 
             foreach(KeyValuePair<ManipulatorV2.ManipulatorParts, IManipulatorPart> part in manipupParts)
             {
-                shapes.Add(part.Key, Utils.ExtractShapeFromModel(part.Value.GetModel()));
+                shapes.Add(Utils.ExtractShapeFromModel(part.Key.ToString(),part.Value.GetModel()));
             }
             
             return new ManipulatorSnapshot(shapes);
