@@ -87,10 +87,6 @@ namespace InverseTest.Workers
             }
         }
 
-        private void clearQueue(ConcurrentQueue<T> queue)
-        {
-            T res;
-            while (queue.TryDequeue(out res)) { }
-        }
+      
     }
 }

@@ -29,7 +29,12 @@ namespace InverseTest.Workers
 
         public void solve(T elem)
         {
+            if (!queue.IsEmpty)
+            {
+                clearQueue(queue);
+            }
             queue.Enqueue(elem);
+
             if (!worker.IsBusy)
             {
                 worker.RunWorkerAsync();

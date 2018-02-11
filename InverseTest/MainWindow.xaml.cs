@@ -104,7 +104,12 @@ namespace InverseTest
             Model3DGroup newAllModels = new Model3DGroup();
 
             ManipulatorVisualizer.setCameras(allModels);
+             
+            ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
 
+
+            allModels = preproccessor.Simplification().GetProccessedModel();
+              
             ModelParser parser = new ModelParser(allModels);
             parser.Parse();
             detectorFrame = parser.frame;
@@ -301,31 +306,26 @@ namespace InverseTest
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
-            T1TextBox.Text = e.NewValue.ToString();
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
-            T2TextBox.Text = e.NewValue.ToString();
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
-            T3TextBox.Text = e.NewValue.ToString();
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
-            T4TextBox.Text = e.NewValue.ToString();
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
-            T5TextBox.Text = e.NewValue.ToString();
         }
 
         /// <summary>
@@ -333,7 +333,6 @@ namespace InverseTest
         /// </summary>
         private void ParsePointsAndMove()
         {
-
             double x, y, z;
             Console.WriteLine("ParsePointAndMove");
             double.TryParse(TargetPointXTextBox.Text, out x);
@@ -346,8 +345,6 @@ namespace InverseTest
             double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
             double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
             manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
-
-
         }
 
 
@@ -515,8 +512,6 @@ namespace InverseTest
 
             for (int i = 0; i < childrens.Count; i++)
                 TargetPointsListButtonsGrid.Children.Add(childrens[i]);
-
-
         }
 
         private void onCancelChangesClick(object sender, RoutedEventArgs e)

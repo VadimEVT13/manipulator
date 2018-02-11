@@ -12,7 +12,6 @@ namespace InverseTest.Collision
     {
         bool rdy = false;
 
-        //private List<Except> _ListExcept = new List<Except>(); //лист исключений
         private HashSet<Except> _ListExcept = new HashSet<Except>();
         private Except _exc;
 
@@ -90,7 +89,6 @@ namespace InverseTest.Collision
         {
             if (rdy)
             {
-
                 DetailSnapshot detail = sceneSnapshot.detailSnapshot;
                 ManipulatorSnapshot manipulator = sceneSnapshot.manipSnapshot;
                 PortalSnapshot portal = sceneSnapshot.portalSnapshot;
@@ -98,9 +96,6 @@ namespace InverseTest.Collision
 
                 List<CollisionPair> collisoins = new List<CollisionPair>();
 
-                /*foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part1 in manipulator.bounds) //все части манипулятора...
-                {
-                    foreach (KeyValuePair<ManipulatorV2.ManipulatorParts, PartShape> part2 in manipulator.bounds) //...со всеми частями манипулятора*/
                 for (int i = 0; i < manipulator.parts.Count; i++) //самопересечение манипулятора
                 {
                     for (int j = i; j < manipulator.parts.Count; j++)

@@ -183,8 +183,7 @@
 
                     </StackPanel>
                 </Popup>
-            </StackPanel>
-            
+            </StackPanel>  
 
             <StackPanel Visibility="Visible">
                 <Label Content="Cписок точек" Margin="0,5,0,0"/>
@@ -222,21 +221,19 @@
             
         </StackPanel>
 
-        <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
-        <!--<Button Content="CalculateJunctions" Name="CalculateJunctionsButton" Click="CalculateJunctionsButton_Click"/>-->
-
-        <!--<TextBlock Height="100" Name="StatsTextBox" DockPanel.Dock="Bottom"/>!-->
+        <!--<Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
        
-        <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center" Width="400"  Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
-        <Popup Name="CollisionPopup" Placement="MousePoint" Width="auto" Height="auto"  >
+        <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center"
+                      Width="400" Height="15" Focusable="False" Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
+        <Popup Name="CollisionPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=PositionValid}" Width="Auto" Height="Auto"  >
             <StackPanel>
                 <ListBox Name="CollisionListBox">
                     <ListBox.ItemTemplate >
                         <DataTemplate>
-                            <StackPanel Margin="5">
-                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision1.meshName}" HorizontalAlignment="Left" />
-                                <TextBlock FontSize="16" Text="intersects" HorizontalAlignment="Center" />
-                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision2.meshName}" HorizontalAlignment="Right" />
+                            <StackPanel Margin="5" Orientation="Horizontal" >
+                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision1.meshName}" HorizontalAlignment="Left" Margin="5" />
+                                <TextBlock FontSize="16" Text=" intersects " HorizontalAlignment="Center" Margin="5,5,5,5"/>
+                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision2.meshName}" HorizontalAlignment="Right" Margin="5"/>
                             </StackPanel>
                         </DataTemplate>
                         

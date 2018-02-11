@@ -39,9 +39,16 @@ namespace InverseTest
                     DoWork(elem, e);
                 }
             }
-                    }
+        }
 
         protected abstract void DoWork(T elem, DoWorkEventArgs arg);
+
+        protected void clearQueue(ConcurrentQueue<T> queue)
+        {
+            T res;
+            while (queue.TryDequeue(out res)) { }
+        }
+
 
     }
 }
