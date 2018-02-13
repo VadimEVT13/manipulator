@@ -10,6 +10,7 @@ using InverseTest.Frame;
 using System.Windows.Threading;
 using InverseTest.Manipulator;
 using System.Linq;
+using InverseTest.Bound;
 
 namespace InverseTest
 {
@@ -24,9 +25,11 @@ namespace InverseTest
         private Model3DGroup screenCameraPos;
         private int numberMesh = 0;
 
+        public PortalBoundController boundController { get; set; }
+
         /// Части 
         public readonly Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
-        public  Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
+        public Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
         private Dictionary<Parts, double> partDeltas = new Dictionary<Parts, double>();
         private Dictionary<Parts, Point3D> partStartPosition = new Dictionary<Parts, Point3D>();
         private Dictionary<Parts, double> positionsToSet = new Dictionary<Parts, double>();
@@ -62,12 +65,13 @@ namespace InverseTest
 
         public DetectorFrame(Model3DGroup portal)
         {
+            this.boundController = new PortalBoundController();
 
             portalModel = portal;
             //Экран
             Model3DGroup screen = new Model3DGroup();
-            screen.Children = new Model3DCollection(portal.Children.ToList().GetRange(23,7));
-            
+            screen.Children = new Model3DCollection(portal.Children.ToList().GetRange(23, 7));
+
             screenCameraPos = new Model3DGroup();
             screenCameraPos.Children.Add(portal.Children[30]);
 
@@ -83,11 +87,11 @@ namespace InverseTest
             ///Горизонтальная платка на которой крепится держатель для экрана
             Model3DGroup horizontalBar = new Model3DGroup();
             horizontalBar.Children = new Model3DCollection(portal.Children.ToList().GetRange(11, 10));
-            
+
             //Держатель для экрана, относительно него вращается экран
             Model3DGroup screenHolder = new Model3DGroup();
             screenHolder.Children = new Model3DCollection(portal.Children.ToList().GetRange(19, 4));
-           
+
 
 
 
@@ -122,7 +126,7 @@ namespace InverseTest
             partOffset.Add(Parts.ScreenHolder, 0);
             partOffset.Add(Parts.VerticalFrame, 0);
             partOffset.Add(Parts.HorizontalBar, 0);
-            
+
             detectorFrameGraph.Children = partsCollectoin;
 
             timer = new DispatcherTimer();
@@ -171,7 +175,7 @@ namespace InverseTest
             {
                 partDeltas[Parts.VerticalFrame] = (positionsToSet[Parts.VerticalFrame] - partOffset[Parts.VerticalFrame]) / 1000;
                 partDeltas[Parts.HorizontalBar] = (positionsToSet[Parts.HorizontalBar] - partOffset[Parts.HorizontalBar]) / 1000;
-                partDeltas[Parts.ScreenHolder] = (positionsToSet[Parts.ScreenHolder] - partOffset[Parts.ScreenHolder])/1000;
+                partDeltas[Parts.ScreenHolder] = (positionsToSet[Parts.ScreenHolder] - partOffset[Parts.ScreenHolder]) / 1000;
                 verticalAngleDelta = p.verticalAngle - verticalAngle;
                 horizontalAngle = p.horizontalAngle - horizontalAngle;
 
@@ -179,7 +183,7 @@ namespace InverseTest
                 isAnimated = true;
             }
         }
-        
+
         void animation_tick(object sender, EventArgs arg)
         {
 
@@ -218,7 +222,7 @@ namespace InverseTest
             }
             return angle;
         }
-        
+
 
         private double checkedAngleHorizontal(out bool onRightAngle)
         {
@@ -246,12 +250,14 @@ namespace InverseTest
             return position;
         }
 
-        private void setPosition(DetectorFramePosition p)
+        private void setPosition(DetectorFramePosition position)
         {
+            var p = boundController.CheckDetectroFramePosition(position);
+
             double offsetX = p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X;
             partOffset[Parts.VerticalFrame] = offsetX;
 
-            double offsetY = p.pointScreen.Y -(partStartPosition[Parts.ScreenCameraPos].Y + parts[Parts.ScreenCameraPos].Bounds().SizeY/2);
+            double offsetY = p.pointScreen.Y - (partStartPosition[Parts.ScreenCameraPos].Y + parts[Parts.ScreenCameraPos].Bounds().SizeY / 2);
             partOffset[Parts.HorizontalBar] = offsetY;
 
             double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
@@ -261,8 +267,6 @@ namespace InverseTest
             horizontalAngle = p.horizontalAngle;
 
             ConfirmPosition();
-
-            Console.WriteLine("DetectorFramePosition:" + p.ToString());
         }
 
 
@@ -332,13 +336,26 @@ namespace InverseTest
 
         public virtual void MovePart(Parts partToMove, double offsetToMove)
         {
+
+            var newOffset = 0d;
+            switch (partToMove)
+            {
+                case Parts.HorizontalBar:
+                    newOffset = boundController.CheckHorizontalBar(offsetToMove);
+                    break;
+                default:
+                    newOffset = offsetToMove;
+                    break;
+            }
+
+
             partOffset[partToMove] = offsetToMove;
             ConfirmPosition();
         }
 
         public virtual void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
         {
-            
+
             switch (partToRotate)
             {
                 case Parts.Screen:
@@ -374,7 +391,7 @@ namespace InverseTest
 
         public virtual void ResetTransforms()
         {
-            
+
             foreach (Parts part in Enum.GetValues(typeof(Parts)))
                 partOffset[part] = 0;
             verticalAngle = 0;
@@ -388,7 +405,7 @@ namespace InverseTest
             return partOffset;
         }
 
-}
+    }
 
 
 

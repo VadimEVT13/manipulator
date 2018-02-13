@@ -168,6 +168,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Bound\Bound.cs" />
+    <Compile Include="Bound\PortalBoundController.cs" />
     <Compile Include="Collision\AABB.cs" />
     <Compile Include="Collision\CollisionDetector.cs" />
     <Compile Include="Collision\GJKFinder.cs" />

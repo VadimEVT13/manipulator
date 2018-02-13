@@ -221,8 +221,8 @@
             
         </StackPanel>
 
-        <!--<Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
-       
+        <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+        
         <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center"
                       Width="400" Height="15" Focusable="False" Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
         <Popup Name="CollisionPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=PositionValid}" Width="Auto" Height="Auto"  >

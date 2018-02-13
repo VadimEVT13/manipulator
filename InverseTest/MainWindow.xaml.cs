@@ -23,6 +23,7 @@ using InverseTest.Collision.Model;
 using InverseTest.Collision;
 using static InverseTest.DetectorFrame;
 using InverseTest.Collision.Mappers;
+using InverseTest.Bound;
 
 namespace InverseTest
 {
@@ -104,10 +105,8 @@ namespace InverseTest
             Model3DGroup newAllModels = new Model3DGroup();
 
             ManipulatorVisualizer.setCameras(allModels);
-             
+                        
             ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
-
-
             allModels = preproccessor.Simplification().GetProccessedModel();
               
             ModelParser parser = new ModelParser(allModels);
@@ -115,6 +114,12 @@ namespace InverseTest
             detectorFrame = parser.frame;
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
+
+            PortalBoundController portalBounds = new PortalBoundController();
+            portalBounds.CalculateBounds(detectorFrame);
+            detectorFrame.boundController = portalBounds;
+
+
 
             platform = parser.others.Children[4];
 
@@ -594,7 +599,7 @@ namespace InverseTest
 
         private void ShowBorders_Click(object sender, RoutedEventArgs e)
         {
-            ManipulatorVisualizer.showBorders(platform);
+            ManipulatorVisualizer.showBorders(detectorFrame.GetDetectorFramePart(Parts.VerticalFrame));
             //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
         }
 
