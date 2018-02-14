@@ -81,8 +81,6 @@ namespace InverseTest
         private double focuseEnlagment = 1;
         Model3DGroup allModels;
 
-
-
         private ObservableCollection<SystemPosition> targetPoints { get; set; }
 
         private int selectedIndexPoint = -1;
@@ -105,10 +103,10 @@ namespace InverseTest
             Model3DGroup newAllModels = new Model3DGroup();
 
             ManipulatorVisualizer.setCameras(allModels);
-                        
+
             ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
             allModels = preproccessor.Simplification().GetProccessedModel();
-              
+
             ModelParser parser = new ModelParser(allModels);
             parser.Parse();
             detectorFrame = parser.frame;
@@ -119,8 +117,6 @@ namespace InverseTest
             portalBounds.CalculateBounds(detectorFrame);
             detectorFrame.boundController = portalBounds;
 
-
-
             platform = parser.others.Children[4];
 
             manipulator = parser.manipulator;
@@ -130,9 +126,9 @@ namespace InverseTest
             ManipulatorVisualizer.AddModel(parser.others);
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
-            CalculateEdgesLength(manipulator);
+            double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
-            this.manipKinematic.SetLen(MANIP_EDGE_LENGTH_1, MANIP_EDGE_LENGTH_2, MANIP_EDGE_LENGTH_3, MANIP_EDGE_LENGTH_4, MANIP_EDGE_LENGTH_5);
+            this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
             this.manipKinematic.det = 8.137991;
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
@@ -142,15 +138,13 @@ namespace InverseTest
 
             ManipulatorVisualizer.AddModel(parser.others);
 
-
             //Коллизии
             GJKSolver gjkSolver = new GJKSolver();
 
             AABB aabb = new AABB();
-            aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);//new Model3DGroup());
+            aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);
             collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
-            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);//new Model3DGroup(), collisionWorker);
-
+            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);
 
             //Точка сканирования
             scanPoint = new MovementPoint(Colors.Blue);
@@ -173,53 +167,43 @@ namespace InverseTest
             scanPoint.MoveAndNotify(new Point3D(0, 60, 0));
 
             collisionWorker.onCollision += OnCollisoinsDetected;
+            FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
         }
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
-            if (pair == null)
+            if (pair == null || pair.Count == 0)
             {
                 CollisionListBox.ItemsSource = null;
+                SetPositionValid(true);
             }
             else
             {
-                CollisionListBox.ItemsSource  = pair;
+                CollisionListBox.ItemsSource = pair;
+                SetPositionValid(false);
             }
-        }
-
-
-        /// <summary>
-        /// Вычисляет размеры ребер манипулятора
-        /// </summary>
-        /// <param name="manipulator"></param>
-        private void CalculateEdgesLength(IManipulatorModel manipulator)
-        {
-            MANIP_EDGE_LENGTH_1 = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_TABLE).Y;
-
-            MANIP_EDGE_LENGTH_2 = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_TABLE)
-                .DistanceTo(manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_MAIN_EDGE));
-
-            Point3D pointOnMainEdge = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_MAIN_EDGE);
-            Point3D pointBelowCam = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_BELOW_CAMERA);
-
-            //Точка над основным ребром на уровне точки под камерой
-            Point3D point1 = new Point3D(pointOnMainEdge.X, pointOnMainEdge.Y, pointBelowCam.Z);
-            MANIP_EDGE_LENGTH_3 = point1.DistanceTo(manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_BELOW_CAMERA));
-
-            Point3D pointCamera = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_CAMERA);
-            //Точка на уровне камеры, 
-            Point3D point = new Point3D(pointBelowCam.X, pointCamera.Y, pointBelowCam.Z);
-            MANIP_EDGE_LENGTH_4 = pointBelowCam.DistanceTo(point);
-            MANIP_EDGE_LENGTH_5 = point.DistanceTo(pointCamera);
         }
 
         public void manipulatorSolved(ManipulatorAngles angles)
         {
-            if (angles.isValid)
-                PositionValid.Background = Brushes.Green;
-            else PositionValid.Background = Brushes.Red;
+            SetPositionValid(angles.isValid);
             manipulator.MoveManipulator(angles, false);
         }
+
+        private void SetPositionValid(bool valid)
+        {
+            if (valid)
+            {
+                PositionValid.Background = Brushes.Green;
+            }
+            else
+            {
+                PositionValid.Background = Brushes.Red;
+            }
+        }
+
+
+
 
         /// <summary>
         /// Вызывается каждый раз когда "портал" меняет свое положение
@@ -228,6 +212,9 @@ namespace InverseTest
         {
             SetPortalPositionsTextBoxes();
         }
+
+
+
 
         public void SetDistanceToPoint()
         {
@@ -715,8 +702,8 @@ namespace InverseTest
 
             if (point != null)
             {
-                manipulatorCamPoint.Move(point.manipPoint);
-                scanPoint.Move(point.targetPoint);
+                manipulatorCamPoint.MoveAndNotify(point.manipPoint);
+                scanPoint.MoveAndNotify(point.targetPoint);
             }
         }
 
@@ -737,8 +724,15 @@ namespace InverseTest
 
         private void FocusDistanceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            this.distanceToScreen = e.NewValue;
-            recalculateKinematic();
+
+            Point3D manipPoint = manipulatorCamPoint.GetTargetPoint();
+            Point3D scanPoint = this.scanPoint.GetTargetPoint();
+
+            Vector3D vect = new Vector3D(scanPoint.X - manipPoint.X, scanPoint.Y - manipPoint.Y, scanPoint.Z - manipPoint.Z);
+
+            
+
+
         }
 
         private void FocusDistance_Checked(object sender, RoutedEventArgs e)

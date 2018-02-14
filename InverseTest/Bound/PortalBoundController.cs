@@ -89,15 +89,5 @@ namespace InverseTest.Bound
             var vertAngle = CheckVerticalAngle(p.verticalAngle);
             return new DetectorFramePosition(new Point3D(newVert, newHoriz,newScreen), horAngle, vertAngle);
         }
-
-
-
-
-
-
-
-
-
-
     }
 }

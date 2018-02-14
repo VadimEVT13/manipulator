@@ -135,9 +135,6 @@
             <Button Content="Повернуть станок" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
             <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
-            <Label Content="Коллизия" Grid.Column="0" Grid.Row="5"/>
-            <TextBox Name="CollisionTextBox" Text="no collision" Grid.Column="1" Grid.Row="5" Margin="5" MaxLines="3" AcceptsReturn="True" TextWrapping="Wrap"/>
-
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
                 <CheckBox x:Name="CameraVisibleArea" Checked="CameraVisibleArea_Checked" Unchecked="CameraVisibleArea_Unchecked" VerticalAlignment="Center"/>
@@ -171,7 +168,7 @@
                                     ValueChanged="FocusDistanceSlider_ValueChanged" 
                                     Value="{Binding ElementName=FocusDistanceTextBox, Path=Text}"
                                     />
-                            <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1"
+                            <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1" 
                                     Width="100" SmallChange="0.5" LargeChange="0.5" Maximum="3" Margin="0,0,8,8"
                             Minimum="0" Ticks="0,0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"
@@ -221,11 +218,11 @@
             
         </StackPanel>
 
-        <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>
+       <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
         
         <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center"
                       Width="400" Height="15" Focusable="False" Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
-        <Popup Name="CollisionPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=PositionValid}" Width="Auto" Height="Auto"  >
+        <Popup Name="CollisionPopup" Placement="Bottom" PlacementTarget="{Binding ElementName = PositionValid}" Width="Auto" Height="Auto"  >
             <StackPanel>
                 <ListBox Name="CollisionListBox">
                     <ListBox.ItemTemplate >

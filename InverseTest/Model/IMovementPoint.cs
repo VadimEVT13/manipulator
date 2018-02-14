@@ -9,8 +9,14 @@ using static InverseTest.GUI.Model.MovementPoint;
 namespace InverseTest.GUI.Model
 {
     public delegate void PositoinHandler(Point3D position);
-    
-    public interface IMovementPoint:IModel
+
+    public enum PointState
+    {
+        ENLAGE,
+        DEFAULT
+    }
+
+    public interface IMovementPoint : IModel
     {
         event PositoinHandler PositoinChanged;
 
@@ -19,8 +25,8 @@ namespace InverseTest.GUI.Model
         void MoveAndNotify(Point3D newPosition);
 
         Point3D GetTargetPoint();
-        
-        void ChangeSize(double scale);
+
+        void ChangeSize(PointState state);
 
 
     }

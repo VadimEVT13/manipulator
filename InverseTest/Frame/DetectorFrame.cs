@@ -79,7 +79,6 @@ namespace InverseTest
             Model3DGroup platform = new Model3DGroup();
             platform.Children = new Model3DCollection(portal.Children.ToList().GetRange(0, 6));
 
-
             ///Вертикальная рамка
             Model3DGroup verticalFrame = new Model3DGroup();
             verticalFrame.Children = new Model3DCollection(portal.Children.ToList().GetRange(7, 4));
@@ -91,9 +90,6 @@ namespace InverseTest
             //Держатель для экрана, относительно него вращается экран
             Model3DGroup screenHolder = new Model3DGroup();
             screenHolder.Children = new Model3DCollection(portal.Children.ToList().GetRange(19, 4));
-
-
-
 
             DetectorFramePartDecorator screenCameraPart = new DetectorFramePartDecorator(screenCameraPos, null);
             DetectorFramePartDecorator screenPart = new DetectorFramePartDecorator(screen, screenCameraPart);
@@ -313,10 +309,7 @@ namespace InverseTest
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
 
             onPositionChanged();
-
         }
-
-
 
         /// <summary>
         /// Вычисляет текущее направление экрана относительно положения по умолчанию
@@ -336,22 +329,35 @@ namespace InverseTest
 
         public virtual void MovePart(Parts partToMove, double offsetToMove)
         {
+            var newOffset = CheckOffsetPart(partToMove, offsetToMove);
+            partOffset[partToMove] = offsetToMove;
+            ConfirmPosition();
+        }
+
+        private double CheckOffsetPart(Parts partToMove, double offsetToMove)
+        {
 
             var newOffset = 0d;
+            var position = 0d;
+            IDetectorFramePart part = parts[partToMove];
+            var bounds = part.Bounds();
+            var newPosition = 0d;
+            var partStartPos = partStartPosition[partToMove];
+
             switch (partToMove)
             {
                 case Parts.HorizontalBar:
-                    newOffset = boundController.CheckHorizontalBar(offsetToMove);
+                    position = partStartPos.Y + offsetToMove;
+                    newPosition = boundController.CheckHorizontalBar(offsetToMove);
+                    newOffset = newPosition - partStartPos.Y;
                     break;
                 default:
                     newOffset = offsetToMove;
                     break;
             }
-
-
-            partOffset[partToMove] = offsetToMove;
-            ConfirmPosition();
+            return newOffset;
         }
+
 
         public virtual void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
         {
@@ -404,9 +410,5 @@ namespace InverseTest
         {
             return partOffset;
         }
-
     }
-
-
-
 }

@@ -36,7 +36,7 @@ namespace InverseTest.GUI
             if (result is RayHitTestResult rayResult && rayResult.ModelHit.Equals(ModelToDetect))
             {
                 onModelHit = true;
-                point.ChangeSize(2d);
+                point.ChangeSize(PointState.ENLAGE);
             }
             return HitTestResultBehavior.Continue;
         }
@@ -45,12 +45,12 @@ namespace InverseTest.GUI
         {
             onMousePressed = false;
             onModelHit = false;
-            point.ChangeSize(1d);
+            point.ChangeSize(PointState.DEFAULT);
             HelixViewport3D viewPort = sender as HelixViewport3D;
             HitTestResult result = VisualTreeHelper.HitTest(viewPort.Viewport, e.GetPosition(viewPort));
             if (result is RayMeshGeometry3DHitTestResult mesh_result && mesh_result.ModelHit.Equals(ModelToDetect))
             {
-                point.ChangeSize(0.5d);
+                point.ChangeSize(PointState.DEFAULT);
             }
         }
 

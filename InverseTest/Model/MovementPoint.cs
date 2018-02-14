@@ -9,10 +9,10 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI.Model
 {
-    class MovementPoint:IMovementPoint
-    {
 
-        private const int length = 2;
+    class MovementPoint : IMovementPoint
+    {
+        private const int defaultRadius = 2;
 
         private SphereVisual3D point;
 
@@ -21,13 +21,13 @@ namespace InverseTest.GUI.Model
         public MovementPoint(Color color)
         {
 
-            Material material = MaterialHelper.CreateMaterial(color,0.5);
+            Material material = MaterialHelper.CreateMaterial(color, 0.5);
 
             point = new SphereVisual3D()
             {
                 Center = new Point3D(0, 60, 0),
                 Material = material,
-                Radius = length
+                Radius = defaultRadius
             };
         }
 
@@ -53,20 +53,22 @@ namespace InverseTest.GUI.Model
         public Point3D GetTargetPoint()
         {
             Point3D targetPoint = point.Model.Bounds.Location;
-            targetPoint.Offset(length / 2.0, length / 2.0, length / 2.0);
+            targetPoint.Offset(defaultRadius / 2.0, defaultRadius / 2.0, defaultRadius / 2.0);
             return targetPoint;
         }
 
-        public void ChangeSize(double scale)
+        public void ChangeSize(PointState state)
         {
-            //TODO сделать изменение размера точки
+            if (state == PointState.ENLAGE)
+            {
+                this.point.Radius = defaultRadius * 1.5;
+            }
+            else this.point.Radius = defaultRadius;
         }
 
         public Model3D GetModel()
         {
             return point.Model;
         }
-
-       
     }
 }

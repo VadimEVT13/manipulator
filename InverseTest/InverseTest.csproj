@@ -193,6 +193,7 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="Utils\ManipulatorUtils.cs" />
     <Compile Include="ModelPreprocessor.cs" />
     <Compile Include="ModelParser.cs" />
     <Compile Include="Workers\BackgroundCalculations.cs" />

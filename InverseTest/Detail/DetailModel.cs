@@ -27,12 +27,12 @@ namespace InverseTest.Detail
             this.detailVisual = new ModelVisual3D() { Content = detailModel };
             this.detailModel = detailModel;
 
-            //GeometryModel3D model = new GeometryModel3D(GetCountours(), Materials.Green);
+            GeometryModel3D model = new GeometryModel3D(GetCountours(), Materials.Green);
 
-            //this.counturVisual = new ModelVisual3D()
-            //{
-            //    Content = model
-            //};
+            this.counturVisual = new ModelVisual3D()
+            {
+                Content = model
+            };
         }
 
         public Model3D GetModel()
