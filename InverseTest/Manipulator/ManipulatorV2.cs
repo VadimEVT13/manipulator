@@ -137,12 +137,12 @@ namespace InverseTest
                 Model3DGroup base3DModel = new Model3DGroup();
                 base3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(0, 3));
                 
-                IManipulatorPart cam3D = new ManipulatorPartDecorator(cam3DModel, null);
-                IManipulatorPart camEdge = new ManipulatorPartDecorator(camEdge3DModel, cam3D);
-                IManipulatorPart upperEdge = new ManipulatorPartDecorator(upperEdge3DModel, camEdge);
-                IManipulatorPart middleEdge = new ManipulatorPartDecorator(middleEdge3DModel, upperEdge);
-                IManipulatorPart table = new ManipulatorPartDecorator(table3DModel, middleEdge);
-                IManipulatorPart basePart = new ManipulatorPartDecorator(base3DModel, table);
+                IManipulatorPart cam3D = new ManipulatorPart(cam3DModel);
+                IManipulatorPart camEdge = new ManipulatorPart(camEdge3DModel);
+                IManipulatorPart upperEdge = new ManipulatorPart(upperEdge3DModel);
+                IManipulatorPart middleEdge = new ManipulatorPart(middleEdge3DModel);
+                IManipulatorPart table = new ManipulatorPart(table3DModel);
+                IManipulatorPart basePart = new ManipulatorPart(base3DModel);
 
                 parts.Add(ManipulatorParts.Camera, cam3D);
                 parts.Add(ManipulatorParts.CameraBase, camEdge);
@@ -365,7 +365,8 @@ namespace InverseTest
             cameraGroup.Children.Add(R);
             cameraGroup.Children.Add(cameraBaseGroup);
 
-            _cameraposition.Transform = cameraGroup;
+            _cameraposition.Transform =  cameraGroup;
+
 
             CalculateCameraDirection(cameraGroup);
 

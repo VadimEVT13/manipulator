@@ -202,9 +202,6 @@ namespace InverseTest
             }
         }
 
-
-
-
         /// <summary>
         /// Вызывается каждый раз когда "портал" меняет свое положение
         /// </summary>
@@ -212,9 +209,6 @@ namespace InverseTest
         {
             SetPortalPositionsTextBoxes();
         }
-
-
-
 
         public void SetDistanceToPoint()
         {
@@ -716,7 +710,7 @@ namespace InverseTest
             SolvePortalKinematic(manip, targetPoint, animate);
         }
 
-        private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) 
         {
             this.focuseEnlagment = e.NewValue;
             recalculateKinematic();
@@ -724,15 +718,6 @@ namespace InverseTest
 
         private void FocusDistanceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
-            Point3D manipPoint = manipulatorCamPoint.GetTargetPoint();
-            Point3D scanPoint = this.scanPoint.GetTargetPoint();
-
-            Vector3D vect = new Vector3D(scanPoint.X - manipPoint.X, scanPoint.Y - manipPoint.Y, scanPoint.Z - manipPoint.Z);
-
-            
-
-
         }
 
         private void FocusDistance_Checked(object sender, RoutedEventArgs e)

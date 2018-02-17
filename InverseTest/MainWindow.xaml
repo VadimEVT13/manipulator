@@ -173,7 +173,7 @@
                             Minimum="0" Ticks="0,0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"
                             ValueChanged="FocusEnlargementSlider_ValueChanged"
-                                    Value="{Binding ElementName=FocueEnlargmentTextBox, Path=Text}"
+                                    
                                     >
                             </Slider>
                         </Grid>

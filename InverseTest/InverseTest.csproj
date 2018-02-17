@@ -217,7 +217,7 @@
     <Compile Include="Manipulator\IManipulatorPart.cs" />
     <Compile Include="Manipulator\Kinematic.cs" />
     <Compile Include="Manipulator\ManipulatorAngles.cs" />
-    <Compile Include="Manipulator\ManipulatorPartDecorator.cs" />
+    <Compile Include="Manipulator\ManipulatorPart.cs" />
     <Compile Include="Manipulator\Models\Angle3D.cs" />
     <Compile Include="Manipulator\Models\Vertex3D.cs" />
     <Compile Include="MathUtils.cs" />
