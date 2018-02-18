@@ -25,6 +25,11 @@ namespace InverseTest.Manipulator
             return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2) + Math.Pow(p2.Z - p1.Z, 2));
         }
 
-        
+        public static Point3D GetRectCenter(Rect3D rect)
+        {
+            Point3D point = rect.Location;
+            Size3D size = rect.Size;
+            return new Point3D(point.X + size.X/2, point.Y + size.Y / 2, point.Z + size.Z / 2);
+        }      
     }
 }

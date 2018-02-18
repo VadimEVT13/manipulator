@@ -1,4 +1,5 @@
 ﻿using InverseTest.Frame.Kinematic;
+using InverseTest.Manipulator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +52,8 @@ namespace InverseTest.Bound
                 - portal.GetDetectorFramePart(DetectorFrame.Parts.ScreenHolder).Bounds.Z;
             this.ScreenHolderBound = new Bound(screenBottom, screenUpper);
 
-            this.HorizontalAngleBound = new Bound(-60, 60);
-            this.VerticalAngleBound = new Bound(-60, 60);
+            this.HorizontalAngleBound = new Bound(MathUtils.AngleToRadians(-40), MathUtils.AngleToRadians(40));
+            this.VerticalAngleBound = new Bound(MathUtils.AngleToRadians(-40), MathUtils.AngleToRadians(40));
         }
 
         public double CheckVerticalFrame(double val)

@@ -957,7 +957,7 @@ namespace InverseTest.Manipulator
             //Точность вычисления
             double tochnost = 0.000000000001;
 
-            Stack<Angle3D> rez  = Search(P4, alf, bet, tochnost, 0, Math.PI / 2);
+            Stack<Angle3D> rez = Search(P4, alf, bet, tochnost, 0, Math.PI / 2);
             Stack<Angle3D> rez2 = Search(P4, alf, bet, tochnost, Math.PI / 2, Math.PI);
             Stack<Angle3D> rez3 = Search(P4, alf, bet, tochnost, Math.PI, Math.PI * 3 / 2.0);
             Stack<Angle3D> rez4 = Search(P4, alf, bet, tochnost, Math.PI * 3 / 2.0, Math.PI * 2);

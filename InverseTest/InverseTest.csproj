@@ -199,7 +199,7 @@
     <Compile Include="Workers\BackgroundCalculations.cs" />
     <Compile Include="Detail\DetailModel.cs" />
     <Compile Include="Frame\IDetectorFramePart.cs" />
-    <Compile Include="Frame\DetectorFramePartDecorator.cs" />
+    <Compile Include="Frame\DetectorFramePart.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
@@ -220,7 +220,7 @@
     <Compile Include="Manipulator\ManipulatorPart.cs" />
     <Compile Include="Manipulator\Models\Angle3D.cs" />
     <Compile Include="Manipulator\Models\Vertex3D.cs" />
-    <Compile Include="MathUtils.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

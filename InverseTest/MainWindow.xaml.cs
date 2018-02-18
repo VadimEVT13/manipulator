@@ -32,17 +32,7 @@ namespace InverseTest
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        /// <summary>
-        /// Длины ребер манипулятора 
-        /// </summary>
-        private static double MANIP_EDGE_LENGTH_1;
-        private static double MANIP_EDGE_LENGTH_2;
-        private static double MANIP_EDGE_LENGTH_3;
-        private static double MANIP_EDGE_LENGTH_4;
-        private static double MANIP_EDGE_LENGTH_5;
-
-
+        
         /// <summary>
         /// Откланение от центра координат
         /// </summary>
@@ -101,6 +91,7 @@ namespace InverseTest
 
             allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
             Model3DGroup newAllModels = new Model3DGroup();
+
 
             ManipulatorVisualizer.setCameras(allModels);
 
@@ -168,6 +159,10 @@ namespace InverseTest
 
             collisionWorker.onCollision += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
+
+
+
+
         }
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
@@ -342,7 +337,8 @@ namespace InverseTest
             double[] rez = p.portalPoint(manip.DistanceTo(scannedPoint), this.focuseEnlagment);
             if (rez != null)
             {
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], -rez[3]);
+                ///ХЗ почему со знаком -
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], rez[3]);
                 detectorFrame.MoveDetectFrame(detectp, animate);
             }
             else
@@ -611,16 +607,15 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //   ((IDebugModels)detectorFrame).transformModel(e.NewValue);
-            allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+            ((IDebugModels)detectorFrame).transformModel(e.NewValue);
+            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            // ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
+            ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
             NumMeshTextBox.Text = numMesh.ToString();
-
         }
 
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)

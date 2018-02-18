@@ -33,6 +33,7 @@ namespace InverseTest.Workers
             {
                 clearQueue(queue);
             }
+
             queue.Enqueue(elem);
 
             if (!worker.IsBusy)
@@ -68,7 +69,6 @@ namespace InverseTest.Workers
                 Stack<Angle3D> unsatisfied = new Stack<Angle3D>();
                 foreach (Angle3D one in rezults)
                 {
-
                     if (
                        (MathUtils.RadiansToAngle(one.O1) < 90 && MathUtils.RadiansToAngle(one.O1) > -90) &
                        (MathUtils.RadiansToAngle(one.O2) < 90 && MathUtils.RadiansToAngle(one.O2) > -90) &

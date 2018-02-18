@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.Frame
 {
-    class DetectorFramePartDecorator:IDetectorFramePart
+    class DetectorFramePart:IDetectorFramePart
     {
 
         private Model3DGroup part;
@@ -16,10 +16,9 @@ namespace InverseTest.Frame
         private Transform3D translateTrans;
         private Transform3D RotateTransform;
         
-        public DetectorFramePartDecorator(Model3DGroup model, DetectorFramePartDecorator decorator)
+        public DetectorFramePart(Model3DGroup model)
         {
             this.part = model;
-            this.priviusPart = decorator;
             this.transforms = new Transform3DGroup();
             this.translateTrans = new TranslateTransform3D();
             this.RotateTransform = new RotateTransform3D();
@@ -33,7 +32,6 @@ namespace InverseTest.Frame
 
         public override void TranslateTransform3D(Transform3D transform)
         {
-            part.Transform = new TranslateTransform3D();
             part.Transform = transform;
         }
 
