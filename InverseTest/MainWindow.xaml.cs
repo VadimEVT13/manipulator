@@ -702,7 +702,7 @@ namespace InverseTest
             Point3D targetPoint = scanPoint.GetTargetPoint();
 
             manipWorker.solve(new SystemPosition(manip, targetPoint));
-            SolvePortalKinematic(manip, targetPoint, animate);
+            SolvePortalKinematic(manip, targetPoint, false);
         }
 
         private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) 

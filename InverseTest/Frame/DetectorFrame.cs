@@ -310,34 +310,39 @@ namespace InverseTest
 
             TranslateTransform3D T = new TranslateTransform3D(partOffset[Parts.VerticalFrame], 0, 0);
             verticalFrameGroup.Children.Add(T);
+            parts[Parts.VerticalFrame].TranslateTransform3D(verticalFrameGroup);
 
             T = new TranslateTransform3D(0, partOffset[Parts.HorizontalBar], 0);
             horizontalBarGroup.Children.Add(T);
             horizontalBarGroup.Children.Add(verticalFrameGroup);
+            parts[Parts.HorizontalBar].TranslateTransform3D(horizontalBarGroup);
 
             T = new TranslateTransform3D(0, 0, partOffset[Parts.ScreenHolder]);
             screenHolderGroup.Children.Add(T);
             screenHolderGroup.Children.Add(horizontalBarGroup);
-                   
-            
+            parts[Parts.ScreenHolder].TranslateTransform3D(screenHolderGroup);
+
             screenRotatorGroup.Children.Add(screenHolderGroup);
-            screenRotatorGroup.Children.Add(GetVerticalScreenRotate());
+            parts[Parts.ScreenRotator].TranslateTransform3D(screenRotatorGroup);
+            parts[Parts.HorizontalRotateStick].TranslateTransform3D(screenRotatorGroup);
 
 
             screenGroup.Children.Add(screenRotatorGroup);
-            screenGroup.Children.Add(GetHorizontalScreenRotate());
+            parts[Parts.Screen].TranslateTransform3D(screenGroup);
+            parts[Parts.VerticalRotateStick].TranslateTransform3D(screenHolderGroup);
 
             camPositionCubeGroup.Children.Add(screenGroup);
-
-            parts[Parts.Screen].TranslateTransform3D(screenGroup);
-            parts[Parts.ScreenRotator].TranslateTransform3D(screenRotatorGroup);
-            parts[Parts.VerticalRotateStick].TranslateTransform3D(screenRotatorGroup);
-            parts[Parts.HorizontalRotateStick].TranslateTransform3D(screenRotatorGroup);
-            parts[Parts.VerticalFrame].TranslateTransform3D(verticalFrameGroup);
-            parts[Parts.HorizontalBar].TranslateTransform3D(horizontalBarGroup);
-            parts[Parts.ScreenHolder].TranslateTransform3D(screenHolderGroup);
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
+
+
+            var horizRotate = GetHorizontalScreenRotate();
+            var vertRotate = GetVerticalScreenRotate();
+            parts[Parts.Screen].RotateTransform3D(horizRotate);
+            parts[Parts.ScreenRotator].RotateTransform3D(vertRotate);
+            parts[Parts.Screen].RotateTransform3D(vertRotate);
             
+
+
             onPositionChanged();
         }
 
