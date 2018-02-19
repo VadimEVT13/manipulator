@@ -170,7 +170,6 @@ namespace InverseTest
             if (pair == null || pair.Count == 0)
             {
                 CollisionListBox.ItemsSource = null;
-                SetPositionValid(true);
             }
             else
             {
