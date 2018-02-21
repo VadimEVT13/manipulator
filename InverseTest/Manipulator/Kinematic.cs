@@ -833,23 +833,40 @@ namespace InverseTest.Manipulator
                     }
                 }
 
-                double[][] LR1 = DirectKinematic(leftrez[0]);
-                double[][] LR2 = DirectKinematic(leftrez[1]);
-                double[][] RR1 = DirectKinematic(rightrez[0]);
-                double[][] RR2 = DirectKinematic(rightrez[1]);
+                double l1_length = double.MaxValue;
+                double l2_length = double.MaxValue;
+                double r1_length = double.MaxValue;
+                double r2_length = double.MaxValue;
 
-                double l1_length = Math.Sqrt((LR1[0][3] - P4.X) * (LR1[0][3] - P4.X)
+                if (leftrez.Count >= 1)
+                {
+                    double[][] LR1 = DirectKinematic(leftrez[0]);
+                    l1_length = Math.Sqrt((LR1[0][3] - P4.X) * (LR1[0][3] - P4.X)
                                            + (LR1[1][3] - P4.Y) * (LR1[1][3] - P4.Y)
                                            + (LR1[2][3] - P4.Z) * (LR1[2][3] - P4.Z));
-                double l2_length = Math.Sqrt((LR2[0][3] - P4.X) * (LR2[0][3] - P4.X)
+                }
+                if (leftrez.Count == 2)
+                {
+                    double[][] LR2 = DirectKinematic(leftrez[1]);
+                    l2_length = Math.Sqrt((LR2[0][3] - P4.X) * (LR2[0][3] - P4.X)
                                            + (LR2[1][3] - P4.Y) * (LR2[1][3] - P4.Y)
                                            + (LR2[2][3] - P4.Z) * (LR2[2][3] - P4.Z));
-                double r1_length = Math.Sqrt((RR1[0][3] - P4.X) * (RR1[0][3] - P4.X)
-                                           + (RR1[1][3] - P4.Y) * (RR1[1][3] - P4.Y)
-                                           + (RR1[2][3] - P4.Z) * (RR1[2][3] - P4.Z));
-                double r2_length = Math.Sqrt((RR2[0][3] - P4.X) * (RR2[0][3] - P4.X)
+                }
+                if (rightrez.Count >= 1)
+                {
+                    double[][] RR1 = DirectKinematic(rightrez[0]);
+                    r1_length = Math.Sqrt((RR1[0][3] - P4.X) * (RR1[0][3] - P4.X)
+                                               + (RR1[1][3] - P4.Y) * (RR1[1][3] - P4.Y)
+                                               + (RR1[2][3] - P4.Z) * (RR1[2][3] - P4.Z));
+                }
+                if (rightrez.Count >= 2)
+                {
+                    double[][] RR2 = DirectKinematic(rightrez[1]);
+                    r2_length = Math.Sqrt((RR2[0][3] - P4.X) * (RR2[0][3] - P4.X)
                                            + (RR2[1][3] - P4.Y) * (RR2[1][3] - P4.Y)
                                            + (RR2[2][3] - P4.Z) * (RR2[2][3] - P4.Z));
+                }
+                
                 bool flag1 = false;
                 bool flag2 = false;
                 if (deviation == prev_deviation)
