@@ -213,7 +213,10 @@ namespace InverseTest.Frame
             {
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         // -пи до +пи
@@ -265,17 +268,8 @@ namespace InverseTest.Frame
 
             bet = 0;
             alf = 0;
-
-            if (x >= 0)                                             // Вычисление углов наблюдения за точкой (перпендикулярность схвату)
-            {
-                alf = getAngle(Math.Sqrt(x * x + y * y), z);
-                bet = getAngle(x, y);
-            }
-            else
-            {
-                alf = getAngle(-Math.Sqrt(x * x + y * y), z);
-                bet = getAngle(x, y);
-            }
+            alf = getAngle(Math.Sqrt(x * x + y * y), z);            // Вычисление углов наблюдения за точкой (перпендикулярность схвату)
+            bet = getAngle(x, y);
             
             double L2 = L * scale;                                  // Расстояние только до площадки 
             L = L + l1;                                             // Расстояние до первого узла портала
