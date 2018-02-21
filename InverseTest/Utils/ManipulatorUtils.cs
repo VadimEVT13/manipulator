@@ -25,11 +25,22 @@ namespace InverseTest.Manipulator
 
             Point3D pointCamera = manipulator.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_CAMERA);
             //Точка на уровне камеры, 
-            Point3D point = new Point3D(pointBelowCam.X, pointCamera.Y, pointBelowCam.Z);
+            Point3D point = new Point3D(pointBelowCam.X, pointCamera.Y, pointCamera.Z);
             double edge4 = pointBelowCam.DistanceTo(point);
             double edge5 = point.DistanceTo(pointCamera);
 
             return new double[] { edge1, edge2, edge3, edge4, edge5 };
+        }
+
+
+        //Что за Det???? 
+        public static double CalculateManipulatorDet(ManipulatorV2 manip)
+        {
+            Point3D rotatePointOnMidleEdge = manip.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_ON_MAIN_EDGE);
+            Point3D pointBelowCamera = manip.GetPointJoint(ManipulatorV2.ManipulatorRotatePoints.POINT_BELOW_CAMERA);
+            Point3D pointOnTopEdge = new Point3D(rotatePointOnMidleEdge.X, pointBelowCamera.Y, rotatePointOnMidleEdge.Z);
+
+            return rotatePointOnMidleEdge.DistanceTo(pointOnTopEdge);
         }
 
     }

@@ -193,6 +193,9 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="GUI\IVisual.cs" />
+    <Compile Include="GUI\VisualModel.cs" />
+    <Compile Include="Manipulator\ManipulatorVisual.cs" />
     <Compile Include="Utils\ManipulatorUtils.cs" />
     <Compile Include="ModelPreprocessor.cs" />
     <Compile Include="ModelParser.cs" />

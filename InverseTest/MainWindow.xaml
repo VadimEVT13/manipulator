@@ -80,7 +80,7 @@
                 </StackPanel>
             </Expander>
 
-            <StackPanel Visibility="Visible">
+            <StackPanel Visibility="Hidden">
                 <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
                 <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
                 <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>

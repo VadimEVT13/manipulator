@@ -11,6 +11,10 @@ namespace InverseTest.Bound
 {
     public class PortalBoundController
     {
+        const int ANGLE_BOTTOM_BORDER = -40;
+        const int ANGLE_TOP_BORDER = 40;
+
+
         private Bound VerticalFrameBound;
         private Bound HorizontalBarBound;
         private Bound ScreenHolderBound;
@@ -52,8 +56,8 @@ namespace InverseTest.Bound
                 - portal.GetDetectorFramePart(DetectorFrame.Parts.ScreenHolder).Bounds.Z;
             this.ScreenHolderBound = new Bound(screenBottom, screenUpper);
 
-            this.HorizontalAngleBound = new Bound(MathUtils.AngleToRadians(-40), MathUtils.AngleToRadians(40));
-            this.VerticalAngleBound = new Bound(MathUtils.AngleToRadians(-40), MathUtils.AngleToRadians(40));
+            this.HorizontalAngleBound = new Bound(MathUtils.AngleToRadians(ANGLE_BOTTOM_BORDER), MathUtils.AngleToRadians(ANGLE_TOP_BORDER));
+            this.VerticalAngleBound = new Bound(MathUtils.AngleToRadians(ANGLE_BOTTOM_BORDER), MathUtils.AngleToRadians(ANGLE_TOP_BORDER));
         }
 
         public double CheckVerticalFrame(double val)

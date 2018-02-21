@@ -88,11 +88,9 @@ namespace InverseTest
 
         public void MainWindowLoaded(object sender, RoutedEventArgs arg)
         {
-
             allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
             Model3DGroup newAllModels = new Model3DGroup();
-
-
+            
             ManipulatorVisualizer.setCameras(allModels);
 
             ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
@@ -120,7 +118,7 @@ namespace InverseTest
             double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
             this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
-            this.manipKinematic.det = 8.137991;
+            this.manipKinematic.det = 6;//ManipulatorUtils.CalculateManipulatorDet(manipulator);
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
 
@@ -159,10 +157,6 @@ namespace InverseTest
 
             collisionWorker.onCollision += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
-
-
-
-
         }
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
@@ -180,6 +174,7 @@ namespace InverseTest
 
         public void manipulatorSolved(ManipulatorAngles angles)
         {
+            Console.WriteLine("ManipulatorPoint: " + manipulator.GetCameraPosition());
             SetPositionValid(angles.isValid);
             manipulator.MoveManipulator(angles, false);
         }
@@ -222,11 +217,11 @@ namespace InverseTest
 
             var anglesState = ((ManipulatorV2)manipulator).partAngles;
 
-            T1TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.Table], 3).ToString();
-            T2TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.MiddleEdge], 3).ToString();
-            T3TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.TopEdge], 3).ToString();
-            T4TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.CameraBase], 3).ToString();
-            T5TextBox.Text = Math.Round(anglesState[ManipulatorV2.ManipulatorParts.Camera], 3).ToString();
+            T1TextBox.Text = Math.Round(anglesState[ManipulatorParts.Table], 3).ToString();
+            T2TextBox.Text = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3).ToString();
+            T3TextBox.Text = Math.Round(anglesState[ManipulatorParts.TopEdge], 3).ToString();
+            T4TextBox.Text = Math.Round(anglesState[ManipulatorParts.CameraBase], 3).ToString();
+            T5TextBox.Text = Math.Round(anglesState[ManipulatorParts.Camera], 3).ToString();
             collisoinDetector.FindCollisoins();
 
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
@@ -285,27 +280,27 @@ namespace InverseTest
 
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Table, -e.NewValue);
+            manipulator.RotatePart(ManipulatorParts.Table, -e.NewValue);
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.MiddleEdge, -e.NewValue);
+            manipulator.RotatePart(ManipulatorParts.MiddleEdge, -e.NewValue);
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.TopEdge, -e.NewValue);
+            manipulator.RotatePart(ManipulatorParts.TopEdge, -e.NewValue);
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.CameraBase, -e.NewValue);
+            manipulator.RotatePart(ManipulatorParts.CameraBase, -e.NewValue);
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorV2.ManipulatorParts.Camera, -e.NewValue);
+            manipulator.RotatePart(ManipulatorParts.Camera, -e.NewValue);
         }
 
         /// <summary>

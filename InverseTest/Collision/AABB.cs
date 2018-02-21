@@ -47,14 +47,14 @@ namespace InverseTest.Collision
         public void MakeListExcept(IManipulatorModel manipulator, IDetectorFrame detectorFrame, DetailModel detail, Model3D platform)//создаем список исключений самопересечений манипулятора и детектора
         {
 
-            for (int i = 0; i < Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).Length; i++) //самопересечение манипулятора
+            for (int i = 0; i < Enum.GetValues(typeof(ManipulatorParts)).Length; i++) //самопересечение манипулятора
             {
-                for (int j = i; j < Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).Length; j++)
+                for (int j = i; j < Enum.GetValues(typeof(ManipulatorParts)).Length; j++)
                 {
-                    if (manipulator.GetManipulatorPart((ManipulatorV2.ManipulatorParts)(Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).GetValue(i))).Bounds.
-                        IntersectsWith(manipulator.GetManipulatorPart((ManipulatorV2.ManipulatorParts)(Enum.GetValues(typeof(ManipulatorV2.ManipulatorParts)).GetValue(j))).Bounds))
+                    if (manipulator.GetManipulatorPart((ManipulatorParts)(Enum.GetValues(typeof(ManipulatorParts)).GetValue(i))).Bounds.
+                        IntersectsWith(manipulator.GetManipulatorPart((ManipulatorParts)(Enum.GetValues(typeof(ManipulatorParts)).GetValue(j))).Bounds))
                     {
-                        _exc = new Except(Enum.GetName(typeof(ManipulatorV2.ManipulatorParts), i), Enum.GetName(typeof(ManipulatorV2.ManipulatorParts), j));
+                        _exc = new Except(Enum.GetName(typeof(ManipulatorParts), i), Enum.GetName(typeof(ManipulatorParts), j));
                         _ListExcept.Add(_exc);
                     }
                 }

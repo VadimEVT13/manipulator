@@ -78,6 +78,15 @@ namespace InverseTest.Workers
                        )
                     {
                         satisfied.Push(one);
+
+                        Console.WriteLine("InputPOint:" + sp.manipPoint.ToString());
+                        Console.WriteLine("ANGLES:" + one.ToString());
+
+                        double[][] matrix = kinematic.DirectKinematic(one);
+                        Console.WriteLine("OutputPoint: " + matrix[0][3] + " " + matrix[2][3] + " " + matrix[1][3]);
+
+
+
                     }
                     else
                     {
@@ -108,6 +117,8 @@ namespace InverseTest.Workers
                         false
                         );
                 }
+
+
 
                 worker.ReportProgress(0, angles);
             }

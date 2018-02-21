@@ -13,5 +13,15 @@ namespace InverseTest.Manipulator.Models
         public double O3 { get; set; }
         public double O4 { get; set; }
         public double O5 { get; set; }
+
+
+        public override string ToString()
+        {
+            return O1 + " " + O2 + " " + O3 + " " + O4 + " " + O5;
+        }
+
     }
+
+
+
 }

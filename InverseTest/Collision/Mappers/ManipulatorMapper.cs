@@ -16,7 +16,7 @@ namespace InverseTest.Collision.Mappers
 
             var manipupParts = manip.parts;
 
-            foreach(KeyValuePair<ManipulatorV2.ManipulatorParts, IManipulatorPart> part in manipupParts)
+            foreach(KeyValuePair<ManipulatorParts, IManipulatorPart> part in manipupParts)
             {
                 shapes.Add(Utils.ExtractShapeFromModel(part.Key.ToString(),part.Value.GetModel()));
             }

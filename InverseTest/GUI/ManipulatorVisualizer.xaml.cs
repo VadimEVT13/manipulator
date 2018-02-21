@@ -182,7 +182,7 @@ namespace InverseTest.GUI
         public void setManipulatorModel(IManipulatorModel manipulatorModel)
         {
             this.manipulator = manipulatorModel;
-            Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorParts.Camera);
             Point3D position = new Point3D(camera.Bounds.Location.X + camera.Bounds.SizeX,
                 camera.Bounds.Location.Y + camera.Bounds.SizeY /2 ,
                 camera.Bounds.Location.Z + camera.Bounds.SizeZ / 2);
@@ -198,7 +198,7 @@ namespace InverseTest.GUI
 
         private void ManipulatorChangedCam(object sender, EventArgs e)
         {
-            Model3D cameraModel = manipulator.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
+            Model3D cameraModel = manipulator.GetManipulatorPart(ManipulatorParts.Camera);
             Rect3D camBounds = cameraModel.Bounds;
             Point3D cameraPosition = manipulator.GetCameraPosition();
             cameraFromManipulator.Position = cameraPosition;
