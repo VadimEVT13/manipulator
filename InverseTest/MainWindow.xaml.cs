@@ -24,6 +24,7 @@ using InverseTest.Collision;
 using static InverseTest.DetectorFrame;
 using InverseTest.Collision.Mappers;
 using InverseTest.Bound;
+using System.Windows.Interop;
 
 namespace InverseTest
 {
@@ -32,7 +33,7 @@ namespace InverseTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         /// <summary>
         /// Откланение от центра координат
         /// </summary>
@@ -78,27 +79,28 @@ namespace InverseTest
 
         int numMesh = 0;
 
+        DetailView detailView;
+
         public MainWindow()
         {
             InitializeComponent();
-            this.targetPoints = new ObservableCollection<SystemPosition>();
-            TargetPointsListView.ItemsSource = targetPoints;
             this.Loaded += this.MainWindowLoaded;
+
+            detailView = new DetailView();
         }
 
         public void MainWindowLoaded(object sender, RoutedEventArgs arg)
         {
             allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
             Model3DGroup newAllModels = new Model3DGroup();
-            
-            ManipulatorVisualizer.setCameras(allModels);
+            ManipulatorVisualizer.setCameras(allModels);        
 
             ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
             allModels = preproccessor.Simplification().GetProccessedModel();
 
             ModelParser parser = new ModelParser(allModels);
             parser.Parse();
-            detectorFrame = parser.frame;
+            detectorFrame = parser.Frame;
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
             ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
 
@@ -106,26 +108,28 @@ namespace InverseTest
             portalBounds.CalculateBounds(detectorFrame);
             detectorFrame.boundController = portalBounds;
 
-            platform = parser.others.Children[4];
+            platform = parser.DetailPlatform;
+            ManipulatorVisualizer.AddModel(platform);
 
-            manipulator = parser.manipulator;
+            manipulator = parser.Manipulator;
             manipulator.onPositionChanged += OnManipulatorPisitionChanged;
             ManipulatorVisualizer.setManipulatorModel(manipulator);
 
-            ManipulatorVisualizer.AddModel(parser.others);
+            ManipulatorVisualizer.AddModel(parser.Others);
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
             this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
-            this.manipKinematic.det = 6;//ManipulatorUtils.CalculateManipulatorDet(manipulator);
+            this.manipKinematic.det = ManipulatorUtils.CalculateManipulatorDet(manipulator);
             this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
             this.manipWorker.kinematicSolved += manipulatorSolved;
 
-            detail = parser.detail;
+            detail = parser.Detail;
             ManipulatorVisualizer.AddModel(detail.GetModel());
+            detailView.AddDetailModel(detail);
 
-            ManipulatorVisualizer.AddModel(parser.others);
+            ManipulatorVisualizer.AddModel(parser.Others);
 
             //Коллизии
             GJKSolver gjkSolver = new GJKSolver();
@@ -157,6 +161,9 @@ namespace InverseTest
 
             collisionWorker.onCollision += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
+
+            this.detailView.Owner = this;
+            detailView.Show();
         }
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
@@ -407,61 +414,7 @@ namespace InverseTest
 
 
         }
-
-        private void EditPoint_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (targetPoints.Count > 0 && selectedIndexPoint >= 0)
-            {
-                selectedIndexPoint = TargetPointsListView.SelectedIndex;
-                SystemPosition point = targetPoints[selectedIndexPoint];
-                TargetPointXTextBox.Text = point.targetPoint.X.ToString();
-                TargetPointYTextBox.Text = point.targetPoint.Y.ToString();
-                TargetPointZTextBox.Text = point.targetPoint.Z.ToString();
-
-                PointManipulatorXTextBox.Text = point.manipPoint.X.ToString();
-                PointManipulatorYTextBox.Text = point.manipPoint.Y.ToString();
-                PointManipulatorZTextBox.Text = point.manipPoint.Z.ToString();
-
-
-
-                if (selectedIndexPoint != -1)
-                {
-
-                    Button confirm = new Button();
-                    confirm.Content = "Принять";
-                    confirm.Click += new RoutedEventHandler(onConfirmChangesClick);
-
-                    Grid.SetColumn(confirm, 0);
-
-                    Button cancel = new Button();
-                    cancel.Content = "Отменить";
-                    cancel.Click += new RoutedEventHandler(onCancelChangesClick);
-
-                    Grid.SetColumn(cancel, 1);
-
-
-
-                    childrens = new List<UIElement>();
-                    for (int i = 0; i < TargetPointsListButtonsGrid.Children.Count; i++)
-                        childrens.Add(TargetPointsListButtonsGrid.Children[i]);
-
-
-
-                    TargetPointsListButtonsGrid.Children.Clear();
-                    TargetPointsListButtonsGrid.ColumnDefinitions.Clear();
-
-                    TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                    TargetPointsListButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                    TargetPointsListButtonsGrid.Children.Add(confirm);
-                    TargetPointsListButtonsGrid.Children.Add(cancel);
-
-
-                }
-            }
-
-        }
-
+        
 
         //Запрогать загрузку и замену детальки
         private void LoadModel_Click(object sender, RoutedEventArgs e)
@@ -469,65 +422,8 @@ namespace InverseTest
             throw new NotImplementedException();
         }
 
-
-        private void returnNormalGrid()
-        {
-            TargetPointsListButtonsGrid.Children.Clear();
-            TargetPointsListButtonsGrid.ColumnDefinitions.Clear();
-            ColumnDefinition column1 = new ColumnDefinition();
-            column1.Width = new GridLength(53.3);
-            ColumnDefinition column2 = new ColumnDefinition();
-            column2.Width = new GridLength(53.3);
-            ColumnDefinition column3 = new ColumnDefinition();
-            column3.Width = new GridLength(53.3);
-
-
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column1);
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column2);
-            TargetPointsListButtonsGrid.ColumnDefinitions.Add(column3);
-
-            for (int i = 0; i < childrens.Count; i++)
-                TargetPointsListButtonsGrid.Children.Add(childrens[i]);
-        }
-
-        private void onCancelChangesClick(object sender, RoutedEventArgs e)
-        {
-            returnNormalGrid();
-        }
-
-        private void onConfirmChangesClick(object sender, RoutedEventArgs e)
-        {
-            double x, y, z;
-
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-
-            double x2, y2, z2;
-            double.TryParse(PointManipulatorXTextBox.Text, out x2);
-            double.TryParse(PointManipulatorYTextBox.Text, out y2);
-            double.TryParse(PointManipulatorZTextBox.Text, out z2);
-
-
-            targetPoints[selectedIndexPoint] = new SystemPosition(new Point3D(x2, y2, z2), new Point3D(x, y, z));
-
-            returnNormalGrid();
-        }
-
-        private void DeletePoint_Click(object sender, RoutedEventArgs e)
-        {
-            int selectedIndex = TargetPointsListView.SelectedIndex;
-            if (selectedIndex != -1)
-                targetPoints.RemoveAt(selectedIndex);
-
-        }
-
-        private void TargetPointsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            selectedIndexPoint = TargetPointsListView.SelectedIndex;
-        }
-
-        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
+       
+       private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
         {
         }
 
@@ -601,14 +497,14 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ((IDebugModels)detectorFrame).transformModel(e.NewValue);
-            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+            ((IDebugModels)manipulator).transformModel(e.NewValue);
+           // allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
+            ((IDebugModels)manipulator).addNumberMesh(numMesh);
             NumMeshTextBox.Text = numMesh.ToString();
         }
 
@@ -699,7 +595,7 @@ namespace InverseTest
             SolvePortalKinematic(manip, targetPoint, false);
         }
 
-        private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) 
+        private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.focuseEnlagment = e.NewValue;
             recalculateKinematic();

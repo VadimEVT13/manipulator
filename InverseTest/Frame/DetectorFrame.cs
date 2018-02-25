@@ -60,8 +60,7 @@ namespace InverseTest
             HorizontalBar,
             ScreenHolder,
             ScreenRotator,
-            VerticalRotateStick,
-            HorizontalRotateStick,
+            ScreenRotatePoint,
             Screen,
             ScreenCameraPos
         }
@@ -75,45 +74,50 @@ namespace InverseTest
         {
             this.boundController = new PortalBoundController();
 
-
-
             portalModel = portal;
             //Экран
             Model3DGroup screen = new Model3DGroup();
-            screen.Children = new Model3DCollection(portal.Children.ToList().GetRange(27, 3));
+            screen.Children.Add(portal.Children[13]);
+            screen.Children.Add(portal.Children[14]);
+            screen.Children.Add(portal.Children[15]);
 
             screenCameraPos = new Model3DGroup();
-            screenCameraPos.Children.Add(portal.Children[30]);
+            screenCameraPos.Children.Add(portal.Children[17]);
 
             //Платформа на которой стоит вся конструкция по идее не двигается но пусть.
             Model3DGroup platform = new Model3DGroup();
-            platform.Children = new Model3DCollection(portal.Children.ToList().GetRange(0, 6));
-
+            platform.Children.Add(portal.Children[0]);
+            platform.Children.Add(portal.Children[1]);
+            
             ///Вертикальная рамка
             Model3DGroup verticalFrame = new Model3DGroup();
-            verticalFrame.Children = new Model3DCollection(portal.Children.ToList().GetRange(6, 6));
+            verticalFrame.Children.Add(portal.Children[2]);
+            verticalFrame.Children.Add(portal.Children[3]);
+            verticalFrame.Children.Add(portal.Children[4]);
+
 
             ///Горизонтальная платка на которой крепится держатель для экрана
             Model3DGroup horizontalBar = new Model3DGroup();
-            horizontalBar.Children = new Model3DCollection(portal.Children.ToList().GetRange(12, 6));
+            horizontalBar.Children.Add(portal.Children[5]);
+            horizontalBar.Children.Add(portal.Children[6]);
+            horizontalBar.Children.Add(portal.Children[7]);
 
             //Держатель для экрана, относительно него вращается экран
             Model3DGroup screenHolder = new Model3DGroup();
-            screenHolder.Children = new Model3DCollection(portal.Children.ToList().GetRange(18, 4));
-
+            screenHolder.Children.Add(portal.Children[8]);
+            screenHolder.Children.Add(portal.Children[9]);
+            screenHolder.Children.Add(portal.Children[10]);
+    
             Model3DGroup screenRotator = new Model3DGroup();
-            screenRotator.Children = new Model3DCollection(portal.Children.ToList().GetRange(23, 3));
+            screenRotator.Children.Add(portal.Children[11]);
+            screenRotator.Children.Add(portal.Children[12]);
 
-            Model3DGroup horizontalStick = new Model3DGroup();
-            horizontalStick.Children = new Model3DCollection(portal.Children.ToList().GetRange(22, 1));
-
-            Model3DGroup verticalStick = new Model3DGroup();
-            verticalStick.Children = new Model3DCollection(portal.Children.ToList().GetRange(26, 1));
+            Model3DGroup rotateScreenPoint = new Model3DGroup();
+            rotateScreenPoint.Children.Add(portal.Children[16]);
             
             DetectorFramePart screenCameraPart = new DetectorFramePart(screenCameraPos);
             DetectorFramePart screenPart = new DetectorFramePart(screen);
-            DetectorFramePart verticalStickPart = new DetectorFramePart(verticalStick);
-            DetectorFramePart horizontalStickPart = new DetectorFramePart(horizontalStick);
+            DetectorFramePart rotatePoint = new DetectorFramePart(rotateScreenPoint);
             DetectorFramePart screenRotatorPart = new DetectorFramePart(screenRotator);
             DetectorFramePart screenHolderPart = new DetectorFramePart(screenHolder);
             DetectorFramePart horizontalBarPart = new DetectorFramePart(horizontalBar);
@@ -122,8 +126,7 @@ namespace InverseTest
 
             parts.Add(Parts.ScreenCameraPos, screenCameraPart);
             parts.Add(Parts.Screen, screenPart);
-            parts.Add(Parts.HorizontalRotateStick, horizontalStickPart);
-            parts.Add(Parts.VerticalRotateStick, verticalStickPart);
+            parts.Add(Parts.ScreenRotatePoint, rotatePoint);
             parts.Add(Parts.ScreenRotator, screenRotatorPart);
             parts.Add(Parts.ScreenHolder, screenHolderPart);
             parts.Add(Parts.VerticalFrame, verticalFramePart);
@@ -132,20 +135,16 @@ namespace InverseTest
 
             partsCollectoin.Add(screenCameraPart.GetModelPart());
             partsCollectoin.Add(screenPart.GetModelPart());
-            partsCollectoin.Add(horizontalStickPart.GetModelPart());
-            partsCollectoin.Add(verticalStickPart.GetModelPart());
+            partsCollectoin.Add(rotatePoint.GetModelPart());
             partsCollectoin.Add(screenRotatorPart.GetModelPart());
             partsCollectoin.Add(screenHolderPart.GetModelPart());
             partsCollectoin.Add(horizontalBarPart.GetModelPart());
             partsCollectoin.Add(verticalFramePart.GetModelPart());
             partsCollectoin.Add(platformPart.GetModelPart());
-            partsCollectoin.Add(screenRotatorPart.GetModelPart());
 
             partStartPosition.Add(Parts.ScreenCameraPos, parts[Parts.ScreenCameraPos].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.Screen, parts[Parts.Screen].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.ScreenRotator, parts[Parts.ScreenRotator].GetModelPart().Bounds.Location);
-            partStartPosition.Add(Parts.VerticalRotateStick, parts[Parts.VerticalRotateStick].GetModelPart().Bounds.Location);
-            partStartPosition.Add(Parts.HorizontalRotateStick, parts[Parts.HorizontalRotateStick].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.ScreenHolder, parts[Parts.ScreenHolder].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.VerticalFrame, parts[Parts.VerticalFrame].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.HorizontalBar, parts[Parts.HorizontalBar].GetModelPart().Bounds.Location);
@@ -324,12 +323,11 @@ namespace InverseTest
 
             screenRotatorGroup.Children.Add(screenHolderGroup);
             parts[Parts.ScreenRotator].TranslateTransform3D(screenRotatorGroup);
-            parts[Parts.HorizontalRotateStick].TranslateTransform3D(screenRotatorGroup);
 
 
             screenGroup.Children.Add(screenRotatorGroup);
             parts[Parts.Screen].TranslateTransform3D(screenGroup);
-            parts[Parts.VerticalRotateStick].TranslateTransform3D(screenHolderGroup);
+            parts[Parts.ScreenRotatePoint].TranslateTransform3D(screenHolderGroup);
 
             camPositionCubeGroup.Children.Add(screenGroup);
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
@@ -349,7 +347,7 @@ namespace InverseTest
         public  RotateTransform3D GetVerticalScreenRotate()
         {
           
-            Point3D center = MathUtils.GetRectCenter(parts[Parts.HorizontalRotateStick].Bounds());
+            Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
             RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis,
                 MathUtils.RadiansToAngle(verticalAngle)), center);
             return R;
@@ -357,7 +355,7 @@ namespace InverseTest
 
         public RotateTransform3D GetHorizontalScreenRotate()
         {
-            Point3D center = MathUtils.GetRectCenter(parts[Parts.VerticalRotateStick].Bounds());
+            Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
             RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis,
                 MathUtils.RadiansToAngle(horizontalAngle)), center);
             return R;

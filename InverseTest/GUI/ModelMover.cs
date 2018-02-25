@@ -32,9 +32,7 @@ namespace InverseTest.GUI
             Point mousePos = e.GetPosition(viewPort);
             PointHitTestParameters hitParam = new PointHitTestParameters(mousePos);
             VisualTreeHelper.HitTest(viewPort, null, ResultCallback, hitParam);
-            Console.WriteLine("Camera:" + viewPort.Camera.LookDirection.ToString());
             Matrix3D matrix = Viewport3DHelper.GetProjectionMatrix(viewPort.Viewport);
-            Console.WriteLine("Matrix:" + matrix.ToString());
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)

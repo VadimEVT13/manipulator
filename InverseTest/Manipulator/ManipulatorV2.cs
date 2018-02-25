@@ -107,38 +107,38 @@ namespace InverseTest
         {
             try
             {
+
+
                 // Камера
                 Model3DGroup cam3DModel = new Model3DGroup();
-                cam3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(14, 6));
-                
-                _cameraposition = machine3DModel.Children[23];
+                cam3DModel.Children.Add(machine3DModel.Children[9]);
+                cam3DModel.Children.Add(machine3DModel.Children[10]);
+
+                _cameraposition = machine3DModel.Children[13];
 
                 // Стойка камеры
                 Model3DGroup camEdge3DModel = new Model3DGroup();
-                camEdge3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(13, 1));
-                
+                camEdge3DModel.Children.Add(machine3DModel.Children[8]);
+
                 // Верхнее поворотное ребро
                 Model3DGroup upperEdge3DModel = new Model3DGroup();
-                upperEdge3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(9, 4));
-                
-                //    upperEdge3DModel.Children.Add(machine3DModel.Children[18]);
-                
+                upperEdge3DModel.Children.Add(machine3DModel.Children[6]);
+                upperEdge3DModel.Children.Add(machine3DModel.Children[7]);
                 // Стойка
                 Model3DGroup middleEdge3DModel = new Model3DGroup();
-                middleEdge3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(5, 4));
-
-                //    middleEdge3DModel.Children.Add(machine3DModel.Children[19]);
-
+                middleEdge3DModel.Children.Add(machine3DModel.Children[4]);
+                middleEdge3DModel.Children.Add(machine3DModel.Children[5]);
+                
                 // Столик 
                 Model3DGroup table3DModel = new Model3DGroup();
-                table3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(3, 2));
-                
-                //   table3DModel.Children.Add(machine3DModel.Children[20]);
+                table3DModel.Children.Add(machine3DModel.Children[3]);
                 
                 // Основание
                 Model3DGroup base3DModel = new Model3DGroup();
-                base3DModel.Children = new Model3DCollection(machine3DModel.Children.ToList().GetRange(0, 3));
-                
+                base3DModel.Children.Add(machine3DModel.Children[0]);
+                base3DModel.Children.Add(machine3DModel.Children[1]);
+                base3DModel.Children.Add(machine3DModel.Children[2]);
+
                 IManipulatorPart cam3D = new ManipulatorPart(cam3DModel);
                 IManipulatorPart camEdge = new ManipulatorPart(camEdge3DModel);
                 IManipulatorPart upperEdge = new ManipulatorPart(upperEdge3DModel);
@@ -167,9 +167,9 @@ namespace InverseTest
                 partAngles[ManipulatorParts.Camera] = 0;
 
                 // Заполняем список мешей в точках сочленений
-                _jointCubes.Add(machine3DModel.Children[20]);
-                _jointCubes.Add(machine3DModel.Children[21]);
-                _jointCubes.Add(machine3DModel.Children[22]);
+                _jointCubes.Add(machine3DModel.Children[11]);
+                _jointCubes.Add(machine3DModel.Children[12]);
+                _jointCubes.Add(machine3DModel.Children[14]);
 
                 _manipulator3DModel.Children = _edges;
 

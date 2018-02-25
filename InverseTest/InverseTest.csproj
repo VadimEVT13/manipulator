@@ -196,9 +196,21 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="Detail\DetailPointsCreator.cs" />
+    <Compile Include="Detail\IDetailMouseListener.cs" />
+    <Compile Include="GUI\Controls\PathListView.xaml.cs">
+      <DependentUpon>PathListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\IVisual.cs" />
+    <Compile Include="GUI\Model\DetailVisual.cs" />
+    <Compile Include="Model\ScanPoint.cs" />
+    <Compile Include="GUI\Model\ScanPointVisual.cs" />
     <Compile Include="GUI\VisualModel.cs" />
     <Compile Include="Manipulator\ManipulatorVisual.cs" />
+    <Compile Include="Model\ScanPath.cs" />
     <Compile Include="Utils\ManipulatorUtils.cs" />
     <Compile Include="ModelPreprocessor.cs" />
     <Compile Include="ModelParser.cs" />
@@ -235,6 +247,14 @@
     <Compile Include="SystemPosition.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
     <Compile Include="Workers\ManipulatorKinematicWorker.cs" />
+    <Page Include="GUI\Controls\PathListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\DetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ManipulatorVisualizer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

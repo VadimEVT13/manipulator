@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:InverseTest.GUI"
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="202.667" d:DesignWidth="132.666">
+             d:DesignHeight="202.667" d:DesignWidth="132.666"
+             
+             >
 
     <UserControl.Resources>
         <Style x:Key="ViewMaximizeStyle">
@@ -17,6 +19,7 @@
                     <Setter Property="Grid.Row" Value="0"/>
                     <Setter Property="Grid.RowSpan" Value="3"/>
                     <Setter Property="Grid.ZIndex" Value="2"/>
+                    
                 </DataTrigger>
             </Style.Triggers>
 
@@ -52,7 +55,6 @@
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
             <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
             <Setter Property="ClipToBounds" Value="False"/>
-
 
         </Style>
     </UserControl.Resources>
