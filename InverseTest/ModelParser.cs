@@ -36,7 +36,7 @@ namespace InverseTest
             Model3DGroup allModels = scene;
             Model3DGroup portal = new Model3DGroup();
             portal.Children = new Model3DCollection(allModels.Children.ToList().GetRange(16,16));
-            portal.Children.Add(allModels.Children[37]);
+            portal.Children.Add(allModels.Children[35]);
             portal.Children.Add(allModels.Children[36]);
 
             Frame = new DetectorFrame(portal);
@@ -45,8 +45,7 @@ namespace InverseTest
             Model3DGroup manipulatorGroup = new Model3DGroup();
             Model3DCollection manipulatorChildrens = new Model3DCollection();
             manipulatorChildrens.Add(allModels.Children[1]);
-            manipulatorChildrens.Add(allModels.Children[6]);
-            manipulatorChildrens.Add(allModels.Children[7]);
+            manipulatorChildrens.Add(allModels.Children[2]);
             manipulatorChildrens.Add(allModels.Children[8]);
             manipulatorChildrens.Add(allModels.Children[9]);
             manipulatorChildrens.Add(allModels.Children[10]);
@@ -56,20 +55,15 @@ namespace InverseTest
             manipulatorChildrens.Add(allModels.Children[14]);
             manipulatorChildrens.Add(allModels.Children[15]);
             //Точки вращения
-            manipulatorChildrens.Add(allModels.Children[33]);
-            manipulatorChildrens.Add(allModels.Children[32]);
             manipulatorChildrens.Add(allModels.Children[0]);
+            manipulatorChildrens.Add(allModels.Children[32]);
+            manipulatorChildrens.Add(allModels.Children[33]);
             manipulatorChildrens.Add(allModels.Children[34]);
-
-
-
-
             manipulatorGroup.Children = manipulatorChildrens;
             //Точки в узлах манипулятора. Каждая точка это кубик 1 на 1 на 1
-         
-            Manipulator = new ManipulatorV2(manipulatorGroup);
+           Manipulator = new ManipulatorV2(manipulatorGroup);
 
-            Model3D lopatka = allModels.Children[5];
+            Model3D lopatka = allModels.Children[7];
             Detail = new DetailModel(lopatka);
 
             //Добавляем остальные мешы
@@ -78,10 +72,10 @@ namespace InverseTest
             this.Others = others;
 
             this.DetailPlatform = new Model3DGroup();
-            this.DetailPlatform.Children.Add(allModels.Children[2]);
             this.DetailPlatform.Children.Add(allModels.Children[3]);
             this.DetailPlatform.Children.Add(allModels.Children[4]);
-            this.DetailPlatform.Children.Add(allModels.Children[35]);
+            this.DetailPlatform.Children.Add(allModels.Children[5]);
+            this.DetailPlatform.Children.Add(allModels.Children[6]);
         }
     }
 }

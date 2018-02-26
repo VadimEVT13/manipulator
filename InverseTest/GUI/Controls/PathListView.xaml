@@ -10,17 +10,15 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 
-    
+
     <UserControl.Resources>
-       
-        
-        
+
+
+
         <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
 
         </Style>
-
-        <!--<Path:ScanPath x:Key="SPath"/>-->
 
 
     </UserControl.Resources>
@@ -36,10 +34,12 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
         </Grid>
-        <ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
-                                          SelectionChanged="TargetPointsListView_SelectionChanged">
 
-            <!--ItemsSource="{Binding Source={StaticResource SPath}, Path=points, Mode=TwoWay}"-->
+        <Button Content="ADD" Name="Add" Click="Add_Click"/>
+        <ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
+            ItemsSource="{Binding PointsList, Source={x:Static path:ScanPath.getInstance}}"                   
+                   SelectionChanged="TargetPointsListView_SelectionChanged">
+
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="X" Width="auto" DisplayMemberBinding="{Binding point.X}" />

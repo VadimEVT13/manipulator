@@ -5,6 +5,7 @@ using InverseTest.Manipulator;
 using InverseTest.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,13 @@ namespace InverseTest.GUI
             setCamera();
             setLight();
             this.orderedPoints = new Dictionary<Visual3D, ScanPointVisual>();
+            this.Closing += WindowClosing;
+        }
+
+        private void WindowClosing(object sender, CancelEventArgs e) {
+            e.Cancel = true;
+
+            this.Hide();
         }
 
         private void setCamera()

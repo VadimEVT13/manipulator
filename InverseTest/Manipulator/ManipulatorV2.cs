@@ -111,33 +111,32 @@ namespace InverseTest
 
                 // Камера
                 Model3DGroup cam3DModel = new Model3DGroup();
+                cam3DModel.Children.Add(machine3DModel.Children[8]);
                 cam3DModel.Children.Add(machine3DModel.Children[9]);
-                cam3DModel.Children.Add(machine3DModel.Children[10]);
 
                 _cameraposition = machine3DModel.Children[13];
 
                 // Стойка камеры
                 Model3DGroup camEdge3DModel = new Model3DGroup();
-                camEdge3DModel.Children.Add(machine3DModel.Children[8]);
+                camEdge3DModel.Children.Add(machine3DModel.Children[7]);
 
                 // Верхнее поворотное ребро
                 Model3DGroup upperEdge3DModel = new Model3DGroup();
+                upperEdge3DModel.Children.Add(machine3DModel.Children[5]);
                 upperEdge3DModel.Children.Add(machine3DModel.Children[6]);
-                upperEdge3DModel.Children.Add(machine3DModel.Children[7]);
                 // Стойка
                 Model3DGroup middleEdge3DModel = new Model3DGroup();
+                middleEdge3DModel.Children.Add(machine3DModel.Children[3]);
                 middleEdge3DModel.Children.Add(machine3DModel.Children[4]);
-                middleEdge3DModel.Children.Add(machine3DModel.Children[5]);
                 
                 // Столик 
                 Model3DGroup table3DModel = new Model3DGroup();
-                table3DModel.Children.Add(machine3DModel.Children[3]);
+                table3DModel.Children.Add(machine3DModel.Children[2]);
                 
                 // Основание
                 Model3DGroup base3DModel = new Model3DGroup();
-                base3DModel.Children.Add(machine3DModel.Children[0]);
                 base3DModel.Children.Add(machine3DModel.Children[1]);
-                base3DModel.Children.Add(machine3DModel.Children[2]);
+                base3DModel.Children.Add(machine3DModel.Children[0]);
 
                 IManipulatorPart cam3D = new ManipulatorPart(cam3DModel);
                 IManipulatorPart camEdge = new ManipulatorPart(camEdge3DModel);
@@ -167,9 +166,9 @@ namespace InverseTest
                 partAngles[ManipulatorParts.Camera] = 0;
 
                 // Заполняем список мешей в точках сочленений
+                _jointCubes.Add(machine3DModel.Children[10]);
                 _jointCubes.Add(machine3DModel.Children[11]);
                 _jointCubes.Add(machine3DModel.Children[12]);
-                _jointCubes.Add(machine3DModel.Children[14]);
 
                 _manipulator3DModel.Children = _edges;
 

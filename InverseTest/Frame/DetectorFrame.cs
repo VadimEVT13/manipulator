@@ -82,7 +82,7 @@ namespace InverseTest
             screen.Children.Add(portal.Children[15]);
 
             screenCameraPos = new Model3DGroup();
-            screenCameraPos.Children.Add(portal.Children[17]);
+            screenCameraPos.Children.Add(portal.Children[16]);
 
             //Платформа на которой стоит вся конструкция по идее не двигается но пусть.
             Model3DGroup platform = new Model3DGroup();
@@ -107,13 +107,13 @@ namespace InverseTest
             screenHolder.Children.Add(portal.Children[8]);
             screenHolder.Children.Add(portal.Children[9]);
             screenHolder.Children.Add(portal.Children[10]);
-    
+            
             Model3DGroup screenRotator = new Model3DGroup();
             screenRotator.Children.Add(portal.Children[11]);
             screenRotator.Children.Add(portal.Children[12]);
 
             Model3DGroup rotateScreenPoint = new Model3DGroup();
-            rotateScreenPoint.Children.Add(portal.Children[16]);
+            rotateScreenPoint.Children.Add(portal.Children[17]);
             
             DetectorFramePart screenCameraPart = new DetectorFramePart(screenCameraPos);
             DetectorFramePart screenPart = new DetectorFramePart(screen);

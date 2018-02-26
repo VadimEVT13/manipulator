@@ -83,6 +83,8 @@ namespace InverseTest
 
         public MainWindow()
         {
+
+            ScanPath.getInstance.AddPoint(new Model.ScanPoint(new Point3D(0, 0, 0)));
             InitializeComponent();
             this.Loaded += this.MainWindowLoaded;
 
@@ -93,8 +95,8 @@ namespace InverseTest
         {
             allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
             Model3DGroup newAllModels = new Model3DGroup();
-            ManipulatorVisualizer.setCameras(allModels);        
-
+            ManipulatorVisualizer.setCameras(allModels);
+          
             ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
             allModels = preproccessor.Simplification().GetProccessedModel();
 
@@ -497,14 +499,14 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ((IDebugModels)manipulator).transformModel(e.NewValue);
-           // allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+           ((IDebugModels)detectorFrame).transformModel(e.NewValue);
+           //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            ((IDebugModels)manipulator).addNumberMesh(numMesh);
+            ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
             NumMeshTextBox.Text = numMesh.ToString();
         }
 
@@ -624,6 +626,11 @@ namespace InverseTest
         private void PositionValid_Unchecked(object sender, RoutedEventArgs e)
         {
             CollisionPopup.IsOpen = false;
+        }
+
+       private void DetailViewMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+           this.detailView.Show();
         }
     }
 }

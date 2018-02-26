@@ -1,4 +1,4 @@
-# Blender MTL File: 'Detector Frame clear3.blend'
+# Blender MTL File: 'Detector Frame clear3 (2).blend'
 # Material Count: 6
 
 newmtl All
@@ -11,7 +11,7 @@ Ni 1.000000
 d 1.000000
 illum 3
 
-newmtl Blu.001
+newmtl Blu
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.281633 0.640000
