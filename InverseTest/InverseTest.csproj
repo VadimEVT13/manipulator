@@ -175,6 +175,7 @@
     <Compile Include="Bound\PortalBoundController.cs" />
     <Compile Include="Collision\AABB.cs" />
     <Compile Include="Collision\CollisionDetector.cs" />
+    <Compile Include="Collision\CollisionVisualController.cs" />
     <Compile Include="Collision\GJKFinder.cs" />
     <Compile Include="Collision\GJKSolver.cs" />
     <Compile Include="Collision\HullsV2.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Collision\Model\DetailSnapshot.cs" />
     <Compile Include="Collision\Model\ManipulatorSnapshot.cs" />
     <Compile Include="Collision\Model\Model3DCollision.cs" />
+    <Compile Include="Collision\Model\ExtraPartsEnum.cs" />
     <Compile Include="Collision\Model\PartShape.cs" />
     <Compile Include="Collision\Model\Plane.cs" />
     <Compile Include="Collision\Model\PortalSnapshot.cs" />
@@ -198,6 +200,8 @@
     <Compile Include="Collision\Model\Vertex.cs" />
     <Compile Include="Detail\DetailPointsCreator.cs" />
     <Compile Include="Detail\IDetailMouseListener.cs" />
+    <Compile Include="Frame\DetectorFrameVisual.cs" />
+    <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
     <Compile Include="GUI\Controls\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
     </Compile>
@@ -206,6 +210,7 @@
     </Compile>
     <Compile Include="GUI\IVisual.cs" />
     <Compile Include="GUI\Model\DetailVisual.cs" />
+    <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Model\ScanPoint.cs" />
     <Compile Include="GUI\Model\ScanPointVisual.cs" />
     <Compile Include="GUI\VisualModel.cs" />

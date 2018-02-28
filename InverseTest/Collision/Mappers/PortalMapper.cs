@@ -18,7 +18,7 @@ namespace InverseTest.Collision.Mappers
 
             foreach (KeyValuePair<DetectorFrame.Parts, IDetectorFramePart> part in frameParts) 
             {
-                shapes.Add(Utils.ExtractShapeFromModel(part.Key.ToString(),part.Value.GetModelPart()));
+                shapes.Add(Utils.ExtractShapeFromModel(part.Key,part.Value.GetModelPart()));
             }
             
             return new PortalSnapshot(shapes);

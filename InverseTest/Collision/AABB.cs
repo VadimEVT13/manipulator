@@ -22,11 +22,11 @@ namespace InverseTest.Collision
 
         public struct Except : IEquatable<Except> //структура для хранения исключений
         {
-            public string S1;
-            public string S2;
+            public Enum S1;
+            public Enum S2;
 
 
-            public Except(string s1, string s2)
+            public Except(Enum s1, Enum s2)
             {
                 this.S1 = s1;
                 this.S2 = s2;
@@ -47,35 +47,37 @@ namespace InverseTest.Collision
         public void MakeListExcept(IManipulatorModel manipulator, IDetectorFrame detectorFrame, DetailModel detail, Model3D platform)//создаем список исключений самопересечений манипулятора и детектора
         {
 
-            for (int i = 0; i < Enum.GetValues(typeof(ManipulatorParts)).Length; i++) //самопересечение манипулятора
+            foreach (ManipulatorParts i in Enum.GetValues(typeof(ManipulatorParts))) //самопересечение манипулятора
             {
-                for (int j = i; j < Enum.GetValues(typeof(ManipulatorParts)).Length; j++)
+                
+                foreach (ManipulatorParts j in Enum.GetValues(typeof(ManipulatorParts)))
                 {
-                    if (manipulator.GetManipulatorPart((ManipulatorParts)(Enum.GetValues(typeof(ManipulatorParts)).GetValue(i))).Bounds.
-                        IntersectsWith(manipulator.GetManipulatorPart((ManipulatorParts)(Enum.GetValues(typeof(ManipulatorParts)).GetValue(j))).Bounds))
+                    if (manipulator.GetManipulatorPart(i).Bounds.
+                        IntersectsWith(manipulator.GetManipulatorPart(j).Bounds))
                     {
-                        _exc = new Except(Enum.GetName(typeof(ManipulatorParts), i), Enum.GetName(typeof(ManipulatorParts), j));
+                        _exc = new Except(i,j);
                         _ListExcept.Add(_exc);
                     }
                 }
             }
 
-            for (int i = 0; i < Enum.GetValues(typeof(DetectorFrame.Parts)).Length; i++) //самопересечение детектора
+            foreach (DetectorFrame.Parts p1 in Enum.GetValues(typeof(DetectorFrame.Parts))) //самопересечение детектора
             {
-                for (int j = i; j < Enum.GetValues(typeof(DetectorFrame.Parts)).Length; j++)
+                foreach (DetectorFrame.Parts p2 in Enum.GetValues(typeof(DetectorFrame.Parts)))
                 {
-                    if (detectorFrame.GetDetectorFramePart((DetectorFrame.Parts)(Enum.GetValues(typeof(DetectorFrame.Parts)).GetValue(i))).Bounds.
-                        IntersectsWith(detectorFrame.GetDetectorFramePart((DetectorFrame.Parts)(Enum.GetValues(typeof(DetectorFrame.Parts)).GetValue(j))).Bounds))
+                    if (detectorFrame.GetDetectorFramePart(p1).Bounds.
+                        IntersectsWith(detectorFrame.GetDetectorFramePart(p2).Bounds))
                     {
-                        _exc = new Except(Enum.GetName(typeof(DetectorFrame.Parts), i), Enum.GetName(typeof(DetectorFrame.Parts), j));
+                        _exc = new Except(p1, p2);
                         _ListExcept.Add(_exc);
                     }
                 }
 
             }
-            _exc = new Except(DetectorFrame.Parts.Platform.ToString(), DetailPlatformMapper.platformName); //дополнительные исключений найденые при тесте
+            _exc = new Except(ExtraPartsEnum.DETAIL, ExtraPartsEnum.DETAIL_PLATFORM); //дополнительные исключений найденые при тесте
             _ListExcept.Add(_exc);
-            _exc = new Except(DetectorFrame.Parts.Screen.ToString(), DetectorFrame.Parts.ScreenCameraPos.ToString());
+            _ListExcept.Add(new Except(ExtraPartsEnum.DETAIL_PLATFORM, ManipulatorParts.Platform));
+            _exc = new Except(DetectorFrame.Parts.Screen, DetectorFrame.Parts.ScreenCameraPos);
             _ListExcept.Add(_exc);
             rdy = true;
         }
@@ -103,12 +105,12 @@ namespace InverseTest.Collision
 
                         if (Intersects(manipulator.parts[i], manipulator.parts[j]))
                         {
-                            _exc = new Except(manipulator.parts[i].partName, manipulator.parts[j].partName);
+                            _exc = new Except(manipulator.parts[i].partType, manipulator.parts[j].partType);
                             if (!CompareExcept(_exc))
                             {
                                 CollisionPair pair = new CollisionPair(
-                                    new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
-                                    new Model3DCollision(manipulator.parts[j].partName, manipulator.parts[j])
+                                    new Model3DCollision(manipulator.parts[i].partType, manipulator.parts[i]),
+                                    new Model3DCollision(manipulator.parts[j].partType, manipulator.parts[j])
                                     );
 
                                 collisoins.Add(pair);
@@ -119,12 +121,12 @@ namespace InverseTest.Collision
 
                     if (Intersects(manipulator.parts[i], detail.detailShape)) //манипулятор с моделью
                     {
-                        _exc = new Except(manipulator.parts[i].partName, detail.detailShape.partName);
+                        _exc = new Except(manipulator.parts[i].partType, detail.detailShape.partType);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                                new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
-                                new Model3DCollision(detail.detailShape.partName, detail.detailShape)
+                                new Model3DCollision(manipulator.parts[i].partType, manipulator.parts[i]),
+                                new Model3DCollision(detail.detailShape.partType, detail.detailShape)
                                 );
 
                             collisoins.Add(pair);
@@ -138,12 +140,12 @@ namespace InverseTest.Collision
                     //part2 = Det_platform;
                     if (Intersects(manipulator.parts[i], detailPlatform.detailPlatformShape)) //манипулятор с платформой
                     {
-                        _exc = new Except(manipulator.parts[i].partName, detailPlatform.detailPlatformShape.partName);
+                        _exc = new Except(manipulator.parts[i].partType, detailPlatform.detailPlatformShape.partType);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
-                            new Model3DCollision(detailPlatform.detailPlatformShape.partName, detailPlatform.detailPlatformShape)
+                            new Model3DCollision(manipulator.parts[i].partType, manipulator.parts[i]),
+                            new Model3DCollision(detailPlatform.detailPlatformShape.partType, detailPlatform.detailPlatformShape)
                             );
 
                             collisoins.Add(pair);
@@ -157,12 +159,12 @@ namespace InverseTest.Collision
                     {
                         if (Intersects(portal.parts[i], portal.parts[j]))
                         {
-                            _exc = new Except(portal.parts[i].partName, portal.parts[j].partName);
+                            _exc = new Except(portal.parts[i].partType, portal.parts[j].partType);
                             if (!CompareExcept(_exc))
                             {
                                 CollisionPair pair = new CollisionPair(
-                                new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
-                                new Model3DCollision(portal.parts[j].partName, portal.parts[j])
+                                new Model3DCollision(portal.parts[i].partType, portal.parts[i]),
+                                new Model3DCollision(portal.parts[j].partType, portal.parts[j])
                                 );
                                 collisoins.Add(pair);
                             }
@@ -174,12 +176,12 @@ namespace InverseTest.Collision
 
                     if (Intersects(portal.parts[i], detail.detailShape)) //детектор с деталью
                     {
-                        _exc = new Except(portal.parts[i].partName, detail.detailShape.partName);
+                        _exc = new Except(portal.parts[i].partType, detail.detailShape.partType);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
-                            new Model3DCollision(detail.detailShape.partName, detail.detailShape)
+                            new Model3DCollision(portal.parts[i].partType, portal.parts[i]),
+                            new Model3DCollision(detail.detailShape.partType, detail.detailShape)
                             );
                             collisoins.Add(pair);
                         }
@@ -188,12 +190,12 @@ namespace InverseTest.Collision
                     // ДЕТЕКТОР С ПЛАТФОРМОЙ
                     if (Intersects(portal.parts[i], detailPlatform.detailPlatformShape)) //детектор с платформой 
                     {
-                        _exc = new Except(portal.parts[i].partName, detailPlatform.detailPlatformShape.partName);
+                        _exc = new Except(portal.parts[i].partType, detailPlatform.detailPlatformShape.partType);
                         if (!CompareExcept(_exc))
                         {
                             CollisionPair pair = new CollisionPair(
-                            new Model3DCollision(portal.parts[i].partName, portal.parts[i]),
-                            new Model3DCollision(detailPlatform.detailPlatformShape.partName, detailPlatform.detailPlatformShape)
+                            new Model3DCollision(portal.parts[i].partType, portal.parts[i]),
+                            new Model3DCollision(detailPlatform.detailPlatformShape.partType, detailPlatform.detailPlatformShape)
                             );
                             collisoins.Add(pair);
                         }
@@ -207,12 +209,12 @@ namespace InverseTest.Collision
                     {
                         if (Intersects(manipulator.parts[i], portal.parts[j]))
                         {
-                            _exc = new Except(manipulator.parts[i].partName, portal.parts[j].partName);
+                            _exc = new Except(manipulator.parts[i].partType, portal.parts[j].partType);
                             if (!CompareExcept(_exc))
                             {
                                 CollisionPair pair = new CollisionPair(
-                                new Model3DCollision(manipulator.parts[i].partName, manipulator.parts[i]),
-                                new Model3DCollision(portal.parts[j].partName, portal.parts[j])
+                                new Model3DCollision(manipulator.parts[i].partType, manipulator.parts[i]),
+                                new Model3DCollision(portal.parts[j].partType, portal.parts[j])
                                 );
                                 collisoins.Add(pair);
                             }

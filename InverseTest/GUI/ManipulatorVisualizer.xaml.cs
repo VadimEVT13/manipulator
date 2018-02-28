@@ -18,6 +18,7 @@ using InverseTest.Manipulator;
 using InverseTest.GUI.Model;
 using InverseTest.Detail;
 using InverseTest.Collision.Model;
+using InverseTest.Frame;
 
 namespace InverseTest.GUI
 {
@@ -179,7 +180,7 @@ namespace InverseTest.GUI
         }
 
 
-        public void setManipulatorModel(IManipulatorModel manipulatorModel)
+        public void setManipulatorModel(IManipulatorModel manipulatorModel, ManipulatorVisual manipulatorVisual)
         {
             this.manipulator = manipulatorModel;
             Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorParts.Camera);
@@ -192,8 +193,25 @@ namespace InverseTest.GUI
             cameraFromManipulator.Position = position;
             cameraFromManipulator.LookDirection = manipulatorModel.GetCameraDirection();
 
-            AddModel(manipulatorModel.GetManipulatorModel());
-            
+            AddVisuals(manipulatorVisual.Visuals);
+        }
+
+        private void AddVisuals(List<VisualModel> visuals)
+        {
+            foreach(VisualModel v in visuals)
+            {
+                AddVisual(v);
+            }
+        }
+
+        private void AddVisual(VisualModel visual)
+        {
+            ViewPortManipulatorCam.Children.Add(visual.camManip);
+            ViewPortDetectorScreenCam.Children.Add(visual.camPortal);
+            ViewPort2DTop.Children.Add(visual.top);
+            ViewPort2DFront.Children.Add(visual.front);
+            ViewPort2DRight.Children.Add(visual.right);
+            ViewPort3D.Children.Add(visual._3d);
         }
 
         private void ManipulatorChangedCam(object sender, EventArgs e)
@@ -209,14 +227,15 @@ namespace InverseTest.GUI
         /// Устанавливает модель портала во ViewPort-ах и камеру 
         /// </summary>
         /// <param name="detectorFrame"></param>
-        public void setDetectFrameModel(IDetectorFrame detectorFrame)
+        public void SetDetectFrameModel(IDetectorFrame detectorFrame, DetectorFrameVisual portalVisual)
         {
             this.detectorFrame = detectorFrame;
             Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);
             camera.Changed += ChangedCam;
             cameraFromPortal.LookDirection = detectorFrame.GetScreenDirection();
             cameraFromPortal.Position = detectorFrame.GetCameraPosition();
-            AddModel(detectorFrame.GetDetectorFrameModel());
+
+            AddVisuals(portalVisual.Visuals);
         }
 
         public void SetManipulatorPoint(IMovementPoint point)

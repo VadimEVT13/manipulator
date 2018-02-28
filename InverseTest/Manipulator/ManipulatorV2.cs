@@ -38,7 +38,13 @@ namespace InverseTest
         /// <summary>
         /// Вращающаяся часть нижнего ребра (т.е. столик)
         /// </summary>
-        Table
+        Table,
+
+        /// <summary>
+        /// Основание
+        /// </summary>
+
+        Platform
     }
     /// <summary>
     /// 
@@ -150,6 +156,7 @@ namespace InverseTest
                 parts.Add(ManipulatorParts.MiddleEdge, middleEdge);
                 parts.Add(ManipulatorParts.TopEdge, upperEdge);
                 parts.Add(ManipulatorParts.Table, table);
+                parts.Add(ManipulatorParts.Platform, basePart);
 
                 // Заполняем список мешей
                 _edges.Add(table3DModel);
@@ -164,6 +171,7 @@ namespace InverseTest
                 partAngles[ManipulatorParts.TopEdge] = 0;
                 partAngles[ManipulatorParts.CameraBase] = 0;
                 partAngles[ManipulatorParts.Camera] = 0;
+                partAngles[ManipulatorParts.Platform] = 0;
 
                 // Заполняем список мешей в точках сочленений
                 _jointCubes.Add(machine3DModel.Children[10]);
@@ -213,6 +221,7 @@ namespace InverseTest
         private void setAngles(ManipulatorAngles angles)
         {
             foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
+
                 partAngles[part] = angles.partAngles[part];
             ConfirmRotation();
         }

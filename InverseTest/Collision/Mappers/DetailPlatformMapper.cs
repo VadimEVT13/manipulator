@@ -11,11 +11,10 @@ namespace InverseTest.Collision.Mappers
 {
     class DetailPlatformMapper
     {
-        public const string platformName = "DetailPlatform";
 
         public static DetailPlatformSnapshot DetailPlatformToSnapshot(Model3D detailPlatform)
         {
-            return new DetailPlatformSnapshot(Utils.ExtractShapeFromModel(platformName, detailPlatform));
+            return new DetailPlatformSnapshot(Utils.ExtractShapeFromModel(ExtraPartsEnum.DETAIL_PLATFORM, detailPlatform));
         }
     }
 }

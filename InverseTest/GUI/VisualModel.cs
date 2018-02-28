@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HelixToolkit.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +10,23 @@ namespace InverseTest.GUI
 {
     public class VisualModel
     {
-        public Visual3D camManip;
-        public Visual3D camPortal;
-        public Visual3D top;
-        public Visual3D right;
-        public Visual3D front;
-        public Visual3D _3d;
+        public ModelVisual3D camManip;
+        public ModelVisual3D camPortal;
+        public ModelVisual3D top;
+        public ModelVisual3D right;
+        public ModelVisual3D front;
+        public ModelVisual3D _3d;
+
+        private Model3D model;
+
+        private Material[] DefaultMaterials;
+        private Material CollisionMaterial = Materials.Red;
 
         public VisualModel(Model3D model, bool camDisplayed = true)
         {
+
+            this.model = model;
+            StoreDefaultMaterials(model);
             if (camDisplayed)
             {
                 camManip = new ModelVisual3D() { Content = model };
@@ -25,12 +34,73 @@ namespace InverseTest.GUI
             }
 
             this.top = new ModelVisual3D() { Content = model };
-            this.right= new ModelVisual3D() { Content = model };
+            this.right = new ModelVisual3D() { Content = model };
             this.front = new ModelVisual3D() { Content = model };
             this._3d = new ModelVisual3D() { Content = model };
-
         }
 
+        private void StoreDefaultMaterials(Model3D model) {
+
+            List<Material> materials = new List<Material>();
+            if (model is Model3DGroup modelGroup)
+            {
+                foreach (Model3D m in modelGroup.Children)
+                {
+                    Material newMaterial = CreateNewMaterial((m as GeometryModel3D).Material);
+                    materials.Add(newMaterial);
+                }
+            }
+            else
+            {
+                Material newMaterial = CreateNewMaterial((model as GeometryModel3D).Material);
+                materials.Add(newMaterial);
+            }
+                this.DefaultMaterials = materials.ToArray();
+        }
+
+        public void SetCollisionCollor()
+        {
+            if (model is Model3DGroup modelGroup)
+            {
+                foreach (GeometryModel3D m in modelGroup.Children)
+                {
+                    m.Material = CollisionMaterial;
+                }
+            }
+            else (model as GeometryModel3D).Material = CollisionMaterial;
+        }
+
+        public void SetDefaultColor()
+        {
+            if (model is Model3DGroup modelGroup)
+            {
+                for(int i= 0; i< modelGroup.Children.Count; i++)
+                {
+                    (modelGroup.Children[i] as GeometryModel3D).Material = DefaultMaterials[i];
+                }
+            }
+            else (model as GeometryModel3D).Material = CollisionMaterial;
+        }
+
+        private Material CreateNewMaterial(Material material)
+        {
+            MaterialGroup newMaterialGroup = new MaterialGroup();
+            if(material is MaterialGroup mg)
+            {
+                foreach(Material mt in mg.Children)
+                {
+                    if (mt is DiffuseMaterial dfm)
+                    {
+                        newMaterialGroup.Children.Add(new DiffuseMaterial(dfm.Brush));
+                    }
+                    else if (mt is SpecularMaterial spm) {
+                        newMaterialGroup.Children.Add(new SpecularMaterial(spm.Brush, spm.SpecularPower));
+                    }
+                }
+            }
+
+            return newMaterialGroup;
+        }
 
     }
 }

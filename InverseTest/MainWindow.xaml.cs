@@ -54,19 +54,14 @@ namespace InverseTest
 
         //private Model3DGroup platform = new Model3DGroup();
         private Model3D platform;
-
-        //Точка сканирования 
-        private Model3D targetBox;
-        //Точка камеры манипулятора
-        private Model3D pointManip;
-        //Точка в которую должен встать экран портала
-        private Model3D pointPortal;
-
+        
         private DetailModel detail;
 
         private ManipulatorKinematicWorker<SystemPosition> manipWorker;
         private GJKWorker<SceneSnapshot> collisionWorker;
         private CollisionDetector collisoinDetector;
+        private CollisionVisualController collisoinVisual;
+        
 
         private double distanceToScreen = 50;
         private double focuseEnlagment = 1;
@@ -75,7 +70,6 @@ namespace InverseTest
         private ObservableCollection<SystemPosition> targetPoints { get; set; }
 
         private int selectedIndexPoint = -1;
-        private List<UIElement> childrens;
 
         int numMesh = 0;
 
@@ -83,8 +77,6 @@ namespace InverseTest
 
         public MainWindow()
         {
-
-            ScanPath.getInstance.AddPoint(new Model.ScanPoint(new Point3D(0, 0, 0)));
             InitializeComponent();
             this.Loaded += this.MainWindowLoaded;
 
@@ -103,8 +95,10 @@ namespace InverseTest
             ModelParser parser = new ModelParser(allModels);
             parser.Parse();
             detectorFrame = parser.Frame;
+            DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(detectorFrame);
+
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
-            ManipulatorVisualizer.setDetectFrameModel(detectorFrame);
+            ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
 
             PortalBoundController portalBounds = new PortalBoundController();
             portalBounds.CalculateBounds(detectorFrame);
@@ -114,8 +108,11 @@ namespace InverseTest
             ManipulatorVisualizer.AddModel(platform);
 
             manipulator = parser.Manipulator;
+            ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
+
+            ManipulatorVisualizer.setManipulatorModel(manipulator, manipulatorVisual);
+            this.collisoinVisual = new CollisionVisualController(manipulatorVisual, portalVisual);
             manipulator.onPositionChanged += OnManipulatorPisitionChanged;
-            ManipulatorVisualizer.setManipulatorModel(manipulator);
 
             ManipulatorVisualizer.AddModel(parser.Others);
 
@@ -140,6 +137,7 @@ namespace InverseTest
             aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);
             collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
             collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);
+            
 
             //Точка сканирования
             scanPoint = new MovementPoint(Colors.Blue);
@@ -170,6 +168,8 @@ namespace InverseTest
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
+
+            this.collisoinVisual.Collisions(pair);
             if (pair == null || pair.Count == 0)
             {
                 CollisionListBox.ItemsSource = null;

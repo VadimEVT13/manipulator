@@ -9,14 +9,14 @@ namespace InverseTest.Collision.Model
 {
     public class PartShape
     {
-        public string partName { get; }
+        public Enum partType { get; }
         public Rect3D bounds { get; }
         public List<Point3D> points { get; }
         public Matrix3D transform { get; }
 
-        public PartShape(string partName, Rect3D bounds, List<Point3D> points, Matrix3D transform)
+        public PartShape(Enum partName, Rect3D bounds, List<Point3D> points, Matrix3D transform)
         {
-            this.partName = partName;
+            this.partType = partName;
             this.bounds = bounds;
             this.points = points;
             this.transform = transform;

@@ -13,12 +13,12 @@ namespace InverseTest.Collision.Model
     /// </summary>
     public class Model3DCollision
     {
-        public String meshName { get; }
+        public Enum type { get; }
         public PartShape shape{ get; }
 
-        public Model3DCollision(string modelName, PartShape shape)
+        public Model3DCollision(Enum modelName, PartShape shape)
         {
-            this.meshName = modelName;
+            this.type = modelName;
             this.shape = shape;
         }
     }

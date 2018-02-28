@@ -21,6 +21,9 @@ namespace InverseTest.Manipulator
             partAngles[ManipulatorParts.TopEdge] = -angle3;
             partAngles[ManipulatorParts.CameraBase] = -angle4;
             partAngles[ManipulatorParts.Camera] = -angle5;
+            
+            ///Костыль
+            partAngles[ManipulatorParts.Platform] = 0;
             this.isValid = isValid;
         }
 

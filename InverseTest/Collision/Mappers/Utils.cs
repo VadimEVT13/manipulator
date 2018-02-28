@@ -10,7 +10,7 @@ namespace InverseTest.Collision.Mappers
 {
     public class Utils 
     {
-        public static PartShape ExtractShapeFromModel(string Name, Model3D model)
+        public static PartShape ExtractShapeFromModel(Enum type, Model3D model)
         {
             var points = new Point3DCollection().ToList();
 
@@ -26,7 +26,7 @@ namespace InverseTest.Collision.Mappers
             else {
                 points.AddRange(GetPointsFromModel(model));
             }
-            return new PartShape(Name, model.Bounds, points, model.Transform.Value);
+            return new PartShape(type, model.Bounds, points, model.Transform.Value);
         }
 
         private static List<Point3D> GetPointsFromModel(Model3D model)
