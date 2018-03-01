@@ -15,19 +15,4 @@ namespace InverseTest.GUI.Model
         ENLAGE,
         DEFAULT
     }
-
-    public interface IMovementPoint : IModel
-    {
-        event PositoinHandler PositoinChanged;
-
-        void Move(Point3D newPositoin);
-
-        void MoveAndNotify(Point3D newPosition);
-
-        Point3D GetTargetPoint();
-
-        void ChangeSize(PointState state);
-
-
-    }
 }

@@ -10,7 +10,7 @@ using System.Windows.Media.Media3D;
 namespace InverseTest.GUI.Model
 {
 
-    class MovementPoint : IMovementPoint
+    public class MovementPoint
     {
         private const int defaultRadius = 2;
 

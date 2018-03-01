@@ -48,11 +48,10 @@ namespace InverseTest
 
         public ManipulatorV2 manipulator;
         public DetectorFrame detectorFrame;
-        public IMovementPoint scanPoint;
-        private IMovementPoint manipulatorCamPoint;
-        private IConeModel coneModel;
+        public MovementPoint scanPoint;
+        private MovementPoint manipulatorCamPoint;
+        private ConeModel coneModel;
 
-        //private Model3DGroup platform = new Model3DGroup();
         private Model3D platform;
         
         private DetailModel detail;
@@ -168,7 +167,6 @@ namespace InverseTest
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
-
             this.collisoinVisual.Collisions(pair);
             if (pair == null || pair.Count == 0)
             {
@@ -313,24 +311,34 @@ namespace InverseTest
         }
 
         /// <summary>
-        /// Считываем координаты точки из полей ввода
+        /// Считываение координат точки назначения
         /// </summary>
-        private void ParsePointsAndMove()
+        /// <returns>координаты точки назначения</returns>
+        private Point3D PointTarget()
         {
-            double x, y, z;
-            Console.WriteLine("ParsePointAndMove");
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-            scanPoint.Move(new Point3D(x, y, z));
-
-            double manip_x, manip_y, manip_z;
-            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-            manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
+            double.TryParse(TargetPointXTextBox.Text, out double x);
+            TargetPointXTextBox.Text = Math.Round(x, 3).ToString();
+            double.TryParse(TargetPointYTextBox.Text, out double y);
+            TargetPointYTextBox.Text = Math.Round(y, 3).ToString();
+            double.TryParse(TargetPointZTextBox.Text, out double z);
+            TargetPointZTextBox.Text = Math.Round(z, 3).ToString();
+            return new Point3D(x, y, z);
         }
 
+        /// <summary>
+        /// Считываение координат положения
+        /// </summary>
+        /// <returns>координаты положения</returns>
+        private Point3D PointPosition()
+        {
+            double.TryParse(PointManipulatorXTextBox.Text, out double x);
+            PointManipulatorXTextBox.Text = Math.Round(x, 3).ToString();
+            double.TryParse(PointManipulatorYTextBox.Text, out double y);
+            PointManipulatorYTextBox.Text = Math.Round(y, 3).ToString();
+            double.TryParse(PointManipulatorZTextBox.Text, out double z);
+            PointManipulatorZTextBox.Text = Math.Round(z, 3).ToString();
+            return new Point3D(x, y, z);
+        }
 
         private void SolvePortalKinematic(Point3D manip, Point3D scannedPoint, bool animate)
         {
@@ -388,18 +396,11 @@ namespace InverseTest
 
         private void AddPointToList_Click(object sender, RoutedEventArgs e)
         {
-            double x, y, z;
-
-            double.TryParse(TargetPointXTextBox.Text, out x);
-            double.TryParse(TargetPointYTextBox.Text, out y);
-            double.TryParse(TargetPointZTextBox.Text, out z);
-
-
             SystemPosition lastPoint = targetPoints.LastOrDefault();
 
             if (lastPoint != null)
             {
-                Point3D newPoint = new Point3D(x, y, z);
+                Point3D newPoint = PointTarget();
                 if (lastPoint.Equals(newPoint))
                 {
                     MessageBox.Show("Точка уже в списке!", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -565,7 +566,8 @@ namespace InverseTest
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                ParsePointsAndMove();
+                scanPoint.Move(PointTarget());
+                manipulatorCamPoint.Move(PointPosition());
             }
         }
 
@@ -573,7 +575,8 @@ namespace InverseTest
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                ParsePointsAndMove();
+                scanPoint.Move(PointTarget());
+                manipulatorCamPoint.Move(PointPosition());
             }
         }
 
@@ -592,7 +595,6 @@ namespace InverseTest
         {
             Point3D manip = manipulatorCamPoint.GetTargetPoint();
             Point3D targetPoint = scanPoint.GetTargetPoint();
-
             manipWorker.solve(new SystemPosition(manip, targetPoint));
             SolvePortalKinematic(manip, targetPoint, false);
         }

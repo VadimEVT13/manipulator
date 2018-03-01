@@ -1,27 +1,19 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI.Model
 {
-    class ConeModel:IConeModel
+    class ConeModel
     {
         private TruncatedConeVisual3D cone;
-        private Material material;
-
         public ConeModel()
         {
-            material = MaterialHelper.CreateMaterial(Colors.Chocolate, opacity:0.2d);
-           
             cone = new TruncatedConeVisual3D()
             {
-                Material = material,
+                Material = MaterialHelper.CreateMaterial(Colors.Chocolate, opacity: 0.2d),
                 Height = 40,
                 BaseRadius = 6,
                 TopRadius= 0,

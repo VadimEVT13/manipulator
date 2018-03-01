@@ -12,7 +12,8 @@ namespace InverseTest.Model
         public Point3D point { get; }
 
         public ScanPoint(Point3D point)
-        {   this.point = point;
+        {
+            this.point = point;
         }
     }
 }

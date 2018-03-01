@@ -9,14 +9,14 @@ namespace InverseTest.GUI
 {
     class ModelMoverAboveSurf:IModelMover
     {
-        private IMovementPoint point;
+        private MovementPoint point;
         private Model3D surf;
 
         private bool onMousePressed = false;
         private bool onModelHit = false;
         public Model3D ModelToDetect { get; set; }
 
-        public ModelMoverAboveSurf(IMovementPoint setPoint, Model3D setSurf)
+        public ModelMoverAboveSurf(MovementPoint setPoint, Model3D setSurf)
         {
             point = setPoint;
             surf = setSurf;

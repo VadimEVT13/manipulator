@@ -37,7 +37,7 @@ namespace InverseTest.GUI
 
         private IDetectorFrame detectorFrame;
         private IManipulatorModel manipulator;
-        private IMovementPoint scanPoint;
+        private MovementPoint scanPoint;
 
 
         private ModelMoverAboveSurf mover;
@@ -238,7 +238,7 @@ namespace InverseTest.GUI
             AddVisuals(portalVisual.Visuals);
         }
 
-        public void SetManipulatorPoint(IMovementPoint point)
+        public void SetManipulatorPoint(MovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
             manipulatorMover.ModelToDetect = point.GetModel();
@@ -251,7 +251,7 @@ namespace InverseTest.GUI
         /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
         /// </summary>
         /// <param name="scanPoint"></param>
-        public void SetPoint(IMovementPoint scanPoint, Model3D model)
+        public void SetPoint(MovementPoint scanPoint, Model3D model)
         {
             this.mover = new ModelMoverAboveSurf(scanPoint, model);
             this.mover.ModelToDetect = scanPoint.GetModel();
