@@ -81,14 +81,19 @@
                     <TextBox Name="ScreenHorizontalAngleTextBox" Text="0" Margin="5"/>
                 </StackPanel>
             </Expander>
+            <Expander Header="Деталью">
 
-            <StackPanel Visibility="Visible">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Вращать"/>
+                    <Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
+                </StackPanel>                
+            </Expander>
+
+            <StackPanel Visibility="Hidden">
                 <Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
                 <Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
                 <TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
             </StackPanel>
-
-
         </StackPanel>
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <StackPanel  Orientation="Horizontal">
@@ -108,9 +113,9 @@
                 <Label Content="X" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
                 <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-                <TextBox Name="TargetPointXTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
-                <TextBox Name="TargetPointYTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
-                <TextBox Name="TargetPointZTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
+                <TextBox IsReadOnly="True" Name="TargetPointXTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
+                <TextBox IsReadOnly="True" Name="TargetPointYTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
+                <TextBox IsReadOnly="True" Name="TargetPointZTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
             </Grid>
             <Label Content="Координаты наконечника"/>
             <Grid>
@@ -184,41 +189,9 @@
             </StackPanel>
 
             <guiControls:PathListView x:Name="PathListView" Width="Auto"/>
-
-
-
-
-
-          
-
-
-
-
-
         </StackPanel>
 
        <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
-        
-        <ToggleButton DockPanel.Dock="Top"  Name="PositionValid" HorizontalAlignment="Center" 
-                      Width="400" Height="15" Focusable="False"  Background="Red" Checked="PositionValid_Checked" Unchecked="PositionValid_Unchecked" />
-        <Popup Name="CollisionPopup" Placement="Bottom" 
-               PlacementTarget="{Binding ElementName = PositionValid}" Width="Auto" Height="Auto"   >
-            <StackPanel >
-                <ListBox Name="CollisionListBox">
-                    <ListBox.ItemTemplate >
-                        <DataTemplate>
-                            <StackPanel Margin="5" Orientation="Horizontal" >
-                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision1.meshName}" HorizontalAlignment="Left" Margin="5" />
-                                <TextBlock FontSize="16" Text=" intersects " HorizontalAlignment="Center" Margin="5,5,5,5"/>
-                                <TextBlock FontSize="16" Text="{Binding Path=modelCollision2.meshName}" HorizontalAlignment="Right" Margin="5"/>
-                            </StackPanel>
-                        </DataTemplate>                        
-                    </ListBox.ItemTemplate>
-
-                </ListBox>      
-            </StackPanel>
-            
-        </Popup>
-        <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
+          <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

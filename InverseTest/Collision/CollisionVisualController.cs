@@ -1,4 +1,5 @@
 ﻿using InverseTest.Collision.Model;
+using InverseTest.Detail;
 using InverseTest.Frame;
 using InverseTest.Manipulator;
 using System;
@@ -13,18 +14,21 @@ namespace InverseTest.Collision
     {
         private ManipulatorVisual manipulator;
         private DetectorFrameVisual portal;
+        private DetailVisualCollisionController detail; 
 
-
-        public CollisionVisualController(ManipulatorVisual manip, DetectorFrameVisual portal)
+        public CollisionVisualController(ManipulatorVisual manip, DetectorFrameVisual portal, DetailVisualCollisionController detail)
         {
             this.manipulator = manip;
             this.portal = portal;
+            this.detail = detail;
         }
 
         public void Collisions(List<CollisionPair> collisions)
         {
             List<ManipulatorParts> manipParts = new List<ManipulatorParts>();
             List<DetectorFrame.Parts> portalParts = new List<DetectorFrame.Parts>();
+            List<ExtraPartsEnum> detailParts = new List<ExtraPartsEnum>();
+
             foreach (CollisionPair c in collisions)
             {
                 if(c.modelCollision1.type is ManipulatorParts mt)
@@ -33,6 +37,10 @@ namespace InverseTest.Collision
                 }else if( c.modelCollision1.type is DetectorFrame.Parts dt)
                 {
                     portalParts.Add(dt);
+                }
+                else if (c.modelCollision1.type is ExtraPartsEnum dp)
+                {
+                    detailParts.Add(dp);
                 }
 
                 if (c.modelCollision2.type is ManipulatorParts mt2)
@@ -43,10 +51,15 @@ namespace InverseTest.Collision
                 {
                     portalParts.Add(dt2);
                 }
+                else if (c.modelCollision2.type is ExtraPartsEnum dp2)
+                {
+                    detailParts.Add(dp2);
+                }
 
+               
             }
 
-
+            this.detail.ChangePartsColor(detailParts);
             this.manipulator.ChangePartsColor(manipParts);
             this.portal.ChangePartsColor(portalParts);
         }

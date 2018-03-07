@@ -57,8 +57,7 @@ namespace InverseTest.Detail
 
         public HitTestResultBehavior ResultCallbackRight(HitTestResult result)
         {
-            if (result is RayHitTestResult rayResult)
-            {
+            if (result is RayHitTestResult rayResult){
                 RemovePointCallback(rayResult.VisualHit);
             }
             return HitTestResultBehavior.Continue;

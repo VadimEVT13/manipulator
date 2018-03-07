@@ -9,18 +9,18 @@ namespace InverseTest.Frame
 {
     public class DetectorFrameVisual: IVisualController
     {
-        public List<VisualModel> Visuals => portalVisuals.Values.ToList();
+        public List<MainVisual> Visuals => portalVisuals.Values.ToList();
 
-        public Dictionary<DetectorFrame.Parts, VisualModel> portalVisuals;
+        public Dictionary<DetectorFrame.Parts, MainVisual> portalVisuals;
 
-        public DetectorFrameVisual(Dictionary<DetectorFrame.Parts, VisualModel> parts)
+        public DetectorFrameVisual(Dictionary<DetectorFrame.Parts, MainVisual> parts)
         {
             this.portalVisuals = parts;
         }
 
         public void ChangePartsColor(List<DetectorFrame.Parts> parts)
         {
-            foreach (KeyValuePair<DetectorFrame.Parts, VisualModel> pair in portalVisuals)
+            foreach (KeyValuePair<DetectorFrame.Parts, MainVisual> pair in portalVisuals)
             {
                 if (parts.Contains(pair.Key))
                     pair.Value.SetCollisionCollor();

@@ -198,7 +198,10 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="DetailPathController.cs" />
     <Compile Include="Detail\DetailPointsCreator.cs" />
+    <Compile Include="Detail\DetailVisualCollisionController.cs" />
+    <Compile Include="Detail\DetailVisualFactory.cs" />
     <Compile Include="Detail\IDetailMouseListener.cs" />
     <Compile Include="Frame\DetectorFrameVisual.cs" />
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
@@ -208,14 +211,17 @@
     <Compile Include="GUI\DetailView.xaml.cs">
       <DependentUpon>DetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\IVisual.cs" />
-    <Compile Include="GUI\Model\DetailVisual.cs" />
+    <Compile Include="GUI\Model\IVisual.cs" />
+    <Compile Include="Detail\DetailViewVisual.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
-    <Compile Include="Model\ScanPoint.cs" />
+    <Compile Include="Model\BaseScanPointVisual.cs" />
+    <Compile Include="Path\ScanPathVisual.cs" />
+    <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Model\ScanPointVisual.cs" />
-    <Compile Include="GUI\VisualModel.cs" />
+    <Compile Include="GUI\Model\MainVisual.cs" />
     <Compile Include="Manipulator\ManipulatorVisual.cs" />
-    <Compile Include="Model\ScanPath.cs" />
+    <Compile Include="Path\ScanPath.cs" />
+    <Compile Include="Path\ScanPointVisual.cs" />
     <Compile Include="Utils\ManipulatorUtils.cs" />
     <Compile Include="ModelPreprocessor.cs" />
     <Compile Include="ModelParser.cs" />
@@ -227,9 +233,9 @@
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\IDetectorFrame.cs" />
     <Compile Include="Frame\PortalKinematic.cs" />
-    <Compile Include="GUI\IModelMover.cs" />
-    <Compile Include="GUI\ModelMover.cs" />
-    <Compile Include="GUI\ModelMoverAboveSurf.cs" />
+    <Compile Include="GUI\Model\IModelMover.cs" />
+    <Compile Include="GUI\Model\ModelMover.cs" />
+    <Compile Include="GUI\Model\ModelMoverAboveSurf.cs" />
     <Compile Include="Model\ConeModel.cs" />
     <Compile Include="Model\IConeModel.cs" />
     <Compile Include="Model\IMovementPoint.cs" />
@@ -264,7 +270,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="GUI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -277,7 +283,7 @@
     </Compile>
     <Compile Include="IModel.cs" />
     <Compile Include="Manipulator\ManipulatorV2.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

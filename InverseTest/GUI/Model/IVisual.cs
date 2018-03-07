@@ -9,11 +9,9 @@ namespace InverseTest.GUI
 {
     public interface IVisualController
     {
-
-        List<VisualModel> Visuals
+        List<MainVisual> Visuals
         {
             get; 
         } 
-
     }
 }

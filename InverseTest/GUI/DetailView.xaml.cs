@@ -2,7 +2,7 @@
 using InverseTest.Detail;
 using InverseTest.GUI.Model;
 using InverseTest.Manipulator;
-using InverseTest.Model;
+using InverseTest.Path;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +29,7 @@ namespace InverseTest.GUI
         private PerspectiveCamera cam3D;
         private DetailPointsCreator pointsCreator;
 
-        private Dictionary<Visual3D, ScanPointVisual> orderedPoints;
+        private Dictionary<Visual3D, Model.ScanPointVisual> orderedPoints;
 
         private DetailVisual detailVisual;
         private DetailModel detailModel;
@@ -39,13 +39,13 @@ namespace InverseTest.GUI
             InitializeComponent();
             setCamera();
             setLight();
-            this.orderedPoints = new Dictionary<Visual3D, ScanPointVisual>();
+            this.orderedPoints = new Dictionary<Visual3D, Model.ScanPointVisual>();
             this.Closing += WindowClosing;
+            ScanPath.Instance.PointTransformed += this.TransformPointVisual;
         }
 
         private void WindowClosing(object sender, CancelEventArgs e) {
             e.Cancel = true;
-
             this.Hide();
         }
 
@@ -85,7 +85,6 @@ namespace InverseTest.GUI
             DetailViewPort.Children.Add(lightVisualRight);
             DetailViewPort.Children.Add(lightVisualTop);
             DetailViewPort.Children.Add(pointLightVisual);
-
         }
 
         private void initPointsCreator(DetailModel detail)
@@ -101,15 +100,13 @@ namespace InverseTest.GUI
         {
             ScanPoint orderedPoint = new ScanPoint(point);
             ScanPath.getInstance.AddPoint(orderedPoint);
-            ScanPointVisual pointVisual = new ScanPointVisual(orderedPoint);
+            Model.ScanPointVisual pointVisual = new Model.ScanPointVisual(orderedPoint);
             DetailViewPort.Children.Add(pointVisual.pointVisual);
-            //  DetailViewPort.Children.Add(pointVisual.order);
             orderedPoints.Add(pointVisual.pointVisual, pointVisual);
         }
 
         private void RemovePoint(Visual3D point)
         {
-
             foreach (Visual3D v in DetailViewPort.Children)
             {
                 if (v.Equals(point))
@@ -117,8 +114,8 @@ namespace InverseTest.GUI
                     if (orderedPoints.ContainsKey(v))
                     {
                         DetailViewPort.Children.Remove(v);
-                        ScanPointVisual orderedPoint = orderedPoints.GetOrDefault(v);
-                        ScanPath.getInstance.RemovePoint(orderedPoint.scanPoint);
+                        Model.ScanPointVisual orderedPoint = orderedPoints.GetOrDefault(v);
+                        ScanPath.getInstance.RemovePoint(orderedPoint.Point);
                         orderedPoints.Remove(v);
                         break;
                     }
@@ -134,6 +131,16 @@ namespace InverseTest.GUI
             initPointsCreator(detailModel);
             configCamera(detailModel);
 
+        }
+
+        public void TransformPointVisual(Transform3D trans)
+        {
+            orderedPoints.Values.ToList().ForEach(x => x.TransformPoint(trans));
+        }
+
+        public void OnPointSelected(ScanPoint p)
+        {
+            orderedPoints.Values.ToList().ForEach(x => x.SetSelected(x.Point.Equals(p)));
         }
 
         private void RotateDetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

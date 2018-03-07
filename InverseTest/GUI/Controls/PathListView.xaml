@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InverseTest.GUI.Controls"
-             xmlns:path="clr-namespace:InverseTest"
-             xmlns:Path="clr-namespace:InverseTest"
+             xmlns:path="clr-namespace:InverseTest.Path"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -17,12 +16,10 @@
 
         <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-
         </Style>
 
 
     </UserControl.Resources>
-
     <Grid>
         <Grid Visibility="Visible" Name="TargetPointsListButtonsGrid">
             <Grid.ColumnDefinitions>
@@ -37,6 +34,7 @@
 
         <Button Content="ADD" Name="Add" Click="Add_Click"/>
         <ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
+                   SelectionMode="Single"
             ItemsSource="{Binding PointsList, Source={x:Static path:ScanPath.getInstance}}"                   
                    SelectionChanged="TargetPointsListView_SelectionChanged">
 

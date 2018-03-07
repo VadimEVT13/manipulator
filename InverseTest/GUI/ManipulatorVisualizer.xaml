@@ -7,9 +7,7 @@
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="202.667" d:DesignWidth="132.666"
-             
              >
-
     <UserControl.Resources>
         <Style x:Key="ViewMaximizeStyle">
             <Style.Triggers>
@@ -19,10 +17,8 @@
                     <Setter Property="Grid.Row" Value="0"/>
                     <Setter Property="Grid.RowSpan" Value="3"/>
                     <Setter Property="Grid.ZIndex" Value="2"/>
-                    
                 </DataTrigger>
             </Style.Triggers>
-
         </Style>
         <Style x:Key="ViewButtonStyle" TargetType="{x:Type ToggleButton}">
             <Style.Setters>
@@ -55,111 +51,120 @@
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
             <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
             <Setter Property="ClipToBounds" Value="False"/>
-
         </Style>
     </UserControl.Resources>
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <Grid x:Name="ManipulatorCamView" DataContext="{Binding ElementName=ManipulatorCamLabel}" >
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Column" Value="0"/>
-
-                </Style>
-
-
-            </Grid.Style>
-            <h:HelixViewport3D Name="ViewPortManipulatorCam" ClipToBounds="True" Grid.Row="0" Grid.Column="0" 
-                               ShowViewCube="False" IsRotationEnabled="False" IsManipulationEnabled="False"
-                                  BorderBrush="Black" BorderThickness="1" IsZoomEnabled="False" IsMoveEnabled="False"
-                               >
-            </h:HelixViewport3D>
-            <ToggleButton x:Name="ManipulatorCamLabel" Content="Камера манипулятора" Style="{StaticResource ViewButtonStyle}"/>
-
-        </Grid>
-        <Grid x:Name="FrameCam" DataContext="{Binding ElementName=FrameCamLabel}" >
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Column" Value="1"/>
-                </Style>
-            </Grid.Style>
-            <h:HelixViewport3D Name="ViewPortDetectorScreenCam" ClipToBounds="True" Grid.Row="0" Grid.Column="1" 
-                               ShowViewCube="False" IsRotationEnabled="False" IsMoveEnabled="False" IsManipulationEnabled="False"
-                                  BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="False"  />
-
-            <ToggleButton x:Name="FrameCamLabel" Content="Камера детектора" Style="{StaticResource ViewButtonStyle}"/>
-        </Grid>
-        <Grid x:Name="View2dFront" DataContext="{Binding ElementName=ViewPort2DFrontLabel}">
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Row" Value="1"/>
-
-                </Style>
-            </Grid.Style>
-            <h:HelixViewport3D Name="ViewPort2DFront" ClipToBounds="True" Grid.Row="1" Grid.Column="0"
+    <TabControl>
+        <TabItem Header="Сцена">
+            <TabItem.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="View2dFront" DataContext="{Binding ElementName=ViewPort2DFrontLabel}">
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Row" Value="0"/>
+                            </Style>
+                        </Grid.Style>
+                        <h:HelixViewport3D Name="ViewPort2DFront" ClipToBounds="True" Grid.Row="0" Grid.Column="0"
                                ShowViewCube="False" IsRotationEnabled="False"  
                                   BorderBrush="Black" BorderThickness="1" 
                                />
                         <ToggleButton x:Name="ViewPort2DFrontLabel" Content="Спереди" Style="{StaticResource ViewButtonStyle}"/>
 
-        </Grid>
-        <Grid x:Name="View2DRight" DataContext="{Binding ElementName=View2DRightLabel}">
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Row" Value="1"/>
-                    <Setter Property="Grid.Column" Value="1"/>
+                    </Grid>
+                    <Grid x:Name="View2DRight" DataContext="{Binding ElementName=View2DRightLabel}">
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Row" Value="0"/>
+                                <Setter Property="Grid.Column" Value="1"/>
 
-                </Style>
-            </Grid.Style>
+                            </Style>
+                        </Grid.Style>
 
-            <h:HelixViewport3D  Name="ViewPort2DRight" ClipToBounds="True" Grid.Row="1" Grid.Column="1"  
+                        <h:HelixViewport3D  Name="ViewPort2DRight" ClipToBounds="True" Grid.Row="0" Grid.Column="1"  
                                 ShowViewCube="False" IsRotationEnabled="False" BorderBrush="Black" BorderThickness="1" />
 
-            <ToggleButton x:Name="View2DRightLabel" Content="Справа" Style="{StaticResource ViewButtonStyle}"/>
+                        <ToggleButton x:Name="View2DRightLabel" Content="Справа" Style="{StaticResource ViewButtonStyle}"/>
 
-        </Grid>
+                    </Grid>
 
-        <Grid x:Name="View2DTop" DataContext="{Binding ElementName=View2DTopLabel}"> 
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Row" Value="2"/>
-                        
-                </Style>
-            </Grid.Style>
+                    <Grid x:Name="View2DTop" DataContext="{Binding ElementName=View2DTopLabel}">
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Row" Value="1"/>
 
-            <h:HelixViewport3D Name="ViewPort2DTop" ClipToBounds="True" Grid.Row="2" Grid.Column="0"
+                            </Style>
+                        </Grid.Style>
+
+                        <h:HelixViewport3D Name="ViewPort2DTop" ClipToBounds="True" Grid.Row="1" Grid.Column="0"
                                 ShowViewCube="False" IsRotationEnabled="False" 
                                BorderBrush="Black" BorderThickness="1"
                                />
-            <ToggleButton x:Name="View2DTopLabel" Content="Сверху" Style="{StaticResource ViewButtonStyle}"/>
+                        <ToggleButton x:Name="View2DTopLabel" Content="Сверху" Style="{StaticResource ViewButtonStyle}"/>
 
-        </Grid>
-        <Grid x:Name="_3DView" DataContext="{Binding ElementName=View3DLabel}">
-            <Grid.Style>
-                <Style BasedOn="{StaticResource ViewMaximizeStyle}">
-                    <Setter Property="Grid.Row" Value="2"/>
-                    <Setter Property="Grid.Column" Value="1"/>
-                </Style>
-            </Grid.Style>
+                    </Grid>
+                    <Grid x:Name="_3DView" DataContext="{Binding ElementName=View3DLabel}">
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Row" Value="1"/>
+                                <Setter Property="Grid.Column" Value="1"/>
+                            </Style>
+                        </Grid.Style>
 
 
-            <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="False" Grid.Row="2" Grid.Column="1" 
+                        <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="False" Grid.Row="1" Grid.Column="1" 
                                ShowCoordinateSystem="True" ShowViewCube="False"
                                BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true" 
                                
                                />
-            <ToggleButton x:Name="View3DLabel" Content="3D" Style="{StaticResource ViewButtonStyle}"/>
+                        <ToggleButton x:Name="View3DLabel" Content="3D" Style="{StaticResource ViewButtonStyle}"/>
 
-        </Grid>
-    </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem Header="Камеры">
+            <TabItem.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="ManipulatorCamView" DataContext="{Binding ElementName=ManipulatorCamLabel}" >
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Column" Value="0"/>
+                            </Style>
+                        </Grid.Style>
+                        <h:HelixViewport3D Name="ViewPortManipulatorCam" ClipToBounds="True" Grid.Row="0" Grid.Column="0" 
+                               ShowViewCube="False" IsRotationEnabled="False" IsManipulationEnabled="False"
+                                  BorderBrush="Black" BorderThickness="1" IsZoomEnabled="False" IsMoveEnabled="False">
+                        </h:HelixViewport3D>
+                        <ToggleButton x:Name="ManipulatorCamLabel" Content="Камера манипулятора" Style="{StaticResource ViewButtonStyle}"/>
+                    </Grid>
+                    <Grid x:Name="FrameCam" DataContext="{Binding ElementName=FrameCamLabel}" >
+                        <Grid.Style>
+                            <Style BasedOn="{StaticResource ViewMaximizeStyle}">
+                                <Setter Property="Grid.Column" Value="1"/>
+                            </Style>
+                        </Grid.Style>
+                        <h:HelixViewport3D Name="ViewPortDetectorScreenCam" ClipToBounds="True" Grid.Row="0" Grid.Column="1" 
+                               ShowViewCube="False" IsRotationEnabled="False" IsMoveEnabled="False" IsManipulationEnabled="False"
+                                  BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="False"  />
+                        <ToggleButton x:Name="FrameCamLabel" Content="Камера детектора" Style="{StaticResource ViewButtonStyle}"/>
+                    </Grid>
+                </Grid>
+            </TabItem.Content>
+        </TabItem>
+    </TabControl> 
 </UserControl>

@@ -1,26 +1,22 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.Model;
-using System.Windows.Media;
+using InverseTest.Path;
 using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI.Model
 {
-    class ScanPointVisual
+    public class ScanPointVisual : BaseScanPointVisual
     {
-        const int DEFAULT_RADIUS = 1;
-
         public ModelVisual3D pointVisual { get; }
-        public ScanPoint scanPoint{get;}
 
-        public ScanPointVisual(ScanPoint orderedPoint)
+        public ScanPointVisual(ScanPoint orderedPoint) : base(orderedPoint)
         {
-            this.scanPoint = orderedPoint;
-            MeshBuilder builder = new MeshBuilder();
-            builder.AddSphere(orderedPoint.point, DEFAULT_RADIUS);
-            this.pointVisual = new ModelVisual3D()
-            {
-                Content = new GeometryModel3D(builder.ToMesh(), Materials.Red)
-            };
+            this.pointVisual = new ModelVisual3D() { Content = model };
+        }
+
+        public void TransformPoint(Transform3D t)
+        {
+            this.pointVisual.Transform = t;
         }
     }
 }

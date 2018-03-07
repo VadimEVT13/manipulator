@@ -8,7 +8,7 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI
 {
-    public class VisualModel
+    public class MainVisual
     {
         public ModelVisual3D camManip;
         public ModelVisual3D camPortal;
@@ -22,7 +22,7 @@ namespace InverseTest.GUI
         private Material[] DefaultMaterials;
         private Material CollisionMaterial = Materials.Red;
 
-        public VisualModel(Model3D model, bool camDisplayed = true)
+        public MainVisual(Model3D model, bool camDisplayed = true)
         {
 
             this.model = model;
@@ -39,6 +39,10 @@ namespace InverseTest.GUI
             this._3d = new ModelVisual3D() { Content = model };
         }
 
+        public void Transform(Transform3D transform)
+        {
+            this.model.Transform = transform;
+        }
         private void StoreDefaultMaterials(Model3D model) {
 
             List<Material> materials = new List<Material>();
@@ -79,7 +83,7 @@ namespace InverseTest.GUI
                     (modelGroup.Children[i] as GeometryModel3D).Material = DefaultMaterials[i];
                 }
             }
-            else (model as GeometryModel3D).Material = CollisionMaterial;
+            else (model as GeometryModel3D).Material = DefaultMaterials[0];
         }
 
         private Material CreateNewMaterial(Material material)

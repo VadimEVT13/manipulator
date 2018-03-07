@@ -26,7 +26,5 @@ namespace InverseTest.GUI.Model
             RotateTransform3D rotate = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis, angle), center);
             visual.Transform = rotate;
         }
-
-
     }
 }

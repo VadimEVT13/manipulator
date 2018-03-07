@@ -11,13 +11,13 @@ namespace InverseTest.Manipulator
     {
         public static ManipulatorVisual CreateManipulator(IManipulatorModel manipulator)
         {
-            Dictionary<ManipulatorParts, VisualModel> parts = new Dictionary<ManipulatorParts, VisualModel>();
-            VisualModel cam = new VisualModel( manipulator.GetManipulatorPart(ManipulatorParts.Camera));
-            VisualModel camBase = new VisualModel(manipulator.GetManipulatorPart(ManipulatorParts.CameraBase));
-            VisualModel top = new VisualModel(manipulator.GetManipulatorPart(ManipulatorParts.TopEdge));
-            VisualModel mid = new VisualModel(manipulator.GetManipulatorPart(ManipulatorParts.MiddleEdge));
-            VisualModel table = new VisualModel(manipulator.GetManipulatorPart(ManipulatorParts.Table));
-            VisualModel platf = new VisualModel(manipulator.GetManipulatorPart(ManipulatorParts.Platform));
+            Dictionary<ManipulatorParts, MainVisual> parts = new Dictionary<ManipulatorParts, MainVisual>();
+            MainVisual cam = new MainVisual( manipulator.GetManipulatorPart(ManipulatorParts.Camera));
+            MainVisual camBase = new MainVisual(manipulator.GetManipulatorPart(ManipulatorParts.CameraBase));
+            MainVisual top = new MainVisual(manipulator.GetManipulatorPart(ManipulatorParts.TopEdge));
+            MainVisual mid = new MainVisual(manipulator.GetManipulatorPart(ManipulatorParts.MiddleEdge));
+            MainVisual table = new MainVisual(manipulator.GetManipulatorPart(ManipulatorParts.Table));
+            MainVisual platf = new MainVisual(manipulator.GetManipulatorPart(ManipulatorParts.Platform));
             parts.Add(ManipulatorParts.Camera, cam);
             parts.Add(ManipulatorParts.CameraBase, camBase);
 
@@ -28,7 +28,5 @@ namespace InverseTest.Manipulator
 
             return new ManipulatorVisual(parts);
         }
-
-
     }
 }

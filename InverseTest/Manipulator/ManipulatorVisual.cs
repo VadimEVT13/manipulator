@@ -10,25 +10,23 @@ namespace InverseTest.Manipulator
 {
     public class ManipulatorVisual : IVisualController
     {
-        Dictionary<ManipulatorParts, VisualModel> visualParts;
+        Dictionary<ManipulatorParts, MainVisual> visualParts;
 
-        public ManipulatorVisual(Dictionary<ManipulatorParts, VisualModel> visual)
+        public ManipulatorVisual(Dictionary<ManipulatorParts, MainVisual> visual)
         {
             this.visualParts = visual;
         }
 
-        public List<VisualModel> Visuals => visualParts.Values.ToList();
+        public List<MainVisual> Visuals => visualParts.Values.ToList();
 
         public void ChangePartsColor(List<ManipulatorParts> parts)
         {
-            foreach (KeyValuePair<ManipulatorParts, VisualModel> pair in visualParts)
+            foreach (KeyValuePair<ManipulatorParts, MainVisual> pair in visualParts)
             {
                 if (parts.Contains(pair.Key))
                     pair.Value.SetCollisionCollor();
                 else pair.Value.SetDefaultColor();
             }
         }
-
-
     }
 }
