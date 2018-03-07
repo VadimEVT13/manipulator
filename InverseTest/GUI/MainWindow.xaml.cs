@@ -40,8 +40,8 @@ namespace InverseTest
 
         public ManipulatorV2 manipulator;
         public DetectorFrame detectorFrame;
-        private IMovementPoint manipulatorCamPoint;
-        private IConeModel coneModel;
+        private MovementPoint manipulatorCamPoint;
+        private ConeModel coneModel;
 
         //private Model3DGroup platform = new Model3DGroup();
         private Model3D platform;
