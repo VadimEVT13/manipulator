@@ -303,9 +303,9 @@ namespace InverseTest
         private void SolvePortalKinematic(Point3D manip, Point3D scannedPoint, bool animate)
         {
             PortalKinematic p = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
-            p.setPointManipAndNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
+            p.SetPointManipAndNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
 
-            double[] rez = p.portalPoint(manip.DistanceTo(scannedPoint), this.focuseEnlagment);
+            double[] rez = p.PortalPoint(manip.DistanceTo(scannedPoint), this.focuseEnlagment);
             if (rez != null)
             {
                 ///ХЗ почему со знаком -
