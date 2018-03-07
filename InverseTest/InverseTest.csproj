@@ -237,8 +237,7 @@
     <Compile Include="GUI\Model\ModelMover.cs" />
     <Compile Include="GUI\Model\ModelMoverAboveSurf.cs" />
     <Compile Include="Model\ConeModel.cs" />
-    <Compile Include="Model\IConeModel.cs" />
-    <Compile Include="Model\IMovementPoint.cs" />
+    <Compile Include="Model\PointState.cs" />
     <Compile Include="Model\MovementPoint.cs" />
     <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
@@ -281,7 +280,6 @@
     <Compile Include="GUI\ManipulatorVisualizer.xaml.cs">
       <DependentUpon>ManipulatorVisualizer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IModel.cs" />
     <Compile Include="Manipulator\ManipulatorV2.cs" />
     <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -14,13 +14,13 @@ namespace InverseTest.GUI
 {
     public class ModelMover:IModelMover
     {
-        private IMovementPoint point;
+        private MovementPoint point;
         private bool onMousePressed = false;
         private bool onModelHit = false;
         private Point3D lastPointPosition;
         public Model3D ModelToDetect { get; set; }
 
-        public ModelMover(IMovementPoint point)
+        public ModelMover(MovementPoint point)
         {
             this.point = point;
         }
