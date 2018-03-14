@@ -10,6 +10,7 @@ using MIConvexHull;
 using System.Windows;
 using System.Windows.Media;
 using HelixToolkit.Wpf;
+using InverseTest.GUI;
 
 namespace InverseTest.Collision
 {
@@ -21,9 +22,12 @@ namespace InverseTest.Collision
 
         SupportClass sc; // класс для работы со вспомогательными функциями
 
+        SimplexView simplex;
+
         //	конструктор
-        public GJKFinder(List<Point3D> first, List<Point3D> second)
+        public GJKFinder(List<Point3D> first, List<Point3D> second, SimplexView simplex)
         {
+            this.simplex = simplex;
 
             resultSimplex = new Vector3D[4];
             sc = new SupportClass();
@@ -39,10 +43,7 @@ namespace InverseTest.Collision
             resultSimplex[1] = sc.supportFunction(a, -right) - sc.supportFunction(b, right);
             resultSimplex[2] = sc.supportFunction(a, -up) - sc.supportFunction(b, up);
             resultSimplex[3] = sc.supportFunction(a, -forward) -sc.supportFunction(b, forward);
-
         }
-        
-
 
         public Vector3D[] getSimplex()
         {
@@ -52,7 +53,7 @@ namespace InverseTest.Collision
         //	проверка факта пересечения
         public bool testGJKIntersection()
         {
-            ArrayList deletedVertexes = new ArrayList();
+            List<Vector3D> deletedVertexes = new List<Vector3D>();
             Vector3D zero = new Vector3D(0, 0, 0);
             Plane planeCSO = new Plane();//плоскость, которая остается после удаления дальней вершины симплекса
 
@@ -110,8 +111,10 @@ namespace InverseTest.Collision
 
                 deletedVertexes.Add(resultSimplex[indexMaxDistance]);
 
+
                 //в направлении нормали к нулю ищем экстремальную точку 
                 resultSimplex[indexMaxDistance] = sc.supportFunction(a, -pRes) - sc.supportFunction(b, pRes);
+                simplex.AddSimplex(resultSimplex.ToList());
                 if (deletedVertexes.IndexOf(resultSimplex[indexMaxDistance]) != -1)
                 {
                     resultSimplex = null;

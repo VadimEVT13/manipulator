@@ -18,6 +18,8 @@ using InverseTest.Collision;
 using static InverseTest.DetectorFrame;
 using InverseTest.Bound;
 using InverseTest.Path;
+using InverseTest.Manipulator.Models;
+using InverseTest.Model;
 
 namespace InverseTest
 {
@@ -48,8 +50,8 @@ namespace InverseTest
 
         private DetailModel detail;
 
-        private ManipulatorKinematicWorker<SystemPosition> manipWorker;
-        private GJKWorker<SceneSnapshot> collisionWorker;
+        private KinematicWorker<SystemPosition, SystemState> kinematicWorker;
+        private GJKWorker<SceneSnapshot, List<CollisionPair>> collisionWorker;
         private CollisionDetector collisoinDetector;
         private CollisionVisualController collisoinVisual;
         private DetailPathController detailPathController;
@@ -95,10 +97,6 @@ namespace InverseTest
             detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
 
-            PortalBoundController portalBounds = new PortalBoundController();
-            portalBounds.CalculateBounds(detectorFrame);
-            detectorFrame.boundController = portalBounds;
-
             manipulator = parser.Manipulator;
             ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
 
@@ -112,8 +110,18 @@ namespace InverseTest
             this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
             this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
             this.manipKinematic.det = ManipulatorUtils.CalculateManipulatorDet(manipulator);
-            this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
-            this.manipWorker.kinematicSolved += manipulatorSolved;
+
+            PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+            PortalBoundController portalBounds = new PortalBoundController();
+            portalBounds.CalculateBounds(detectorFrame);
+
+            this.kinematicWorker = new KinematicWorker<SystemPosition, SystemState>(
+                manipKinematic,
+                portalKinematic,
+                portalBounds,
+                new ManipulatorAnglesBounds()
+                );
+            this.kinematicWorker.OnComplete += KinematicSolved;
 
             detail = parser.Detail;
             platform = parser.DetailPlatform;
@@ -140,7 +148,7 @@ namespace InverseTest
 
             AABB aabb = new AABB();
             aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);
-            collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
+            collisionWorker = new GJKWorker<SceneSnapshot, List<CollisionPair>>(aabb, gjkSolver);
             collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);
 
             //Точка камеры манипулятора
@@ -154,7 +162,7 @@ namespace InverseTest
             
             manipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
 
-            collisionWorker.onCollision += OnCollisoinsDetected;
+            collisionWorker.OnComplete += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
 
             this.detailView.Owner = this;
@@ -165,11 +173,11 @@ namespace InverseTest
         {
             this.collisoinVisual.Collisions(pair);
         }
-
-        public void manipulatorSolved(ManipulatorAngles angles)
+        
+        public void KinematicSolved(SystemState state)
         {
-            Console.WriteLine("ManipulatorPoint: " + manipulator.GetCameraPosition());
-            manipulator.MoveManipulator(angles, false);
+            manipulator.MoveManipulator(state.Angles, false);
+            detectorFrame.MoveDetectFrame(state.PortalPosition, false);
         }
 
          /// <summary>
@@ -195,6 +203,7 @@ namespace InverseTest
         public void OnDetectorFramePositionChanged()
         {
             SetPortalPositionsTextBoxes();
+            collisoinDetector.FindCollisoins();
         }
 
         public void SetDistanceToPoint()
@@ -213,7 +222,7 @@ namespace InverseTest
 
             this.distanceToScreen = distanceToPoint;
 
-            var anglesState = ((ManipulatorV2)manipulator).partAngles;
+            var anglesState = ((ManipulatorV2)manipulator).Angles;
 
             T1TextBox.Text = Math.Round(anglesState[ManipulatorParts.Table], 3).ToString();
             T2TextBox.Text = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3).ToString();
@@ -224,6 +233,7 @@ namespace InverseTest
 
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
             SetDistanceToPoint();
+            collisoinDetector.FindCollisoins();
         }
 
         public void SetPortalPositionsTextBoxes()
@@ -254,11 +264,8 @@ namespace InverseTest
         {
             if (solveKinematics)
             {
-                this.manipWorker.solve(new SystemPosition(newPosition, targetPoint.point));
-                SolvePortalKinematic(newPosition, targetPoint.point, false);
+                recalculateKinematic();
             }
-
-            collisoinDetector.FindCollisoins();
         }
 
 
@@ -298,26 +305,7 @@ namespace InverseTest
             double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
             manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
         }
-
-
-        private void SolvePortalKinematic(Point3D manip, Point3D scannedPoint, bool animate)
-        {
-            PortalKinematic p = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
-            p.setPointManipAndNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
-
-            double[] rez = p.portalPoint(manip.DistanceTo(scannedPoint), this.focuseEnlagment);
-            if (rez != null)
-            {
-                ///ХЗ почему со знаком -
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], rez[3]);
-                detectorFrame.MoveDetectFrame(detectp, animate);
-            }
-            else
-            {
-                MessageBox.Show("Не существует такой точки");
-            }
-        }
-
+        
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             recalculateKinematic();
@@ -552,8 +540,7 @@ namespace InverseTest
             Point3D manip = manipulatorCamPoint.GetTargetPoint();
             Point3D targetPoint = this.targetPoint.point;
 
-            manipWorker.solve(new SystemPosition(manip, targetPoint));
-            SolvePortalKinematic(manip, targetPoint, false);
+            kinematicWorker.Solve(new SystemPosition(manip, targetPoint, manip.DistanceTo(targetPoint), focuseEnlagment));
         }
 
         private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -584,6 +571,10 @@ namespace InverseTest
         private void RotateDetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.detailPathController.Rotate(e.NewValue);
+        }
+
+        private void ResetCamers_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

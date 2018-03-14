@@ -34,7 +34,7 @@
 
         <Button Content="ADD" Name="Add" Click="Add_Click"/>
         <ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
-                   SelectionMode="Single"
+                   SelectionMode="Single" 
             ItemsSource="{Binding PointsList, Source={x:Static path:ScanPath.getInstance}}"                   
                    SelectionChanged="TargetPointsListView_SelectionChanged">
 

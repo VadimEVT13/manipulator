@@ -31,27 +31,27 @@ namespace InverseTest.Collision
 
             foreach (CollisionPair c in collisions)
             {
-                if(c.modelCollision1.type is ManipulatorParts mt)
+                if(c.ModelCollision1.type is ManipulatorParts mt)
                 {
                     manipParts.Add(mt);
-                }else if( c.modelCollision1.type is DetectorFrame.Parts dt)
+                }else if( c.ModelCollision1.type is DetectorFrame.Parts dt)
                 {
                     portalParts.Add(dt);
                 }
-                else if (c.modelCollision1.type is ExtraPartsEnum dp)
+                else if (c.ModelCollision1.type is ExtraPartsEnum dp)
                 {
                     detailParts.Add(dp);
                 }
 
-                if (c.modelCollision2.type is ManipulatorParts mt2)
+                if (c.ModelCollision2.type is ManipulatorParts mt2)
                 {
                     manipParts.Add(mt2);
                 }
-                else if (c.modelCollision2.type is DetectorFrame.Parts dt2)
+                else if (c.ModelCollision2.type is DetectorFrame.Parts dt2)
                 {
                     portalParts.Add(dt2);
                 }
-                else if (c.modelCollision2.type is ExtraPartsEnum dp2)
+                else if (c.ModelCollision2.type is ExtraPartsEnum dp2)
                 {
                     detailParts.Add(dp2);
                 }

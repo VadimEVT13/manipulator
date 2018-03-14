@@ -8,6 +8,7 @@ using HelixToolkit.Wpf;
 using MIConvexHull;
 using InverseTest.Collision;
 using InverseTest.Collision.Model;
+using InverseTest.GUI;
 
 namespace InverseTest
 {
@@ -32,8 +33,8 @@ namespace InverseTest
         public List<Point3D> BuildShell(Model3DCollision Model)//, Transform3D trans)
         {
             List<Point3D> verts = new List<Point3D>();
-            Transform3D trans = new MatrixTransform3D(Model.shape.transform);
-            List<Point3D>  points = Model.shape.points;
+            Transform3D trans = new MatrixTransform3D(Model.shape.Transform);
+            List<Point3D>  points = Model.shape.Points;
            
                 CVXvertices = points.Distinct(new PointComparer()).Select(p => new Vertex(p)).ToList(); //точки для построения оболочки
           
@@ -73,9 +74,9 @@ namespace InverseTest
             }
         }
 
-        public bool find(List<Point3D> verts1, List<Point3D> verts2)
+        public bool find(List<Point3D> verts1, List<Point3D> verts2, SimplexView simplex)
         {
-            GJKFinder finderGJK = new GJKFinder(verts1, verts2);
+            GJKFinder finderGJK = new GJKFinder(verts1, verts2, simplex);
 
             if (finderGJK.testGJKIntersection())
             {

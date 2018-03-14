@@ -60,7 +60,14 @@ namespace InverseTest
         private Vector3D currentCameraDirection = DEFAULT_CAMERA_DIRECTION;
 
         public readonly Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
-        public readonly Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
+        private Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
+
+        public Dictionary<ManipulatorParts, double> Angles
+        {
+            get { return partAngles; }
+            set { partAngles = value; }
+        }
+
         private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
         private ManipulatorAngles anglesToSet;
 
@@ -220,9 +227,7 @@ namespace InverseTest
 
         private void setAngles(ManipulatorAngles angles)
         {
-            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
-
-                partAngles[part] = angles.partAngles[part];
+            partAngles = angles.partAngles;
             ConfirmRotation();
         }
 

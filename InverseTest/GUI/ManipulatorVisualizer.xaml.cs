@@ -161,6 +161,7 @@ namespace InverseTest.GUI
         }
 
 
+
         /// <summary>
         /// Добавляте контур детали на вид с камеры манипулятора
         /// </summary>
@@ -425,7 +426,7 @@ namespace InverseTest.GUI
             foreach (PartShape s in frame.parts)
             {
 
-                Rect3D rect = s.bounds;
+                Rect3D rect = s.Bounds;
                 BoxVisual3D rectagnle3D = new BoxVisual3D()
                 {
                     Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),

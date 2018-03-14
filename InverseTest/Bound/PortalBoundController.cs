@@ -47,7 +47,7 @@ namespace InverseTest.Bound
                 - portal.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame).Bounds.SizeX;
             this.VerticalFrameBound = new Bound(verticalFrBottom, verticalFrUpper);
 
-            var horizBottom = portal.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame).Bounds.Y + portal.GetDetectorFramePart(DetectorFrame.Parts.Platform).Bounds.SizeY;
+            var horizBottom = portal.GetDetectorFramePart(DetectorFrame.Parts.VerticalFrame).Bounds.Y + portal.GetDetectorFramePart(DetectorFrame.Parts.PortalPlatform).Bounds.SizeY;
             var horizUpper = portal.GetDetectorFrameModel().Bounds.SizeY
                 - portal.GetDetectorFramePart(DetectorFrame.Parts.HorizontalBar).Bounds.SizeY/2;
             this.HorizontalBarBound = new Bound(horizBottom, horizUpper);

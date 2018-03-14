@@ -24,14 +24,8 @@ namespace InverseTest
         private Model3DGroup portalModel;
         private Model3DGroup screenCameraPos;
 
-        private Point3D centerToVerticalRotate;
-        private Point3D centerToHorizontalRotate;
-
-
         private int numberMesh = 0;
-
-        public PortalBoundController boundController { get; set; }
-
+        
         /// Части 
         public readonly Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
         public Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
@@ -55,7 +49,7 @@ namespace InverseTest
 
         public enum Parts
         {
-            Platform,
+            PortalPlatform,
             VerticalFrame,
             HorizontalBar,
             ScreenHolder,
@@ -72,8 +66,6 @@ namespace InverseTest
 
         public DetectorFrame(Model3DGroup portal)
         {
-            this.boundController = new PortalBoundController();
-
             portalModel = portal;
             //Экран
             Model3DGroup screen = new Model3DGroup();
@@ -131,7 +123,7 @@ namespace InverseTest
             parts.Add(Parts.ScreenHolder, screenHolderPart);
             parts.Add(Parts.VerticalFrame, verticalFramePart);
             parts.Add(Parts.HorizontalBar, horizontalBarPart);
-            parts.Add(Parts.Platform, platformPart);
+            parts.Add(Parts.PortalPlatform, platformPart);
 
             partsCollectoin.Add(screenCameraPart.GetModelPart());
             partsCollectoin.Add(screenPart.GetModelPart());
@@ -148,7 +140,7 @@ namespace InverseTest
             partStartPosition.Add(Parts.ScreenHolder, parts[Parts.ScreenHolder].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.VerticalFrame, parts[Parts.VerticalFrame].GetModelPart().Bounds.Location);
             partStartPosition.Add(Parts.HorizontalBar, parts[Parts.HorizontalBar].GetModelPart().Bounds.Location);
-            partStartPosition.Add(Parts.Platform, parts[Parts.Platform].GetModelPart().Bounds.Location);
+            partStartPosition.Add(Parts.PortalPlatform, parts[Parts.PortalPlatform].GetModelPart().Bounds.Location);
 
             partOffset.Add(Parts.ScreenHolder, 0);
             partOffset.Add(Parts.VerticalFrame, 0);
@@ -277,10 +269,8 @@ namespace InverseTest
             return position;
         }
 
-        private void setPosition(DetectorFramePosition position)
+        private void setPosition(DetectorFramePosition p)
         {
-            var p = boundController.CheckDetectroFramePosition(position);
-
             double offsetX = p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X;
             partOffset[Parts.VerticalFrame] = offsetX;
 
@@ -380,35 +370,9 @@ namespace InverseTest
 
         public virtual void MovePart(Parts partToMove, double offsetToMove)
         {
-            var newOffset = CheckOffsetPart(partToMove, offsetToMove);
             partOffset[partToMove] = offsetToMove;
             ConfirmPosition();
         }
-
-        private double CheckOffsetPart(Parts partToMove, double offsetToMove)
-        {
-
-            var newOffset = 0d;
-            var position = 0d;
-            IDetectorFramePart part = parts[partToMove];
-            var bounds = part.Bounds();
-            var newPosition = 0d;
-            var partStartPos = partStartPosition[partToMove];
-
-            switch (partToMove)
-            {
-                case Parts.HorizontalBar:
-                    position = partStartPos.Y + offsetToMove;
-                    newPosition = boundController.CheckHorizontalBar(offsetToMove);
-                    newOffset = newPosition - partStartPos.Y;
-                    break;
-                default:
-                    newOffset = offsetToMove;
-                    break;
-            }
-            return newOffset;
-        }
-
 
         public virtual void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
         {

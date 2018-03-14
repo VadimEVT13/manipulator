@@ -8,57 +8,47 @@ using System.ComponentModel;
 using System.Windows.Media.Media3D;
 using System.Threading;
 using InverseTest.Manipulator.Models;
+using InverseTest.Frame;
+using InverseTest.Frame.Kinematic;
+using InverseTest.Model;
+using InverseTest.Bound;
 
 namespace InverseTest.Workers
 {
-    public delegate void ManipulatorKinematicSolved(ManipulatorAngles angles);
-    public delegate void ManipulatorKinematicError();
 
-    class ManipulatorKinematicWorker<T> : BackroundCalculations<T>
+    class KinematicWorker<T, L> : BackroundCalculations<T, L> where L : class
     {
         Kinematic kinematic;
+        PortalKinematic portal;
+        PortalBoundController portalBounds;
+        ManipulatorAnglesBounds manipulatorBounds;
 
-        public event ManipulatorKinematicSolved kinematicSolved;
-        public event ManipulatorKinematicError kinematicError;
-
-
-        public ManipulatorKinematicWorker(Kinematic kinematic) : base()
+        public KinematicWorker(Kinematic kinematic, 
+            PortalKinematic portal, 
+            PortalBoundController portalBounds,
+            ManipulatorAnglesBounds manipulatorBounds) : base()
         {
             this.kinematic = kinematic;
+            this.portal = portal;
+            this.portalBounds = portalBounds;
+            this.manipulatorBounds = manipulatorBounds;
         }
 
-        public void solve(T elem)
-        {
-            if (!queue.IsEmpty)
-            {
-                clearQueue(queue);
-            }
-
-            queue.Enqueue(elem);
-
-            if (!worker.IsBusy)
-            {
-                worker.RunWorkerAsync();
-            }
-        }
-
-        protected override void workerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-           
-        }
-
-        protected override void workerProgressUpdate(object sender, ProgressChangedEventArgs e)
-        {
-            ManipulatorAngles pos = e.UserState as ManipulatorAngles;
-            kinematicSolved?.Invoke(pos);
-        }
-
-        protected override void DoWork(T elem, DoWorkEventArgs arg)
+        protected override L Calculate(T elem)
         {
             SystemPosition sp = elem as SystemPosition;
+            ManipulatorAngles manipAngles = SolveManipulator(sp);
+            DetectorFramePosition portalPos = SolvePortal(sp);
+            return new SystemState(manipAngles, portalPos) as L;
+        }
+
+
+        private ManipulatorAngles SolveManipulator(SystemPosition sp)
+        {
+
             Stack<Angle3D> rezults;
-            
-            rezults = this.kinematic.InverseNab(sp.manipPoint.X, sp.manipPoint.Z, sp.manipPoint.Y, sp.targetPoint.X, sp.targetPoint.Z, sp.targetPoint.Y);
+
+            rezults = this.kinematic.InverseNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);
 
             //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
             // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение
@@ -69,24 +59,9 @@ namespace InverseTest.Workers
                 Stack<Angle3D> unsatisfied = new Stack<Angle3D>();
                 foreach (Angle3D one in rezults)
                 {
-                    if (
-                       (MathUtils.RadiansToAngle(one.O1) < 90 && MathUtils.RadiansToAngle(one.O1) > -90) &
-                       (MathUtils.RadiansToAngle(one.O2) < 90 && MathUtils.RadiansToAngle(one.O2) > -90) &
-                       (MathUtils.RadiansToAngle(one.O3) < 70 && MathUtils.RadiansToAngle(one.O3) > -70) &
-                       (MathUtils.RadiansToAngle(one.O4) < 220 && MathUtils.RadiansToAngle(one.O4) > -220) &
-                       (MathUtils.RadiansToAngle(one.O5) < 170 && MathUtils.RadiansToAngle(one.O5) > 0)
-                       )
+                    if (manipulatorBounds.CheckAngles(one))
                     {
                         satisfied.Push(one);
-
-                        Console.WriteLine("InputPOint:" + sp.manipPoint.ToString());
-                        Console.WriteLine("ANGLES:" + one.ToString());
-
-                        double[][] matrix = kinematic.DirectKinematic(one);
-                        Console.WriteLine("OutputPoint: " + matrix[0][3] + " " + matrix[2][3] + " " + matrix[1][3]);
-
-
-
                     }
                     else
                     {
@@ -106,7 +81,8 @@ namespace InverseTest.Workers
                         MathUtils.RadiansToAngle(rez.O5)
                         );
                 }
-                else {
+                else
+                {
                     Angle3D rez = unsatisfied.Pop();
                     angles = new ManipulatorAngles(
                         MathUtils.RadiansToAngle(rez.O1),
@@ -118,9 +94,26 @@ namespace InverseTest.Workers
                         );
                 }
 
+                return angles;
+            }
+            else return null;
+        }
 
+        private DetectorFramePosition SolvePortal(SystemPosition sp)
+        {
+            portal.setPointManipAndNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);
 
-                worker.ReportProgress(0, angles);
+            double[] rez = portal.portalPoint(sp.DistanceManipulatorToScanPoint, sp.FocusEnlagment);
+            if (rez != null)
+            {
+                ///ХЗ почему со знаком -
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], rez[3]);
+                detectp = portalBounds.CheckDetectroFramePosition(detectp);
+                return detectp;
+            }
+            else
+            {
+                return null;
             }
         }
 

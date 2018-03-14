@@ -20,6 +20,7 @@
             </MenuItem>
             <MenuItem Header="Вид" Margin="1" Padding="15,2">
                 <MenuItem Header="Деталь" Name="DetailViewMenuItem" Click="DetailViewMenuItem_Click"/>
+                <MenuItem Header="Сброс камер" Name="ResetCamers" Click="ResetCamers_Click"/>
             </MenuItem>
         </Menu>
 
