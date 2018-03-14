@@ -172,6 +172,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bound\Bound.cs" />
+    <Compile Include="Bound\ManipulatorAnglesBounds.cs" />
     <Compile Include="Bound\PortalBoundController.cs" />
     <Compile Include="Collision\AABB.cs" />
     <Compile Include="Collision\CollisionDetector.cs" />
@@ -214,8 +215,12 @@
     </Compile>
     <Compile Include="GUI\Model\IVisual.cs" />
     <Compile Include="Detail\DetailViewVisual.cs" />
+    <Compile Include="GUI\SimplexView.xaml.cs">
+      <DependentUpon>SimplexView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
+    <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\ScanPathVisual.cs" />
     <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Model\ScanPointVisual.cs" />
@@ -255,9 +260,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
-    <Compile Include="SystemPosition.cs" />
+    <Compile Include="Model\PointsPositions.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
-    <Compile Include="Workers\ManipulatorKinematicWorker.cs" />
+    <Compile Include="Workers\KinematicWorker.cs" />
     <Page Include="GUI\Controls\PathListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -286,6 +291,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GUI\SimplexView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manipulator\IManipulatorModel.cs" />
