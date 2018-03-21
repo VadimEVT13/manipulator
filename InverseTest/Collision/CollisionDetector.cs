@@ -14,7 +14,6 @@ namespace InverseTest.Collision
 {
     public delegate void OnCollisionDetected(List<CollisionPair> collision);
 
-
     class CollisionDetector
     {
 

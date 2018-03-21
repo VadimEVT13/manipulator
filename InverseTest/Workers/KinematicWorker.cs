@@ -1,12 +1,6 @@
 ﻿using InverseTest.Manipulator;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
 using System.Windows.Media.Media3D;
-using System.Threading;
 using InverseTest.Manipulator.Models;
 using InverseTest.Frame;
 using InverseTest.Frame.Kinematic;
@@ -15,7 +9,6 @@ using InverseTest.Bound;
 
 namespace InverseTest.Workers
 {
-
     class KinematicWorker<T, L> : BackroundCalculations<T, L> where L : class
     {
         Kinematic kinematic;
@@ -26,7 +19,7 @@ namespace InverseTest.Workers
         public KinematicWorker(Kinematic kinematic, 
             PortalKinematic portal, 
             PortalBoundController portalBounds,
-            ManipulatorAnglesBounds manipulatorBounds) : base()
+            ManipulatorAnglesBounds manipulatorBounds, int queueSize = 10) : base(queueSize)
         {
             this.kinematic = kinematic;
             this.portal = portal;
@@ -45,7 +38,6 @@ namespace InverseTest.Workers
 
         private ManipulatorAngles SolveManipulator(SystemPosition sp)
         {
-
             Stack<Angle3D> rezults;
 
             rezults = this.kinematic.InverseNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);

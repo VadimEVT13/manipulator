@@ -33,11 +33,9 @@ namespace InverseTest
         {
             if (queue.Count >= this.queueMaxsize)
             {
-                Console.WriteLine("WORKER: " + "Clearing queue:" + queue.Count);
                 queue.Clear();
             }
             queue.Enqueue(elem);
-            Console.WriteLine("WORKER: " + "Add to queue:" + queue.Count);
 
             if (!worker.IsBusy)
             {

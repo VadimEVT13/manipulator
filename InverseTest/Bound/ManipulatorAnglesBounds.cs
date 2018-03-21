@@ -1,11 +1,5 @@
-﻿using InverseTest.Collision.Model;
-using InverseTest.Manipulator;
+﻿using InverseTest.Manipulator;
 using InverseTest.Manipulator.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InverseTest.Bound
 {
@@ -34,11 +28,11 @@ namespace InverseTest.Bound
 
         public ManipulatorAnglesBounds()
         {
-            this.L1 = new Bound(L1_BOTTOM, L2_TOP);
+            this.L1 = new Bound(L1_BOTTOM, L1_TOP);
             this.L2 = new Bound(L2_BOTTOM, L2_TOP);
-            this.L3 = new Bound(L3_BOTTOM, L2_TOP);
-            this.L4 = new Bound(L4_BOTTOM, L2_TOP);
-            this.L5 = new Bound(L5_BOTTOM, L2_TOP);
+            this.L3 = new Bound(L3_BOTTOM, L3_TOP);
+            this.L4 = new Bound(L4_BOTTOM, L4_TOP);
+            this.L5 = new Bound(L5_BOTTOM, L5_TOP);
         }
 
         public bool CheckAngles(double[] angles)
@@ -58,6 +52,6 @@ namespace InverseTest.Bound
                   MathUtils.RadiansToAngle(angles.O3),
                   MathUtils.RadiansToAngle(angles.O4),
                   MathUtils.RadiansToAngle(angles.O5)});
-        }
+        }        
     }
 }

@@ -9,11 +9,10 @@ namespace InverseTest
 {
     public class SystemPosition
     {
-       public Point3D ManipPoint { get; }
+        public Point3D ManipPoint { get; }
         public Point3D TargetPoint { get; }
         public double DistanceManipulatorToScanPoint { get; }
-        public double FocusEnlagment { get; }
-       
+        public double FocusEnlagment { get; }       
 
         public SystemPosition(Point3D manipPoint, Point3D targetPoint, double distance, double focusEnlagment)
         {

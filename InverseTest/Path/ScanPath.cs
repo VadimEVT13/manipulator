@@ -22,7 +22,6 @@ namespace InverseTest.Path
         public event OnPointRemove PointRemove;
         public event OnPointTransformed PointTransformed;
 
-
         public ObservableCollection<ScanPoint> points { get; set; }
 
         public ObservableCollection<ScanPoint> PointsList
@@ -74,7 +73,6 @@ namespace InverseTest.Path
             this.points.Add(point);
             NotifyPropertyChanged("Add");
             this.PointAdd?.Invoke(point);
-
         }
 
         public void RemovePoint(ScanPoint point)

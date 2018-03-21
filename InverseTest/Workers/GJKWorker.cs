@@ -23,7 +23,7 @@ namespace InverseTest.Workers
         private AABB aabb;
         private SimplexView simplex;
 
-        public GJKWorker(AABB aabb, GJKSolver solver) : base()
+        public GJKWorker(AABB aabb, GJKSolver solver, int queueSize = 10) : base(queueSize)
         {
             this.solver = solver;
             this.aabb = aabb;
