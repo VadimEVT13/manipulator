@@ -45,23 +45,19 @@ namespace InverseTest.Collision
             resultSimplex[3] = sc.supportFunction(a, -forward) -sc.supportFunction(b, forward);
         }
 
-        public Vector3D[] getSimplex()
-        {
-            return resultSimplex;
-        }
-
         //	проверка факта пересечения
         public bool testGJKIntersection()
         {
             List<Vector3D> deletedVertexes = new List<Vector3D>();
             Vector3D zero = new Vector3D(0, 0, 0);
-            Plane planeCSO = new Plane();//плоскость, которая остается после удаления дальней вершины симплекса
+            //Plane planeCSO = new Plane();//плоскость, которая остается после удаления дальней вершины симплекса
 
             while (sc.allDifferent(resultSimplex))
             {
                 //смотрим, где находится нуль, либо конец алгоритма, либо дальше идем
 
-                if ((det3x3(zero, resultSimplex[0], resultSimplex[1], resultSimplex[2]) * det3x3(resultSimplex[3], resultSimplex[0], resultSimplex[1], resultSimplex[2]) >= 0) &&
+                if (
+                (det3x3(zero, resultSimplex[0], resultSimplex[1], resultSimplex[2]) * det3x3(resultSimplex[3], resultSimplex[0], resultSimplex[1], resultSimplex[2]) >= 0) &&
                 (det3x3(zero, resultSimplex[0], resultSimplex[1], resultSimplex[3]) * det3x3(resultSimplex[2], resultSimplex[0], resultSimplex[1], resultSimplex[3]) >= 0) &&
                 (det3x3(zero, resultSimplex[0], resultSimplex[2], resultSimplex[3]) * det3x3(resultSimplex[1], resultSimplex[0], resultSimplex[2], resultSimplex[3]) >= 0) &&
                 (det3x3(zero, resultSimplex[1], resultSimplex[2], resultSimplex[3]) * det3x3(resultSimplex[0], resultSimplex[1], resultSimplex[2], resultSimplex[3]) >= 0))
@@ -81,7 +77,7 @@ namespace InverseTest.Collision
                 Vector3D pRes;
                 pRes = p0;
 
-                if (p1.Length < p0.Length)
+                if (p1.Length < pRes.Length)
                 {
                     pRes = p1;
                     indexMaxDistance = 1;
@@ -99,18 +95,7 @@ namespace InverseTest.Collision
                     indexMaxDistance = 3;
                 }
 
-                //	удаляем дальнюю точку из симплекса 
-                for (int i = 0, j = 0; i < 4; i++)
-                {
-                    if (i != indexMaxDistance)
-                    {
-                        planeCSO.points[j] = resultSimplex[i];
-                        j++;
-                    }
-                }
-
                 deletedVertexes.Add(resultSimplex[indexMaxDistance]);
-
 
                 //в направлении нормали к нулю ищем экстремальную точку 
                 resultSimplex[indexMaxDistance] = sc.supportFunction(a, -pRes) - sc.supportFunction(b, pRes);

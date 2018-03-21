@@ -83,7 +83,7 @@ namespace InverseTest.Collision
             _ListExcept.Add(new Except(ExtraPartsEnum.DETAIL, ManipulatorParts.Platform));
             _ListExcept.Add(new Except(ExtraPartsEnum.DETAIL, DetectorFrame.Parts.PortalPlatform));
 
-            _ListExcept.Add(_exc);
+            _ListExcept.Remove(new Except(ManipulatorParts.Camera, ManipulatorParts.TopEdge));
             rdy = true;
         }
 

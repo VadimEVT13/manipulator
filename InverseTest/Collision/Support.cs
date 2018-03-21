@@ -16,8 +16,8 @@ namespace InverseTest.Collision
         public Point3D supportFunction(List<Point3D> a, Vector3D p)
         {
 
-            Point3D currPoint = new Point3D(a[0].X, a[0].Y, a[0].Z);
-            Point3D maxPoint = new Point3D(currPoint.X, currPoint.Y, currPoint.Z);
+            Point3D currPoint = a[0];
+            Point3D maxPoint = a[0];
 
             double currScalar = currPoint.X * p.X + currPoint.Y * p.Y + currPoint.Z * p.Z;
             double maxScalar = currScalar;
@@ -25,7 +25,7 @@ namespace InverseTest.Collision
             for (int i = 0; i < a.Count; i++)
             {
 
-                currPoint = new Point3D(a[i].X, a[i].Y, a[i].Z); ;
+                currPoint = a[i];
                 currScalar = currPoint.X * p.X + currPoint.Y * p.Y + currPoint.Z * p.Z;
 
                 if (currScalar > maxScalar)
@@ -40,46 +40,17 @@ namespace InverseTest.Collision
         //функция возвращает true, если в списке все точки разные 
         public bool allDifferent(Vector3D[] points)
         {
-
-
             for (int i = 0; i < points.Length - 1; i++)
             {
                 for (int j = i + 1; j < points.Length; j++)
                 {
-                    //if (points[i].X == points[j].X && points[i].Y == points[j].Y && points[i].Z == points[j].Z)
                     if (Equals(points[i],points[j]))
                         return false;
-
                 }
             }
             return true;
 
         }
-
-        //Поиск коэффициентов A,B,C,D плоскости с минимальным расстоянием до начала координат 
-        /*public Plane searchMinDistance(ArrayList allPlanes)
-        {
-
-            Plane minPlane = new Plane();
-
-            //double currDistance, minDistance = Mathf.Infinity;
-            double currDistance, minDistance = Double.MaxValue;
-
-            foreach (Plane plane in allPlanes)
-            {
-
-                //currDistance = Vector3D.Magnitude(closestPointToTriangle(plane));
-                currDistance = (closestPointToTriangle(plane)).Length;
-                if (currDistance < minDistance)
-                {
-                    minPlane = plane;
-                    minDistance = currDistance;
-                }
-
-            }
-
-            return minPlane;
-        }*/
 
         //Поиск ближайшей точки отрезка
         public Vector3D closestPointToEdge(Vector3D ePoint1, Vector3D ePoint2)
