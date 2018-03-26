@@ -107,9 +107,8 @@ namespace InverseTest
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
-            this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
-            this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
-            this.manipKinematic.det = ManipulatorUtils.CalculateManipulatorDet(manipulator);
+            this.manipKinematic = new Kinematic(new Vertex3D { X = MANIPULATOR_OFFSET.X, Y = MANIPULATOR_OFFSET.Y, Z = MANIPULATOR_OFFSET.Z });
+            this.manipKinematic.SetLen(new LengthJoin { J1 = edges[0], J2 = edges[1], J3 = edges[2], J4 = edges[3], J5 = edges[4], Det = ManipulatorUtils.CalculateManipulatorDet(manipulator) });
 
             PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
             PortalBoundController portalBounds = new PortalBoundController();

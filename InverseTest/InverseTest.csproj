@@ -219,6 +219,7 @@
       <DependentUpon>SimplexView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
+    <Compile Include="Manipulator\Models\LengthJoin.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
     <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\ScanPathVisual.cs" />
