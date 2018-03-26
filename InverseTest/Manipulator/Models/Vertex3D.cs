@@ -11,5 +11,12 @@ namespace InverseTest.Manipulator.Models
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+
+        public static double Distance(Vertex3D A, Vertex3D B)
+        {
+            return Math.Sqrt((A.X - B.X) * (A.X - B.X) +
+                             (A.Y - B.Y) * (A.Y - B.Y) +
+                             (A.Z - B.Z) * (A.Z - B.Z));
+        }
     }
 }
