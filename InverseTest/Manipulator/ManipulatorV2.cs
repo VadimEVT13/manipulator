@@ -209,7 +209,15 @@ namespace InverseTest
             if (animate)
                 startAnimation(angles);
             else
-                setAngles(angles);
+            {
+                try
+                {
+                    setAngles(angles);
+                }
+                catch (NullReferenceException ex) {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
         private void startAnimation(ManipulatorAngles angles)
