@@ -175,7 +175,10 @@ namespace InverseTest
         
         public void KinematicSolved(SystemState state)
         {
+            if(state.Angles!=null)
             manipulator.MoveManipulator(state.Angles, false);
+
+            if(state.PortalPosition!=null)
             detectorFrame.MoveDetectFrame(state.PortalPosition, false);
         }
 
