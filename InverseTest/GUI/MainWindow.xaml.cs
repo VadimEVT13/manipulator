@@ -437,18 +437,9 @@ namespace InverseTest
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
         {
 
-            //Task task = new Task(() =>
-            //{
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             JunctionDetect.JunctionDetectAlgorithm junctiondetec = new JunctionDetect.JunctionDetectAlgorithm();
             int[] junctions = junctiondetec.Detect(detail.GetModel());
-            watch.Stop();
             detail.SetJunctionsPoints(junctions);
-
-            Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
-            //});
-
-            //task.Start();
         }
 
         private void CameraVisibleArea_Checked(object sender, RoutedEventArgs e)

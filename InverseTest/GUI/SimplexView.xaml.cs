@@ -48,7 +48,6 @@ namespace InverseTest.GUI
 
                 TextVisual3D text = new TextVisual3D() { Text = p.ToString(), FontSize = 12 ,Position = p };
                 SimplexViewport.Children.Add(text);
-                Console.WriteLine("POINT COORDINATES: " + p.ToString());
             }
 
             GeometryModel3D m1 = new GeometryModel3D(builder.ToMesh(), Materials.Blue);
