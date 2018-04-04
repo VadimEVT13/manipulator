@@ -514,6 +514,39 @@ namespace InverseTest
             }
         }
 
+        private void ManipulatorAnglesTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                ParseManipulatorAngles();
+            }
+        }
+
+        private void ParseManipulatorAngles()
+        {
+            double angleT1;
+            double.TryParse(T1TextBox.Text, out angleT1);
+
+
+            double angleT2;
+            double.TryParse(T2TextBox.Text, out angleT2);
+
+            double angleT3;
+            double.TryParse(T3TextBox.Text, out angleT3);
+
+            double angleT4;
+            double.TryParse(T4TextBox.Text, out angleT4);
+
+            double angleT5;
+            double.TryParse(T5TextBox.Text, out angleT5);
+
+
+            var angles = new ManipulatorAngles(angleT1, angleT2, angleT3, angleT4, angleT5);
+
+            manipulator.MoveManipulator(angles, false);
+
+        }
+
         private void recalculateKinematic()
         {
             Point3D manip = manipulatorCamPoint.GetTargetPoint();
