@@ -537,5 +537,67 @@ namespace InverseTest
         {
             ManipulatorVisualizer.setCameras(allModels);
         }
+
+
+
+        /// <summary>
+        /// Обработчик события - блокировка оси X.
+        /// </summary>
+        /// <param name="sender">Отправитель события</param>
+        /// <param name="e">Событие</param>
+        private void CheckX_Checked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorXTextBox.IsReadOnly = true;
+        }
+
+        /// <summary>
+        /// Обработчик события - разблокировка оси X.
+        /// </summary>
+        /// <param name="sender">Отправитель события</param>
+        /// <param name="e">Событие</param>
+        private void CheckX_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorXTextBox.IsReadOnly = false;
+        }
+
+        /// <summary>
+        /// Обработчик события - блокировка оси Y.
+        /// </summary>
+        /// <param name="sender"> </param>
+        /// <param name="e">Событие</param>
+        private void CheckY_Checked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorYTextBox.IsReadOnly = true;
+        }
+
+        /// <summary>
+        /// Обработчик события - разблокировка оси Y.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckY_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorYTextBox.IsReadOnly = false;
+        }
+
+        /// <summary>
+        /// Обработчик события - блокировка оси Z.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckZ_Checked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorZTextBox.IsReadOnly = true;
+        }
+
+        /// <summary>
+        /// Обработчик события - разблокировка оси Z.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckZ_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PointManipulatorZTextBox.IsReadOnly = false;
+        }
     }
 }
