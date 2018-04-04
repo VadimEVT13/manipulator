@@ -13,10 +13,15 @@ namespace InverseTest.Collision.Mappers
     {
         public static SceneSnapshot CreateSceneSnapshot(ManipulatorV2 manip, DetectorFrame portal, DetailModel detail, Model3D detailPlatform)
         {
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
             ManipulatorSnapshot manipSnapshot = ManipulatorMapper.ManipulatorToSnapshot(manip);
             PortalSnapshot portalSnapshot = PortalMapper.PortalToSnapshot(portal);
             DetailSnapshot detailSnapshot = DetailMapper.DetailToSnapshot(detail);
             DetailPlatformSnapshot detailPlatformSnapshot = DetailPlatformMapper.DetailPlatformToSnapshot(detailPlatform);
+            watch.Stop();
+            Console.WriteLine("Mapping:" + watch.ElapsedMilliseconds);
 
             return new SceneSnapshot(manipSnapshot, portalSnapshot, detailSnapshot, detailPlatformSnapshot);
         }

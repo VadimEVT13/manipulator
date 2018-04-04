@@ -282,9 +282,9 @@ namespace InverseTest
                     // Ребро, которое необходимо повернуть
                     modelToRotate = parts[ManipulatorParts.Table];
                     // Берем меш, находящийся в точке поворота ребра, получяем его позицию (она на одном из углов меша)
-                    rotatePoint = _jointCubes[0].Bounds.Location;
+                    rotatePoint = MathUtils.GetRectCenter(_jointCubes[0].Bounds)
+;
                     // Полученную точку сдвигаем в цетр меша, получая точку вращения
-                    rotatePoint.Offset(1, 1, 1);
                     // Ось вращения
                     rotationAxis = new Vector3D(0, 1, 0);
 
@@ -292,28 +292,25 @@ namespace InverseTest
 
                 case ManipulatorParts.MiddleEdge:
                     modelToRotate = parts[ManipulatorParts.MiddleEdge];
-                    rotatePoint = _jointCubes[0].Bounds.Location;
-                    rotatePoint.Offset(1, 1, 1);
+                    rotatePoint = MathUtils.GetRectCenter(_jointCubes[0].Bounds);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 
               case ManipulatorParts.TopEdge:
                     modelToRotate = parts[ManipulatorParts.TopEdge];
-                    rotatePoint = _jointCubes[1].Bounds.Location;
+                    rotatePoint = MathUtils.GetRectCenter(_jointCubes[1].Bounds);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 
                 case ManipulatorParts.CameraBase:
                     modelToRotate = parts[ManipulatorParts.CameraBase];
-                    rotatePoint = _jointCubes[2].Bounds.Location;
-                    rotatePoint.Offset(1, 1, 1);
+                    rotatePoint = MathUtils.GetRectCenter(_jointCubes[2].Bounds);
                     rotationAxis = new Vector3D(1, 0, 0);
                     break;
 
                 case ManipulatorParts.Camera:
                     modelToRotate = parts[ManipulatorParts.Camera];
-                    rotatePoint = _jointCubes[2].Bounds.Location;
-                    rotatePoint.Offset(1, 1, 1);
+                    rotatePoint = MathUtils.GetRectCenter(_jointCubes[2].Bounds);
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 

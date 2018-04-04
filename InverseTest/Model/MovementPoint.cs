@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using InverseTest.Manipulator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,8 +53,7 @@ namespace InverseTest.GUI.Model
 
         public Point3D GetTargetPoint()
         {
-            Point3D targetPoint = point.Model.Bounds.Location;
-            targetPoint.Offset(defaultRadius / 2.0, defaultRadius / 2.0, defaultRadius / 2.0);
+            Point3D targetPoint = MathUtils.GetRectCenter(GetModel().Bounds);
             return targetPoint;
         }
 

@@ -6,6 +6,7 @@ using InverseTest.Frame;
 using InverseTest.Frame.Kinematic;
 using InverseTest.Model;
 using InverseTest.Bound;
+using System;
 
 namespace InverseTest.Workers
 {
@@ -32,6 +33,7 @@ namespace InverseTest.Workers
             SystemPosition sp = elem as SystemPosition;
             ManipulatorAngles manipAngles = SolveManipulator(sp);
             DetectorFramePosition portalPos = SolvePortal(sp);
+
             return new SystemState(manipAngles, portalPos) as L;
         }
 

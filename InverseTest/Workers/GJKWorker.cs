@@ -63,6 +63,7 @@ namespace InverseTest.Workers
                 return new List<CollisionPair>() as L;
             }
 
+            
             return collisions as L;
         }
     }
