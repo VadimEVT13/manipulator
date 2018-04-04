@@ -535,6 +535,7 @@ namespace InverseTest
 
         private void ResetCamers_Click(object sender, RoutedEventArgs e)
         {
+            ManipulatorVisualizer.setCameras(allModels);
         }
     }
 }
