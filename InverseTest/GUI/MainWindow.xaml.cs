@@ -20,6 +20,7 @@ using InverseTest.Bound;
 using InverseTest.Path;
 using InverseTest.Manipulator.Models;
 using InverseTest.Model;
+using System.Windows.Controls;
 
 namespace InverseTest
 {
@@ -224,13 +225,13 @@ namespace InverseTest
 
             this.distanceToScreen = distanceToPoint;
 
-            var anglesState = ((ManipulatorV2)manipulator).Angles;
+            var anglesState = manipulator.Angles;
 
-            T1TextBox.Text = Math.Round(anglesState[ManipulatorParts.Table], 3).ToString();
-            T2TextBox.Text = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3).ToString();
-            T3TextBox.Text = Math.Round(anglesState[ManipulatorParts.TopEdge], 3).ToString();
-            T4TextBox.Text = Math.Round(anglesState[ManipulatorParts.CameraBase], 3).ToString();
-            T5TextBox.Text = Math.Round(anglesState[ManipulatorParts.Camera], 3).ToString();
+            T1Slider.Value = Math.Round(anglesState[ManipulatorParts.Table], 3);
+            T2Slider.Value = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3);
+            T3Slider.Value = Math.Round(anglesState[ManipulatorParts.TopEdge], 3);
+            T4Slider.Value = Math.Round(anglesState[ManipulatorParts.CameraBase], 3);
+            T5Slider.Value = Math.Round(anglesState[ManipulatorParts.Camera], 3);
             collisoinDetector.FindCollisoins();
 
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
@@ -240,15 +241,12 @@ namespace InverseTest
 
         public void SetPortalPositionsTextBoxes()
         {
-            Dictionary<Parts, double> partOffset = (detectorFrame as DetectorFrame).partOffset;
-            var verticalAngle = (detectorFrame as DetectorFrame).verticalAngle;
-            var horizontalAngle = (detectorFrame as DetectorFrame).horizontalAngle;
-
-            VerticalFrameSliderTextBox.Text = Math.Round(partOffset[Parts.VerticalFrame], 3).ToString();
-            ScreenHolderTextBox.Text = Math.Round(partOffset[Parts.ScreenHolder], 3).ToString();
-            HorizontalBarTextView.Text = Math.Round(partOffset[Parts.HorizontalBar], 3).ToString();
-            ScreenVerticalAngleTextBox.Text = Math.Round(verticalAngle, 3).ToString();
-            ScreenHorizontalAngleTextBox.Text = Math.Round(horizontalAngle, 3).ToString();
+            var partOffset = detectorFrame.partOffset;
+            VerticalFrameSlider.Value = Math.Round(partOffset[Parts.VerticalFrame], 3);
+            HorizontalBarSlider.Value = Math.Round(partOffset[Parts.HorizontalBar], 3);
+            ScreenHolderSlider.Value = Math.Round(partOffset[Parts.ScreenHolder], 3);
+            ScreenVerticalAngleSlider.Value = Math.Round(detectorFrame.verticalAngle, 3);
+            ScreenHorizontalAngleSlider.Value = Math.Round(detectorFrame.horizontalAngle, 3);
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -273,27 +271,47 @@ namespace InverseTest
 
         private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorParts.Table, -e.NewValue);
+            var anglesState = manipulator.Angles;
+            if (Math.Abs(anglesState[ManipulatorParts.Table] - e.NewValue) > 1e-2)
+            {
+                manipulator.RotatePart(ManipulatorParts.Table, -e.NewValue);
+            }
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorParts.MiddleEdge, -e.NewValue);
+            var anglesState = manipulator.Angles;
+            if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - e.NewValue) > 1e-2)
+            {
+                manipulator.RotatePart(ManipulatorParts.MiddleEdge, -e.NewValue);
+            }
         }
 
         private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorParts.TopEdge, -e.NewValue);
+            var anglesState = manipulator.Angles;
+            if (Math.Abs(anglesState[ManipulatorParts.TopEdge] - e.NewValue) > 1e-2)
+            {
+                manipulator.RotatePart(ManipulatorParts.TopEdge, -e.NewValue);
+            }
         }
 
         private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorParts.CameraBase, -e.NewValue);
+            var anglesState = manipulator.Angles;
+            if (Math.Abs(anglesState[ManipulatorParts.CameraBase] - e.NewValue) > 1e-2)
+            {
+                manipulator.RotatePart(ManipulatorParts.CameraBase, -e.NewValue);
+            }
         }
 
         private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            manipulator.RotatePart(ManipulatorParts.Camera, -e.NewValue);
+            var anglesState = manipulator.Angles;
+            if (Math.Abs(anglesState[ManipulatorParts.Camera] - e.NewValue) > 1e-2)
+            {
+                manipulator.RotatePart(ManipulatorParts.Camera, -e.NewValue);
+            }
         }
 
         /// <summary>
@@ -401,27 +419,45 @@ namespace InverseTest
 
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
+            var partOffset = detectorFrame.partOffset;
+            if (Math.Abs(partOffset[Parts.VerticalFrame] - e.NewValue) > 1e-2)
+            {
+                detectorFrame.MovePart(Parts.VerticalFrame, e.NewValue);
+            }
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
+            var partOffset = detectorFrame.partOffset;
+            if (Math.Abs(partOffset[Parts.HorizontalBar] - e.NewValue) > 1e-2)
+            {
+                detectorFrame.MovePart(Parts.HorizontalBar, e.NewValue);
+            }
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
+            var partOffset = detectorFrame.partOffset;
+            if (Math.Abs(partOffset[Parts.ScreenHolder] - e.NewValue) > 1e-2)
+            {
+                detectorFrame.MovePart(Parts.ScreenHolder, e.NewValue);
+            }
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
+            if (Math.Abs(detectorFrame.verticalAngle - e.NewValue) > 1e-2)
+            {
+                detectorFrame.RotatePart(Parts.Screen, e.NewValue, ZRotateAxis);
+            }
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
+            if (Math.Abs(detectorFrame.horizontalAngle - e.NewValue) > 1e-2)
+            {
+                detectorFrame.RotatePart(Parts.Screen, e.NewValue, YRotateAxis);
+            }
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
