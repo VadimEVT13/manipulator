@@ -242,11 +242,11 @@ namespace InverseTest
         public void SetPortalPositionsTextBoxes()
         {
             var partOffset = detectorFrame.partOffset;
-            VerticalFrameSlider.Value = Math.Round(partOffset[Parts.VerticalFrame], 3);
-            HorizontalBarSlider.Value = Math.Round(partOffset[Parts.HorizontalBar], 3);
-            ScreenHolderSlider.Value = Math.Round(partOffset[Parts.ScreenHolder], 3);
-            ScreenVerticalAngleSlider.Value = Math.Round(detectorFrame.verticalAngle, 3);
-            ScreenHorizontalAngleSlider.Value = Math.Round(detectorFrame.horizontalAngle, 3);
+            VerticalFrameSlider.Value = partOffset[Parts.VerticalFrame] * -10;
+            HorizontalBarSlider.Value = partOffset[Parts.HorizontalBar] * 10;
+            ScreenHolderSlider.Value = partOffset[Parts.ScreenHolder] * -10 + 380;
+            ScreenVerticalAngleSlider.Value = detectorFrame.verticalAngle * 180 / Math.PI;
+            ScreenHorizontalAngleSlider.Value = detectorFrame.horizontalAngle * 180 / Math.PI;
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -419,44 +419,62 @@ namespace InverseTest
 
         private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var partOffset = detectorFrame.partOffset;
-            if (Math.Abs(partOffset[Parts.VerticalFrame] - e.NewValue) > 1e-2)
+            if (detectorFrame != null)
             {
-                detectorFrame.MovePart(Parts.VerticalFrame, e.NewValue);
+                var partOffset = detectorFrame.partOffset;
+                if (Math.Abs(partOffset[Parts.VerticalFrame] - e.NewValue / 10) > 1e-2)
+                {
+                    detectorFrame.MovePart(Parts.VerticalFrame, -e.NewValue / 10);
+                }
             }
         }
 
         private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var partOffset = detectorFrame.partOffset;
-            if (Math.Abs(partOffset[Parts.HorizontalBar] - e.NewValue) > 1e-2)
+            if (detectorFrame != null)
             {
-                detectorFrame.MovePart(Parts.HorizontalBar, e.NewValue);
+                var partOffset = detectorFrame.partOffset;
+                if (Math.Abs(partOffset[Parts.HorizontalBar] - e.NewValue / 10) > 1e-2)
+                {
+                    detectorFrame.MovePart(Parts.HorizontalBar, e.NewValue / 10);
+                }
             }
         }
 
         private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var partOffset = detectorFrame.partOffset;
-            if (Math.Abs(partOffset[Parts.ScreenHolder] - e.NewValue) > 1e-2)
+            if (detectorFrame != null)
             {
-                detectorFrame.MovePart(Parts.ScreenHolder, e.NewValue);
+                var partOffset = detectorFrame.partOffset;
+                double value = -e.NewValue / 10 + 38;
+                if (Math.Abs(partOffset[Parts.ScreenHolder] - value) > 1e-2)
+                {
+                    detectorFrame.MovePart(Parts.ScreenHolder, value);
+                }
             }
         }
 
         private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (Math.Abs(detectorFrame.verticalAngle - e.NewValue) > 1e-2)
+            if (detectorFrame != null)
             {
-                detectorFrame.RotatePart(Parts.Screen, e.NewValue, ZRotateAxis);
+                double value = e.NewValue * Math.PI / 180;
+                if (Math.Abs(detectorFrame.verticalAngle - value) > 1e-2)
+                {
+                    detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
+                }
             }
         }
 
         private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (Math.Abs(detectorFrame.horizontalAngle - e.NewValue) > 1e-2)
+            if (detectorFrame != null)
             {
-                detectorFrame.RotatePart(Parts.Screen, e.NewValue, YRotateAxis);
+                double value = e.NewValue * Math.PI / 180;
+                if (Math.Abs(detectorFrame.horizontalAngle - value) > 1e-2)
+                {
+                    detectorFrame.RotatePart(Parts.Screen, value, YRotateAxis);
+                }
             }
         }
 
