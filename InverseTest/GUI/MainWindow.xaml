@@ -50,24 +50,24 @@
 				</Expander>
 				<Expander Header="Детектором">
 					<StackPanel>
-						<Label Content="Вертикальная рамка" HorizontalAlignment="Center"/>
-						<Slider Name="VerticalFrameSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="VerticalFrameSlider_ValueChanged"/>
+						<Label Content="Вертикальная рамка, мм" HorizontalAlignment="Center"/>
+						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="10" ValueChanged="VerticalFrameSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Горизонтальная планка" HorizontalAlignment="Center"/>
-						<Slider Name="HorizontalBarSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="HorizontalBarSlider_ValueChanged"/>
+						<Label Content="Горизонтальная планка, мм" HorizontalAlignment="Center"/>
+						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="HorizontalBarSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Держатель экрана" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHolderSlider" Minimum="-150" Maximum="150" SmallChange="1" Value="0" ValueChanged="ScreenHolderSlider_ValueChanged"/>
+						<Label Content="Держатель экрана, мм" HorizontalAlignment="Center"/>
+						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="ScreenHolderSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Вертикальный угол" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenVerticalAngleSlider" Minimum="-0.75" Maximum="0.75" SmallChange="0.01" Value="0" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
+						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="10" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Горизонтальнаый угол" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHorizontalAngleSlider" Minimum="-0.75" Maximum="0.74" SmallChange="0.01" Value="0" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+						<Label Content="Горизонтальнаый угол, °" HorizontalAlignment="Center"/>
+						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="10" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
