@@ -375,8 +375,7 @@ namespace InverseTest
             R = GetRotateTransfofm(ManipulatorParts.TopEdge, partAngles[ManipulatorParts.TopEdge]);
             topEdgeGroup.Children.Add(R);
             topEdgeGroup.Children.Add(middleEdgeGroup);
-
-
+            
             R = GetRotateTransfofm(ManipulatorParts.CameraBase, partAngles[ManipulatorParts.CameraBase]);
             cameraBaseGroup.Children.Add(R);
             cameraBaseGroup.Children.Add(topEdgeGroup);
@@ -386,8 +385,7 @@ namespace InverseTest
             cameraGroup.Children.Add(cameraBaseGroup);
 
             _cameraposition.Transform =  cameraGroup;
-
-
+            
             CalculateCameraDirection(cameraGroup);
 
             parts[ManipulatorParts.Camera].RotateTransform3D(cameraGroup);

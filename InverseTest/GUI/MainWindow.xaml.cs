@@ -56,6 +56,7 @@ namespace InverseTest
         private DetailPathController detailPathController;
         private ScanPathVisualController pathVisual;
         private DetailVisualCollisionController detailVisControlle;
+        private ManipulatorCoordinatesController ManipulatorCoordinatesController;
         
         private double distanceToScreen = 50;
         private double focuseEnlagment = 1;
@@ -163,6 +164,8 @@ namespace InverseTest
             collisionWorker.OnComplete += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
 
+            this.ManipulatorCoordinatesController = new ManipulatorCoordinatesController();
+
             this.detailView.Owner = this;
             detailView.Show();
         }
@@ -264,7 +267,8 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.Table] - e.NewValue) > 1e-2)
             {
-                manipulator.RotatePart(ManipulatorParts.Table, -e.NewValue);
+                var newAngle = ManipulatorCoordinatesController.T1GlobalToLocal(e.NewValue);
+                manipulator.RotatePart(ManipulatorParts.Table, newAngle);
             }
         }
 
@@ -273,8 +277,7 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - e.NewValue) > 1e-2)
             {
-                var controller = new ManipulatorCoordinatesController();
-                var newAngle = controller.T2LocalToGlobal(e.NewValue);
+                var newAngle = ManipulatorCoordinatesController.T2GlobalToLocal(e.NewValue);
 
                 manipulator.RotatePart(ManipulatorParts.MiddleEdge, newAngle);
             }
@@ -285,7 +288,8 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.TopEdge] - e.NewValue) > 1e-2)
             {
-                manipulator.RotatePart(ManipulatorParts.TopEdge, -e.NewValue);
+                var newAngle = ManipulatorCoordinatesController.T3GlobalToLocal(e.NewValue);
+                manipulator.RotatePart(ManipulatorParts.TopEdge, newAngle);
             }
         }
 
@@ -294,7 +298,8 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.CameraBase] - e.NewValue) > 1e-2)
             {
-                manipulator.RotatePart(ManipulatorParts.CameraBase, -e.NewValue);
+                var newAngle = ManipulatorCoordinatesController.T4GlobalToLocal(e.NewValue);
+                manipulator.RotatePart(ManipulatorParts.CameraBase, newAngle);
             }
         }
 
@@ -303,7 +308,8 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.Camera] - e.NewValue) > 1e-2)
             {
-                manipulator.RotatePart(ManipulatorParts.Camera, -e.NewValue);
+                var newAngle = ManipulatorCoordinatesController.T5GlobalToLocal(e.NewValue);
+                manipulator.RotatePart(ManipulatorParts.Camera, newAngle);
             }
         }
 

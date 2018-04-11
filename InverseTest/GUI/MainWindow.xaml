@@ -32,11 +32,11 @@
 						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="T2" HorizontalAlignment="Center"/>
-						<Slider Name="T2Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged"/>
+						<Slider Name="T2Slider" Minimum="0" Maximum="180" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged"/>
 						<TextBox Text="{Binding ElementName=T2Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="T3" HorizontalAlignment="Center"/>
-						<Slider Name="T3Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
+						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
 						<TextBox Text="{Binding ElementName=T3Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="T4" HorizontalAlignment="Center"/>
