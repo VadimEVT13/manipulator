@@ -206,6 +206,7 @@
     <Compile Include="Detail\IDetailMouseListener.cs" />
     <Compile Include="Frame\DetectorFrameVisual.cs" />
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
+    <Compile Include="Frame\DetectorPositionController.cs" />
     <Compile Include="Frame\Models\Matrix4D.cs" />
     <Compile Include="GUI\Controls\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
