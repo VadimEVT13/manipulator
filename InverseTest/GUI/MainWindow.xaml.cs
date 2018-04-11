@@ -221,12 +221,11 @@ namespace InverseTest
             double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
 
-            this.distanceToScreen = distanceToPoint;
 
             var anglesState = manipulator.Angles;
 
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
-            SetDistanceToPoint();
+           // SetDistanceToPoint();
             collisoinDetector.FindCollisoins();
         }
 
@@ -236,8 +235,8 @@ namespace InverseTest
             VerticalFrameSlider.Value = partOffset[Parts.VerticalFrame] * -10;
             HorizontalBarSlider.Value = partOffset[Parts.HorizontalBar] * 10;
             ScreenHolderSlider.Value = partOffset[Parts.ScreenHolder] * -10 + 380;
-            ScreenVerticalAngleSlider.Value = detectorFrame.verticalAngle * 180 / Math.PI;
-            ScreenHorizontalAngleSlider.Value = detectorFrame.horizontalAngle * 180 / Math.PI;
+            ScreenVerticalAngleSlider.Value = detectorFrame.verticalAngle;
+            ScreenHorizontalAngleSlider.Value = detectorFrame.horizontalAngle;
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -274,7 +273,10 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - e.NewValue) > 1e-2)
             {
-                manipulator.RotatePart(ManipulatorParts.MiddleEdge, -e.NewValue);
+                var controller = new ManipulatorCoordinatesController();
+                var newAngle = controller.T2LocalToGlobal(e.NewValue);
+
+                manipulator.RotatePart(ManipulatorParts.MiddleEdge, newAngle);
             }
         }
 
@@ -449,7 +451,7 @@ namespace InverseTest
         {
             if (detectorFrame != null)
             {
-                double value = e.NewValue * Math.PI / 180;
+                double value = e.NewValue;
                 if (Math.Abs(detectorFrame.verticalAngle - value) > 1e-2)
                 {
                     detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
@@ -461,7 +463,7 @@ namespace InverseTest
         {
             if (detectorFrame != null)
             {
-                double value = e.NewValue * Math.PI / 180;
+                double value = e.NewValue;
                 if (Math.Abs(detectorFrame.horizontalAngle - value) > 1e-2)
                 {
                     detectorFrame.RotatePart(Parts.Screen, value, YRotateAxis);
@@ -589,6 +591,17 @@ namespace InverseTest
 
         private void FocusDistanceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            var distance = e.NewValue;
+            var manipCurrentPoint = manipulator.GetCameraPosition();
+            var targetPoint = this.targetPoint.point;
+
+            var direction = new Vector3D(manipCurrentPoint.X - targetPoint.X,
+                manipCurrentPoint.Y - targetPoint.Y, manipCurrentPoint.Z - targetPoint.Z);
+         
+            direction.Normalize();
+           // var newPoint = ; 
+
+           // manipulatorCamPoint.MoveAndNotify(newPoint);
         }
 
         private void FocusDistance_Checked(object sender, RoutedEventArgs e)
@@ -615,8 +628,6 @@ namespace InverseTest
         {
             ManipulatorVisualizer.setCameras(allModels);
         }
-
-
 
         /// <summary>
         /// Обработчик события - блокировка оси X.

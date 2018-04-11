@@ -63,11 +63,11 @@
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="10" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="10" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальнаый угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="10" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="10" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>

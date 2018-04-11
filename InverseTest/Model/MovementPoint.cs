@@ -36,11 +36,12 @@ namespace InverseTest.GUI.Model
         {
             Point3D oldLocation = GetTargetPoint();
             // Вычисляем смещение для новой точки съемки относительно старой
-            newPositoin.X = newPositoin.X - oldLocation.X;
-            newPositoin.Y = newPositoin.Y - oldLocation.Y;
-            newPositoin.Z = newPositoin.Z - oldLocation.Z;
+            var position = new Point3D();
+            position.X= newPositoin.X - oldLocation.X;
+            position.Y = newPositoin.Y - oldLocation.Y;
+            position.Z = newPositoin.Z - oldLocation.Z;
 
-            TranslateTransform3D transform = new TranslateTransform3D(newPositoin.X, newPositoin.Y, newPositoin.Z);
+            TranslateTransform3D transform = new TranslateTransform3D(position.X, position.Y, position.Z);
             Transform3D oldTransform = point.Model.Transform;
             point.Model.Transform = Transform3DHelper.CombineTransform(oldTransform, transform);
         }

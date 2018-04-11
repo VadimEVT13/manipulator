@@ -338,7 +338,7 @@ namespace InverseTest
           
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
             RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis,
-                MathUtils.RadiansToAngle(verticalAngle)), center);
+                verticalAngle), center);
             return R;
         }
 
@@ -346,7 +346,7 @@ namespace InverseTest
         {
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
             RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis,
-                MathUtils.RadiansToAngle(horizontalAngle)), center);
+                horizontalAngle), center);
             return R;
         }
 
