@@ -225,13 +225,6 @@ namespace InverseTest
 
             var anglesState = manipulator.Angles;
 
-            T1Slider.Value = Math.Round(anglesState[ManipulatorParts.Table], 3);
-            T2Slider.Value = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3);
-            T3Slider.Value = Math.Round(anglesState[ManipulatorParts.TopEdge], 3);
-            T4Slider.Value = Math.Round(anglesState[ManipulatorParts.CameraBase], 3);
-            T5Slider.Value = Math.Round(anglesState[ManipulatorParts.Camera], 3);
-            collisoinDetector.FindCollisoins();
-
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
             SetDistanceToPoint();
             collisoinDetector.FindCollisoins();
