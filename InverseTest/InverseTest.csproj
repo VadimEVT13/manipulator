@@ -326,6 +326,8 @@
     <EmbeddedResource Include="3DModels\Detector Frame.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Manipulator\ClassDiagram1.cd" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
