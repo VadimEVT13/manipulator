@@ -38,7 +38,6 @@ namespace InverseTest
         private bool solveKinematics = true;
         private bool animate = false;
 
-
         private Kinematic manipKinematic;
 
         public ManipulatorV2 manipulator;
@@ -46,7 +45,6 @@ namespace InverseTest
         private MovementPoint manipulatorCamPoint;
         private ConeModel coneModel;
 
-        //private Model3DGroup platform = new Model3DGroup();
         private Model3D platform;
 
         private DetailModel detail;
