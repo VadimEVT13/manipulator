@@ -235,11 +235,11 @@ namespace InverseTest
         public void SetPortalPositionsTextBoxes()
         {
             var partOffset = detectorFrame.partOffset;
-            VerticalFrameSlider.Value = partOffset[Parts.VerticalFrame] * -10;
-            HorizontalBarSlider.Value = partOffset[Parts.HorizontalBar] * 10;
-            ScreenHolderSlider.Value = partOffset[Parts.ScreenHolder] * -10 + 380;
-            ScreenVerticalAngleSlider.Value = detectorFrame.verticalAngle;
-            ScreenHorizontalAngleSlider.Value = detectorFrame.horizontalAngle;
+            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(partOffset[Parts.VerticalFrame]);
+            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(partOffset[Parts.HorizontalBar]);
+            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(partOffset[Parts.ScreenHolder]);
+            ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.verticalAngle);
+            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.horizontalAngle);
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -421,9 +421,10 @@ namespace InverseTest
             if (detectorFrame != null)
             {
                 var partOffset = detectorFrame.partOffset;
-                if (Math.Abs(partOffset[Parts.VerticalFrame] - e.NewValue / 10) > 1e-2)
+                double value = DetectorPositionController.XLocalToGlobal(e.NewValue);
+                if (Math.Abs(partOffset[Parts.VerticalFrame] - value) > 1e-2)
                 {
-                    detectorFrame.MovePart(Parts.VerticalFrame, -e.NewValue / 10);
+                    detectorFrame.MovePart(Parts.VerticalFrame, value);
                 }
             }
         }
@@ -433,9 +434,10 @@ namespace InverseTest
             if (detectorFrame != null)
             {
                 var partOffset = detectorFrame.partOffset;
-                if (Math.Abs(partOffset[Parts.HorizontalBar] - e.NewValue / 10) > 1e-2)
+                double value = DetectorPositionController.YLocalToGlobal(e.NewValue);
+                if (Math.Abs(partOffset[Parts.HorizontalBar] - value) > 1e-2)
                 {
-                    detectorFrame.MovePart(Parts.HorizontalBar, e.NewValue / 10);
+                    detectorFrame.MovePart(Parts.HorizontalBar, value);
                 }
             }
         }
@@ -445,7 +447,7 @@ namespace InverseTest
             if (detectorFrame != null)
             {
                 var partOffset = detectorFrame.partOffset;
-                double value = -e.NewValue / 10 + 38;
+                double value = DetectorPositionController.ZLocalToGlobal(e.NewValue);
                 if (Math.Abs(partOffset[Parts.ScreenHolder] - value) > 1e-2)
                 {
                     detectorFrame.MovePart(Parts.ScreenHolder, value);
@@ -457,7 +459,7 @@ namespace InverseTest
         {
             if (detectorFrame != null)
             {
-                double value = e.NewValue;
+                double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
                 if (Math.Abs(detectorFrame.verticalAngle - value) > 1e-2)
                 {
                     detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
@@ -469,7 +471,7 @@ namespace InverseTest
         {
             if (detectorFrame != null)
             {
-                double value = e.NewValue;
+                double value = DetectorPositionController.BLocalToGlobal(e.NewValue);
                 if (Math.Abs(detectorFrame.horizontalAngle - value) > 1e-2)
                 {
                     detectorFrame.RotatePart(Parts.Screen, value, YRotateAxis);

@@ -63,17 +63,17 @@
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="10" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="87" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальнаый угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="10" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="40" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
 				<Expander Header="Деталью">
 					<StackPanel>
-						<TextBlock Text="Угол поворота" HorizontalAlignment="Center"/>
+						<TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
 						<Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
