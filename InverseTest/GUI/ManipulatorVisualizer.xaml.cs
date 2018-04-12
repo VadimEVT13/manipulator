@@ -36,7 +36,7 @@ namespace InverseTest.GUI
         private PerspectiveCamera cam3D;
 
         private DetectorFrame detectorFrame;
-        private IManipulatorModel manipulator;
+        private ManipulatorV2 manipulator;
         private MovementPoint scanPoint;
 
 
@@ -181,7 +181,7 @@ namespace InverseTest.GUI
         }
 
 
-        public void setManipulatorModel(IManipulatorModel manipulatorModel, ManipulatorVisual manipulatorVisual)
+        public void setManipulatorModel(ManipulatorV2 manipulatorModel, ManipulatorVisual manipulatorVisual)
         {
             this.manipulator = manipulatorModel;
             Model3D camera = manipulatorModel.GetManipulatorPart(ManipulatorParts.Camera);

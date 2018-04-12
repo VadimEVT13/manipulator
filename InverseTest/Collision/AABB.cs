@@ -44,7 +44,7 @@ namespace InverseTest.Collision
         }
 
 
-        public void MakeListExcept(IManipulatorModel manipulator, DetectorFrame detectorFrame, DetailModel detail, Model3D platform)//создаем список исключений самопересечений манипулятора и детектора
+        public void MakeListExcept(ManipulatorV2 manipulator, DetectorFrame detectorFrame, DetailModel detail, Model3D platform)//создаем список исключений самопересечений манипулятора и детектора
         {
 
             foreach (ManipulatorParts i in Enum.GetValues(typeof(ManipulatorParts))) //самопересечение манипулятора

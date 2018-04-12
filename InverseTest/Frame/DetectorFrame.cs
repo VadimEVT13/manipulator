@@ -16,9 +16,9 @@ namespace InverseTest
 {
     public class DetectorFrame : IPositionChanged
     {
-        public static Vector3D ZRotateAxis = new Vector3D(0, 0, -1);
-        public static Vector3D XRotateAxis = new Vector3D(1, 0, 0);
-        public static Vector3D YRotateAxis = new Vector3D(0, 1, 0);
+        private static Vector3D ZRotateAxis = new Vector3D(0, 0, -1);
+        private static Vector3D XRotateAxis = new Vector3D(1, 0, 0);
+        private static Vector3D YRotateAxis = new Vector3D(0, 1, 0);
 
         private Model3DGroup detectorFrameGraph = new Model3DGroup();
         private Model3DGroup portalModel;
@@ -28,7 +28,7 @@ namespace InverseTest
         
         /// Части 
         public readonly Dictionary<Parts, IDetectorFramePart> parts = new Dictionary<Parts, IDetectorFramePart>();
-        public Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
+        private Dictionary<Parts, double> partOffset = new Dictionary<Parts, double>();
         private Dictionary<Parts, double> partDeltas = new Dictionary<Parts, double>();
         private Dictionary<Parts, Point3D> partStartPosition = new Dictionary<Parts, Point3D>();
         private Dictionary<Parts, double> positionsToSet = new Dictionary<Parts, double>();
@@ -36,19 +36,102 @@ namespace InverseTest
 
         private DetectorFramePosition position;
 
-        public double VerticalAngle { get; set; }
+        /// <summary>
+        /// Положение вертикальной рамки.
+        /// </summary>
+        public double VerticalFramePosition
+        {
+            get
+            {
+                return partOffset[Parts.VerticalFrame];
+            }
+            set
+            {
+                partOffset[Parts.VerticalFrame] = value;
+                ConfirmPosition();
+            }
+        }
+
+        /// <summary>
+        /// Положение горизонтальной планки.
+        /// </summary>
+        public double HorizontalBarPosition
+        {
+            get
+            {
+                return partOffset[Parts.HorizontalBar];
+            }
+            set
+            {
+                partOffset[Parts.HorizontalBar] = value;
+                ConfirmPosition();
+            }
+        }
+
+        /// <summary>
+        /// Положение держателя экрана.
+        /// </summary>
+        public double ScreenHolderPosition
+        {
+            get
+            {
+                return partOffset[Parts.ScreenHolder];
+            }
+            set
+            {
+                partOffset[Parts.ScreenHolder] = value;
+                ConfirmPosition();
+            }
+        }
+
+        /// <summary>
+        /// Положение экрана по вертикали.
+        /// </summary>
+        private double verticalAngle;
+
+        /// <summary>
+        /// Положение экрана по вертикали.
+        /// </summary>
+        public double VerticalAngle
+        {
+            get
+            {
+                return verticalAngle;
+            }
+            set
+            {
+                verticalAngle = value;
+                ConfirmPosition();
+            }
+        }
+
+        /// <summary>
+        /// Положение экрана по горизонтали.
+        /// </summary>
+        private double horizontalAngle;
+
+        /// <summary>
+        /// Положение экрана по горизонтали.
+        /// </summary>
+        public double HorizontalAngle
+        {
+            get
+            {
+                return horizontalAngle;
+            }
+            set
+            {
+                horizontalAngle = value;
+                ConfirmPosition();
+            }
+        }
 
 
-
-        public double horizontalAngle { get; set; }
         private double verticalAngleDelta;
         private double horizontalAngleDelta;
         private Model3DCollection partsCollectoin = new Model3DCollection();
         private Parts[] movedParts = { Parts.VerticalFrame, Parts.HorizontalBar, Parts.ScreenHolder };
-        private Model3D meshCenterRotateScreen;
 
-
-        private static Vector3D defaultScreenDirection = new Vector3D(-1, 0, 0);
         private Vector3D currentScreenDirection = new Vector3D(-1, 0, 0);
 
         public enum Parts
@@ -199,7 +282,7 @@ namespace InverseTest
                 partDeltas[Parts.VerticalFrame] = (positionsToSet[Parts.VerticalFrame] - partOffset[Parts.VerticalFrame]) / 1000;
                 partDeltas[Parts.HorizontalBar] = (positionsToSet[Parts.HorizontalBar] - partOffset[Parts.HorizontalBar]) / 1000;
                 partDeltas[Parts.ScreenHolder] = (positionsToSet[Parts.ScreenHolder] - partOffset[Parts.ScreenHolder]) / 1000;
-                verticalAngleDelta = p.verticalAngle - VerticalAngle;
+                verticalAngleDelta = p.verticalAngle - verticalAngle;
                 horizontalAngle = p.horizontalAngle - horizontalAngle;
 
                 timer.Start();
@@ -219,7 +302,7 @@ namespace InverseTest
             }
 
             bool onRightAngle;
-            VerticalAngle = checkedAngleVertical(out onRightAngle);
+            verticalAngle = checkedAngleVertical(out onRightAngle);
             partOnRightPos.Add(onRightAngle);
 
             horizontalAngle = checkedAngleHorizontal(out onRightAngle);
@@ -235,7 +318,7 @@ namespace InverseTest
         }
         private double checkedAngleVertical(out bool onRightAngle)
         {
-            double angle = VerticalAngle + verticalAngleDelta;
+            double angle = verticalAngle + verticalAngleDelta;
             onRightAngle = false;
 
             if (Math.Abs(position.verticalAngle) - Math.Abs(angle) <= 2 * Math.Abs(verticalAngleDelta))
@@ -284,7 +367,7 @@ namespace InverseTest
             double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
             partOffset[Parts.ScreenHolder] = offsetZ;
 
-            VerticalAngle = p.verticalAngle;
+            verticalAngle = p.verticalAngle;
             horizontalAngle = p.horizontalAngle;
 
             ConfirmPosition();
@@ -340,7 +423,7 @@ namespace InverseTest
         public RotateTransform3D GetVerticalScreenRotate()
         {
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
-            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis, MathUtils.RadiansToAngle(VerticalAngle)), center);
+            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis, MathUtils.RadiansToAngle(verticalAngle)), center);
             return R;
         }
 
@@ -349,46 +432,6 @@ namespace InverseTest
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
             RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis, MathUtils.RadiansToAngle(horizontalAngle)), center);
             return R;
-        }
-
-
-        /// <summary>
-        /// Вычисляет текущее направление экрана относительно положения по умолчанию
-        /// </summary>
-        /// <param name="p">Структура содержащая положение всего портала в том числе и углы поворота экрана</param>
-        private void calculateScreenDirection(DetectorFramePosition p)
-        {
-            double horizontalAngle = (p.horizontalAngle * 180) / Math.PI;
-            double verticalAngle = (p.verticalAngle * 180) / Math.PI;
-            Matrix3D m = Matrix3D.Identity;
-            Quaternion horizQuaternion = new Quaternion(ZRotateAxis, horizontalAngle);
-            m.Rotate(horizQuaternion);
-            Quaternion verticalQuaternion = new Quaternion(YRotateAxis, verticalAngle);
-            m.Rotate(verticalQuaternion);
-            currentScreenDirection = m.Transform(defaultScreenDirection);
-        }
-
-        public void MovePart(Parts partToMove, double offsetToMove)
-        {
-            partOffset[partToMove] = offsetToMove;
-            ConfirmPosition();
-        }
-
-        public void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
-        {
-
-            switch (partToRotate)
-            {
-                case Parts.Screen:
-                    if (rotateAxis.Equals(ZRotateAxis))
-                        VerticalAngle = angle;
-                    else if (rotateAxis.Equals(YRotateAxis))
-                        horizontalAngle = angle;
-                    break;
-                default: throw new InvalidEnumArgumentException();
-            }
-
-            ConfirmPosition();
         }
 
         public void transformModel(Double x)
@@ -416,7 +459,7 @@ namespace InverseTest
             {
                 partOffset[part] = 0;
             }
-            VerticalAngle = 0;
+            verticalAngle = 0;
             horizontalAngle = 0;
 
             ConfirmPosition();

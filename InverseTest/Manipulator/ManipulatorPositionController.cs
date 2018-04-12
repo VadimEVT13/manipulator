@@ -16,15 +16,15 @@
         /// <summary>
         /// Начальное положение третьего колена.
         /// </summary>
-        private static double T3START_ANGLE = 0;
+        private static double T3_POSITION = 90;
         /// <summary>
         /// Начальное положение четвертого колена.
         /// </summary>
-        private static double T4START_ANGLE = 0;
+        private static double T4_POSITION = 0;
         /// <summary>
         /// Начальное положение пятого колена.
         /// </summary>
-        private static double T5START_ANGLE = 0;
+        private static double T5_POSITION = 90;
 
         /// <summary>
         /// Преобразование положения первого колена из глобального в локальное.
@@ -53,7 +53,7 @@
         /// <returns>локальная координата</returns>
         public static double T2GlobalToLocal(double angle)
         {
-             return angle + T2_POSITION;
+             return -angle + T2_POSITION;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@
         /// <returns>глобальная координата</returns>
         public static double T2LocalToGlobal(double angle)
         {
-            return angle - T2_POSITION;
+            return -(angle - T2_POSITION);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@
         /// <returns>локальная координата</returns>
         public static double T3GlobalToLocal(double angle)
         {
-            return angle + T3START_ANGLE;
+            return angle + T3_POSITION;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@
         /// <returns>глобальная координата</returns>
         public static double T3LocalToGlobal(double angle)
         {
-            return angle + T3START_ANGLE;
+            return angle - T3_POSITION;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@
         /// <returns>локальная координата</returns>
         public static double T4GlobalToLocal(double angle)
         {
-            return angle - T4START_ANGLE;
+            return angle - T4_POSITION;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@
         /// <returns>глобальная координата</returns>
         public static double T4LocalToGlobal(double angle)
         {
-            return angle + T4START_ANGLE;
+            return angle + T4_POSITION;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@
         /// <returns>локальная координата</returns>
         public static double T5GlobalToLocal(double angle)
         {
-            return angle - T5START_ANGLE;
+            return angle + T5_POSITION;
         }
 
         /// <summary>
@@ -123,7 +123,7 @@
         /// <returns>глобальная координата</returns>
         public static double T5LocalToGlobal(double angle)
         {
-            return angle + T5START_ANGLE;
+            return angle - T5_POSITION;
         }
     }
 }

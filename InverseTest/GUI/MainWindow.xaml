@@ -25,30 +25,30 @@
 		</Menu>
 		<ScrollViewer DockPanel.Dock="Right" Width="160" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
-				<Expander Header="Манипулятором">
+				<Expander Header="Манипулятор">
 					<StackPanel>
-						<Label Content="T1" HorizontalAlignment="Center"/>
+						<Label Content="Первое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" Value="90" ValueChanged="T1Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="T2" HorizontalAlignment="Center"/>
-						<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="90" ValueChanged="T2Slider_OnValueChanged"/>
+						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
+						<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="90" ValueChanged="T2Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T2Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="T3" HorizontalAlignment="Center"/>
-						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="0" ValueChanged="T3Slider_OnValueChanged"/>
+						<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
+						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="90" ValueChanged="T3Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T3Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="T4" HorizontalAlignment="Center"/>
-						<Slider Name="T4Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T4Slider_OnValueChanged"/>
+						<Label Content="Четвертое колено, °" HorizontalAlignment="Center"/>
+						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" Value="0" ValueChanged="T4Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T4Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="T5" HorizontalAlignment="Center"/>
-						<Slider Name="T5Slider" Minimum="-360" Maximum="360" SmallChange="1" Value="0" ValueChanged="T5Slider_OnValueChanged"/>
+						<Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
+						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="90" ValueChanged="T5Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T5Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
-				<Expander Header="Детектором">
+				<Expander Header="Детектор">
 					<StackPanel>
 						<Label Content="Вертикальная рамка, мм" HorizontalAlignment="Center"/>
 						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="10" ValueChanged="VerticalFrameSlider_ValueChanged"/>
@@ -71,7 +71,7 @@
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
-				<Expander Header="Деталью">
+				<Expander Header="Деталь">
 					<StackPanel>
 						<TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
 						<Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>

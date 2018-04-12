@@ -49,7 +49,7 @@ namespace InverseTest
     /// <summary>
     /// 
     /// </summary>
-    public class ManipulatorV2 : IManipulatorModel
+    public class ManipulatorV2 : IPositionChanged
     {
         // поле для хранения 3D модели манипулятора
         private readonly Model3DGroup _manipulator3DModel = new Model3DGroup();
@@ -62,16 +62,88 @@ namespace InverseTest
         public readonly Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
         private Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
 
-        public Dictionary<ManipulatorParts, double> Angles
-        {
-            get { return partAngles; }
-            set { partAngles = value; }
-        }
-
         private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
         private ManipulatorAngles anglesToSet;
 
+        /// <summary>
+        /// Положение первого колена.
+        /// </summary>
+        public double TablePosition
+        {
+            get
+            {
+                return partAngles[ManipulatorParts.Table];
+            }
+            set
+            {
+                partAngles[ManipulatorParts.Table] = value;
+                ConfirmRotation();
+            }
+        }
 
+        /// <summary>
+        /// Положение второго колена.
+        /// </summary>
+        public double MiddleEdgePosition
+        {
+            get
+            {
+                return partAngles[ManipulatorParts.MiddleEdge];
+            }
+            set
+            {
+                partAngles[ManipulatorParts.MiddleEdge] = value;
+                ConfirmRotation();
+            }
+        }
+
+        /// <summary>
+        /// Положение третьего колена.
+        /// </summary>
+        public double TopEdgePosition
+        {
+            get
+            {
+                return partAngles[ManipulatorParts.TopEdge];
+            }
+            set
+            {
+                partAngles[ManipulatorParts.TopEdge] = value;
+                ConfirmRotation();
+            }
+        }
+
+        /// <summary>
+        /// Положение четвертого колена.
+        /// </summary>
+        public double CameraBasePosition
+        {
+            get
+            {
+                return partAngles[ManipulatorParts.CameraBase];
+            }
+            set
+            {
+                partAngles[ManipulatorParts.CameraBase] = value;
+                ConfirmRotation();
+            }
+        }
+
+        /// <summary>
+        /// Положение пятого колена.
+        /// </summary>
+        public double CameraPosition
+        {
+            get
+            {
+                return partAngles[ManipulatorParts.Camera];
+            }
+            set
+            {
+                partAngles[ManipulatorParts.Camera] = value;
+                ConfirmRotation();
+            }
+        }
 
         /// <summary>
         /// Перечисление всех точек относительно которых происходи вращение
@@ -397,12 +469,12 @@ namespace InverseTest
             onPositionChanged?.Invoke();
         }
 
-        Model3D IManipulatorModel.GetManipulatorModel()
+        public Model3D GetManipulatorModel()
         {
             return _manipulator3DModel;
         }
 
-        Model3D IManipulatorModel.GetManipulatorPart(ManipulatorParts part)
+        public Model3D GetManipulatorPart(ManipulatorParts part)
         {
             return parts[part].GetModel();
         }

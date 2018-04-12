@@ -203,12 +203,11 @@ namespace InverseTest
         /// </summary>
         public void Detector_PositionChanged()
         {
-            var partOffset = detectorFrame.partOffset;
-            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(partOffset[Parts.VerticalFrame]);
-            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(partOffset[Parts.HorizontalBar]);
-            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(partOffset[Parts.ScreenHolder]);
+            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(detectorFrame.VerticalFramePosition);
+            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(detectorFrame.HorizontalBarPosition);
+            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(detectorFrame.ScreenHolderPosition);
             ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.VerticalAngle);
-            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.horizontalAngle);
+            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.HorizontalAngle);
             collisoinDetector.FindCollisoins();
         }
 
@@ -219,7 +218,7 @@ namespace InverseTest
         }
 
         /// <summary>
-        /// Вызывается каждый раз когда манипулятор меняет свое положение
+        /// Обработчик изменения положения манипулятора.
         /// </summary>
         public void Manipulator_PositionChanged()
         {
@@ -227,14 +226,11 @@ namespace InverseTest
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
 
             SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
-            // SetDistanceToPoint();
-
-            var anglesState = manipulator.Angles;
-            T1Slider.Value = ManipulatorPositionController.T1GlobalToLocal(anglesState[ManipulatorParts.Table]);
-            T2Slider.Value = ManipulatorPositionController.T2GlobalToLocal(anglesState[ManipulatorParts.MiddleEdge]);
-            T3Slider.Value = ManipulatorPositionController.T3GlobalToLocal(anglesState[ManipulatorParts.TopEdge]);
-            T4Slider.Value = ManipulatorPositionController.T4GlobalToLocal(anglesState[ManipulatorParts.CameraBase]);
-            T5Slider.Value = ManipulatorPositionController.T5GlobalToLocal(anglesState[ManipulatorParts.Camera]);
+            T1Slider.Value = ManipulatorPositionController.T1GlobalToLocal(manipulator.TablePosition);
+            T2Slider.Value = ManipulatorPositionController.T2GlobalToLocal(manipulator.MiddleEdgePosition);
+            T3Slider.Value = ManipulatorPositionController.T3GlobalToLocal(manipulator.TopEdgePosition);
+            T4Slider.Value = ManipulatorPositionController.T4GlobalToLocal(manipulator.CameraBasePosition);
+            T5Slider.Value = ManipulatorPositionController.T5GlobalToLocal(manipulator.CameraPosition);
             collisoinDetector.FindCollisoins();
         }
 
@@ -257,60 +253,173 @@ namespace InverseTest
             }
         }
 
-
+        /// <summary>
+        /// Обработка изменения положения первого колена.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
         private void T1Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (manipulator != null)
             {
-                var anglesState = manipulator.Angles;
                 double value = ManipulatorPositionController.T1LocalToGlobal(e.NewValue);
-                if (Math.Abs(anglesState[ManipulatorParts.Table] - value) > 1e-2)
+                if (Math.Abs(manipulator.TablePosition - value) > 1e-2)
                 {
-                    manipulator.RotatePart(ManipulatorParts.Table, value);
+                    manipulator.TablePosition = value;
                 }
             }
         }
 
-        private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        /// <summary>
+        /// Обработка изменения положения второго колена.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void T2Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (manipulator != null)
             {
-                var anglesState = manipulator.Angles;
                 double value = ManipulatorPositionController.T2LocalToGlobal(e.NewValue);
-                if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - value) > 1e-2)
+                if (Math.Abs(manipulator.MiddleEdgePosition - value) > 1e-2)
                 {
-                    manipulator.RotatePart(ManipulatorParts.MiddleEdge, value);
+                    manipulator.MiddleEdgePosition = value;
                 }
             }
         }
 
-        private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        /// <summary>
+        /// Обработка изменения положения третьего колена.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void T3Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var anglesState = manipulator.Angles;
-            if (Math.Abs(anglesState[ManipulatorParts.TopEdge] - e.NewValue) > 1e-2)
+            if (manipulator != null)
             {
-                var newAngle = ManipulatorPositionController.T3GlobalToLocal(e.NewValue);
-                manipulator.RotatePart(ManipulatorParts.TopEdge, newAngle);
+                double value = ManipulatorPositionController.T3LocalToGlobal(e.NewValue);
+                if (Math.Abs(manipulator.TopEdgePosition - value) > 1e-2)
+                {
+                    manipulator.TopEdgePosition = value;
+                }
             }
         }
 
-        private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        /// <summary>
+        /// Обработка изменения положения четвертого колена.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void T4Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var anglesState = manipulator.Angles;
-            if (Math.Abs(anglesState[ManipulatorParts.CameraBase] - e.NewValue) > 1e-2)
+            if (manipulator != null)
             {
-                var newAngle = ManipulatorPositionController.T4GlobalToLocal(e.NewValue);
-                manipulator.RotatePart(ManipulatorParts.CameraBase, newAngle);
+                double value = ManipulatorPositionController.T4LocalToGlobal(e.NewValue);
+                if (Math.Abs(manipulator.CameraBasePosition - value) > 1e-2)
+                {
+                    manipulator.CameraBasePosition = value;
+                }
             }
         }
 
-        private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        /// <summary>
+        /// Обработка изменения положения пятого колена.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void T5Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var anglesState = manipulator.Angles;
-            if (Math.Abs(anglesState[ManipulatorParts.Camera] - e.NewValue) > 1e-2)
+            if (manipulator != null)
             {
-                var newAngle = ManipulatorPositionController.T5GlobalToLocal(e.NewValue);
-                manipulator.RotatePart(ManipulatorParts.Camera, newAngle);
+                double value = ManipulatorPositionController.T5LocalToGlobal(e.NewValue);
+                if (Math.Abs(manipulator.CameraPosition - value) > 1e-2)
+                {
+                    manipulator.CameraPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения вертикальной рамки.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (detectorFrame != null)
+            {
+                double value = DetectorPositionController.XLocalToGlobal(e.NewValue);
+                if (Math.Abs(detectorFrame.VerticalFramePosition - value) > 1e-2)
+                {
+                    detectorFrame.VerticalFramePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения горизонтальной планки.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (detectorFrame != null)
+            {
+                double value = DetectorPositionController.YLocalToGlobal(e.NewValue);
+                if (Math.Abs(detectorFrame.HorizontalBarPosition - value) > 1e-2)
+                {
+                    detectorFrame.HorizontalBarPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения держателя экрана.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (detectorFrame != null)
+            {
+                double value = DetectorPositionController.ZLocalToGlobal(e.NewValue);
+                if (Math.Abs(detectorFrame.ScreenHolderPosition - value) > 1e-2)
+                {
+                    detectorFrame.ScreenHolderPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения экрана детектора по вертикали.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (detectorFrame != null)
+            {
+                double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
+                if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
+                {
+                    detectorFrame.VerticalAngle = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения экрана детектора по горизонтали.
+        /// </summary>
+        /// <param name="sender">инициатор изменения</param>
+        /// <param name="e">событие</param>
+        private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (detectorFrame != null)
+            {
+                double value = DetectorPositionController.BLocalToGlobal(e.NewValue);
+                if (Math.Abs(detectorFrame.HorizontalAngle - value) > 1e-2)
+                {
+                    detectorFrame.HorizontalAngle = value;
+                }
             }
         }
 
@@ -338,7 +447,7 @@ namespace InverseTest
 
         private void HideManipModelBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            IManipulatorModel m = manipulator;
+            ManipulatorV2 m = manipulator;
 
             ManipulatorVisualizer.RemoveModel(m.GetManipulatorModel());
         }
@@ -366,7 +475,7 @@ namespace InverseTest
         //Запрогать загрузку и замену детальки
         private void LoadModel_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
 
@@ -415,70 +524,6 @@ namespace InverseTest
         {
             ManipulatorVisualizer.showBorders(detectorFrame.GetDetectorFramePart(Parts.VerticalFrame));
             //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
-        }
-
-        private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                var partOffset = detectorFrame.partOffset;
-                double value = DetectorPositionController.XLocalToGlobal(e.NewValue);
-                if (Math.Abs(partOffset[Parts.VerticalFrame] - value) > 1e-2)
-                {
-                    detectorFrame.MovePart(Parts.VerticalFrame, value);
-                }
-            }
-        }
-
-        private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                var partOffset = detectorFrame.partOffset;
-                double value = DetectorPositionController.YLocalToGlobal(e.NewValue);
-                if (Math.Abs(partOffset[Parts.HorizontalBar] - value) > 1e-2)
-                {
-                    detectorFrame.MovePart(Parts.HorizontalBar, value);
-                }
-            }
-        }
-
-        private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                var partOffset = detectorFrame.partOffset;
-                double value = DetectorPositionController.ZLocalToGlobal(e.NewValue);
-                if (Math.Abs(partOffset[Parts.ScreenHolder] - value) > 1e-2)
-                {
-                    detectorFrame.MovePart(Parts.ScreenHolder, value);
-                }
-            }
-        }
-
-        private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
-                {
-                    //detectorFrame.VerticalAngle = value;
-                    detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
-                }
-            }
-        }
-
-        private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.BLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.horizontalAngle - value) > 1e-2)
-                {
-                    detectorFrame.RotatePart(Parts.Screen, value, YRotateAxis);
-                }
-            }
         }
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

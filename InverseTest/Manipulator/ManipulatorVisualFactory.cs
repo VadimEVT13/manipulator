@@ -9,7 +9,7 @@ namespace InverseTest.Manipulator
 {
     public class ManipulatorVisualFactory
     {
-        public static ManipulatorVisual CreateManipulator(IManipulatorModel manipulator)
+        public static ManipulatorVisual CreateManipulator(ManipulatorV2 manipulator)
         {
             Dictionary<ManipulatorParts, MainVisual> parts = new Dictionary<ManipulatorParts, MainVisual>();
             MainVisual cam = new MainVisual( manipulator.GetManipulatorPart(ManipulatorParts.Camera));
