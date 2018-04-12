@@ -239,7 +239,6 @@
     <Compile Include="Frame\DetectorFramePart.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
-    <Compile Include="Frame\IDetectorFrame.cs" />
     <Compile Include="Frame\PortalKinematic.cs" />
     <Compile Include="GUI\Model\IModelMover.cs" />
     <Compile Include="GUI\Model\ModelMover.cs" />
@@ -247,7 +246,6 @@
     <Compile Include="Model\ConeModel.cs" />
     <Compile Include="Model\PointState.cs" />
     <Compile Include="Model\MovementPoint.cs" />
-    <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
     <Compile Include="Manipulator\IManipulatorPart.cs" />

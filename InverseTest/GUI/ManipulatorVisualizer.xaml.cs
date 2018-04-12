@@ -35,7 +35,7 @@ namespace InverseTest.GUI
         private OrthographicCamera cam2DRight;
         private PerspectiveCamera cam3D;
 
-        private IDetectorFrame detectorFrame;
+        private DetectorFrame detectorFrame;
         private IManipulatorModel manipulator;
         private MovementPoint scanPoint;
 
@@ -238,7 +238,7 @@ namespace InverseTest.GUI
         /// Устанавливает модель портала во ViewPort-ах и камеру 
         /// </summary>
         /// <param name="detectorFrame"></param>
-        public void SetDetectFrameModel(IDetectorFrame detectorFrame, DetectorFrameVisual portalVisual)
+        public void SetDetectFrameModel(DetectorFrame detectorFrame, DetectorFrameVisual portalVisual)
         {
             this.detectorFrame = detectorFrame;
             Model3D camera = detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.Screen);

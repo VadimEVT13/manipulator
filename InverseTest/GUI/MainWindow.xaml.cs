@@ -463,6 +463,7 @@ namespace InverseTest
                 double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
                 if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
                 {
+                    //detectorFrame.VerticalAngle = value;
                     detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
                 }
             }
@@ -482,14 +483,14 @@ namespace InverseTest
 
         private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ((IDebugModels)detectorFrame).transformModel(e.NewValue);
+            detectorFrame.transformModel(e.NewValue);
             //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
         }
 
         private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             numMesh = (int)e.NewValue;
-            ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
+            detectorFrame.addNumberMesh(numMesh);
             NumMeshTextBox.Text = numMesh.ToString();
         }
 

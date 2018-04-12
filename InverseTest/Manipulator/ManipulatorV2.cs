@@ -49,7 +49,7 @@ namespace InverseTest
     /// <summary>
     /// 
     /// </summary>
-    public class ManipulatorV2 : IManipulatorModel, IDebugModels
+    public class ManipulatorV2 : IManipulatorModel
     {
         // поле для хранения 3D модели манипулятора
         private readonly Model3DGroup _manipulator3DModel = new Model3DGroup();

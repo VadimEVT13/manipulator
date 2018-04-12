@@ -1,4 +1,6 @@
-﻿namespace InverseTest.Frame
+﻿using InverseTest.Manipulator;
+
+namespace InverseTest.Frame
 {
     /// <summary>
     /// Контроллер преобразования глобальных координат модели в локальные координаты детектора.
@@ -113,7 +115,7 @@
         /// <returns>локальная A</returns>
         public static double AGlobalToLocal(double globalA)
         {
-            return -globalA + A_POSITION;
+            return MathUtils.RadiansToAngle(-globalA) + A_POSITION;
         }
 
         /// <summary>
@@ -123,7 +125,7 @@
         /// <returns>глобальная A</returns>
         public static double ALocalToGlobal(double localA)
         {
-            return -(localA - A_POSITION);
+            return -MathUtils.AngleToRadians(localA - A_POSITION);
         }
 
         /// <summary>
@@ -133,7 +135,7 @@
         /// <returns>локальная B</returns>
         public static double BGlobalToLocal(double globalB)
         {
-            return -globalB + B_POSITION;
+            return MathUtils.RadiansToAngle(-globalB) + B_POSITION;
         }
 
         /// <summary>
@@ -143,7 +145,7 @@
         /// <returns>глобальная B</returns>
         public static double BLocalToGlobal(double localB)
         {
-            return -(localB - B_POSITION);
+            return -MathUtils.AngleToRadians(localB - B_POSITION);
         }
     }
 }

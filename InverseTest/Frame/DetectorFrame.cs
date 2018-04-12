@@ -14,7 +14,7 @@ using InverseTest.Bound;
 
 namespace InverseTest
 {
-    public class DetectorFrame : IDetectorFrame, IDebugModels
+    public class DetectorFrame : IPositionChanged
     {
         public static Vector3D ZRotateAxis = new Vector3D(0, 0, -1);
         public static Vector3D XRotateAxis = new Vector3D(1, 0, 0);
@@ -167,18 +167,18 @@ namespace InverseTest
             return retCollection;
         }
 
-        public virtual Vector3D GetScreenDirection()
+        public Vector3D GetScreenDirection()
         {
             return currentScreenDirection;
         }
 
-        public virtual Point3D GetCameraPosition()
+        public Point3D GetCameraPosition()
         {
             Point3D point = parts[Parts.ScreenCameraPos].GetCameraPosition();
             return new Point3D(point.X, point.Y, point.Z);
         }
 
-        public virtual void MoveDetectFrame(DetectorFramePosition p, bool animate)
+        public void MoveDetectFrame(DetectorFramePosition p, bool animate)
         {
             positionsToSet[Parts.VerticalFrame] = (p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X);
             positionsToSet[Parts.HorizontalBar] = (p.pointScreen.Y - partStartPosition[Parts.ScreenCameraPos].Y);
@@ -207,7 +207,7 @@ namespace InverseTest
             }
         }
 
-        void animation_tick(object sender, EventArgs arg)
+        private void animation_tick(object sender, EventArgs arg)
         {
 
             List<bool> partOnRightPos = new List<bool>();
@@ -368,13 +368,13 @@ namespace InverseTest
             currentScreenDirection = m.Transform(defaultScreenDirection);
         }
 
-        public virtual void MovePart(Parts partToMove, double offsetToMove)
+        public void MovePart(Parts partToMove, double offsetToMove)
         {
             partOffset[partToMove] = offsetToMove;
             ConfirmPosition();
         }
 
-        public virtual void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
+        public void RotatePart(Parts partToRotate, double angle, Vector3D rotateAxis)
         {
 
             switch (partToRotate)
@@ -391,26 +391,26 @@ namespace InverseTest
             ConfirmPosition();
         }
 
-        public virtual void transformModel(Double x)
+        public void transformModel(Double x)
         {
             portalModel.Children[numberMesh].Transform = new TranslateTransform3D(0, x, 0);
         }
 
-        public virtual void addNumberMesh(int number)
+        public void addNumberMesh(int number)
         {
             this.numberMesh = number;
         }
-        public virtual Model3D GetDetectorFrameModel()
+        public Model3D GetDetectorFrameModel()
         {
             return detectorFrameGraph;
         }
 
-        public virtual Model3D GetDetectorFramePart(Parts part)
+        public Model3D GetDetectorFramePart(Parts part)
         {
             return parts[part].GetModelPart();
         }
 
-        public virtual void ResetTransforms()
+        public void ResetTransforms()
         {
             foreach (Parts part in Enum.GetValues(typeof(Parts)))
             {

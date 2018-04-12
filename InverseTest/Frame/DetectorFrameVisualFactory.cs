@@ -9,7 +9,7 @@ namespace InverseTest.Frame
 {
     public class DetectorFrameVisualFactory
     {
-        public static DetectorFrameVisual CreateDetectorFrameVisual(IDetectorFrame detectorFrame)
+        public static DetectorFrameVisual CreateDetectorFrameVisual(DetectorFrame detectorFrame)
         {
             Dictionary<DetectorFrame.Parts, MainVisual> parts = new Dictionary<DetectorFrame.Parts, MainVisual>();
             MainVisual horiz = new MainVisual(detectorFrame.GetDetectorFramePart(DetectorFrame.Parts.HorizontalBar));
