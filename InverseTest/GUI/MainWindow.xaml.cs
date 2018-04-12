@@ -526,19 +526,6 @@ namespace InverseTest
             //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
         }
 
-        private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            detectorFrame.transformModel(e.NewValue);
-            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
-        }
-
-        private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            numMesh = (int)e.NewValue;
-            detectorFrame.addNumberMesh(numMesh);
-            NumMeshTextBox.Text = numMesh.ToString();
-        }
-
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
         {
 
