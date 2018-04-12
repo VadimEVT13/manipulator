@@ -56,7 +56,6 @@ namespace InverseTest
         private DetailPathController detailPathController;
         private ScanPathVisualController pathVisual;
         private DetailVisualCollisionController detailVisControlle;
-        private ManipulatorCoordinatesController ManipulatorCoordinatesController;
         
         private double distanceToScreen = 50;
         private double focuseEnlagment = 1;
@@ -94,14 +93,14 @@ namespace InverseTest
             detectorFrame = parser.Frame;
             DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(detectorFrame);
 
-            detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
+            detectorFrame.onPositionChanged += Detector_PositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
 
             manipulator = parser.Manipulator;
             ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
 
             ManipulatorVisualizer.setManipulatorModel(manipulator, manipulatorVisual);
-            manipulator.onPositionChanged += OnManipulatorPisitionChanged;
+            manipulator.onPositionChanged += Manipulator_PositionChanged;
 
             ManipulatorVisualizer.AddModel(parser.Others);
 
@@ -164,8 +163,6 @@ namespace InverseTest
             collisionWorker.OnComplete += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
 
-            this.ManipulatorCoordinatesController = new ManipulatorCoordinatesController();
-
             this.detailView.Owner = this;
             detailView.Show();
         }
@@ -202,11 +199,16 @@ namespace InverseTest
 
 
         /// <summary>
-        /// Вызывается каждый раз когда "портал" меняет свое положение
+        /// Обработчик изменения положения детектора.
         /// </summary>
-        public void OnDetectorFramePositionChanged()
+        public void Detector_PositionChanged()
         {
-            SetPortalPositionsTextBoxes();
+            var partOffset = detectorFrame.partOffset;
+            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(partOffset[Parts.VerticalFrame]);
+            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(partOffset[Parts.HorizontalBar]);
+            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(partOffset[Parts.ScreenHolder]);
+            ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.VerticalAngle);
+            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.horizontalAngle);
             collisoinDetector.FindCollisoins();
         }
 
@@ -219,27 +221,21 @@ namespace InverseTest
         /// <summary>
         /// Вызывается каждый раз когда манипулятор меняет свое положение
         /// </summary>
-        public void OnManipulatorPisitionChanged()
+        public void Manipulator_PositionChanged()
         {
             double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
 
+            SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
+            // SetDistanceToPoint();
 
             var anglesState = manipulator.Angles;
-
-            SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
-           // SetDistanceToPoint();
+            T1Slider.Value = ManipulatorPositionController.T1GlobalToLocal(anglesState[ManipulatorParts.Table]);
+            T2Slider.Value = ManipulatorPositionController.T2GlobalToLocal(anglesState[ManipulatorParts.MiddleEdge]);
+            T3Slider.Value = ManipulatorPositionController.T3GlobalToLocal(anglesState[ManipulatorParts.TopEdge]);
+            T4Slider.Value = ManipulatorPositionController.T4GlobalToLocal(anglesState[ManipulatorParts.CameraBase]);
+            T5Slider.Value = ManipulatorPositionController.T5GlobalToLocal(anglesState[ManipulatorParts.Camera]);
             collisoinDetector.FindCollisoins();
-        }
-
-        public void SetPortalPositionsTextBoxes()
-        {
-            var partOffset = detectorFrame.partOffset;
-            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(partOffset[Parts.VerticalFrame]);
-            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(partOffset[Parts.HorizontalBar]);
-            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(partOffset[Parts.ScreenHolder]);
-            ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.verticalAngle);
-            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.horizontalAngle);
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -262,24 +258,29 @@ namespace InverseTest
         }
 
 
-        private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void T1Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var anglesState = manipulator.Angles;
-            if (Math.Abs(anglesState[ManipulatorParts.Table] - e.NewValue) > 1e-2)
+            if (manipulator != null)
             {
-                var newAngle = ManipulatorCoordinatesController.T1GlobalToLocal(e.NewValue);
-                manipulator.RotatePart(ManipulatorParts.Table, newAngle);
+                var anglesState = manipulator.Angles;
+                double value = ManipulatorPositionController.T1LocalToGlobal(e.NewValue);
+                if (Math.Abs(anglesState[ManipulatorParts.Table] - value) > 1e-2)
+                {
+                    manipulator.RotatePart(ManipulatorParts.Table, value);
+                }
             }
         }
 
         private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var anglesState = manipulator.Angles;
-            if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - e.NewValue) > 1e-2)
+            if (manipulator != null)
             {
-                var newAngle = ManipulatorCoordinatesController.T2GlobalToLocal(e.NewValue);
-
-                manipulator.RotatePart(ManipulatorParts.MiddleEdge, newAngle);
+                var anglesState = manipulator.Angles;
+                double value = ManipulatorPositionController.T2LocalToGlobal(e.NewValue);
+                if (Math.Abs(anglesState[ManipulatorParts.MiddleEdge] - value) > 1e-2)
+                {
+                    manipulator.RotatePart(ManipulatorParts.MiddleEdge, value);
+                }
             }
         }
 
@@ -288,7 +289,7 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.TopEdge] - e.NewValue) > 1e-2)
             {
-                var newAngle = ManipulatorCoordinatesController.T3GlobalToLocal(e.NewValue);
+                var newAngle = ManipulatorPositionController.T3GlobalToLocal(e.NewValue);
                 manipulator.RotatePart(ManipulatorParts.TopEdge, newAngle);
             }
         }
@@ -298,7 +299,7 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.CameraBase] - e.NewValue) > 1e-2)
             {
-                var newAngle = ManipulatorCoordinatesController.T4GlobalToLocal(e.NewValue);
+                var newAngle = ManipulatorPositionController.T4GlobalToLocal(e.NewValue);
                 manipulator.RotatePart(ManipulatorParts.CameraBase, newAngle);
             }
         }
@@ -308,7 +309,7 @@ namespace InverseTest
             var anglesState = manipulator.Angles;
             if (Math.Abs(anglesState[ManipulatorParts.Camera] - e.NewValue) > 1e-2)
             {
-                var newAngle = ManipulatorCoordinatesController.T5GlobalToLocal(e.NewValue);
+                var newAngle = ManipulatorPositionController.T5GlobalToLocal(e.NewValue);
                 manipulator.RotatePart(ManipulatorParts.Camera, newAngle);
             }
         }
@@ -460,7 +461,7 @@ namespace InverseTest
             if (detectorFrame != null)
             {
                 double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.verticalAngle - value) > 1e-2)
+                if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
                 {
                     detectorFrame.RotatePart(Parts.Screen, value, ZRotateAxis);
                 }
