@@ -28,11 +28,11 @@
 				<Expander Header="Манипулятором">
 					<StackPanel>
 						<Label Content="T1" HorizontalAlignment="Center"/>
-						<Slider Name="T1Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="T1Slider_OnValueChanged"/>
+						<Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" Value="90" ValueChanged="T1Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="T2" HorizontalAlignment="Center"/>
-						<Slider Name="T2Slider" Minimum="0" Maximum="180" SmallChange="1" Value="0" ValueChanged="T2Slider_OnValueChanged"/>
+						<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="90" ValueChanged="T2Slider_OnValueChanged"/>
 						<TextBox Text="{Binding ElementName=T2Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="T3" HorizontalAlignment="Center"/>

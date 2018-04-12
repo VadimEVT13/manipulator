@@ -35,7 +35,11 @@ namespace InverseTest
 
 
         private DetectorFramePosition position;
-        public double verticalAngle { get; set; }
+
+        public double VerticalAngle { get; set; }
+
+
+
         public double horizontalAngle { get; set; }
         private double verticalAngleDelta;
         private double horizontalAngleDelta;
@@ -195,7 +199,7 @@ namespace InverseTest
                 partDeltas[Parts.VerticalFrame] = (positionsToSet[Parts.VerticalFrame] - partOffset[Parts.VerticalFrame]) / 1000;
                 partDeltas[Parts.HorizontalBar] = (positionsToSet[Parts.HorizontalBar] - partOffset[Parts.HorizontalBar]) / 1000;
                 partDeltas[Parts.ScreenHolder] = (positionsToSet[Parts.ScreenHolder] - partOffset[Parts.ScreenHolder]) / 1000;
-                verticalAngleDelta = p.verticalAngle - verticalAngle;
+                verticalAngleDelta = p.verticalAngle - VerticalAngle;
                 horizontalAngle = p.horizontalAngle - horizontalAngle;
 
                 timer.Start();
@@ -215,7 +219,7 @@ namespace InverseTest
             }
 
             bool onRightAngle;
-            verticalAngle = checkedAngleVertical(out onRightAngle);
+            VerticalAngle = checkedAngleVertical(out onRightAngle);
             partOnRightPos.Add(onRightAngle);
 
             horizontalAngle = checkedAngleHorizontal(out onRightAngle);
@@ -231,7 +235,7 @@ namespace InverseTest
         }
         private double checkedAngleVertical(out bool onRightAngle)
         {
-            double angle = verticalAngle + verticalAngleDelta;
+            double angle = VerticalAngle + verticalAngleDelta;
             onRightAngle = false;
 
             if (Math.Abs(position.verticalAngle) - Math.Abs(angle) <= 2 * Math.Abs(verticalAngleDelta))
@@ -280,7 +284,7 @@ namespace InverseTest
             double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
             partOffset[Parts.ScreenHolder] = offsetZ;
 
-            verticalAngle = p.verticalAngle;
+            VerticalAngle = p.verticalAngle;
             horizontalAngle = p.horizontalAngle;
 
             ConfirmPosition();
@@ -333,20 +337,17 @@ namespace InverseTest
             onPositionChanged?.Invoke();
         }
 
-        public  RotateTransform3D GetVerticalScreenRotate()
+        public RotateTransform3D GetVerticalScreenRotate()
         {
-          
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
-            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis,
-                verticalAngle), center);
+            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(ZRotateAxis, MathUtils.RadiansToAngle(VerticalAngle)), center);
             return R;
         }
 
         public RotateTransform3D GetHorizontalScreenRotate()
         {
             Point3D center = MathUtils.GetRectCenter(parts[Parts.ScreenRotatePoint].Bounds());
-            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis,
-                horizontalAngle), center);
+            RotateTransform3D R = new RotateTransform3D(new AxisAngleRotation3D(YRotateAxis, MathUtils.RadiansToAngle(horizontalAngle)), center);
             return R;
         }
 
@@ -380,7 +381,7 @@ namespace InverseTest
             {
                 case Parts.Screen:
                     if (rotateAxis.Equals(ZRotateAxis))
-                        verticalAngle = angle;
+                        VerticalAngle = angle;
                     else if (rotateAxis.Equals(YRotateAxis))
                         horizontalAngle = angle;
                     break;
@@ -411,10 +412,11 @@ namespace InverseTest
 
         public virtual void ResetTransforms()
         {
-
             foreach (Parts part in Enum.GetValues(typeof(Parts)))
+            {
                 partOffset[part] = 0;
-            verticalAngle = 0;
+            }
+            VerticalAngle = 0;
             horizontalAngle = 0;
 
             ConfirmPosition();

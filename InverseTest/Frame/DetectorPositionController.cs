@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InverseTest.Frame
+﻿namespace InverseTest.Frame
 {
     /// <summary>
-    /// Контроллер преобразования глобальных координат в локальные координаты детектора.
+    /// Контроллер преобразования глобальных координат модели в локальные координаты детектора.
     /// </summary>
     public static class DetectorPositionController
     {
