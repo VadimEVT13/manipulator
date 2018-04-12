@@ -23,7 +23,7 @@
 				<MenuItem Header="Сброс камер" Name="ResetCamers" Click="ResetCamers_Click"/>
 			</MenuItem>
 		</Menu>
-		<ScrollViewer DockPanel.Dock="Right" Width="160" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+		<ScrollViewer DockPanel.Dock="Right" Width="180" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 				<Expander Header="Манипулятор">
 					<StackPanel>
@@ -50,15 +50,15 @@
 				</Expander>
 				<Expander Header="Детектор">
 					<StackPanel>
-						<Label Content="Вертикальная рамка, мм" HorizontalAlignment="Center"/>
+						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="10" ValueChanged="VerticalFrameSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Горизонтальная планка, мм" HorizontalAlignment="Center"/>
+						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="HorizontalBarSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Держатель экрана, мм" HorizontalAlignment="Center"/>
+						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="ScreenHolderSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
@@ -66,7 +66,7 @@
 						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="87" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Горизонтальнаый угол, °" HorizontalAlignment="Center"/>
+						<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="40" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
@@ -78,11 +78,6 @@
 						<TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
-				<StackPanel Visibility="Hidden">
-					<Slider Name="MoveMesh" Minimum="-90" Maximum="90" SmallChange="1" Value="0" ValueChanged="MoveMesh_ValueChanged"/>
-					<Slider Name="NumMesh" Minimum="0" Maximum="90" SmallChange="1" Value="0" ValueChanged="NumMesh_ValueChanged"/>
-					<TextBox Name="NumMeshTextBox" Text="0" Margin="5"/>
-				</StackPanel>
 			</StackPanel>
 		</ScrollViewer>
 		<StackPanel DockPanel.Dock="Left" Width="160" >
