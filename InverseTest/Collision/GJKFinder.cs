@@ -22,13 +22,9 @@ namespace InverseTest.Collision
 
         SupportClass sc; // класс для работы со вспомогательными функциями
 
-        SimplexView simplex;
-
-        //	конструктор
-        public GJKFinder(List<Point3D> first, List<Point3D> second, SimplexView simplex)
+        public GJKFinder(List<Point3D> first, List<Point3D> second)
         {
-            this.simplex = simplex;
-
+            //this.simplex = simplex;
             resultSimplex = new Vector3D[4];
             sc = new SupportClass();
             a = first;
@@ -39,7 +35,6 @@ namespace InverseTest.Collision
             Vector3D forward = new Vector3D(0, 0, 1);
 
             resultSimplex[0] = sc.supportFunction(a, one) - sc.supportFunction(b, -one);
-            //resultSimplex[0] = sc.supportFunction(a, -one) - sc.supportFunction(b, one);
             resultSimplex[1] = sc.supportFunction(a, -right) - sc.supportFunction(b, right);
             resultSimplex[2] = sc.supportFunction(a, -up) - sc.supportFunction(b, up);
             resultSimplex[3] = sc.supportFunction(a, -forward) -sc.supportFunction(b, forward);
@@ -73,7 +68,6 @@ namespace InverseTest.Collision
                 Vector3D p1 = sc.closestPointToTriangle(new Plane(resultSimplex[0], resultSimplex[2], resultSimplex[3]));
                 Vector3D p2 = sc.closestPointToTriangle(new Plane(resultSimplex[0], resultSimplex[1], resultSimplex[3]));
                 Vector3D p3 = sc.closestPointToTriangle(new Plane(resultSimplex[0], resultSimplex[1], resultSimplex[2]));
-
                 Vector3D pRes;
                 pRes = p0;
 
@@ -99,7 +93,6 @@ namespace InverseTest.Collision
 
                 //в направлении нормали к нулю ищем экстремальную точку 
                 resultSimplex[indexMaxDistance] = sc.supportFunction(a, -pRes) - sc.supportFunction(b, pRes);
-                simplex.AddSimplex(resultSimplex.ToList());
                 if (deletedVertexes.IndexOf(resultSimplex[indexMaxDistance]) != -1)
                 {
                     resultSimplex = null;

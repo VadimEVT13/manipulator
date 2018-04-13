@@ -23,7 +23,6 @@ namespace InverseTest
             List<Point3D>  points = Model.shape.Points;
            
             CVXvertices = points.Distinct(new PointComparer()).Select(p => new Vertex(p)).ToList(); //точки для построения оболочки
-          
             var hull = ConvexHull.Create(CVXvertices); //построение оболочки
 
             CVXvertices = hull.Points.ToList();  //получаем точки оболочки
@@ -36,9 +35,9 @@ namespace InverseTest
             return verts;
         }
 
-        public bool find(List<Point3D> verts1, List<Point3D> verts2, SimplexView simplex)
+        public bool find(List<Point3D> verts1, List<Point3D> verts2)
         {
-            GJKFinder finderGJK = new GJKFinder(verts1, verts2, simplex);
+            GJKFinder finderGJK = new GJKFinder(verts1, verts2);
 
             if (finderGJK.testGJKIntersection())
             {

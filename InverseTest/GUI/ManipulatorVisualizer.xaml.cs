@@ -252,9 +252,9 @@ namespace InverseTest.GUI
         public void SetManipulatorPoint(MovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
-            manipulatorMover.ModelToDetect = point.GetModel();
+            manipulatorMover.ModelToDetect = (manipulator.GetManipulatorPart(ManipulatorParts.Camera) as Model3DGroup).Children[0];
             AddListeners(manipulatorMover);
-            AddModelWithoutCamView(point.GetModel());
+          //  AddModelWithoutCamView(point.GetModel());
         }
 
 

@@ -11,7 +11,6 @@ namespace InverseTest.Collision
 {
     public class SupportClass
     {
-
         //функция, возвращающая экстремальную точку в направлении вектора p 
         public Point3D supportFunction(List<Point3D> a, Vector3D p)
         {
@@ -84,12 +83,39 @@ namespace InverseTest.Collision
         //Поиск ближайшей точки треугольника(грани)
         public Vector3D closestPointToTriangle(Plane triangle)
         {
-            Vector3D point1, point2;
+            Vector3D Vector1, Vector2, Vector3;
 
-            point1 = closestPointToEdge(triangle.points[0], triangle.points[1]);
-            point2 = closestPointToEdge(triangle.points[1], triangle.points[2]);
-            return closestPointToEdge(point1, point2);
+            triangle.minPoint();
+            if (triangle.inside_triangle()) return triangle.Hv;
+            else
+            {
+                Vector1 = closestPointToEdge(triangle.P1, triangle.P2);
+                Vector2 = closestPointToEdge(triangle.P2, triangle.P3);
+                Vector3 = closestPointToEdge(triangle.P1, triangle.P3);
 
+                if (Vector1.Length >= Vector2.Length)
+                {
+                    if (Vector1.Length >= Vector3.Length)
+                    {
+                        return closestPointToEdge(Vector2, Vector3);
+                    }
+                    else
+                    {
+                        return closestPointToEdge(Vector1, Vector2);
+                    }
+                }
+                else
+                {
+                    if (Vector3.Length>=Vector2.Length)
+                    {
+                        return closestPointToEdge(Vector1, Vector2);
+                    } else
+                    {
+                        return closestPointToEdge(Vector1, Vector3);
+                    }
+                }
+            }
+            //return;
         }
     }
 
