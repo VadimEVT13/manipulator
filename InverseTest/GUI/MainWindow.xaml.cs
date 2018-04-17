@@ -18,9 +18,6 @@ using InverseTest.Collision;
 using static InverseTest.DetectorFrame;
 using InverseTest.Bound;
 using InverseTest.Path;
-using InverseTest.Manipulator.Models;
-using InverseTest.Model;
-using System.Windows.Controls;
 
 namespace InverseTest
 {
@@ -38,6 +35,7 @@ namespace InverseTest
         private bool solveKinematics = true;
         private bool animate = false;
 
+
         private Kinematic manipKinematic;
 
         public ManipulatorV2 manipulator;
@@ -45,12 +43,13 @@ namespace InverseTest
         private MovementPoint manipulatorCamPoint;
         private ConeModel coneModel;
 
+        //private Model3DGroup platform = new Model3DGroup();
         private Model3D platform;
 
         private DetailModel detail;
 
-        private KinematicWorker<SystemPosition, SystemState> kinematicWorker;
-        private GJKWorker<SceneSnapshot, List<CollisionPair>> collisionWorker;
+        private ManipulatorKinematicWorker<SystemPosition> manipWorker;
+        private GJKWorker<SceneSnapshot> collisionWorker;
         private CollisionDetector collisoinDetector;
         private CollisionVisualController collisoinVisual;
         private DetailPathController detailPathController;
@@ -93,33 +92,28 @@ namespace InverseTest
             detectorFrame = parser.Frame;
             DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(detectorFrame);
 
-            detectorFrame.onPositionChanged += Detector_PositionChanged;
+            detectorFrame.onPositionChanged += OnDetectorFramePositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
+
+            PortalBoundController portalBounds = new PortalBoundController();
+            portalBounds.CalculateBounds(detectorFrame);
+            detectorFrame.boundController = portalBounds;
 
             manipulator = parser.Manipulator;
             ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
 
             ManipulatorVisualizer.setManipulatorModel(manipulator, manipulatorVisual);
-            manipulator.onPositionChanged += Manipulator_PositionChanged;
+            manipulator.onPositionChanged += OnManipulatorPisitionChanged;
 
             ManipulatorVisualizer.AddModel(parser.Others);
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
-            this.manipKinematic = new Kinematic(new Vertex3D { X = MANIPULATOR_OFFSET.X, Y = MANIPULATOR_OFFSET.Y, Z = MANIPULATOR_OFFSET.Z });
-            this.manipKinematic.SetLen(new LengthJoin { J1 = edges[0], J2 = edges[1], J3 = edges[2], J4 = edges[3], J5 = edges[4], Det = ManipulatorUtils.CalculateManipulatorDet(manipulator) });
-
-            PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
-            PortalBoundController portalBounds = new PortalBoundController();
-            portalBounds.CalculateBounds(detectorFrame);
-
-            this.kinematicWorker = new KinematicWorker<SystemPosition, SystemState>(
-                manipKinematic,
-                portalKinematic,
-                portalBounds,
-                new ManipulatorAnglesBounds()
-                );
-            this.kinematicWorker.OnComplete += KinematicSolved;
+            this.manipKinematic = new Kinematic(MANIPULATOR_OFFSET.X, MANIPULATOR_OFFSET.Y, MANIPULATOR_OFFSET.Z);
+            this.manipKinematic.SetLen(edges[0], edges[1], edges[2], edges[3], edges[4]);
+            this.manipKinematic.det = ManipulatorUtils.CalculateManipulatorDet(manipulator);
+            this.manipWorker = new ManipulatorKinematicWorker<SystemPosition>(manipKinematic);
+            this.manipWorker.kinematicSolved += manipulatorSolved;
 
             detail = parser.Detail;
             platform = parser.DetailPlatform;
@@ -146,7 +140,7 @@ namespace InverseTest
 
             AABB aabb = new AABB();
             aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);
-            collisionWorker = new GJKWorker<SceneSnapshot, List<CollisionPair>>(aabb, gjkSolver);
+            collisionWorker = new GJKWorker<SceneSnapshot>(aabb, gjkSolver);
             collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);
 
             //Точка камеры манипулятора
@@ -160,7 +154,7 @@ namespace InverseTest
             
             manipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
 
-            collisionWorker.OnComplete += OnCollisoinsDetected;
+            collisionWorker.onCollision += OnCollisoinsDetected;
             FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
 
             this.detailView.Owner = this;
@@ -171,14 +165,11 @@ namespace InverseTest
         {
             this.collisoinVisual.Collisions(pair);
         }
-        
-        public void KinematicSolved(SystemState state)
-        {
-            if(state.Angles!=null)
-            manipulator.MoveManipulator(state.Angles, false);
 
-            if(state.PortalPosition!=null)
-            detectorFrame.MoveDetectFrame(state.PortalPosition, false);
+        public void manipulatorSolved(ManipulatorAngles angles)
+        {
+            Console.WriteLine("ManipulatorPoint: " + manipulator.GetCameraPosition());
+            manipulator.MoveManipulator(angles, false);
         }
 
          /// <summary>
@@ -199,16 +190,11 @@ namespace InverseTest
 
 
         /// <summary>
-        /// Обработчик изменения положения детектора.
+        /// Вызывается каждый раз когда "портал" меняет свое положение
         /// </summary>
-        public void Detector_PositionChanged()
+        public void OnDetectorFramePositionChanged()
         {
-            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(detectorFrame.VerticalFramePosition);
-            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(detectorFrame.HorizontalBarPosition);
-            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(detectorFrame.ScreenHolderPosition);
-            ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.VerticalAngle);
-            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.HorizontalAngle);
-            collisoinDetector.FindCollisoins();
+            SetPortalPositionsTextBoxes();
         }
 
         public void SetDistanceToPoint()
@@ -218,20 +204,39 @@ namespace InverseTest
         }
 
         /// <summary>
-        /// Обработчик изменения положения манипулятора.
+        /// Вызывается каждый раз когда манипулятор меняет свое положение
         /// </summary>
-        public void Manipulator_PositionChanged()
+        public void OnManipulatorPisitionChanged()
         {
             double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
 
-            SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
-            T1Slider.Value = ManipulatorPositionController.T1GlobalToLocal(manipulator.TablePosition);
-            T2Slider.Value = ManipulatorPositionController.T2GlobalToLocal(manipulator.MiddleEdgePosition);
-            T3Slider.Value = ManipulatorPositionController.T3GlobalToLocal(manipulator.TopEdgePosition);
-            T4Slider.Value = ManipulatorPositionController.T4GlobalToLocal(manipulator.CameraBasePosition);
-            T5Slider.Value = ManipulatorPositionController.T5GlobalToLocal(manipulator.CameraPosition);
+            this.distanceToScreen = distanceToPoint;
+
+            var anglesState = ((ManipulatorV2)manipulator).partAngles;
+
+            T1TextBox.Text = Math.Round(anglesState[ManipulatorParts.Table], 3).ToString();
+            T2TextBox.Text = Math.Round(anglesState[ManipulatorParts.MiddleEdge], 3).ToString();
+            T3TextBox.Text = Math.Round(anglesState[ManipulatorParts.TopEdge], 3).ToString();
+            T4TextBox.Text = Math.Round(anglesState[ManipulatorParts.CameraBase], 3).ToString();
+            T5TextBox.Text = Math.Round(anglesState[ManipulatorParts.Camera], 3).ToString();
             collisoinDetector.FindCollisoins();
+
+            SetManipCamPointTextBoxes(manipulator.GetCameraPosition());
+            SetDistanceToPoint();
+        }
+
+        public void SetPortalPositionsTextBoxes()
+        {
+            Dictionary<Parts, double> partOffset = (detectorFrame as DetectorFrame).partOffset;
+            var verticalAngle = (detectorFrame as DetectorFrame).verticalAngle;
+            var horizontalAngle = (detectorFrame as DetectorFrame).horizontalAngle;
+
+            VerticalFrameSliderTextBox.Text = Math.Round(partOffset[Parts.VerticalFrame], 3).ToString();
+            ScreenHolderTextBox.Text = Math.Round(partOffset[Parts.ScreenHolder], 3).ToString();
+            HorizontalBarTextView.Text = Math.Round(partOffset[Parts.HorizontalBar], 3).ToString();
+            ScreenVerticalAngleTextBox.Text = Math.Round(verticalAngle, 3).ToString();
+            ScreenHorizontalAngleTextBox.Text = Math.Round(horizontalAngle, 3).ToString();
         }
 
         public void SetManipCamPointTextBoxes(Point3D point)
@@ -249,178 +254,37 @@ namespace InverseTest
         {
             if (solveKinematics)
             {
-                recalculateKinematic();
+                this.manipWorker.solve(new SystemPosition(newPosition, targetPoint.point));
+                SolvePortalKinematic(newPosition, targetPoint.point, false);
             }
+
+            collisoinDetector.FindCollisoins();
         }
 
-        /// <summary>
-        /// Обработка изменения положения первого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T1Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+
+        private void T1Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T1LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.TablePosition - value) > 1e-2)
-                {
-                    manipulator.TablePosition = value;
-                }
-            }
+            manipulator.RotatePart(ManipulatorParts.Table, -e.NewValue);
         }
 
-        /// <summary>
-        /// Обработка изменения положения второго колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T2Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void T2Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T2LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.MiddleEdgePosition - value) > 1e-2)
-                {
-                    manipulator.MiddleEdgePosition = value;
-                }
-            }
+            manipulator.RotatePart(ManipulatorParts.MiddleEdge, -e.NewValue);
         }
 
-        /// <summary>
-        /// Обработка изменения положения третьего колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T3Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void T3Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T3LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.TopEdgePosition - value) > 1e-2)
-                {
-                    manipulator.TopEdgePosition = value;
-                }
-            }
+            manipulator.RotatePart(ManipulatorParts.TopEdge, -e.NewValue);
         }
 
-        /// <summary>
-        /// Обработка изменения положения четвертого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T4Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void T4Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T4LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.CameraBasePosition - value) > 1e-2)
-                {
-                    manipulator.CameraBasePosition = value;
-                }
-            }
+            manipulator.RotatePart(ManipulatorParts.CameraBase, -e.NewValue);
         }
 
-        /// <summary>
-        /// Обработка изменения положения пятого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T5Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void T5Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T5LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.CameraPosition - value) > 1e-2)
-                {
-                    manipulator.CameraPosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения вертикальной рамки.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.XLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.VerticalFramePosition - value) > 1e-2)
-                {
-                    detectorFrame.VerticalFramePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения горизонтальной планки.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.YLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.HorizontalBarPosition - value) > 1e-2)
-                {
-                    detectorFrame.HorizontalBarPosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения держателя экрана.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.ZLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.ScreenHolderPosition - value) > 1e-2)
-                {
-                    detectorFrame.ScreenHolderPosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения экрана детектора по вертикали.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
-                {
-                    detectorFrame.VerticalAngle = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения экрана детектора по горизонтали.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.BLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.HorizontalAngle - value) > 1e-2)
-                {
-                    detectorFrame.HorizontalAngle = value;
-                }
-            }
+            manipulator.RotatePart(ManipulatorParts.Camera, -e.NewValue);
         }
 
         /// <summary>
@@ -434,7 +298,26 @@ namespace InverseTest
             double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
             manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
         }
-        
+
+
+        private void SolvePortalKinematic(Point3D manip, Point3D scannedPoint, bool animate)
+        {
+            PortalKinematic p = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+            p.SetPointManipAndNab(manip.X, manip.Z, manip.Y, scannedPoint.X, scannedPoint.Z, scannedPoint.Y);
+
+            double[] rez = p.PortalPoint(manip.DistanceTo(scannedPoint), this.focuseEnlagment);
+            if (rez != null)
+            {
+                ///ХЗ почему со знаком -
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], rez[3]);
+                detectorFrame.MoveDetectFrame(detectp, animate);
+            }
+            else
+            {
+                MessageBox.Show("Не существует такой точки");
+            }
+        }
+
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             recalculateKinematic();
@@ -447,7 +330,7 @@ namespace InverseTest
 
         private void HideManipModelBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            ManipulatorV2 m = manipulator;
+            IManipulatorModel m = manipulator;
 
             ManipulatorVisualizer.RemoveModel(m.GetManipulatorModel());
         }
@@ -475,7 +358,7 @@ namespace InverseTest
         //Запрогать загрузку и замену детальки
         private void LoadModel_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
 
@@ -526,12 +409,59 @@ namespace InverseTest
             //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
         }
 
+        private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.MovePart(DetectorFrame.Parts.VerticalFrame, e.NewValue);
+        }
+
+        private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.MovePart(DetectorFrame.Parts.HorizontalBar, e.NewValue);
+        }
+
+        private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.MovePart(DetectorFrame.Parts.ScreenHolder, e.NewValue);
+        }
+
+        private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.ZRotateAxis);
+        }
+
+        private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            detectorFrame.RotatePart(DetectorFrame.Parts.Screen, e.NewValue, DetectorFrame.YRotateAxis);
+        }
+
+        private void MoveMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ((IDebugModels)detectorFrame).transformModel(e.NewValue);
+            //allModels.Children[numMesh].Transform = new TranslateTransform3D(0, (int)e.NewValue, 0);
+        }
+
+        private void NumMesh_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            numMesh = (int)e.NewValue;
+            ((IDebugModels)detectorFrame).addNumberMesh(numMesh);
+            NumMeshTextBox.Text = numMesh.ToString();
+        }
+
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)
         {
 
+            //Task task = new Task(() =>
+            //{
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             JunctionDetect.JunctionDetectAlgorithm junctiondetec = new JunctionDetect.JunctionDetectAlgorithm();
             int[] junctions = junctiondetec.Detect(detail.GetModel());
+            watch.Stop();
             detail.SetJunctionsPoints(junctions);
+
+            Console.WriteLine("Time: " + watch.ElapsedMilliseconds);
+            //});
+
+            //task.Start();
         }
 
         private void CameraVisibleArea_Checked(object sender, RoutedEventArgs e)
@@ -584,13 +514,13 @@ namespace InverseTest
             }
         }
 
-     
         private void recalculateKinematic()
         {
             Point3D manip = manipulatorCamPoint.GetTargetPoint();
             Point3D targetPoint = this.targetPoint.point;
 
-            kinematicWorker.Solve(new SystemPosition(manip, targetPoint, manip.DistanceTo(targetPoint), focuseEnlagment));
+            manipWorker.solve(new SystemPosition(manip, targetPoint));
+            SolvePortalKinematic(manip, targetPoint, false);
         }
 
         private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -601,17 +531,6 @@ namespace InverseTest
 
         private void FocusDistanceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var distance = e.NewValue;
-            var manipCurrentPoint = manipulator.GetCameraPosition();
-            var targetPoint = this.targetPoint.point;
-
-            var direction = new Vector3D(manipCurrentPoint.X - targetPoint.X,
-                manipCurrentPoint.Y - targetPoint.Y, manipCurrentPoint.Z - targetPoint.Z);
-         
-            direction.Normalize();
-           // var newPoint = ; 
-
-           // manipulatorCamPoint.MoveAndNotify(newPoint);
         }
 
         private void FocusDistance_Checked(object sender, RoutedEventArgs e)
@@ -632,71 +551,6 @@ namespace InverseTest
         private void RotateDetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.detailPathController.Rotate(e.NewValue);
-        }
-
-        private void ResetCamers_Click(object sender, RoutedEventArgs e)
-        {
-            ManipulatorVisualizer.setCameras(allModels);
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси X.
-        /// </summary>
-        /// <param name="sender">Отправитель события</param>
-        /// <param name="e">Событие</param>
-        private void CheckX_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorXTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси X.
-        /// </summary>
-        /// <param name="sender">Отправитель события</param>
-        /// <param name="e">Событие</param>
-        private void CheckX_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorXTextBox.IsReadOnly = false;
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси Y.
-        /// </summary>
-        /// <param name="sender"> </param>
-        /// <param name="e">Событие</param>
-        private void CheckY_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorYTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси Y.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckY_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorYTextBox.IsReadOnly = false;
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси Z.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckZ_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorZTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси Z.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckZ_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorZTextBox.IsReadOnly = false;
         }
     }
 }

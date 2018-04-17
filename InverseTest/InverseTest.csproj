@@ -172,7 +172,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bound\Bound.cs" />
-    <Compile Include="Bound\ManipulatorAnglesBounds.cs" />
     <Compile Include="Bound\PortalBoundController.cs" />
     <Compile Include="Collision\AABB.cs" />
     <Compile Include="Collision\CollisionDetector.cs" />
@@ -206,7 +205,7 @@
     <Compile Include="Detail\IDetailMouseListener.cs" />
     <Compile Include="Frame\DetectorFrameVisual.cs" />
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
-    <Compile Include="Frame\DetectorPositionController.cs" />
+    <Compile Include="Frame\Models\Matrix4D.cs" />
     <Compile Include="GUI\Controls\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
     </Compile>
@@ -215,11 +214,8 @@
     </Compile>
     <Compile Include="GUI\Model\IVisual.cs" />
     <Compile Include="Detail\DetailViewVisual.cs" />
-    <Compile Include="Manipulator\ManipulatorPositionController.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
-    <Compile Include="Manipulator\Models\LengthJoin.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
-    <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\ScanPathVisual.cs" />
     <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Model\ScanPointVisual.cs" />
@@ -236,6 +232,7 @@
     <Compile Include="Frame\DetectorFramePart.cs" />
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
+    <Compile Include="Frame\IDetectorFrame.cs" />
     <Compile Include="Frame\PortalKinematic.cs" />
     <Compile Include="GUI\Model\IModelMover.cs" />
     <Compile Include="GUI\Model\ModelMover.cs" />
@@ -243,6 +240,7 @@
     <Compile Include="Model\ConeModel.cs" />
     <Compile Include="Model\PointState.cs" />
     <Compile Include="Model\MovementPoint.cs" />
+    <Compile Include="IDebugModels.cs" />
     <Compile Include="IPositionChanged.cs" />
     <Compile Include="JunctionDetect\JunctionDetectAlgorithm.cs" />
     <Compile Include="Manipulator\IManipulatorPart.cs" />
@@ -257,9 +255,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
-    <Compile Include="Model\PointsPositions.cs" />
+    <Compile Include="SystemPosition.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
-    <Compile Include="Workers\KinematicWorker.cs" />
+    <Compile Include="Workers\ManipulatorKinematicWorker.cs" />
     <Page Include="GUI\Controls\PathListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -290,6 +288,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manipulator\IManipulatorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
