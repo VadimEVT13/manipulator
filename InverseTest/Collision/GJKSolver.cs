@@ -10,13 +10,11 @@ namespace InverseTest.Collision
 {
     class GJKSolver
     {
-        
-
         public GJKSolver()
         {
         }
 
-        public bool IntersectGJK(CollisionPair pair, SimplexView simplex) // отправка данных на GJK
+        public bool IntersectGJK(CollisionPair pair) // отправка данных на GJK
         {
             HullsV2 hull = new HullsV2();
 

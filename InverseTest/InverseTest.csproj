@@ -215,9 +215,6 @@
     </Compile>
     <Compile Include="GUI\Model\IVisual.cs" />
     <Compile Include="Detail\DetailViewVisual.cs" />
-    <Compile Include="GUI\SimplexView.xaml.cs">
-      <DependentUpon>SimplexView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Manipulator\ManipulatorPositionController.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Manipulator\Models\LengthJoin.cs" />
@@ -291,10 +288,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="GUI\SimplexView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -324,8 +317,6 @@
     <EmbeddedResource Include="3DModels\Detector Frame.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="Manipulator\ClassDiagram1.cd" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

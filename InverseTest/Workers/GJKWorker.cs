@@ -21,15 +21,11 @@ namespace InverseTest.Workers
     {
         private GJKSolver solver;
         private AABB aabb;
-        private SimplexView simplex;
 
         public GJKWorker(AABB aabb, GJKSolver solver, int queueSize = 10) : base(queueSize)
         {
             this.solver = solver;
             this.aabb = aabb;
-            this.simplex = new SimplexView();
-            this.simplex.Show();
-            
         }
         
         protected override L Calculate(T elem)
@@ -47,7 +43,7 @@ namespace InverseTest.Workers
 
                     try
                     {
-                        if (solver.IntersectGJK(pair, simplex))
+                        if (solver.IntersectGJK(pair))
                         {
                             collisions.Add(pair);
                         }
