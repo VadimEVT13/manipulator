@@ -1,5 +1,6 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.GUI;
+using InverseTest.GUI.Models;
 using InverseTest.Model;
 using System;
 using System.Collections.Generic;

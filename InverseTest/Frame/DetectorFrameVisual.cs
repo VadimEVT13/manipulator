@@ -1,4 +1,5 @@
 ﻿using InverseTest.GUI;
+using InverseTest.GUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InverseTest.Frame
 {
-    public class DetectorFrameVisual: IVisualController
+    public class DetectorFrameVisual : IVisualController
     {
         public List<MainVisual> Visuals => portalVisuals.Values.ToList();
 

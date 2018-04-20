@@ -1,4 +1,5 @@
 ﻿using InverseTest.GUI;
+using InverseTest.GUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

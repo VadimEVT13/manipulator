@@ -5,9 +5,9 @@ using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using InverseTest.GUI.Model;
 
-namespace InverseTest.GUI
+namespace InverseTest.GUI.Models
 {
-    class ModelMoverAboveSurf:IModelMover
+    class ModelMoverAboveSurf : IModelMover
     {
         private MovementPoint point;
         private Model3D surf;

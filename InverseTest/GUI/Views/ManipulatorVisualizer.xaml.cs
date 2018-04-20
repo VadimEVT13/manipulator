@@ -19,8 +19,9 @@ using InverseTest.GUI.Model;
 using InverseTest.Detail;
 using InverseTest.Collision.Model;
 using InverseTest.Frame;
+using InverseTest.GUI.Models;
 
-namespace InverseTest.GUI
+namespace InverseTest.GUI.Views
 {
     /// <summary>
     /// Класс визуализизации манипулятора

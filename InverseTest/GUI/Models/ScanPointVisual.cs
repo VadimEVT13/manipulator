@@ -1,9 +1,8 @@
-﻿using HelixToolkit.Wpf;
+﻿using System.Windows.Media.Media3D;
 using InverseTest.Model;
 using InverseTest.Path;
-using System.Windows.Media.Media3D;
 
-namespace InverseTest.GUI.Model
+namespace InverseTest.GUI.Models
 {
     public class ScanPointVisual : BaseScanPointVisual
     {

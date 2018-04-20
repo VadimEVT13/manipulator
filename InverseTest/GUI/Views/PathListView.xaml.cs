@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace InverseTest.GUI.Controls
+namespace InverseTest.GUI.Views
 {
 
     public delegate void OnPointSelected(ScanPoint p);
