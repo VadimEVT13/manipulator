@@ -1,4 +1,5 @@
 ﻿using InverseTest.GUI;
+using InverseTest.GUI.Views;
 using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 

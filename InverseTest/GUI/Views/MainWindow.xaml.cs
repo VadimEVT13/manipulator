@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using InverseTest.Manipulator;
 using InverseTest.Detail;
-using InverseTest.Frame.Kinematic;
 using InverseTest.GUI.Model;
-using InverseTest.GUI;
 using InverseTest.Frame;
 using InverseTest.Workers;
 using InverseTest.Collision.Model;
@@ -20,9 +17,8 @@ using InverseTest.Bound;
 using InverseTest.Path;
 using InverseTest.Manipulator.Models;
 using InverseTest.Model;
-using System.Windows.Controls;
 
-namespace InverseTest
+namespace InverseTest.GUI.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

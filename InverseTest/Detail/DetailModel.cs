@@ -1,5 +1,6 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.GUI;
+using InverseTest.GUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace InverseTest.Detail
     /// <summary>
     /// Класс для представления трехмерной детали которую будут сканировать
     /// </summary>
-    public class DetailModel: IVisualController
+    public class DetailModel : IVisualController
     {
 
         public MainVisual detailVisual { get; }

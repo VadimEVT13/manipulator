@@ -1,16 +1,11 @@
-﻿using HelixToolkit.Wpf;
-using InverseTest.GUI.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+using InverseTest.GUI.Model;
 
-namespace InverseTest.GUI
+namespace InverseTest.GUI.Models
 {
     public class ModelMover:IModelMover
     {

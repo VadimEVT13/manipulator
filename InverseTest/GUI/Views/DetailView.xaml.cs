@@ -1,25 +1,15 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.Detail;
-using InverseTest.GUI.Model;
+using InverseTest.GUI.Models;
 using InverseTest.Manipulator;
-using InverseTest.Path;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 
-namespace InverseTest.GUI
+namespace InverseTest.GUI.Views
 {
     /// <summary>
     /// Логика взаимодействия для DetailView.xaml
@@ -29,7 +19,7 @@ namespace InverseTest.GUI
         private PerspectiveCamera cam3D;
         private DetailPointsCreator pointsCreator;
 
-        private Dictionary<Visual3D, Model.ScanPointVisual> orderedPoints;
+        private Dictionary<Visual3D, ScanPointVisual> orderedPoints;
 
         private DetailVisual detailVisual;
         private DetailModel detailModel;
@@ -39,9 +29,9 @@ namespace InverseTest.GUI
             InitializeComponent();
             setCamera();
             setLight();
-            this.orderedPoints = new Dictionary<Visual3D, Model.ScanPointVisual>();
+            this.orderedPoints = new Dictionary<Visual3D, ScanPointVisual>();
             this.Closing += WindowClosing;
-            ScanPath.Instance.PointTransformed += this.TransformPointVisual;
+            Path.ScanPath.Instance.PointTransformed += this.TransformPointVisual;
         }
 
         private void WindowClosing(object sender, CancelEventArgs e) {
@@ -98,9 +88,9 @@ namespace InverseTest.GUI
 
         private void AddNewPoint(Point3D point)
         {
-            ScanPoint orderedPoint = new ScanPoint(point);
-            ScanPath.getInstance.AddPoint(orderedPoint);
-            Model.ScanPointVisual pointVisual = new Model.ScanPointVisual(orderedPoint);
+            Path.ScanPoint orderedPoint = new Path.ScanPoint(point);
+            Path.ScanPath.getInstance.AddPoint(orderedPoint);
+            ScanPointVisual pointVisual = new ScanPointVisual(orderedPoint);
             DetailViewPort.Children.Add(pointVisual.pointVisual);
             orderedPoints.Add(pointVisual.pointVisual, pointVisual);
         }
@@ -114,8 +104,8 @@ namespace InverseTest.GUI
                     if (orderedPoints.ContainsKey(v))
                     {
                         DetailViewPort.Children.Remove(v);
-                        Model.ScanPointVisual orderedPoint = orderedPoints.GetOrDefault(v);
-                        ScanPath.getInstance.RemovePoint(orderedPoint.Point);
+                        ScanPointVisual orderedPoint = orderedPoints.GetOrDefault(v);
+                        Path.ScanPath.getInstance.RemovePoint(orderedPoint.Point);
                         orderedPoints.Remove(v);
                         break;
                     }
@@ -152,7 +142,7 @@ namespace InverseTest.GUI
             orderedPoints.Values.ToList().ForEach(x => x.TransformPoint(trans));
         }
 
-        public void OnPointSelected(ScanPoint p)
+        public void OnPointSelected(Path.ScanPoint p)
         {
             orderedPoints.Values.ToList().ForEach(x => x.SetSelected(x.Point.Equals(p)));
         }

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace InverseTest.GUI.Model
+namespace InverseTest.GUI.Models
 {
-    public  class DetailVisual
+    public class DetailVisual
     {
         private static Vector3D YRotateAxis = new Vector3D(0, 1, 0);
 
