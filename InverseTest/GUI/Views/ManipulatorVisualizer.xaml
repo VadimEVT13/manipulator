@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InverseTest.GUI"
+			 xmlns:localVMs="clr-namespace:InverseTest.GUI.ViewModels"
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="202.667" d:DesignWidth="132.666"
              >
     <UserControl.Resources>
+		<localVMs:DetectorViewModel x:Key="DetectorVM"/>
         <Style x:Key="ViewMaximizeStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked}" Value="True">
@@ -166,5 +168,18 @@
                 </Grid>
             </TabItem.Content>
         </TabItem>
-    </TabControl> 
+		<TabItem Header="Детектор">
+			<TabItem.Content>
+				<!--local:DetectorView DataContext="{Binding Source={StaticResource PortalVM}}" /-->
+				<Grid>
+				</Grid>
+			</TabItem.Content>
+		</TabItem>
+		<TabItem Header="Манипулятор">
+			<TabItem.Content>
+				<Grid>
+				</Grid>
+			</TabItem.Content>
+		</TabItem>
+	</TabControl> 
 </UserControl>

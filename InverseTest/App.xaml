@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gui="clr-namespace:InverseTest.GUI"
              xmlns:local="clr-namespace:InverseTest"
-             StartupUri="GUI/MainWindow.xaml">
+             StartupUri="GUI/Views/MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

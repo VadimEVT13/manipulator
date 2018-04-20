@@ -208,14 +208,20 @@
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
     <Compile Include="Frame\DetectorPositionController.cs" />
     <Compile Include="Frame\Models\Matrix4D.cs" />
-    <Compile Include="GUI\Controls\PathListView.xaml.cs">
+    <Compile Include="GUI\Views\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DetailView.xaml.cs">
+    <Compile Include="GUI\Views\DetailView.xaml.cs">
       <DependentUpon>DetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Model\IVisual.cs" />
+    <Compile Include="GUI\Models\IVisual.cs" />
     <Compile Include="Detail\DetailViewVisual.cs" />
+    <Compile Include="GUI\Utils\AsyncRelayCommand.cs" />
+    <Compile Include="GUI\ViewModels\DetectorViewModel.cs" />
+    <Compile Include="GUI\ViewModels\ViewModelBase.cs" />
+    <Compile Include="GUI\Views\DetectorView.xaml.cs">
+      <DependentUpon>DetectorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Manipulator\ManipulatorPositionController.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Manipulator\Models\LengthJoin.cs" />
@@ -223,8 +229,8 @@
     <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\ScanPathVisual.cs" />
     <Compile Include="Path\ScanPoint.cs" />
-    <Compile Include="GUI\Model\ScanPointVisual.cs" />
-    <Compile Include="GUI\Model\MainVisual.cs" />
+    <Compile Include="GUI\Models\ScanPointVisual.cs" />
+    <Compile Include="GUI\Models\MainVisual.cs" />
     <Compile Include="Manipulator\ManipulatorVisual.cs" />
     <Compile Include="Path\ScanPath.cs" />
     <Compile Include="Path\ScanPointVisual.cs" />
@@ -238,9 +244,9 @@
     <Compile Include="Frame\DetectorFrame.cs" />
     <Compile Include="Frame\DetectorFramePosition.cs" />
     <Compile Include="Frame\PortalKinematic.cs" />
-    <Compile Include="GUI\Model\IModelMover.cs" />
-    <Compile Include="GUI\Model\ModelMover.cs" />
-    <Compile Include="GUI\Model\ModelMoverAboveSurf.cs" />
+    <Compile Include="GUI\Models\IModelMover.cs" />
+    <Compile Include="GUI\Models\ModelMover.cs" />
+    <Compile Include="GUI\Models\ModelMoverAboveSurf.cs" />
     <Compile Include="Model\ConeModel.cs" />
     <Compile Include="Model\PointState.cs" />
     <Compile Include="Model\MovementPoint.cs" />
@@ -261,19 +267,19 @@
     <Compile Include="Model\PointsPositions.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
     <Compile Include="Workers\KinematicWorker.cs" />
-    <Page Include="GUI\Controls\PathListView.xaml">
+    <Page Include="GUI\Views\PathListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\DetailView.xaml">
+    <Page Include="GUI\Views\DetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ManipulatorVisualizer.xaml">
+    <Page Include="GUI\Views\ManipulatorVisualizer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\MainWindow.xaml">
+    <Page Include="GUI\Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -281,14 +287,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUI\ManipulatorVisualizer.xaml.cs">
+    <Compile Include="GUI\Views\ManipulatorVisualizer.xaml.cs">
       <DependentUpon>ManipulatorVisualizer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Manipulator\ManipulatorV2.cs" />
-    <Compile Include="GUI\MainWindow.xaml.cs">
+    <Compile Include="GUI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GUI\Views\DetectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -343,6 +353,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Manipulator.GRBL\Manipulator.GRBL.csproj">
+      <Project>{bfbcb61a-4f3d-48fd-912a-f15e7933b78b}</Project>
+      <Name>Manipulator.GRBL</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
