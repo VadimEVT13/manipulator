@@ -81,10 +81,7 @@ namespace InverseTest.GUI
                 LookDirection = new Vector3D(0, 0, -1)
             };
             ViewPort2DRight.Camera = cam2DRight;
-
-
-
-
+            
             cam3D = CameraHelper.CreateDefaultCamera();
             cam3D.FieldOfView = 61;
             cam3D.LookDirection = new Vector3D(-1, -1, -1);
@@ -112,7 +109,6 @@ namespace InverseTest.GUI
             Light ambientLight = new AmbientLight(Colors.White);
             Light ambientLight2 = new AmbientLight(Colors.DarkGray);
             DirectionalLight pointLight = new DirectionalLight();
-            //Colors.White, new Vector3D(-3, -3, -3)
             pointLight.Direction = new Vector3D(3, -3, 0);
             pointLight.Color = Colors.White;
 
@@ -162,7 +158,6 @@ namespace InverseTest.GUI
         /// Добавляте контур детали на вид с камеры манипулятора
         /// </summary>
         /// <param name="detail"></param>
-
         public void AddCountur(DetailModel detail)
         {
             RemoveModelFromViewPort(ViewPortManipulatorCam, detail.GetModel());
@@ -202,22 +197,22 @@ namespace InverseTest.GUI
 
         public void AddVisual(MainVisual visual)
         {
-            ViewPortManipulatorCam.Children.Add(visual.camManip);
-            ViewPortDetectorScreenCam.Children.Add(visual.camPortal);
-            ViewPort2DTop.Children.Add(visual.top);
-            ViewPort2DFront.Children.Add(visual.front);
-            ViewPort2DRight.Children.Add(visual.right);
-            ViewPort3D.Children.Add(visual._3d);
+            ViewPortManipulatorCam.Children.Add(visual.CamManip);
+            ViewPortDetectorScreenCam.Children.Add(visual.CamPortal);
+            ViewPort2DTop.Children.Add(visual.Top);
+            ViewPort2DFront.Children.Add(visual.Front);
+            ViewPort2DRight.Children.Add(visual.Right);
+            ViewPort3D.Children.Add(visual._3D);
         }
 
         public void RemoveVisual(MainVisual visual)
         {
-            RemoveVisualFromViewPort(ViewPort2DTop, visual.top);
-            RemoveVisualFromViewPort(ViewPort2DFront, visual.front);
-            RemoveVisualFromViewPort(ViewPort2DRight, visual.right);
-            RemoveVisualFromViewPort(ViewPort3D, visual._3d);
-            RemoveVisualFromViewPort(ViewPortDetectorScreenCam, visual.camPortal);
-            RemoveVisualFromViewPort(ViewPortManipulatorCam, visual.camManip);
+            RemoveVisualFromViewPort(ViewPort2DTop, visual.Top);
+            RemoveVisualFromViewPort(ViewPort2DFront, visual.Front);
+            RemoveVisualFromViewPort(ViewPort2DRight, visual.Right);
+            RemoveVisualFromViewPort(ViewPort3D, visual._3D);
+            RemoveVisualFromViewPort(ViewPortDetectorScreenCam, visual.CamPortal);
+            RemoveVisualFromViewPort(ViewPortManipulatorCam, visual.CamManip);
         }
         
         private void ManipulatorChangedCam(object sender, EventArgs e)
@@ -311,6 +306,11 @@ namespace InverseTest.GUI
             cameraFromPortal.Position = detectorFrame.GetCameraPosition();
         }
 
+
+        /// <summary>
+        /// Добавляет представления модели во все viewports
+        /// </summary>
+        /// <param name="model"></param>
         public void AddModel(Model3D model)
         {
             ModelVisual3D topViewModel = new ModelVisual3D() { Content = model };
@@ -328,17 +328,29 @@ namespace InverseTest.GUI
             ViewPortManipulatorCam.Children.Add(detectorScreenCamModel);
         }
         
+
+        /// <summary>
+        /// Удаляет модель из всех viewports
+        /// </summary>
+        /// <param name="model"></param>
         public void RemoveModel(Model3D model)
         {
             RemoveModelFromViewPort(ViewPort2DTop, model);
             RemoveModelFromViewPort(ViewPort2DFront, model);
             RemoveModelFromViewPort(ViewPort2DRight, model);
             RemoveModelFromViewPort(ViewPort3D, model);
+            RemoveModelFromViewPort(ViewPortDetectorScreenCam, model);
+            RemoveModelFromViewPort(ViewPortManipulatorCam, model);
         }
 
+
+        /// <summary>
+        /// Удаляет все представления модели из указанного Viewport-а
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <param name="model"></param>
         private void RemoveModelFromViewPort(HelixViewport3D viewport, Model3D model)
         {
-            ModelVisual3D modelToRemove = null;
             foreach (Visual3D visual3D in viewport.Children)
             {
                 if (visual3D is ModelVisual3D)
@@ -346,11 +358,10 @@ namespace InverseTest.GUI
                     ModelVisual3D modelVisual3D = visual3D as ModelVisual3D;
                     if (modelVisual3D.Content == model)
                     {
-                        modelToRemove = modelVisual3D;
+                        viewport.Children.Remove(modelVisual3D);                        
                     }
                 }
             }
-            viewport.Children.Remove(modelToRemove);
         }
 
         private void RemoveVisualFromViewPort(HelixViewport3D viewport, Visual3D visual)
@@ -488,11 +499,10 @@ namespace InverseTest.GUI
             }
             viewPort.Children.Remove(modelToRemove);
         }
+
         public HelixViewport3D getViewPort()
         {
             return this.ViewPort2DFront;
         }
-
-
     }
 }

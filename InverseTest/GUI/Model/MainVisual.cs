@@ -10,12 +10,12 @@ namespace InverseTest.GUI
 {
     public class MainVisual
     {
-        public ModelVisual3D camManip;
-        public ModelVisual3D camPortal;
-        public ModelVisual3D top;
-        public ModelVisual3D right;
-        public ModelVisual3D front;
-        public ModelVisual3D _3d;
+        public ModelVisual3D CamManip;
+        public ModelVisual3D CamPortal;
+        public ModelVisual3D Top;
+        public ModelVisual3D Right;
+        public ModelVisual3D Front;
+        public ModelVisual3D _3D;
 
         private Model3D model;
 
@@ -29,14 +29,14 @@ namespace InverseTest.GUI
             StoreDefaultMaterials(model);
             if (camDisplayed)
             {
-                camManip = new ModelVisual3D() { Content = model };
-                camPortal = new ModelVisual3D() { Content = model };
+                CamManip = new ModelVisual3D() { Content = model };
+                CamPortal = new ModelVisual3D() { Content = model };
             }
 
-            this.top = new ModelVisual3D() { Content = model };
-            this.right = new ModelVisual3D() { Content = model };
-            this.front = new ModelVisual3D() { Content = model };
-            this._3d = new ModelVisual3D() { Content = model };
+            this.Top = new ModelVisual3D() { Content = model };
+            this.Right = new ModelVisual3D() { Content = model };
+            this.Front = new ModelVisual3D() { Content = model };
+            this._3D = new ModelVisual3D() { Content = model };
         }
 
         public void Transform(Transform3D transform)
