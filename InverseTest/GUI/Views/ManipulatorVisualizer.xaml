@@ -11,6 +11,7 @@
              >
     <UserControl.Resources>
 		<localVMs:DetectorViewModel x:Key="DetectorVM"/>
+		<localVMs:ManipulatorViewModel x:Key="ManipulatorVM"/>
         <Style x:Key="ViewMaximizeStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked}" Value="True">
@@ -172,10 +173,7 @@
 			<local:DetectorView DataContext="{Binding Source={StaticResource DetectorVM}}" />
 		</TabItem>
 		<TabItem Header="Манипулятор">
-			<TabItem.Content>
-				<Grid>
-				</Grid>
-			</TabItem.Content>
+			<local:ManipulatorView DataContext="{Binding Source={StaticResource ManipulatorVM}}" />
 		</TabItem>
 	</TabControl> 
 </UserControl>

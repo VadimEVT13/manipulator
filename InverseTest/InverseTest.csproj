@@ -208,6 +208,10 @@
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
     <Compile Include="Frame\DetectorPositionController.cs" />
     <Compile Include="Frame\Models\Matrix4D.cs" />
+    <Compile Include="GUI\ViewModels\ManipulatorViewModel.cs" />
+    <Compile Include="GUI\Views\ManipulatorView.xaml.cs">
+      <DependentUpon>ManipulatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Views\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
     </Compile>
@@ -267,6 +271,10 @@
     <Compile Include="Model\PointsPositions.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
     <Compile Include="Workers\KinematicWorker.cs" />
+    <Page Include="GUI\Views\ManipulatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Views\PathListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

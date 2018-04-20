@@ -6,12 +6,12 @@ using Manipulator.GRBL.Models;
 using Manipulator.GRBL.Utils;
 using InverseTest.GUI.Utils;
 
+/// <summary>
+/// Модель представления драйвера управления манипулятором.
+/// </summary>
 namespace InverseTest.GUI.ViewModels
 {
-    /// <summary>
-    /// Модель представления драйвера управления детектором.
-    /// </summary>
-    class DetectorViewModel : ViewModelBase
+    class ManipulatorViewModel : ViewModelBase
     {
         /// <summary>
         /// Минимальное значение по оси X.
