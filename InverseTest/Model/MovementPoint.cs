@@ -21,8 +21,7 @@ namespace InverseTest.GUI.Model
 
         public MovementPoint(Color color)
         {
-            color = Colors.Transparent;
-            Material material = MaterialHelper.CreateMaterial(color, 1.0);
+            Material material = MaterialHelper.CreateMaterial(color, 0.4);
 
             point = new SphereVisual3D()
             {

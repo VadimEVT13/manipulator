@@ -56,7 +56,12 @@ namespace InverseTest
         private DetailPathController detailPathController;
         private ScanPathVisualController pathVisual;
         private DetailVisualCollisionController detailVisControlle;
-        
+
+        /// <summary>
+        /// Собирает отдельные модели из списка всех мешей
+        /// </summary>
+        private ModelParser ModelParser;
+
         private double distanceToScreen = 50;
         private double focuseEnlagment = 1;
         Model3DGroup allModels;
@@ -81,28 +86,26 @@ namespace InverseTest
 
         public void MainWindowLoaded(object sender, RoutedEventArgs arg)
         {
-            allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");
+            allModels = new ModelImporter().Load("./3DModels/Detector Frame.obj");     
+
             Model3DGroup newAllModels = new Model3DGroup();
             ManipulatorVisualizer.setCameras(allModels);
 
-            ModelPreprocessor preproccessor = new ModelPreprocessor(allModels);
-            allModels = preproccessor.Simplification().GetProccessedModel();
-
-            ModelParser parser = new ModelParser(allModels);
-            parser.Parse();
-            detectorFrame = parser.Frame;
+            this.ModelParser = new ModelParser(allModels);
+            ModelParser.Parse();
+            detectorFrame = ModelParser.Frame;
             DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(detectorFrame);
 
             detectorFrame.onPositionChanged += Detector_PositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
 
-            manipulator = parser.Manipulator;
+            manipulator = ModelParser.Manipulator;
             ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
 
             ManipulatorVisualizer.setManipulatorModel(manipulator, manipulatorVisual);
             manipulator.onPositionChanged += Manipulator_PositionChanged;
 
-            ManipulatorVisualizer.AddModel(parser.Others);
+            ManipulatorVisualizer.AddModel(ModelParser.Others);
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
             double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
@@ -121,8 +124,8 @@ namespace InverseTest
                 );
             this.kinematicWorker.OnComplete += KinematicSolved;
 
-            detail = parser.Detail;
-            platform = parser.DetailPlatform;
+            detail = ModelParser.LopatkaDetail;
+            platform = ModelParser.DetailPlatform;
 
             this.detailVisControlle = DetailVisualFactory.CreateDetailVisual(detail, platform);
             this.collisoinVisual = new CollisionVisualController(manipulatorVisual, portalVisual, detailVisControlle);
@@ -139,7 +142,7 @@ namespace InverseTest
             PathListView.OnSelectedPoint += this.OnScanPointSelected;
             PathListView.OnSelectedPoint += this.detailView.OnPointSelected;
 
-            ManipulatorVisualizer.AddModel(parser.Others);
+            ManipulatorVisualizer.AddModel(ModelParser.Others);
 
             //Коллизии
             GJKSolver gjkSolver = new GJKSolver();
@@ -196,7 +199,6 @@ namespace InverseTest
                 TargetPointZTextBox.Text = Math.Round(p.point.Z, 3).ToString();
             }
         }
-
 
         /// <summary>
         /// Обработчик изменения положения детектора.
@@ -696,6 +698,51 @@ namespace InverseTest
         private void CheckZ_Unchecked(object sender, RoutedEventArgs e)
         {
             PointManipulatorZTextBox.IsReadOnly = false;
+        }
+
+        /// <summary>
+        /// Обработчик события - выбор детали шпангоут
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShpangountDetail_Click(object sender, RoutedEventArgs e)
+        {
+            ManipulatorVisualizer.RemoveModel(ModelParser.LopatkaDetail.detailModel);
+            collisoinDetector.Detail = ModelParser.ShpangoutDetail;
+            detailPathController.Detail = ModelParser.ShpangoutDetail;
+            ManipulatorVisualizer.AddModel(ModelParser.ShpangoutDetail.detailModel);
+            this.detail = ModelParser.ShpangoutDetail;
+            this.detailView.RemoveDetailMode(ModelParser.LopatkaDetail);
+            this.detailView.AddDetailModel(ModelParser.ShpangoutDetail);
+        }
+
+
+        /// <summary>
+        /// Обработчик события - выбор детали лопатка
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LopatkaDetail_Click(object sender, RoutedEventArgs e)
+        {
+            ManipulatorVisualizer.RemoveModel(ModelParser.ShpangoutDetail.detailModel);
+            collisoinDetector.Detail = ModelParser.LopatkaDetail;
+            detailPathController.Detail = ModelParser.LopatkaDetail;
+            ManipulatorVisualizer.AddModel(ModelParser.LopatkaDetail.detailModel);
+            this.detail = ModelParser.LopatkaDetail;
+            this.detailView.RemoveDetailMode(ModelParser.ShpangoutDetail);
+            this.detailView.AddDetailModel(ModelParser.LopatkaDetail);
+        }
+
+
+        /// <summary>
+        /// Обработка события - поднимает деталь 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RiseDetail_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var transoform = new TranslateTransform3D(0, e.NewValue, 0);
+            this.detailPathController.Transform(transoform);
         }
     }
 }

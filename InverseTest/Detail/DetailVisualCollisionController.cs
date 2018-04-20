@@ -10,7 +10,7 @@ namespace InverseTest.Detail
 {
     public class DetailVisualCollisionController:IVisualController
     {
-        MainVisual detail;
+        public MainVisual detail { get; set; }
         MainVisual platform;
 
         public DetailVisualCollisionController(MainVisual det, MainVisual plat)

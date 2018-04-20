@@ -22,6 +22,12 @@
 				<MenuItem Header="Деталь" Name="DetailViewMenuItem" Click="DetailViewMenuItem_Click"/>
 				<MenuItem Header="Сброс камер" Name="ResetCamers" Click="ResetCamers_Click"/>
 			</MenuItem>
+            <MenuItem Header="Детали" Margin="1" Padding="15,2">
+                <MenuItem Header="Шпангоут" Name="ShpangountDetail" Click="ShpangountDetail_Click"/>
+                <MenuItem Header="Лопатка" Name="LopatkaDetail" Click="LopatkaDetail_Click"/>
+
+            </MenuItem>
+            
 		</Menu>
 		<ScrollViewer DockPanel.Dock="Right" Width="180" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
@@ -72,15 +78,23 @@
 					</StackPanel>
 				</Expander>
 				<Expander Header="Деталь">
-					<StackPanel>
-						<TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
-						<Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-					</StackPanel>
-				</Expander>
+                    <StackPanel>
+                        <TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
+                        <Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
+                        <TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+                        <TextBlock Text="Высота подьема детали, мм" HorizontalAlignment="Center"/>
+                        <Slider Name="RiseDetailSlider" Maximum="100" Minimum="0" Value="0" ValueChanged="RiseDetail_ValueChanged"/>
+                        <TextBox Text="{Binding ElementName=RiseDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                    </StackPanel>
+                </Expander>
 			</StackPanel>
-		</ScrollViewer>
-		<StackPanel DockPanel.Dock="Left" Width="160" >
+
+
+
+        </ScrollViewer>
+
+        <StackPanel DockPanel.Dock="Left" Width="160" >
             <StackPanel  Orientation="Horizontal">
                 <Label Content="Координаты точки съемки"/>
             </StackPanel>
@@ -187,7 +201,7 @@
             <guiControls:PathListView x:Name="PathListView" Width="Auto"/>
         </StackPanel>
 
-       <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
+        <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
           <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

@@ -27,7 +27,6 @@ namespace InverseTest.GUI
     /// </summary>
     public partial class ManipulatorVisualizer : UserControl
     {
-
         private PerspectiveCamera cameraFromManipulator;
         private PerspectiveCamera cameraFromPortal;
         private OrthographicCamera cam2DTop;
@@ -38,8 +37,7 @@ namespace InverseTest.GUI
         private DetectorFrame detectorFrame;
         private ManipulatorV2 manipulator;
         private MovementPoint scanPoint;
-
-
+        
         private ModelMoverAboveSurf mover;
         private ModelMover manipulatorMover;
 
@@ -160,8 +158,6 @@ namespace InverseTest.GUI
             cam3D.Position = new Point3D(DISTANCE_TO_CAMERA / 5, DISTANCE_TO_CAMERA / 5, DISTANCE_TO_CAMERA / 5);
         }
 
-
-
         /// <summary>
         /// Добавляте контур детали на вид с камеры манипулятора
         /// </summary>
@@ -179,8 +175,7 @@ namespace InverseTest.GUI
             ModelVisual3D modelVisual = new ModelVisual3D() { Content = detail.GetModel() };
             ViewPortManipulatorCam.Children.Add(modelVisual);
         }
-
-
+        
         public void setManipulatorModel(ManipulatorV2 manipulatorModel, ManipulatorVisual manipulatorVisual)
         {
             this.manipulator = manipulatorModel;
@@ -252,11 +247,10 @@ namespace InverseTest.GUI
         public void SetManipulatorPoint(MovementPoint point)
         {
             manipulatorMover = new ModelMover(point);
-            manipulatorMover.ModelToDetect = (manipulator.GetManipulatorPart(ManipulatorParts.Camera) as Model3DGroup).Children[0];
+            manipulatorMover.ModelToDetect =point.GetModel();
             AddListeners(manipulatorMover);
-          //  AddModelWithoutCamView(point.GetModel());
+            AddModelWithoutCamView(point.GetModel());
         }
-
 
         /// <summary>
         /// Устанавливает модель точки сканирования и навешивает оброботчики её передвижения 
@@ -289,8 +283,6 @@ namespace InverseTest.GUI
             ViewPort3D.MouseMove += mover.OnMouseMove;
         }
 
-
-
         /// <summary>
         /// Добавляет модель на все виды кроме видов из камер
         /// </summary>
@@ -317,7 +309,6 @@ namespace InverseTest.GUI
         {
             cameraFromPortal.LookDirection = detectorFrame.GetScreenDirection();
             cameraFromPortal.Position = detectorFrame.GetCameraPosition();
-
         }
 
         public void AddModel(Model3D model)
@@ -336,8 +327,7 @@ namespace InverseTest.GUI
             ViewPortDetectorScreenCam.Children.Add(cameraManipulatorModel);
             ViewPortManipulatorCam.Children.Add(detectorScreenCamModel);
         }
-
-
+        
         public void RemoveModel(Model3D model)
         {
             RemoveModelFromViewPort(ViewPort2DTop, model);
@@ -374,8 +364,6 @@ namespace InverseTest.GUI
                 }
             }
         }
-
-
 
         public Visual3D FindVisual(HelixViewport3D viewport, Model3D model)
         {
@@ -445,10 +433,6 @@ namespace InverseTest.GUI
                 ViewPort3D.Children.Add(rectagnle3D);
             }
         }
-
-
-
-
 
         public void ShowPoints(Point3D[] points)
         {

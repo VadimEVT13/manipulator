@@ -19,7 +19,7 @@ namespace InverseTest.Collision
 
         ManipulatorV2 Manipulator;
         DetectorFrame Portal;
-        DetailModel Detail;
+        public DetailModel Detail { get; set; }
         Model3D Platform;
 
         private GJKWorker<SceneSnapshot, List<CollisionPair>> worker;

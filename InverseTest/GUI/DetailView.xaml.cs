@@ -130,7 +130,21 @@ namespace InverseTest.GUI
             this.DetailViewPort.Children.Add(this.detailVisual.visual);
             initPointsCreator(detailModel);
             configCamera(detailModel);
+        }
 
+        public void RemoveDetailMode(DetailModel detailModel)
+        {
+            foreach(Visual3D v in this.DetailViewPort.Children)
+            {
+                if(v is ModelVisual3D mv)
+                {
+                    if(mv.Content.Equals(detailModel.detailModel))
+                    {
+                        this.DetailViewPort.Children.Remove(v);
+                        return;
+                    }
+                }
+            }
         }
 
         public void TransformPointVisual(Transform3D trans)

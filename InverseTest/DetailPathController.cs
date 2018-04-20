@@ -11,13 +11,21 @@ namespace InverseTest
 {
     public class DetailPathController
     {
-        public DetailModel detail;
-        public ScanPath path;
+
+        /// <summary>
+        /// Модель сканируемой детали
+        /// </summary>
+        public DetailModel Detail { get; set; }
+
+        /// <summary>
+        /// Путь сконирования состоящий из точек
+        /// </summary>
+        public ScanPath Path;
 
         public DetailPathController(DetailModel detail, ScanPath path)
         {
-            this.detail = detail;
-            this.path = path;
+            this.Detail = detail;
+            this.Path = path;
         }
 
         /// <summary>
@@ -27,8 +35,18 @@ namespace InverseTest
         public void Rotate(double angle)
         {
             RotateTransform3D transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), angle));
-            path.TransformPoint(transform);
-            detail.Transform(transform);
+            Path.TransformPoint(transform);
+            Detail.Transform(transform);
+        }
+
+        /// <summary>
+        /// Перемещает деталь и точки пути на ней.
+        /// </summary>
+        /// <param name="transform"></param>
+        public void Transform(Transform3D transform)
+        {
+            Path.TransformPoint(transform);
+            Detail.Transform(transform);
         }
     }
 }
