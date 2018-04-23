@@ -22,18 +22,27 @@ namespace InverseTest.Manipulator
         private LengthJoin length = new LengthJoin();
 
         // углы
-        private Angle3D angles = new Angle3D
-        {
-            O1 = 0,
-            O2 = 0,
-            O3 = 0,
-            O4 = 0,
-            O5 = 0
-        };
+        private Angle3D angles = new Angle3D();
+
+        // ограничение
+        private Ogranichenie ogranich = new Ogranichenie();
 
         public Kinematic(Vertex3D Base)
         {
             basePoint = Base;
+            ogranich = new Ogranichenie()
+            {
+                O1min = -Math.PI / 2.0,
+                O1max = Math.PI / 2.0,
+                O2min = -Math.PI / 2.0,
+                O2max = Math.PI / 2.0,
+                O3min = -Math.PI / 2.0,
+                O3max = Math.PI / 2.0,
+                O4min = -Math.PI,
+                O4max = Math.PI,
+                O5min = -10 * Math.PI / 180.0,
+                O5max = Math.PI
+            };
         }
 
         public bool SetLen(LengthJoin joins)
@@ -54,6 +63,25 @@ namespace InverseTest.Manipulator
         public bool SetBase(Vertex3D Base)
         {
             basePoint = Base;
+            return true;
+        }
+
+        public bool SetOgranichenie(Ogranichenie Ogran)
+        {
+            ogranich = new Ogranichenie()
+            {
+                O1max = Ogran.O1max,
+                O1min = Ogran.O1min,
+                O2max = Ogran.O2max,
+                O2min = Ogran.O2min,
+                O3max = Ogran.O3max,
+                O3min = Ogran.O3min,
+                O4max = Ogran.O4max,
+                O4min = Ogran.O4min,
+                O5max = Ogran.O5max,
+                O5min = Ogran.O5min
+            };
+
             return true;
         }
 
@@ -1109,13 +1137,14 @@ namespace InverseTest.Manipulator
                     angles.O5 = angle5[0];
 
                     double[][] R = DirectKinematic(angles);
-                    double dist1 = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+                    double dist1 = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }) + Vertex3D.Distance(new Vertex3D() { X = T[0][0], Y = T[1][0], Z = T[2][0] }, new Vertex3D() { X = R[0][0], Y = R[1][0], Z = R[2][0] }) * 100;
 
                     angles.O4 = angle4[1];
                     angles.O5 = angle5[1];
 
                     R = DirectKinematic(angles);
-                    double dist2 = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }); ;
+                    double dist2 = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }) + Vertex3D.Distance(new Vertex3D() { X = T[0][0], Y = T[1][0], Z = T[2][0] }, new Vertex3D() { X = R[0][0], Y = R[1][0], Z = R[2][0] }) * 100;
+
 
                     if (dist1 < dist2)
                         return new Angle3D
@@ -1164,7 +1193,7 @@ namespace InverseTest.Manipulator
             {
                 if (Math.Abs(b - a) < eps)
                 {
-                    double rez = (a + b) / 2;
+                    double rez = (a + b) / 2.0;
                     return InverseNab(rez, Pman.X, Pman.Y, Pman.Z, Pnab.X, Pnab.Y, Pnab.Z);
                 }
 
@@ -1181,6 +1210,168 @@ namespace InverseTest.Manipulator
                 else
                     b = x2;
             }
+        }
+
+        private Angle3D Golden_section_search(int[] Command, double A, double B, Angle3D Angles, double[][] T)
+        {
+            Vertex3D Pman = new Vertex3D()
+            {
+                X = T[0][3],
+                Y = T[1][3],
+                Z = T[2][3]
+            };
+            double eps = 0.0000000000001;
+
+            if (B < A)
+                throw new Exception("0x0001, Грань B должна быть больше чем A");
+
+            Vertex3D pEx = new Vertex3D();
+            double[][] Mat;
+            double x1 = 0;
+            double f1 = 0;
+            double x2 = 0;
+            double f2 = 0;
+            double a = A;
+            double b = B;
+            double phi = (1 + Math.Sqrt(5)) / 2.0;
+
+            // ------- Начало кода
+            x1 = b - (b - a) / phi;
+            x2 = a + (b - a) / phi;
+
+            while (true)
+            {
+                if (Math.Abs(b - a) < eps)
+                {
+                    double rez = (a + b) / 2.0;
+                    return new Angle3D()
+                    {
+                        O1 = Angles.O1 * (1 - Command[0]) + Command[0] * rez,
+                        O2 = Angles.O2 * (1 - Command[1]) + Command[1] * rez,
+                        O3 = Angles.O3 * (1 - Command[2]) + Command[2] * rez,
+                        O4 = Angles.O4 * (1 - Command[3]) + Command[3] * rez,
+                        O5 = Angles.O5 * (1 - Command[4]) + Command[4] * rez
+                    };
+                }
+
+                x1 = b - (b - a) / phi;
+                x2 = a + (b - a) / phi;
+
+                Mat = DirectKinematic(new Angle3D()
+                {
+                    O1 = Angles.O1 * (1 - Command[0]) + Command[0] * x1,
+                    O2 = Angles.O2 * (1 - Command[1]) + Command[1] * x1,
+                    O3 = Angles.O3 * (1 - Command[2]) + Command[2] * x1,
+                    O4 = Angles.O4 * (1 - Command[3]) + Command[3] * x1,
+                    O5 = Angles.O5 * (1 - Command[4]) + Command[4] * x1
+                }, basePoint);
+                if (Command[3] == 1 || Command[4] == 1)
+                {
+                    f1 = Vertex3D.Distance(new Vertex3D { X = T[0][0], Y = T[1][0], Z = T[2][0] },
+                        new Vertex3D { X = Mat[0][0], Y = Mat[1][0], Z = Mat[2][0] });
+                }
+                else
+                {
+                    f1 = Vertex3D.Distance(Pman, new Vertex3D { X = Mat[0][3], Y = Mat[1][3], Z = Mat[2][3] });
+                }
+                Mat = DirectKinematic(new Angle3D()
+                {
+                    O1 = Angles.O1 * (1 - Command[0]) + Command[0] * x2,
+                    O2 = Angles.O2 * (1 - Command[1]) + Command[1] * x2,
+                    O3 = Angles.O3 * (1 - Command[2]) + Command[2] * x2,
+                    O4 = Angles.O4 * (1 - Command[3]) + Command[3] * x2,
+                    O5 = Angles.O5 * (1 - Command[4]) + Command[4] * x2
+                }, basePoint);
+
+                if (Command[3] == 1 || Command[4] == 1)
+                {
+                    f2 = Vertex3D.Distance(new Vertex3D { X = T[0][0], Y = T[1][0], Z = T[2][0] },
+                        new Vertex3D { X = Mat[0][0], Y = Mat[1][0], Z = Mat[2][0] });
+                }
+                else
+                {
+                    f2 = Vertex3D.Distance(Pman, new Vertex3D { X = Mat[0][3], Y = Mat[1][3], Z = Mat[2][3] });
+                }
+
+                if (f1 >= f2)
+                    a = x1;
+                else
+                    b = x2;
+            }
+        }
+
+        public Angle3D CCD(Vertex3D P4, Vertex3D Pn)
+        {
+            double eps = 0.000000001;
+            double N = 50;
+            Node rezult_node = null;
+            double[][] T;
+            double[][] R;
+
+            double[] aandb = GetAandB(P4, Pn);
+            double alf = -aandb[0];
+            double bet = aandb[1];
+
+            T = mt(alf, bet, P4);
+
+            for (int i = 0; i < N; i++)
+            {
+                double delta = double.MaxValue / 2;
+                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                angles = new Angle3D()
+                {
+                    O1 = r.NextDouble() * (ogranich.O1max - ogranich.O1min) + ogranich.O1min,
+                    O2 = r.NextDouble() * (ogranich.O2max - ogranich.O2min) + ogranich.O2min,
+                    O3 = r.NextDouble() * (ogranich.O3max - ogranich.O3min) + ogranich.O3min,
+                    O4 = r.NextDouble() * (ogranich.O4max - ogranich.O4min) + ogranich.O4min,
+                    O5 = r.NextDouble() * (ogranich.O5max - ogranich.O5min) + ogranich.O5min
+                };
+
+                double delta_prev = double.MaxValue;
+
+                while (delta > eps & delta_prev > delta)
+                {
+                    angles = Golden_section_search(new int[] { 1, 0, 0, 0, 0 }, ogranich.O1min, ogranich.O1max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 1, 0, 0, 0 }, ogranich.O2min, ogranich.O2max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 1, 0, 0 }, ogranich.O3min, ogranich.O3max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 0, 1, 0 }, ogranich.O4min, ogranich.O4max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 0, 0, 1 }, ogranich.O5min, ogranich.O5max, angles, T);
+
+                    R = DirectKinematic(angles, basePoint);
+                    double d1 = Vertex3D.Distance(P4, new Vertex3D() { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+
+                    angles = Golden_section_search(new int[] { 1, 0, 0, 0, 0 }, ogranich.O1min, ogranich.O1max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 1, 0, 0, 0 }, ogranich.O2min, ogranich.O2max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 1, 0, 0 }, ogranich.O3min, ogranich.O3max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 0, 1, 0 }, ogranich.O4min, ogranich.O4max, angles, T);
+                    angles = Golden_section_search(new int[] { 0, 0, 0, 0, 1 }, ogranich.O5min, ogranich.O5max, angles, T);
+
+                    R = DirectKinematic(angles, basePoint);
+                    double d2 = Vertex3D.Distance(P4, new Vertex3D() { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+
+                    delta_prev = delta;
+                    delta = Math.Abs(d1 - d2);
+                }
+
+                R = DirectKinematic(angles, basePoint);
+                if (rezult_node == null)
+                {
+                    rezult_node = new Node() { Angle = angles, Delta = Vertex3D.Distance(P4, new Vertex3D() { X = R[0][3], Y = R[1][3], Z = R[2][3] }) };
+                }
+                else
+                {
+                    Node temp_node = new Node() { Angle = angles, Delta = Vertex3D.Distance(P4, new Vertex3D() { X = R[0][3], Y = R[1][3], Z = R[2][3] }) };
+
+                    if (temp_node.Delta < rezult_node.Delta)
+                    {
+                        rezult_node = temp_node;
+                    }
+                }
+                if (rezult_node.Delta < 0.1)
+                    return rezult_node.Angle;
+            }
+
+            return rezult_node.Angle;
         }
 
         //public Stack<Angle3D> Search_with_gold(Vertex3D Pnab, Vertex3D P4, double eps)
@@ -1280,7 +1471,7 @@ namespace InverseTest.Manipulator
             // Задачи поиска интервалов:
             Stack<double[]> angle_P34 = new Stack<double[]>();
             double[] container = new double[2];                     // Контейнер для значений интерала
-            double step = (Math.PI * 2) / 50.0;                       // Шаг движения по траектории
+            double step = (Math.PI * 2) / 75.0;                     // Шаг движения по траектории
             double[][] R;                                           // Матрица R
             double prevPoint;                                       // Предыдущая точка
             double prevDist;                                        // Значение предыдущей точки
@@ -1321,10 +1512,10 @@ namespace InverseTest.Manipulator
                 if (prevDist < curDist)
                     flag = true;
 
-                if (i == Math.PI)
+                if (i + step > Math.PI)
                 {
                     // запись интервала и выход
-                    container[1] = curPoint;
+                    container[1] = Math.PI;
                     angle_P34.Push(container);
                 }
             }
@@ -1336,11 +1527,94 @@ namespace InverseTest.Manipulator
                 Angle3D ang_temp = Golden_section_search(one[0], one[1], eps, Pn, P4);
                 R = DirectKinematic(ang_temp, basePoint);
 
-                if (Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }) <= 0.00001)
+                Matrix4D T = Matrix4D.T(Pn, P4);
+
+                if (Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }) <= 0.01 &
+                    Vertex3D.Distance(new Vertex3D { X = R[0][0], Y = R[1][0], Z = R[2][0] },
+                    new Vertex3D { X = T.K11, Y = T.K21, Z = T.K31 }) <= 0.01)
                 {
                     rez.Push(ang_temp);
                 }
             }
+
+            Stack<Angle3D> satisfied = new Stack<Angle3D>();
+
+            // Проверка на ограничение
+            foreach (Angle3D one in rez)
+            {
+                if (Ogranichenie.IsOK(ogranich, one))
+                {
+                    satisfied.Push(one);
+                }
+            }
+
+            // Если нет решения
+            if (satisfied.Count == 0)
+            {
+                rez = new Stack<Angle3D>();
+                step = (Math.PI * 2) / 400;
+                angle_P34 = new Stack<double[]>();
+
+                // Поиск интервалов с впадиной             
+
+                container[0] = -Math.PI;
+
+                for (double i = -Math.PI + step; i <= Math.PI; i += step)
+                {
+                    prevPoint = i - step;
+                    R = DirectKinematic(InverseNab(prevPoint, P4.X, P4.Y, P4.Z, Pn.X, Pn.Y, Pn.Z), basePoint);
+                    prevDist = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+
+                    curPoint = i;
+                    R = DirectKinematic(InverseNab(curPoint, P4.X, P4.Y, P4.Z, Pn.X, Pn.Y, Pn.Z), basePoint);
+                    curDist = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+
+                    if (prevDist > curDist & flag == true)
+                    {
+                        // запись интервала
+                        container[1] = curPoint;
+                        angle_P34.Push(new double[2] { container[0], container[1] });
+
+                        // новый интервал
+                        container[0] = curPoint;
+
+                        flag = false;
+                    }
+
+                    if (prevDist < curDist)
+                        flag = true;
+
+                    if (i + step > Math.PI)
+                    {
+                        // запись интервала и выход
+                        container[1] = Math.PI;
+                        angle_P34.Push(container);
+                    }
+                }
+
+                // Поиск методом золотого сечения на интервалах
+                foreach (double[] one in angle_P34)
+                {
+                    //rez.Push(Golden_section_search(one[0], one[1], eps, Pn, P4));
+                    Angle3D ang_temp = Golden_section_search(one[0], one[1], eps, Pn, P4);
+                    R = DirectKinematic(ang_temp, basePoint);
+
+                    Matrix4D T = Matrix4D.T(Pn, P4);
+
+                    if (Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] }) <= 0.01 &
+                        Vertex3D.Distance(new Vertex3D { X = R[0][0], Y = R[1][0], Z = R[2][0] },
+                        new Vertex3D { X = T.K11, Y = T.K21, Z = T.K31 }) <= 0.01)
+                    {
+                        // Проверка на ограничение
+                        if (Ogranichenie.IsOK(ogranich, ang_temp))
+                        {
+                            rez.Push(ang_temp);
+                        }
+                    }
+                }
+            }
+            else
+                return satisfied;
 
             return rez;
         }
@@ -1371,5 +1645,91 @@ namespace InverseTest.Manipulator
 
             return R;
         }
+
+        public static Matrix4D DirectKinematic(Angle3D angles, LengthJoin length)
+        {
+            Matrix4D R = Matrix4D.Multiply(Matrix4D.M1(angles.O1, length.J1), Matrix4D.M2(angles.O2, length.J2));
+            R = Matrix4D.Multiply(R, Matrix4D.M3(angles.O3, length.J3));
+            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.Det));
+            R = Matrix4D.Multiply(R, Matrix4D.M4(angles.O4));
+            R = Matrix4D.Multiply(R, Matrix4D.M5(angles.O5));
+            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.J4));
+            R = Matrix4D.Multiply(R, Matrix4D.MX(length.J5));
+            return R;
+        }
+
+        public void map(Vertex3D P4, Vertex3D Pn)
+        {
+            double step = (Math.PI * 2) / 5000.0;
+            double[][] R;
+            double prevDist;
+
+            string[] m1 = new string[15];
+            m1[0] = "i = [";
+            m1[1] = "z = [";
+            m1[2] = "i2 = [";
+            m1[3] = "z2 = [";
+
+            for (double i = -Math.PI; i <= Math.PI; i += step)
+            {
+                Angle3D tempAngle = InverseNab(i, P4.X, P4.Y, P4.Z, Pn.X, Pn.Y, Pn.Z);
+                R = DirectKinematic(tempAngle, basePoint);
+                prevDist = Vertex3D.Distance(P4, new Vertex3D { X = R[0][3], Y = R[1][3], Z = R[2][3] });
+
+                if (Ogranichenie.IsOK(ogranich, tempAngle) == true)
+                {
+                    m1[0] += string.Format("{0} ", i);
+                    m1[1] += string.Format("{0} ", prevDist);
+                }
+                else
+                {
+                    m1[2] += string.Format("{0} ", i);
+                    m1[3] += string.Format("{0} ", prevDist);
+                }
+            }
+
+            m1[0] += "];";
+            m1[1] += "];";
+            m1[2] += "];";
+            m1[3] += "];";
+
+            m1[0] = m1[0].Replace(',', '.');
+            m1[1] = m1[1].Replace(',', '.');
+            m1[2] = m1[2].Replace(',', '.');
+            m1[3] = m1[3].Replace(',', '.');
+
+            m1[6] += "plot(i, z, 'og'); xgrid();";
+            m1[7] += "plot(i2, z2, 'or'); xgrid();";
+
+            System.IO.File.WriteAllLines("map.txt", m1);
+        }
+        /*   
+        private Matrix4D DirectKinematic(Angle3D angles, Vertex3D basepoint)
+        {
+            Matrix4D mat = Matrix4D.MB();
+
+            Matrix4D R = Matrix4D.Multiply(Matrix4D.M1(angles.O1, length.J1), Matrix4D.M2(angles.O2, length.J2));
+            R = Matrix4D.Multiply(R, Matrix4D.M3(angles.O3, length.J3));
+            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.Det));
+            R = Matrix4D.Multiply(R, Matrix4D.M4(angles.O4));
+            R = Matrix4D.Multiply(R, Matrix4D.M5(angles.O5));
+            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.J4));
+            R = Matrix4D.Multiply(R, Matrix4D.MX(length.J5));
+            
+            R.K13   = mat.K11 * (R.K14 + basepoint.X) +
+                      mat.K21 * (R.K24 + basepoint.Y) +
+                      mat.K31 * (R.K34 + basepoint.Z);
+
+            R.K23   = mat.K12 * (R.K14 + basepoint.X) +
+                      mat.K22 * (R.K24 + basepoint.Y) +
+                      mat.K32 * (R.K34 + basepoint.Z);
+
+            R.K33   = mat.K13 * (R.K14 + basepoint.X) +
+                      mat.K23 * (R.K24 + basepoint.Y) +
+                      mat.K33 * (R.K34 + basepoint.Z);
+
+            return R;
+        }
+        */
     }
 }
