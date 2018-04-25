@@ -229,6 +229,9 @@
     <Compile Include="Manipulator\ManipulatorPositionController.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Manipulator\Models\LengthJoin.cs" />
+    <Compile Include="Manipulator\Models\Matrix4D.cs" />
+    <Compile Include="Manipulator\Models\Node.cs" />
+    <Compile Include="Manipulator\Models\Ogranichenie.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
     <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\ScanPathVisual.cs" />

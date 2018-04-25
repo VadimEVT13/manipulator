@@ -8,273 +8,276 @@ namespace InverseTest.Manipulator.Models
 {
     public class Matrix4D
     {
-        public double K00 { get; set; }
-        public double K01 { get; set; }
-        public double K02 { get; set; }
-        public double K03 { get; set; }
-
-        public double K10 { get; set; }
         public double K11 { get; set; }
         public double K12 { get; set; }
         public double K13 { get; set; }
-
-        public double K20 { get; set; }
+        public double K14 { get; set; }
         public double K21 { get; set; }
         public double K22 { get; set; }
         public double K23 { get; set; }
-
-        public double K30 { get; set; }
+        public double K24 { get; set; }
         public double K31 { get; set; }
         public double K32 { get; set; }
         public double K33 { get; set; }
+        public double K34 { get; set; }
+        public double K41 { get; set; }
+        public double K42 { get; set; }
+        public double K43 { get; set; }
+        public double K44 { get; set; }
 
-        public static Matrix4D Multiply(Matrix4D mA, Matrix4D mB)
+        public static Matrix4D M1(double O, double L1)
         {
-            return new Matrix4D()
-            {
-                K00 = mA.K00 * mB.K00 + mA.K01 * mB.K10 + mA.K02 * mB.K20 + mA.K03 * mB.K30,
-                K01 = mA.K00 * mB.K01 + mA.K01 * mB.K11 + mA.K02 * mB.K21 + mA.K03 * mB.K31,
-                K02 = mA.K00 * mB.K02 + mA.K01 * mB.K12 + mA.K02 * mB.K22 + mA.K03 * mB.K32,
-                K03 = mA.K00 * mB.K03 + mA.K01 * mB.K13 + mA.K02 * mB.K23 + mA.K03 * mB.K33,
+            Matrix4D m = new Matrix4D();
 
-                K10 = mA.K10 * mB.K00 + mA.K11 * mB.K10 + mA.K12 * mB.K20 + mA.K13 * mB.K30,
-                K11 = mA.K10 * mB.K01 + mA.K11 * mB.K11 + mA.K12 * mB.K21 + mA.K13 * mB.K31,
-                K12 = mA.K10 * mB.K02 + mA.K11 * mB.K12 + mA.K12 * mB.K22 + mA.K13 * mB.K32,
-                K13 = mA.K10 * mB.K03 + mA.K11 * mB.K13 + mA.K12 * mB.K23 + mA.K13 * mB.K33,
+            m.K11 = Math.Cos(O); m.K12 = -Math.Sin(O); m.K13 = 0; m.K14 = 0;
+            m.K21 = Math.Sin(O); m.K22 = Math.Cos(O); m.K23 = 0; m.K24 = 0;
+            m.K31 = 0; m.K32 = 0; m.K33 = 1; m.K34 = L1;
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
 
-                K20 = mA.K20 * mB.K00 + mA.K21 * mB.K10 + mA.K22 * mB.K20 + mA.K23 * mB.K30,
-                K21 = mA.K20 * mB.K01 + mA.K21 * mB.K11 + mA.K22 * mB.K21 + mA.K23 * mB.K31,
-                K22 = mA.K20 * mB.K02 + mA.K21 * mB.K12 + mA.K22 * mB.K22 + mA.K23 * mB.K32,
-                K23 = mA.K20 * mB.K03 + mA.K21 * mB.K13 + mA.K22 * mB.K23 + mA.K23 * mB.K33,
-
-                K30 = mA.K30 * mB.K00 + mA.K31 * mB.K10 + mA.K32 * mB.K20 + mA.K33 * mB.K30,
-                K31 = mA.K30 * mB.K01 + mA.K31 * mB.K11 + mA.K32 * mB.K21 + mA.K33 * mB.K31,
-                K32 = mA.K30 * mB.K02 + mA.K31 * mB.K12 + mA.K32 * mB.K22 + mA.K33 * mB.K32,
-                K33 = mA.K30 * mB.K03 + mA.K31 * mB.K13 + mA.K32 * mB.K23 + mA.K33 * mB.K33,
-            };
+            return m;
         }
 
-        public static Matrix4D Newm5(double o5)
+        public static Matrix4D M2(double O, double L2)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o5),
-                K02 = Math.Sin(o5),
-                K11 = 1,
-                K20 = -Math.Sin(o5),
-                K22 = Math.Cos(o5),
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = Math.Cos(O); m.K12 = 0; m.K13 = Math.Sin(O); m.K14 = L2 * Math.Sin(O);
+            m.K21 = 0; m.K22 = 1; m.K23 = 0; m.K24 = 0;
+            m.K31 = -Math.Sin(O); m.K32 = 0; m.K33 = Math.Cos(O); m.K34 = L2 * Math.Cos(O);
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        public static Matrix4D RotateZ(double o)
+        public static Matrix4D M3(double O, double L3)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o),
-                K01 = -Math.Sin(o),
-                K10 = Math.Sin(o),
-                K11 = Math.Cos(o),
-                K22 = 1,
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = Math.Cos(O); m.K12 = 0; m.K13 = Math.Sin(O); m.K14 = L3 * Math.Cos(O);
+            m.K21 = 0; m.K22 = 1; m.K23 = 0; m.K24 = 0;
+            m.K31 = -Math.Sin(O); m.K32 = 0; m.K33 = Math.Cos(O); m.K34 = -L3 * Math.Sin(O);
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        public static Matrix4D RotateY(double o)
+        public static Matrix4D M4(double O)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o),
-                K02 = Math.Sin(o),
-                K11 = 1,
-                K20 = -Math.Sin(o),
-                K22 = Math.Cos(o),
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = 1; m.K12 = 0; m.K13 = 0; m.K14 = 0;
+            m.K21 = 0; m.K22 = Math.Cos(O); m.K23 = -Math.Sin(O); m.K24 = 0;
+            m.K31 = 0; m.K32 = Math.Sin(O); m.K33 = Math.Cos(O); m.K34 = 0;
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        public static Matrix4D RotateX(double o)
+        public static Matrix4D M5(double O)
         {
-            return new Matrix4D
-            {
-                K00 = 1,
-                K11 = Math.Cos(o),
-                K12 = -Math.Sin(o),
-                K21 = Math.Sin(o),
-                K22 = Math.Cos(o),
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = Math.Cos(O); m.K12 = 0; m.K13 = Math.Sin(O); m.K14 = 0;
+            m.K21 = 0; m.K22 = 1; m.K23 = 0; m.K24 = 0;
+            m.K31 = -Math.Sin(O); m.K32 = 0; m.K33 = Math.Cos(O); m.K34 = 0;
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        public static Matrix4D MoveX(double x)
+        public static Matrix4D MX(double X)
         {
-            return new Matrix4D
-            {
-                K00 = 1,
-                K03 = x,
-                K11 = 1,
-                K22 = 1,
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = 1; m.K12 = 0; m.K13 = 0; m.K14 = X;
+            m.K21 = 0; m.K22 = 1; m.K23 = 0; m.K24 = 0;
+            m.K31 = 0; m.K32 = 0; m.K33 = 1; m.K34 = 0;
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        public static Matrix4D MoveZ(double z)
+        public static Matrix4D MZ(double Z)
         {
-            return new Matrix4D
-            {
-                K00 = 1,
-                K11 = 1,
-                K22 = 1,
-                K23 = z,
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = 1; m.K12 = 0; m.K13 = 0; m.K14 = 0;
+            m.K21 = 0; m.K22 = 1; m.K23 = 0; m.K24 = 0;
+            m.K31 = 0; m.K32 = 0; m.K33 = 1; m.K34 = Z;
+            m.K41 = 0; m.K42 = 0; m.K43 = 0; m.K44 = 1;
+
+            return m;
         }
 
-        // Матрица T или матрица манипулятора
-        public static Matrix4D Mt(double alfa, double beta, Vertex3D point)
+        public static Matrix4D T(double alfa, double beta, Vertex3D P)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(beta) * Math.Cos(alfa),
-                K01 = Math.Sin(beta),
-                K02 = Math.Cos(beta) * Math.Sin(alfa),
-                K03 = point.X,
-                K10 = Math.Sin(beta) * Math.Cos(alfa),
-                K11 = Math.Cos(beta),
-                K12 = Math.Sin(beta) * Math.Sin(alfa),
-                K13 = point.Y,
-                K20 = -Math.Sin(alfa),
-                K22 = Math.Cos(alfa),
-                K23 = point.Z,
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = Math.Cos(beta) * Math.Cos(alfa);
+            m.K12 = Math.Sin(beta);
+            m.K13 = Math.Cos(beta) * Math.Sin(alfa);
+            m.K14 = P.X;
+
+            m.K21 = Math.Sin(beta) * Math.Cos(alfa);
+            m.K22 = Math.Cos(beta);
+            m.K23 = Math.Sin(beta) * Math.Sin(alfa);
+            m.K24 = P.Y;
+
+            m.K31 = -Math.Sin(alfa);
+            m.K32 = 0;
+            m.K33 = Math.Cos(alfa);
+            m.K34 = P.Z;
+
+            m.K41 = 0;
+            m.K42 = 0;
+            m.K43 = 0;
+            m.K44 = 1;
+
+            return m;
         }
 
-
-        /// <summary>
-        /// Задаём матрицы поворота от угла и дистанции
-        /// </summary>
-        /// <param name="o1"></param>
-        /// <param name="r1"></param>
-        /// <returns></returns>
-        public static Matrix4D M1(double o1, double r1)
+        public static Matrix4D T(Vertex3D Pn, Vertex3D P4)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o1),
-                K01 = -Math.Sin(o1),
-                K10 = Math.Sin(o1),
-                K11 = Math.Cos(o1),
-                K22 = 1,
-                K23 = r1,
-                K33 = 1
-            };
+            Matrix4D m = new Matrix4D();
+
+            double x = Pn.X - P4.X;
+            double y = Pn.Y - P4.Y;
+            double z = Pn.Z - P4.Z;
+
+            double b = GetAngle(x, y);
+            double a = -GetAngle(Math.Sqrt(x * x + y * y), z);
+
+            m.K11 = Math.Cos(b) * Math.Cos(a);
+            m.K12 = Math.Sin(b);
+            m.K13 = Math.Cos(b) * Math.Sin(a);
+            m.K14 = P4.X;
+
+            m.K21 = Math.Sin(b) * Math.Cos(a);
+            m.K22 = Math.Cos(b);
+            m.K23 = Math.Sin(b) * Math.Sin(a);
+            m.K24 = P4.Y;
+
+            m.K31 = -Math.Sin(a);
+            m.K32 = 0;
+            m.K33 = Math.Cos(a);
+            m.K34 = P4.Z;
+
+            m.K41 = 0;
+            m.K42 = 0;
+            m.K43 = 0;
+            m.K44 = 1;
+
+            return m;
         }
 
-        /// <summary>
-        /// Задаём матрицы поворота от угла и дистанции
-        /// </summary>
-        /// <param name="o2"></param>
-        /// <param name="r2"></param>
-        /// <returns></returns>
-        public static Matrix4D M2(double o2, double r2)
+        public static Matrix4D MB(bool flag = true)
         {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o2),
-                K02 = Math.Sin(o2),
-                K03 = r2 * Math.Sin(o2),
-                K11 = 1,
-                K20 = -Math.Sin(o2),
-                K22 = Math.Cos(o2),
-                K23 = r2 * Math.Cos(o2),
-                K33 = 1
-            };
-        }
-
-        /// <summary>
-        /// Задаём матрицы поворота от угла и дистанции
-        /// </summary>
-        /// <param name="o3"></param>
-        /// <param name="r3"></param>
-        /// <returns></returns>
-        public static Matrix4D M3(double o3, double r3)
-        {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o3),
-                K02 = Math.Sin(o3),
-                K03 = r3 * Math.Cos(o3),
-                K11 = 1,
-                K20 = -Math.Sin(o3),
-                K22 = Math.Cos(o3),
-                K23 = -r3 * Math.Sin(o3),
-                K33 = 1
-            };
-        }
-
-        /// <summary>
-        /// Задаём матрицы поворота от угла и дистанции
-        /// </summary>
-        /// <param name="o4"></param>
-        /// <returns></returns>
-        public static Matrix4D M4(double o4)
-        {
-            return new Matrix4D
-            {
-                K00 = 1,
-                K11 = Math.Cos(o4),
-                K12 = -Math.Sin(o4),
-                K21 = Math.Sin(o4),
-                K22 = Math.Cos(o4),
-                K33 = 1
-            };
-        }
-
-        /// <summary>
-        /// Задаём матрицы поворота от угла и дистанции
-        /// </summary>
-        /// <param name="o5"></param>
-        /// <param name="r4"></param>
-        /// <returns></returns>
-        public static Matrix4D M5(double o5, double r4)
-        {
-            return new Matrix4D
-            {
-                K00 = Math.Cos(o5),
-                K02 = Math.Sin(o5),
-                K03 = r4 * Math.Cos(o5),
-                K11 = 1,
-                K20 = -Math.Sin(o5),
-                K22 = Math.Cos(o5),
-                K23 = -r4 * Math.Sin(o5),
-                K33 = 1
-            };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="flag"></param>
-        /// <returns></returns>
-        public static Matrix4D Mbase(bool flag = true)
-        {
-            double value;
             if (flag)
             {
-                value = 1;
+                return new Matrix4D
+                {
+                    K11 = 1,
+                    K12 = 0,
+                    K13 = 0,
+                    K14 = 0,
+                    K21 = 0,
+                    K22 = 1,
+                    K23 = 0,
+                    K24 = 0,
+                    K31 = 0,
+                    K32 = 0,
+                    K33 = 1,
+                    K34 = 0,
+                    K41 = 0,
+                    K42 = 0,
+                    K43 = 0,
+                    K44 = 1
+                };
             }
             else
             {
-                value = -1;
+                return new Matrix4D
+                {
+                    K11 = -1,
+                    K12 = 0,
+                    K13 = 0,
+                    K14 = 0,
+                    K21 = 0,
+                    K22 = -1,
+                    K23 = 0,
+                    K24 = 0,
+                    K31 = 0,
+                    K32 = 0,
+                    K33 = 1,
+                    K34 = 0,
+                    K41 = 0,
+                    K42 = 0,
+                    K43 = 0,
+                    K44 = 1
+                };
             }
-            return new Matrix4D()
+
+        }
+
+        public static Matrix4D Multiply(Matrix4D M1, Matrix4D M2)
+        {
+            Matrix4D m = new Matrix4D();
+
+            m.K11 = M1.K11 * M2.K11 + M1.K12 * M2.K21 + M1.K13 * M2.K31 + M1.K14 * M2.K41;
+            m.K12 = M1.K11 * M2.K12 + M1.K12 * M2.K22 + M1.K13 * M2.K32 + M1.K14 * M2.K42;
+            m.K13 = M1.K11 * M2.K13 + M1.K12 * M2.K23 + M1.K13 * M2.K33 + M1.K14 * M2.K43;
+            m.K14 = M1.K11 * M2.K14 + M1.K12 * M2.K24 + M1.K13 * M2.K34 + M1.K14 * M2.K44;
+
+            m.K21 = M1.K21 * M2.K11 + M1.K22 * M2.K21 + M1.K23 * M2.K31 + M1.K24 * M2.K41;
+            m.K22 = M1.K21 * M2.K12 + M1.K22 * M2.K22 + M1.K23 * M2.K32 + M1.K24 * M2.K42;
+            m.K23 = M1.K21 * M2.K13 + M1.K22 * M2.K23 + M1.K23 * M2.K33 + M1.K24 * M2.K43;
+            m.K24 = M1.K21 * M2.K14 + M1.K22 * M2.K24 + M1.K23 * M2.K34 + M1.K24 * M2.K44;
+
+            m.K31 = M1.K31 * M2.K11 + M1.K32 * M2.K21 + M1.K33 * M2.K31 + M1.K34 * M2.K41;
+            m.K32 = M1.K31 * M2.K12 + M1.K32 * M2.K22 + M1.K33 * M2.K32 + M1.K34 * M2.K42;
+            m.K33 = M1.K31 * M2.K13 + M1.K32 * M2.K23 + M1.K33 * M2.K33 + M1.K34 * M2.K43;
+            m.K34 = M1.K31 * M2.K14 + M1.K32 * M2.K24 + M1.K33 * M2.K34 + M1.K34 * M2.K44;
+
+            m.K41 = M1.K41 * M2.K11 + M1.K42 * M2.K21 + M1.K43 * M2.K31 + M1.K44 * M2.K41;
+            m.K42 = M1.K41 * M2.K12 + M1.K42 * M2.K22 + M1.K43 * M2.K32 + M1.K44 * M2.K42;
+            m.K43 = M1.K41 * M2.K13 + M1.K42 * M2.K23 + M1.K43 * M2.K33 + M1.K44 * M2.K43;
+            m.K44 = M1.K41 * M2.K14 + M1.K42 * M2.K24 + M1.K43 * M2.K34 + M1.K44 * M2.K44;
+
+            return m;
+        }
+
+        private static double GetAngle(double X, double Y)
+        {
+            if (X == 0 && Y == 0)
             {
-                K00 = value,
-                K11 = value,
-                K22 = 1,
-                K33 = 1
-            };
+                return 0;
+            }
+            if (X == 0)
+            {
+                if (Y > 0)
+                {
+                    return Math.PI / 2;
+                }
+                else
+                {
+                    return -Math.PI / 2;
+                }
+            }
+            if (X > 0)
+            {
+                return Math.Atan(Y / X);
+            }
+            else
+            {
+                if (Y >= 0)
+                {
+                    return Math.Atan(Y / X) + Math.PI;
+                }
+                else
+                {
+                    return Math.Atan(Y / X) - Math.PI;
+                }
+            }
         }
     }
 }
