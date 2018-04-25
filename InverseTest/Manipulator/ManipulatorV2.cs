@@ -325,7 +325,7 @@ namespace InverseTest
             ConfirmRotation();
             if (partOnRightPos.TrueForAll(b => b))
             {
-                Console.WriteLine("ANgimation stoped");
+                Console.WriteLine("Animation stoped");
                 timer.Stop();
                 isAnimated = false;
             }

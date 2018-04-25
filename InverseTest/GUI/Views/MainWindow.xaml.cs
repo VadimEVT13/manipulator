@@ -76,7 +76,7 @@ namespace InverseTest.GUI.Views
         {
             InitializeComponent();
             this.Loaded += this.MainWindowLoaded;
-
+            
             detailView = new DetailView();
         }
 

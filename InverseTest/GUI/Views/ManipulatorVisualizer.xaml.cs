@@ -52,7 +52,7 @@ namespace InverseTest.GUI.Views
             //TODO: Подробнее разобраться с настройками камер: свойство Near/FarPlaneDistance
             //TODO: Запилить настройки камеры зависящими от размеров модели манипулятора
 
-
+            
             // Настраиваем камеры
             cam2DTop = new OrthographicCamera
             {

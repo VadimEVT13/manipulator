@@ -26,12 +26,13 @@
         </Grid>
 
         <Button Content="ADD" Name="Add" Click="Add_Click"/>
-		<ListView  Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
+		<ListView  Width="auto" Height="auto" 
+            Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
                    SelectionMode="Single" 
             ItemsSource="{Binding PointsList, Source={x:Static path:ScanPath.getInstance}}"                   
                    SelectionChanged="TargetPointsListView_SelectionChanged">
 
-			<ListView.View>
+			<ListView.View >
 				<GridView>
 					<GridViewColumn Header="X" Width="auto" DisplayMemberBinding="{Binding point.X}" />
 					<GridViewColumn Header="Y" Width="auto" DisplayMemberBinding="{Binding point.Y}" />

@@ -44,29 +44,11 @@ namespace InverseTest.Workers
 
             rezults = this.kinematic.InverseNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);
 
-            //TODO Перенести проверку ограничений в библиотеку кинематики, добавить функцию для задания ограничений
-            // по умолчанию сделать все ограничения int.MaxValue. Если позиция не достижима то выкидывать исключение
-            // PositionUnattainableException
             if (rezults.Count > 0)
             {
-                Stack<Angle3D> satisfied = new Stack<Angle3D>();
-                Stack<Angle3D> unsatisfied = new Stack<Angle3D>();
-                foreach (Angle3D one in rezults)
-                {
-                    if (manipulatorBounds.CheckAngles(one))
-                    {
-                        satisfied.Push(one);
-                    }
-                    else
-                    {
-                        unsatisfied.Push(one);
-                    }
-                }
-
                 ManipulatorAngles angles;
-                if (satisfied.Count > 0)
-                {
-                    Angle3D rez = satisfied.Pop();
+               
+                    Angle3D rez = rezults.Pop();
                     angles = new ManipulatorAngles(
                         MathUtils.RadiansToAngle(rez.O1),
                         MathUtils.RadiansToAngle(rez.O2),
@@ -74,20 +56,7 @@ namespace InverseTest.Workers
                         MathUtils.RadiansToAngle(rez.O4),
                         MathUtils.RadiansToAngle(rez.O5)
                         );
-                }
-                else
-                {
-                    Angle3D rez = unsatisfied.Pop();
-                    angles = new ManipulatorAngles(
-                        MathUtils.RadiansToAngle(rez.O1),
-                        MathUtils.RadiansToAngle(rez.O2),
-                        MathUtils.RadiansToAngle(rez.O3),
-                        MathUtils.RadiansToAngle(rez.O4),
-                        MathUtils.RadiansToAngle(rez.O5),
-                        false
-                        );
-                }
-
+              
                 return angles;
             }
             else return null;

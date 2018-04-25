@@ -196,6 +196,6 @@
         </StackPanel>
 
         <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
-          <gui:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
+          <local:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>
