@@ -65,6 +65,46 @@ namespace Manipulator.GRBL.Models
         public int Timeout { get; set; }
 
         /// <summary>
+        /// Устройство содержит ось X.
+        /// </summary>
+        public bool IsX { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось Y.
+        /// </summary>
+        public bool IsY { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось Z.
+        /// </summary>
+        public bool IsZ { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось A.
+        /// </summary>
+        public bool IsA { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось B.
+        /// </summary>
+        public bool IsB { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось C.
+        /// </summary>
+        public bool IsC { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось D.
+        /// </summary>
+        public bool IsD { get; set; }
+
+        /// <summary>
+        /// Устройство содержит ось E.
+        /// </summary>
+        public bool IsE { get; set; }
+
+        /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
         public GDevice()
@@ -74,6 +114,14 @@ namespace Manipulator.GRBL.Models
             Parity = DEFAULT_PARITY;
             StopBits = DEFAULT_STOP_BITS;
             Timeout = DEFAULT_TIMEOUT;
+            IsX = true;
+            IsY = true;
+            IsZ = true;
+            IsA = true;
+            IsB = true;
+            IsC = true;
+            IsD = true;
+            IsE = true;
         }
     }
 }

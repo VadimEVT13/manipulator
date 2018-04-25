@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Ports;
+using System.Text;
 using System.Threading;
 using log4net;
 using Manipulator.GRBL.Utils;
@@ -230,7 +231,17 @@ namespace Manipulator.GRBL.Models
                 {
                     LOG.Info("Write: $H");
                     serialPort.WriteLine("$H");
-                    int i = 5;
+                    int i = 0;
+                    if (Settings.IsX) i++;
+                    if (Settings.IsY) i++;
+                    if (Settings.IsZ) i++;
+                    if (Settings.IsA) i++;
+
+                    if (Settings.IsB) i++;
+                    if (Settings.IsC) i++;
+                    if (Settings.IsD) i++;
+                    if (Settings.IsE) i++;
+
                     while (serialPort.IsOpen && i > 0)
                     {
                         Thread.Sleep(Settings.Timeout);
@@ -295,12 +306,7 @@ namespace Manipulator.GRBL.Models
             {
                 return;
             }
-            String cmd = "";
-            cmd += "X " + Convert.ToString(point.X).Replace(",", ".");
-            cmd += " Y " + Convert.ToString(point.Y).Replace(",", ".");
-            cmd += " Z " + Convert.ToString(point.Z).Replace(",", ".");
-            cmd += " A " + Convert.ToString(point.A).Replace(",", ".");
-            cmd += " B " + Convert.ToString(point.B).Replace(",", ".");
+            String cmd = PointToString(point);
             lock (locker)
             {
                 try
@@ -339,6 +345,57 @@ namespace Manipulator.GRBL.Models
         }
 
         /// <summary>
+        /// Преобразование точки в команду GRBL
+        /// </summary>
+        /// <param name="point">точка</param>
+        /// <returns>точка в GRBL</returns>
+        public String PointToString(GPoint point)
+        {
+            StringBuilder cmd = new StringBuilder();
+            if (Settings.IsX)
+            {
+                cmd.Append(" X ");
+                cmd.Append(Convert.ToString(point.X).Replace(",", "."));
+            }
+            if (Settings.IsY)
+            {
+                cmd.Append(" Y ");
+                cmd.Append(Convert.ToString(point.Y).Replace(",", "."));
+            }
+            if (Settings.IsZ)
+            {
+                cmd.Append(" Z ");
+                cmd.Append(Convert.ToString(point.Z).Replace(",", "."));
+            }
+            if (Settings.IsA)
+            {
+                cmd.Append(" A ");
+                cmd.Append(Convert.ToString(point.A).Replace(",", "."));
+            }
+            if (Settings.IsB)
+            {
+                cmd.Append(" B ");
+                cmd.Append(Convert.ToString(point.B).Replace(",", "."));
+            }
+            if (Settings.IsC)
+            {
+                cmd.Append(" C ");
+                cmd.Append(Convert.ToString(point.C).Replace(",", "."));
+            }
+            if (Settings.IsD)
+            {
+                cmd.Append(" D ");
+                cmd.Append(Convert.ToString(point.D).Replace(",", "."));
+            }
+            if (Settings.IsE)
+            {
+                cmd.Append(" E ");
+                cmd.Append(Convert.ToString(point.E).Replace(",", "."));
+            }
+            return cmd.ToString();
+        }
+
+        /// <summary>
         /// Перемещение устройства в локальную точку.
         /// </summary>
         /// <param name="point">точка перемещения</param>
@@ -348,12 +405,7 @@ namespace Manipulator.GRBL.Models
             {
                 return;
             }
-            String cmd = "";
-            cmd += "X " + Convert.ToString(point.X).Replace(",", ".");
-            cmd += " Y " + Convert.ToString(point.Y).Replace(",", ".");
-            cmd += " Z " + Convert.ToString(point.Z).Replace(",", ".");
-            cmd += " A " + Convert.ToString(point.A).Replace(",", ".");
-            cmd += " B " + Convert.ToString(point.B).Replace(",", ".");
+            String cmd = PointToString(point);
             lock (locker)
             {
                 try

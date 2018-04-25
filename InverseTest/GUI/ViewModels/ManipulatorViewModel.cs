@@ -201,7 +201,13 @@ namespace InverseTest.GUI.ViewModels
                           Status = "Update";
                           GPort.GetInstance().Settings = new GDevice
                           {
-                              Name = "Grbl X-ray portal"
+                              Name = "Grbl X-ray portal",
+                              IsY = false,
+                              IsA = false,
+                              IsB = false,
+                              IsC = false,
+                              IsD = false,
+                              IsE = false
                           };
                           GPort.GetInstance().Open();
                           State = GPort.GetInstance().State();
