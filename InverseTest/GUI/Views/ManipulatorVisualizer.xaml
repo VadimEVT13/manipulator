@@ -7,8 +7,7 @@
 			 xmlns:localVMs="clr-namespace:InverseTest.GUI.ViewModels"
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="202.667" d:DesignWidth="132.666"
-             >
+             d:DesignHeight="202.667" d:DesignWidth="132.666">
     <UserControl.Resources>
 		<localVMs:DetectorViewModel x:Key="DetectorVM"/>
 		<localVMs:ManipulatorViewModel x:Key="ManipulatorVM"/>
@@ -119,15 +118,10 @@
                                 <Setter Property="Grid.Column" Value="1"/>
                             </Style>
                         </Grid.Style>
-
-
                         <h:HelixViewport3D Name="ViewPort3D" ClipToBounds="False" Grid.Row="1" Grid.Column="1" 
                                ShowCoordinateSystem="True" ShowViewCube="False"
-                               BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true" 
-                               
-                               />
+                               BorderBrush="Black" BorderThickness="1"  IsZoomEnabled="true"/>
                         <ToggleButton x:Name="View3DLabel" Content="3D" Style="{StaticResource ViewButtonStyle}"/>
-
                     </Grid>
                 </Grid>
             </TabItem.Content>
@@ -168,12 +162,6 @@
                     </Grid>
                 </Grid>
             </TabItem.Content>
-        </TabItem>
-		<TabItem Header="Детектор">
-			<local:DetectorView DataContext="{Binding Source={StaticResource DetectorVM}}" />
-		</TabItem>
-		<TabItem Header="Манипулятор">
-			<local:ManipulatorView DataContext="{Binding Source={StaticResource ManipulatorVM}}" />
-		</TabItem>
+        </TabItem>		
 	</TabControl> 
 </UserControl>

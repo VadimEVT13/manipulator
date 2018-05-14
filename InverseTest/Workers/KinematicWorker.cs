@@ -79,7 +79,6 @@ namespace InverseTest.Workers
                 return null;
             }
         }
-
     }
 }
 

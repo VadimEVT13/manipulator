@@ -4,9 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:InverseTest.GUI.Views"
+        xmlns:localVM="clr-namespace:Foundation.Presentation.ViewModels;assembly=Foundation.Presentation"
         mc:Ignorable="d"
-        Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
-	<DockPanel Margin="0,0,0,0">
+        Title="MainWindow"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen"
+        DataContext="local">
+    
+    <DockPanel Margin="0,0,0,0">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="Файл" Margin="1" Padding="15,2">
 				<MenuItem Header="Загрузить модель" Click="LoadModel_Click"/>
@@ -19,9 +22,7 @@
             <MenuItem Header="Детали" Margin="1" Padding="15,2">
                 <MenuItem Header="Шпангоут" Name="ShpangountDetail" Click="ShpangountDetail_Click"/>
                 <MenuItem Header="Лопатка" Name="LopatkaDetail" Click="LopatkaDetail_Click"/>
-
-            </MenuItem>
-            
+            </MenuItem>            
 		</Menu>
 		<ScrollViewer DockPanel.Dock="Right" Width="180" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
@@ -83,16 +84,18 @@
                     </StackPanel>
                 </Expander>
 			</StackPanel>
-
-
-
         </ScrollViewer>
-
+        
         <StackPanel DockPanel.Dock="Left" Width="160" >
+            <ToggleButton Content="Подключение" Name="SystemConnectionTogleButton"  Margin="8,8,0,0"></ToggleButton>
+            <Popup IsOpen="{Binding ElementName=SystemConnectionTogleButton, Path=IsChecked}" Placement="Mouse" Name="ConnectionPopUp" >
+                <local:ConnectionPopUp></local:ConnectionPopUp>
+            </Popup>            
+            
             <StackPanel  Orientation="Horizontal">
                 <Label Content="Координаты точки съемки"/>
             </StackPanel>
-			<Grid>
+            <Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition/>
@@ -105,8 +108,8 @@
 				</Grid.RowDefinitions>
 				<Label Content="X" Grid.Column="0" Grid.Row="0"/>
 				<Label Content="Y" Grid.Column="0" Grid.Row="1"/>
-				<Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-				
+				<Label Content="Z" Grid.Column="0" Grid.Row="2"/>				
+                
 				<TextBox IsReadOnly="True" Name="TargetPointXTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
 				<TextBox IsReadOnly="True" Name="TargetPointYTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
 				<TextBox IsReadOnly="True" Name="TargetPointZTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
@@ -141,9 +144,9 @@
 				<TextBox Text="0" Grid.Column="2" Grid.Row="2" Margin="5"
 						 Name="PointManipulatorZTextBox" KeyDown="PointManipulatorTextBox_KeyDown"/>
 			</Grid>
-            
-            <Button Content="Повернуть станок" Name="RotateManipulatorButton" Click="RotateManipulatorButton_OnClick"/>
-            <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
+
+            <Button Content="Повернуть станок" Name="RotateManipulatorButton" Margin="8,8,0,0" Click="RotateManipulatorButton_OnClick"/>
+            <Button Content="Сброс" Name="ResetManipulatorButton" Margin="8,8,0,0" Click="ResetManipulatorButton_OnClick"/>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
@@ -160,7 +163,7 @@
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
-                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto"  >
+                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto">
                     <StackPanel Orientation="Horizontal" Background="WhiteSmoke">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -171,31 +174,27 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBox Grid.Column="0" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocusDistanceTextBox" Text="{Binding ElementName=FocusDistanceSlider, Path=Value, Mode=TwoWay}"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" Name="FocueEnlargmentTextBox" Text="{Binding ElementName=FocusEnlargementSlider, Path=Value, Mode=TwoWay}"/>
+                            <TextBox Grid.Column="0" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" 
+                                     Name="FocusDistanceTextBox" 
+                                     Text="{Binding Focus}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" 
+                                     Name="FocueEnlargmentTextBox" 
+                                     Text="{Binding FocusEnlagment}"/>
                             <Slider Grid.Column="0" Grid.Row="1" Name="FocusDistanceSlider"  Width="100" Maximum="100"
                                     Minimum="0" Margin="0,0,8,8"  AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight" 
-                                    ValueChanged="FocusDistanceSlider_ValueChanged" 
-                                    Value="{Binding ElementName=FocusDistanceTextBox, Path=Text}"
-                                    />
+                                    ValueChanged="FocusDistanceSlider_ValueChanged"/>
                             <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1" 
                                     Width="100" SmallChange="0.5" LargeChange="0.5" Maximum="3" Margin="0,0,8,8"
-                            Minimum="0" Ticks="0,0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
+                            Minimum="0.5" Ticks="0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"
-                            ValueChanged="FocusEnlargementSlider_ValueChanged"
-                                    
-                                    >
+                            ValueChanged="FocusEnlargementSlider_ValueChanged">
                             </Slider>
                         </Grid>
-
                     </StackPanel>
                 </Popup>
             </StackPanel>
-
             <local:PathListView x:Name="PathListView" Width="Auto"/>
         </StackPanel>
-
-        <!-- <Button Content="ShowBorders" Name="ShowBorders"  Click="ShowBorders_Click"/>-->
           <local:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

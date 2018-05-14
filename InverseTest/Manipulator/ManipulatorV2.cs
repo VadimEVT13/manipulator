@@ -78,6 +78,7 @@ namespace InverseTest
             {
                 partAngles[ManipulatorParts.Table] = value;
                 ConfirmRotation();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -94,6 +95,7 @@ namespace InverseTest
             {
                 partAngles[ManipulatorParts.MiddleEdge] = value;
                 ConfirmRotation();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -110,6 +112,7 @@ namespace InverseTest
             {
                 partAngles[ManipulatorParts.TopEdge] = value;
                 ConfirmRotation();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -126,6 +129,7 @@ namespace InverseTest
             {
                 partAngles[ManipulatorParts.CameraBase] = value;
                 ConfirmRotation();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -142,6 +146,7 @@ namespace InverseTest
             {
                 partAngles[ManipulatorParts.Camera] = value;
                 ConfirmRotation();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -183,6 +188,7 @@ namespace InverseTest
         bool isAnimated = false;
 
         public event PositionHandler onPositionChanged;
+        public event ManualPositionHandler onManulaPositionChanged;
 
         /// <summary>
         /// Создание и конфигурация модели манипулятора
@@ -192,8 +198,6 @@ namespace InverseTest
         {
             try
             {
-
-
                 // Камера
                 Model3DGroup cam3DModel = new Model3DGroup();
                 cam3DModel.Children.Add(machine3DModel.Children[8]);

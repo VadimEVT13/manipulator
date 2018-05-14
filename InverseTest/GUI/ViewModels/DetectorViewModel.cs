@@ -396,9 +396,6 @@ namespace InverseTest.GUI.ViewModels
             return speed;
         }
 
-
-
-
         private double GetLimitValue(double value, double state, double minValue, double maxValue)
         {
             if (state + value < minValue)

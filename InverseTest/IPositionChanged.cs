@@ -8,8 +8,12 @@ namespace InverseTest
 {
     public delegate void PositionHandler();
 
+    public delegate void ManualPositionHandler();
+
    public  interface IPositionChanged
     {
         event PositionHandler onPositionChanged;
+
+        event ManualPositionHandler onManulaPositionChanged;
     }
 }

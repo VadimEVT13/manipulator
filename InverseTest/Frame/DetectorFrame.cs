@@ -49,6 +49,7 @@ namespace InverseTest
             {
                 partOffset[Parts.VerticalFrame] = value;
                 ConfirmPosition();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -65,6 +66,7 @@ namespace InverseTest
             {
                 partOffset[Parts.HorizontalBar] = value;
                 ConfirmPosition();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -81,6 +83,7 @@ namespace InverseTest
             {
                 partOffset[Parts.ScreenHolder] = value;
                 ConfirmPosition();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -102,6 +105,7 @@ namespace InverseTest
             {
                 verticalAngle = value;
                 ConfirmPosition();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -123,6 +127,7 @@ namespace InverseTest
             {
                 horizontalAngle = value;
                 ConfirmPosition();
+                onManulaPositionChanged?.Invoke();
             }
         }
 
@@ -150,6 +155,7 @@ namespace InverseTest
         bool isAnimated = false;
 
         public event PositionHandler onPositionChanged;
+        public event ManualPositionHandler onManulaPositionChanged;
 
         public DetectorFrame(Model3DGroup portal)
         {
@@ -415,7 +421,6 @@ namespace InverseTest
             camPositionCubeGroup.Children.Add(horizRotate);
             camPositionCubeGroup.Children.Add(vertRotate);
             parts[Parts.ScreenCameraPos].TranslateTransform3D(camPositionCubeGroup);
-
 
             onPositionChanged?.Invoke();
         }

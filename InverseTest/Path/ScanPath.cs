@@ -14,6 +14,10 @@ namespace InverseTest.Path
     public delegate void OnPointRemove(ScanPoint p);
     public delegate void OnPointTransformed(Transform3D t);
 
+
+    /// <summary>
+    /// Класс для хранения списка точек сканирования
+    /// </summary>
     public class ScanPath : INotifyPropertyChanged
     {
         private static ScanPath instance;
@@ -58,6 +62,7 @@ namespace InverseTest.Path
             {
                 if (instance == null)
                 {
+                    //Потокобезопасность 
                     lock (syncRoot)
                     {
                         if (instance == null)
@@ -68,6 +73,10 @@ namespace InverseTest.Path
             }
         }
 
+        /// <summary>
+        /// Добавление точки в список
+        /// </summary>
+        /// <param name="point"></param>
         public void AddPoint(ScanPoint point)
         {
             this.points.Add(point);
@@ -75,6 +84,10 @@ namespace InverseTest.Path
             this.PointAdd?.Invoke(point);
         }
 
+        /// <summary>
+        /// Удаление точки из списка
+        /// </summary>
+        /// <param name="point"></param>
         public void RemovePoint(ScanPoint point)
         {
             var removing = this.points.Remove(point);
@@ -84,6 +97,10 @@ namespace InverseTest.Path
                 this.PointRemove?.Invoke(point);
         }
 
+        /// <summary>
+        /// Преобразование всех точек в списке
+        /// </summary>
+        /// <param name="transform"></param>
         public void TransformPoint(Transform3D transform)
         {
             for (int i = 0; i < points.Count; i++)
@@ -92,7 +109,6 @@ namespace InverseTest.Path
             }
             NotifyPropertyChanged("Transformed");
             this.PointTransformed?.Invoke(transform);
-
         }
     }
 }
