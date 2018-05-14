@@ -10,7 +10,7 @@
         Title="DetailView" Height="400" Width="400">
 	<Grid>
 		<h:HelixViewport3D Name="DetailViewPort" IsZoomEnabled="True"  IsRotationEnabled="True"
-                            CameraMode="WalkAround" CameraRotationMode="Trackball"/>
+                            CameraMode="WalkAround" CameraRotationMode="Trackball" />
 		<Slider DockPanel.Dock="Bottom" Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0"
                     VerticalAlignment="Bottom"  ValueChanged="RotateDetailSlider_ValueChanged"/>
 	</Grid>

@@ -16,17 +16,18 @@
     <Grid>
         <Grid Visibility="Visible" Name="TargetPointsListButtonsGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="53*" />
-                <ColumnDefinition Width="53"/>
-                <ColumnDefinition Width="53" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
         </Grid>
 
-        <Button Content="ADD" Name="Add" Click="Add_Click"/>
-		<ListView  Width="auto" Height="auto" 
+        <ListView  Width="auto" Height="auto"                   
+                   ScrollViewer.CanContentScroll="True"
+                   ScrollViewer.VerticalScrollBarVisibility="Visible"
             Visibility="Visible" Name="TargetPointsListView" ItemContainerStyle="{StaticResource itemstyle}" 
                    SelectionMode="Single" 
             ItemsSource="{Binding PointsList, Source={x:Static path:ScanPath.getInstance}}"                   
@@ -40,5 +41,5 @@
 				</GridView>
 			</ListView.View>
 		</ListView>
-	</Grid>
+        </Grid>
 </UserControl>

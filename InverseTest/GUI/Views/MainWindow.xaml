@@ -163,7 +163,8 @@
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
-                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto">
+                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto" >
+                    <Border BorderThickness="2" BorderBrush="LightGray" >
                     <StackPanel Orientation="Horizontal" Background="WhiteSmoke">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -191,6 +192,7 @@
                             </Slider>
                         </Grid>
                     </StackPanel>
+                    </Border>
                 </Popup>
             </StackPanel>
             <local:PathListView x:Name="PathListView" Width="Auto"/>

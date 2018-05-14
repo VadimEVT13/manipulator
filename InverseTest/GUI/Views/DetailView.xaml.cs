@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -29,6 +30,7 @@ namespace InverseTest.GUI.Views
             InitializeComponent();
             setCamera();
             setLight();
+            configViewPort();
             this.orderedPoints = new Dictionary<Visual3D, ScanPointVisual>();
             this.Closing += WindowClosing;
             Path.ScanPath.Instance.PointTransformed += this.TransformPointVisual;
@@ -42,7 +44,6 @@ namespace InverseTest.GUI.Views
         private void setCamera()
         {
             cam3D = CameraHelper.CreateDefaultCamera();
-
             DetailViewPort.Camera = cam3D;
             DetailViewPort.CameraMode = CameraMode.Inspect;
             DetailViewPort.CameraRotationMode = CameraRotationMode.Turntable;
@@ -57,7 +58,11 @@ namespace InverseTest.GUI.Views
             DetailViewPort.Camera.Position = new Point3D(pointToView.X, pointToView.Y, pointToView.Z - 70);
             DetailViewPort.Camera.LookDirection = new Vector3D(0, 0, 1);
             DetailViewPort.Camera.UpDirection = new Vector3D(0, 1, 0);
+        }
 
+        private void configViewPort()
+        {
+            this.DetailViewPort.RotateGesture = new MouseGesture(MouseAction.MiddleClick, ModifierKeys.Control);
         }
 
         private void setLight()

@@ -14,7 +14,9 @@ namespace InverseTest.Detail
     public delegate void AddNewPoint(Point3D point);
     public delegate void RemovePoint(Visual3D visual);
 
-
+    /// <summary>
+    /// Отвечает за создание и удаление точек на детали. 
+    /// </summary>
     class DetailPointsCreator : IDetailMouseListener
     {
         private DetailModel detail;
@@ -44,7 +46,7 @@ namespace InverseTest.Detail
                     AddNewPointCallback(rayResult.PointHit);
                 }
             }
-            return HitTestResultBehavior.Continue;
+            return HitTestResultBehavior.Stop;
         }
 
         public void OnMouseRightDown(object sender, MouseEventArgs e)
@@ -60,7 +62,7 @@ namespace InverseTest.Detail
             if (result is RayHitTestResult rayResult){
                 RemovePointCallback(rayResult.VisualHit);
             }
-            return HitTestResultBehavior.Continue;
+            return HitTestResultBehavior.Stop;
         }
 
     }

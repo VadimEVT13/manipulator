@@ -192,7 +192,7 @@ namespace InverseTest.GUI.Views
 
             this.detailView.Owner = this;
             detailView.Show();
-           }
+        }
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
