@@ -62,8 +62,9 @@ namespace InverseTest
         public readonly Dictionary<ManipulatorParts, IManipulatorPart> parts = new Dictionary<ManipulatorParts, IManipulatorPart>();
         private Dictionary<ManipulatorParts, double> partAngles = new Dictionary<ManipulatorParts, double>();
 
-        private Dictionary<ManipulatorParts, double> partDeltasToRotate = new Dictionary<ManipulatorParts, double>();
         private ManipulatorAngles anglesToSet;
+
+        private ManipulatorAnimator animator;
 
         /// <summary>
         /// Положение первого колена.
@@ -184,8 +185,6 @@ namespace InverseTest
 
         private readonly Model3D _cameraposition;
 
-        DispatcherTimer timer;
-        bool isAnimated = false;
 
         public event PositionHandler onPositionChanged;
         public event ManualPositionHandler onManulaPositionChanged;
@@ -217,11 +216,11 @@ namespace InverseTest
                 Model3DGroup middleEdge3DModel = new Model3DGroup();
                 middleEdge3DModel.Children.Add(machine3DModel.Children[3]);
                 middleEdge3DModel.Children.Add(machine3DModel.Children[4]);
-                
+
                 // Столик 
                 Model3DGroup table3DModel = new Model3DGroup();
                 table3DModel.Children.Add(machine3DModel.Children[2]);
-                
+
                 // Основание
                 Model3DGroup base3DModel = new Model3DGroup();
                 base3DModel.Children.Add(machine3DModel.Children[1]);
@@ -263,10 +262,8 @@ namespace InverseTest
 
                 _manipulator3DModel.Children = _edges;
 
-                timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromTicks(1000);
-                timer.Tick += animation_tick;
 
+                this.animator = new ManipulatorAnimator(this);
             }
             catch (InvalidOperationException e)
             {
@@ -282,70 +279,29 @@ namespace InverseTest
 
         public virtual void MoveManipulator(ManipulatorAngles angles, bool animate)
         {
+
+            if (animator.IsAnimated)
+                animator.StopAnimation();
+
             if (animate)
-                startAnimation(angles);
+                animator.StartAnimation(angles);
             else
             {
                 try
                 {
                     setAngles(angles);
                 }
-                catch (NullReferenceException ex) {
+                catch (NullReferenceException ex)
+                {
                     Console.WriteLine(ex.Message);
                 }
             }
         }
-
-        private void startAnimation(ManipulatorAngles angles)
-        {
-            if (!isAnimated)
-            {
-                this.anglesToSet = angles;
-
-                foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
-                    partDeltasToRotate[part] = (angles.partAngles[part] - partAngles[part]) / 1000;
-                timer.Start();
-                isAnimated = true;
-            }
-        }
-
-        private void setAngles(ManipulatorAngles angles)
+    
+        public void setAngles(ManipulatorAngles angles)
         {
             partAngles = angles.partAngles;
             ConfirmRotation();
-        }
-
-        void animation_tick(object sender, EventArgs arg)
-        {
-
-            List<bool> partOnRightPos = new List<bool>();
-            foreach (ManipulatorParts part in Enum.GetValues(typeof(ManipulatorParts)))
-            {
-                bool onRightPos;
-                partAngles[part] = checkedAngle(part, out onRightPos);
-                partOnRightPos.Add(onRightPos);
-            }
-
-            ConfirmRotation();
-            if (partOnRightPos.TrueForAll(b => b))
-            {
-                Console.WriteLine("Animation stoped");
-                timer.Stop();
-                isAnimated = false;
-            }
-        }
-        
-        private double checkedAngle(ManipulatorParts part, out bool onRightPosition)
-        {
-            double angle = partAngles[part] + partDeltasToRotate[part];
-            onRightPosition = false;
-
-            if (Math.Abs(anglesToSet.partAngles[part]) - Math.Abs(angle) <= 2 * Math.Abs(partDeltasToRotate[part]))
-            {
-                angle = anglesToSet.partAngles[part];
-                onRightPosition = true;
-            }
-            return angle;
         }
 
         /// <summary>
@@ -380,7 +336,7 @@ namespace InverseTest
                     rotationAxis = new Vector3D(0, 0, 1);
                     break;
 
-              case ManipulatorParts.TopEdge:
+                case ManipulatorParts.TopEdge:
                     modelToRotate = parts[ManipulatorParts.TopEdge];
                     rotatePoint = MathUtils.GetRectCenter(_jointCubes[1].Bounds);
                     rotationAxis = new Vector3D(0, 0, 1);
@@ -451,7 +407,7 @@ namespace InverseTest
             R = GetRotateTransfofm(ManipulatorParts.TopEdge, partAngles[ManipulatorParts.TopEdge]);
             topEdgeGroup.Children.Add(R);
             topEdgeGroup.Children.Add(middleEdgeGroup);
-            
+
             R = GetRotateTransfofm(ManipulatorParts.CameraBase, partAngles[ManipulatorParts.CameraBase]);
             cameraBaseGroup.Children.Add(R);
             cameraBaseGroup.Children.Add(topEdgeGroup);
@@ -460,8 +416,8 @@ namespace InverseTest
             cameraGroup.Children.Add(R);
             cameraGroup.Children.Add(cameraBaseGroup);
 
-            _cameraposition.Transform =  cameraGroup;
-            
+            _cameraposition.Transform = cameraGroup;
+
             CalculateCameraDirection(cameraGroup);
 
             parts[ManipulatorParts.Camera].RotateTransform3D(cameraGroup);
@@ -536,14 +492,5 @@ namespace InverseTest
             resPoint = new Point3D(bounds.X + bounds.SizeX / 2, bounds.Y + bounds.SizeY / 2, bounds.Z + bounds.SizeZ / 2);
             return resPoint;
         }
-
-
-        public override string ToString()
-        {
-            return parts[ManipulatorParts.Camera].GetModel().Bounds.ToString();
-
-        }
-
-      
     }
 }

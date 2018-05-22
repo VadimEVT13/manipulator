@@ -352,18 +352,64 @@ namespace InverseTest.GUI.Views
         /// <param name="model"></param>
         private void RemoveModelFromViewPort(HelixViewport3D viewport, Model3D model)
         {
-            foreach (Visual3D visual3D in viewport.Children)
+
+            var childrens = viewport.Children;
+            foreach (Visual3D visual3D in childrens)
             {
                 if (visual3D is ModelVisual3D)
                 {
                     ModelVisual3D modelVisual3D = visual3D as ModelVisual3D;
                     if (modelVisual3D.Content == model)
                     {
-                        viewport.Children.Remove(modelVisual3D);                        
+                        viewport.Children.Remove(modelVisual3D);
+                        break;
                     }
                 }
             }
         }
+
+
+        /// <summary>
+        /// Возвращает true если model добавлена в каком либо viewPort
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool IsModelExist(Model3D model)
+        {
+            var res = false;
+
+            res |= checkViewPort(ViewPort2DFront, model);
+            res |= checkViewPort(ViewPort2DRight, model);
+            res |= checkViewPort(ViewPort3D, model);
+            res |= checkViewPort(ViewPortDetectorScreenCam, model);
+            res |= checkViewPort(ViewPortManipulatorCam, model);
+            return res;
+        }
+
+
+
+        /// <summary>
+        /// Проверяет если ли входная модель в данном viewPort
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private bool checkViewPort(HelixViewport3D viewport,Model3D model)
+        {
+
+            foreach(Visual3D v in viewport.Children)
+            {
+                if(v is ModelVisual3D mv)
+                {
+                    if (mv.Content == model)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+
 
         private void RemoveVisualFromViewPort(HelixViewport3D viewport, Visual3D visual)
         {

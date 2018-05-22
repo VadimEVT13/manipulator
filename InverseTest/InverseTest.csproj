@@ -231,6 +231,7 @@
     <Compile Include="GUI\Views\DetectorView.xaml.cs">
       <DependentUpon>DetectorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Manipulator\ManipulatorAnimator.cs" />
     <Compile Include="Manipulator\ManipulatorPositionController.cs" />
     <Compile Include="Manipulator\ManipulatorVisualFactory.cs" />
     <Compile Include="Manipulator\Models\LengthJoin.cs" />

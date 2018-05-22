@@ -29,7 +29,9 @@
 				<Expander Header="Манипулятор">
 					<StackPanel>
 						<Label Content="Первое колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" Value="90" ValueChanged="T1Slider_ValueChanged"/>
+                        <Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" 
+                                Value="{Binding Source={StaticResource ManipulatorVM}, Path=X, Mode=OneWayToSource}" 
+                                ValueChanged="T1Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
@@ -50,25 +52,36 @@
 					</StackPanel>
 				</Expander>
 				<Expander Header="Детектор">
-					<StackPanel>
+                    <StackPanel DataContext="{Binding Source={StaticResource DetectorVM}}">
 						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
-						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="10" ValueChanged="VerticalFrameSlider_ValueChanged"/>
+						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450"
+                                SmallChange="1" ValueChanged="VerticalFrameSlider_ValueChanged"
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=X, Mode=OneWayToSource}"/>
 						<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
-						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="HorizontalBarSlider_ValueChanged"/>
+						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" 
+                                SmallChange="1" 
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=Y, Mode=OneWayToSource}"
+                                ValueChanged="HorizontalBarSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" SmallChange="1" Value="10" ValueChanged="ScreenHolderSlider_ValueChanged"/>
+						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" 
+                         Value="{Binding Source={StaticResource DetectorVM}, Path=Z, Mode=OneWayToSource}"
+                                SmallChange="1" ValueChanged="ScreenHolderSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="87" ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenVerticalAngleSlider" 
+                                Minimum="10" Maximum="160" SmallChange="1" 
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=B, Mode=OneWayToSource}"
+                                ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="40" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1"
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 					</StackPanel>
 				</Expander>
@@ -157,13 +170,14 @@
                 <CheckBox x:Name="DetailProjection" Checked="DetailProjection_Checked" Unchecked="DetailProjection_Unchecked" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ToggleButton Content="Анимация" Name="AnimationTogleButton" Checked="ToggleAnimation_Checked" Unchecked="ToggleAnimation_Unchecked"/>
+                <ToggleButton Content="Анимация" Name="AnimationTogleButton"
+                            IsChecked="{Binding Animate}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
-                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto" >
+                <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto">
                     <Border BorderThickness="2" BorderBrush="LightGray" >
                     <StackPanel Orientation="Horizontal" Background="WhiteSmoke">
                         <Grid>
