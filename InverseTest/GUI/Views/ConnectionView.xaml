@@ -9,6 +9,7 @@
       Background="LightGray"
       >
 
+
     <Grid>
         <TabControl>
             <TabItem Header="Манипулятор">

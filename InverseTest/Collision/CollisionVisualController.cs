@@ -12,15 +12,15 @@ namespace InverseTest.Collision
 {
     class CollisionVisualController
     {
-        private ManipulatorVisual manipulator;
-        private DetectorFrameVisual portal;
-        private DetailVisualCollisionController detail; 
+        public ManipulatorVisual manipulator;
+        public DetectorFrameVisual portal;
+        public DetailVisualCollisionController Detail { get; set; } 
 
         public CollisionVisualController(ManipulatorVisual manip, DetectorFrameVisual portal, DetailVisualCollisionController detail)
         {
             this.manipulator = manip;
             this.portal = portal;
-            this.detail = detail;
+            this.Detail = detail;
         }
 
         public void Collisions(List<CollisionPair> collisions)
@@ -59,7 +59,7 @@ namespace InverseTest.Collision
                
             }
 
-            this.detail.ChangePartsColor(detailParts);
+            this.Detail.ChangePartsColor(detailParts);
             this.manipulator.ChangePartsColor(manipParts);
             this.portal.ChangePartsColor(portalParts);
         }

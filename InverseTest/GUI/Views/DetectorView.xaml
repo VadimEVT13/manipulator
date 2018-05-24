@@ -7,6 +7,8 @@
              xmlns:local="clr-namespace:InverseTest.GUI.Views"
              mc:Ignorable="d" 
              >
+
+    
 	<UserControl.InputBindings>
 		<KeyBinding Command="{Binding Open}" Key="O" />
 		<KeyBinding Command="{Binding Close}" Key="C" />
@@ -31,19 +33,19 @@
 		<TextBlock Margin="5" TextAlignment="Left" Text="{Binding Status}"/>
 		<StackPanel Orientation="Horizontal">
 			<StackPanel>
-				<Button Margin="5" Width="70" Content="Open" Command="{Binding Open}" />
-				<Button Margin="5" Width="70" Content="Close" Command="{Binding Close}" />
+				<Button Content="Открыть" Command="{Binding Open}" />
+                <Button  Content="Закрыть" Command="{Binding Close}" />
 			</StackPanel>
 			<StackPanel>
-				<Button Margin="5" Width="70" Content="Start" Command="{Binding Start}" />
-				<Button Margin="5" Width="70" Content="Pause" Command="{Binding Pause}" />
+                <Button  Content="Старт" Command="{Binding Start}" />
+                <Button  Content="Пауза" Command="{Binding Pause}" />
 			</StackPanel>
 			<StackPanel>
-				<Button Margin="5" Width="70" Content="Home" Command="{Binding Home}" />
-				<Button Margin="5" Width="70" Content="Unlock" Command="{Binding Unlock}" />
+                <Button  Content="Домой" Command="{Binding Home}" />
+                <Button  Content="Разблокировать" Command="{Binding Unlock}" />
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Margin="5" Width="70" Height="20" Text="Step"/>
+				<TextBlock Margin="5" Width="70" Height="20" Text="Шаг"/>
 				<TextBox Margin="5" Width="70" Text="{Binding Speed}"/>
 			</StackPanel>
 		</StackPanel>

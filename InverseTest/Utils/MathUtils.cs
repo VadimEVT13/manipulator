@@ -14,7 +14,6 @@ namespace InverseTest.Manipulator
             return (angle * Math.PI) / 180;
         }
 
-
         public static double RadiansToAngle(double radians)
         {
             return (radians * 180) / Math.PI;

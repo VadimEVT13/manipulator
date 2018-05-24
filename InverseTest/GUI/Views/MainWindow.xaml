@@ -49,7 +49,10 @@
 						<Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="90" ValueChanged="T5Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T5Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-					</StackPanel>
+
+                        <Button Content="Установить манипулятор" Command="{Binding Source={StaticResource ManipulatorVM}, Path=Global}"/>
+
+                    </StackPanel>
 				</Expander>
 				<Expander Header="Детектор">
                     <StackPanel DataContext="{Binding Source={StaticResource DetectorVM}}">
@@ -83,8 +86,15 @@
 						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1"
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-					</StackPanel>
-				</Expander>
+
+                        <Button Content="Установить детектор"  Command="{Binding Source={StaticResource DetectorVM}, Path=Global}" />
+
+
+
+                    </StackPanel>
+
+
+                </Expander>
 				<Expander Header="Деталь">
                     <StackPanel>
                         <TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
@@ -102,7 +112,10 @@
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <ToggleButton Content="Подключение" Name="SystemConnectionTogleButton"  Margin="8,8,0,0"></ToggleButton>
             <Popup IsOpen="{Binding ElementName=SystemConnectionTogleButton, Path=IsChecked}" Placement="Mouse" Name="ConnectionPopUp" >
-                <local:ConnectionPopUp></local:ConnectionPopUp>
+                <Border BorderThickness="2" BorderBrush="LightGray" >
+
+                    <local:ConnectionPopUp></local:ConnectionPopUp>
+                </Border>
             </Popup>            
             
             <StackPanel  Orientation="Horizontal">
@@ -158,8 +171,8 @@
 						 Name="PointManipulatorZTextBox" KeyDown="PointManipulatorTextBox_KeyDown"/>
 			</Grid>
 
-            <Button Content="Повернуть станок" Name="RotateManipulatorButton" Margin="8,8,0,0" Click="RotateManipulatorButton_OnClick"/>
-            <Button Content="Сброс" Name="ResetManipulatorButton" Margin="8,8,0,0" Click="ResetManipulatorButton_OnClick"/>
+            <Button Content="Повернуть станок" Name="RotateManipulatorButton"  Click="RotateManipulatorButton_OnClick"/>
+            <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
@@ -175,7 +188,8 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ToggleButton DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
+                <ToggleButton 
+                    DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
                 <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto">
                     <Border BorderThickness="2" BorderBrush="LightGray" >

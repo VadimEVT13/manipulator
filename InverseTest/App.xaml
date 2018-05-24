@@ -2,11 +2,32 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gui="clr-namespace:InverseTest.GUI"
+             xmlns:view="clr-namespace:InverseTest.GUI.Views"
              xmlns:localVm="clr-namespace:InverseTest.GUI.ViewModels"
              xmlns:local="clr-namespace:InverseTest"
              StartupUri="GUI/Views/MainWindow.xaml">
     <Application.Resources>
         <localVm:DetectorViewModel x:Key="DetectorVM"/>
         <localVm:ManipulatorViewModel x:Key="ManipulatorVM"/>
+
+
+        <Style TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Padding" Value="4,4,4,4"/>
+                <Setter Property="Height" Value="Auto"/>
+                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style.Setters>
+        </Style>
+
+        <Style TargetType="ToggleButton">
+            <Style.Setters>
+                <Setter Property="Padding" Value="4,4,4,4"/>
+                <Setter Property="Height" Value="Auto"/>
+                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style.Setters>
+        </Style>
+
     </Application.Resources>
 </Application>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InverseTest.Frame;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,10 @@ namespace InverseTest
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+          
+        }
+
     }
 }
