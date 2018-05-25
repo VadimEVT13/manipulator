@@ -35,23 +35,29 @@
 						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="90" ValueChanged="T2Slider_ValueChanged"/>
+                        <Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1"                
+                                Value="{Binding Source={StaticResource ManipulatorVM}, Path=Y, Mode=OneWayToSource}" 
+                            ValueChanged="T2Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T2Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="90" ValueChanged="T3Slider_ValueChanged"/>
+						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" 
+                        Value="{Binding Source={StaticResource ManipulatorVM}, Path=Z, Mode=OneWayToSource}" 
+                                ValueChanged="T3Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T3Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Четвертое колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" Value="0" ValueChanged="T4Slider_ValueChanged"/>
+						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" 
+                        Value="{Binding Source={StaticResource ManipulatorVM}, Path=A, Mode=OneWayToSource}" 
+                        ValueChanged="T4Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T4Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="90" ValueChanged="T5Slider_ValueChanged"/>
+                        <Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
+						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" 
+                         Value="{Binding Source={StaticResource ManipulatorVM}, Path=B, Mode=OneWayToSource}" 
+                         ValueChanged="T5Slider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=T5Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
                         <Button Content="Установить манипулятор" Command="{Binding Source={StaticResource ManipulatorVM}, Path=Global}"/>
-
                     </StackPanel>
 				</Expander>
 				<Expander Header="Детектор">
