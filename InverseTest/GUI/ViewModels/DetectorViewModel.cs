@@ -418,23 +418,23 @@ namespace InverseTest.GUI.ViewModels
         private GPoint GetPoint(GPoint position)
         {
             GPoint point = new GPoint();
-            if (Double.TryParse(X, out double valueX))
+            if (Double.TryParse(X.Replace('.', ','), out double valueX))
             {
                 point.X = GetLimitValue(valueX, position.X, LIMIT_X_MIN, LIMIT_X_MAX);
             }
-            if (Double.TryParse(Y, out double valueY))
+            if (Double.TryParse(Y.Replace('.', ','), out double valueY))
             {
                 point.Y = GetLimitValue(valueY, position.Y, LIMIT_Y_MIN, LIMIT_Y_MAX);
             }
-            if (Double.TryParse(Z, out double valueZ))
+            if (Double.TryParse(Z.Replace('.', ','), out double valueZ))
             {
                 point.Z = GetLimitValue(valueZ, position.Z, LIMIT_Z_MIN, LIMIT_Z_MAX);
             }
-            if (Double.TryParse(A, out double valueA))
+            if (Double.TryParse(A.Replace('.', ','), out double valueA))
             {
                 point.A = GetLimitValue(valueA, position.A, LIMIT_A_MIN, LIMIT_A_MAX);
             }
-            if (Double.TryParse(B, out double valueB))
+            if (Double.TryParse(B.Replace('.', ','), out double valueB))
             {
                 point.B = GetLimitValue(valueB, position.B, LIMIT_B_MIN, LIMIT_B_MAX);
             }
@@ -443,6 +443,11 @@ namespace InverseTest.GUI.ViewModels
             Z = Convert.ToString(point.Z);
             A = Convert.ToString(point.A);
             B = Convert.ToString(point.B);
+            Console.WriteLine(X);
+            Console.WriteLine(Y);
+            Console.WriteLine(Z);
+            Console.WriteLine(A);
+            Console.WriteLine(B);
             return point;
         }
 
