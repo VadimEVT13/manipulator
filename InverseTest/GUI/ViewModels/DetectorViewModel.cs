@@ -68,8 +68,8 @@ namespace InverseTest.GUI.ViewModels
             }
         }
 
-        private String x = "50,0";
-        public String X
+        private double x = 10;
+        public double X
         {
             get
             {
@@ -82,8 +82,8 @@ namespace InverseTest.GUI.ViewModels
             }
         }
 
-        private String y = "50,0";
-        public String Y
+        private double y = 10;
+        public double Y
         {
             get
             {
@@ -96,8 +96,8 @@ namespace InverseTest.GUI.ViewModels
             }
         }
 
-        private String z = "50,0";
-        public String Z
+        private double z = 10;
+        public double Z
         {
             get
             {
@@ -110,8 +110,8 @@ namespace InverseTest.GUI.ViewModels
             }
         }
 
-        private String a = "50,0";
-        public String A
+        private double a = 50;
+        public double A
         {
             get
             {
@@ -124,8 +124,8 @@ namespace InverseTest.GUI.ViewModels
             }
         }
 
-        private String b = "50,0";
-        public String B
+        private double b = 50;
+        public double B
         {
             get
             {
@@ -417,42 +417,19 @@ namespace InverseTest.GUI.ViewModels
 
         private GPoint GetPoint(GPoint position)
         {
-            GPoint point = new GPoint();
-            if (Double.TryParse(X, out double valueX))
+            GPoint point = new GPoint
             {
-                point.X = GetLimitValue(valueX, position.X, LIMIT_X_MIN, LIMIT_X_MAX);
-            }
-            if (Double.TryParse(Y, out double valueY))
-            {
-                point.Y = GetLimitValue(valueY, position.Y, LIMIT_Y_MIN, LIMIT_Y_MAX);
-            }
-            if (Double.TryParse(Z, out double valueZ))
-            {
-                point.Z = GetLimitValue(valueZ, position.Z, LIMIT_Z_MIN, LIMIT_Z_MAX);
-            }
-            if (Double.TryParse(A, out double valueA))
-            {
-                point.A = GetLimitValue(valueA, position.A, LIMIT_A_MIN, LIMIT_A_MAX);
-            }
-            if (Double.TryParse(B, out double valueB))
-            {
-                point.B = GetLimitValue(valueB, position.B, LIMIT_B_MIN, LIMIT_B_MAX);
-            }
-            X = Convert.ToString(point.X);
-            Y = Convert.ToString(point.Y);
-            Z = Convert.ToString(point.Z);
-            A = Convert.ToString(point.A);
-            B = Convert.ToString(point.B);
-            return point;
-        }
-
-        public GPoint SetPoint(GPoint point)
-        {
-            X = Convert.ToString(point.X);
-            Y = Convert.ToString(point.Y);
-            Z = Convert.ToString(point.Z);
-            A = Convert.ToString(point.A);
-            B = Convert.ToString(point.B);
+                X = GetLimitValue(X, position.X, LIMIT_X_MIN, LIMIT_X_MAX),
+                Y = GetLimitValue(Y, position.Y, LIMIT_Y_MIN, LIMIT_Y_MAX),
+                Z = GetLimitValue(Z, position.Z, LIMIT_Z_MIN, LIMIT_Z_MAX),
+                A = GetLimitValue(A, position.A, LIMIT_A_MIN, LIMIT_A_MAX),
+                B = GetLimitValue(B, position.B, LIMIT_B_MIN, LIMIT_B_MAX)
+            };
+            X = point.X;
+            Y = point.Y;
+            Z = point.Z;
+            A = point.A;
+            B = point.B;
             return point;
         }
 

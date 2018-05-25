@@ -64,20 +64,21 @@
                     <StackPanel DataContext="{Binding Source={StaticResource DetectorVM}}">
 						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450"
-                                SmallChange="1" ValueChanged="VerticalFrameSlider_ValueChanged"
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=X, Mode=OneWayToSource}"/>
+                                SmallChange="1"
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=X, Mode=OneWayToSource}"
+								ValueChanged="VerticalFrameSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" 
                                 SmallChange="1" 
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=Y, Mode=OneWayToSource}"
+                                Value="{Binding Source={StaticResource DetectorVM}, Path=Z, Mode=OneWayToSource}"
                                 ValueChanged="HorizontalBarSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" 
-                         Value="{Binding Source={StaticResource DetectorVM}, Path=Z, Mode=OneWayToSource}"
+                         Value="{Binding Source={StaticResource DetectorVM}, Path=Y, Mode=OneWayToSource}"
                                 SmallChange="1" ValueChanged="ScreenHolderSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
