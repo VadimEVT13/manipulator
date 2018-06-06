@@ -173,6 +173,15 @@ namespace InverseTest.GUI.ViewModels
         }
 
 
+        private GPort port;
+
+        public ManipulatorViewModel()
+        {
+            var gPortFactory = new GPortFactory();
+            this.port = gPortFactory.CreateGPort(GPortFactory.GPortType.MANIPULATOR);
+        }
+
+
         /// <summary>
         /// Команда отправления данных обработана.
         /// </summary>
@@ -199,18 +208,11 @@ namespace InverseTest.GUI.ViewModels
                           }
                           _isOpen = true;
                           Status = "Update";
-                          GPort.GetInstance().Settings = new GDevice
+                          bool portIsOpened = port.Open();
+                          if (!portIsOpened)
                           {
-                              Name = "Grbl Y-ray portal",
-                              IsY = false,
-                              IsA = false,
-                              IsB = false,
-                              IsC = false,
-                              IsD = false,
-                              IsE = false
-                          };
-                          GPort.GetInstance().Open();
-                          State = GPort.GetInstance().State();
+                              Status = "Connection error";
+                          }
                           _isOpen = false;
                       })
                   ,
@@ -244,8 +246,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isClose = true;
                         Status = "Update";
-                        GPort.GetInstance().Close();
-                        State = GPort.GetInstance().State();
+                        port.Close();
                         _isClose = false;
                     }),
                     o => !_isClose));
@@ -286,8 +287,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isStartCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Start();
-                        State = GPort.GetInstance().State();
+                        port.Start();
                         _isStartCommand = false;
                     }),
                     o => !_isStartCommand));
@@ -323,8 +323,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isPauseCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Pause();
-                        State = GPort.GetInstance().State();
+                        port.Pause();
                         _isPauseCommand = false;
                     }),
                     o => !_isPauseCommand));
@@ -353,8 +352,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Home();
-                        State = GPort.GetInstance().State();
+                        port.Home();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -383,8 +381,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Unlock();
-                        State = GPort.GetInstance().State();
+                        port.Unlock();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -401,9 +398,6 @@ namespace InverseTest.GUI.ViewModels
             Speed = Convert.ToString(speed);
             return speed;
         }
-
-
-
 
         private double GetLimitValue(double value, double state, double minValue, double maxValue)
         {
@@ -461,8 +455,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Global(GetPoint(new GPoint()));
-                        State = GPort.GetInstance().State();
+                        port.Global(GetPoint(new GPoint()));
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -491,8 +484,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                         _isCommand = true;
                         Status = "Update";
-                        GPort.GetInstance().Local(GetPoint(State.Global));
-                        State = GPort.GetInstance().State();
+                        port.Local(GetPoint(State.Global));
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -525,8 +517,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             X = GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -560,8 +551,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             X = -GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -594,8 +584,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             Y = GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -628,8 +617,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             Y = -GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -662,8 +650,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             Z = GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -696,8 +683,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             Z = -GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -730,8 +716,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             A = GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -764,8 +749,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             A = -GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -798,8 +782,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             B = GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -832,8 +815,7 @@ namespace InverseTest.GUI.ViewModels
                         {
                             B = -GetSpeed()
                         };
-                        GPort.GetInstance().Local(point);
-                        State = GPort.GetInstance().State();
+                        port.Local(point);
                         _isCommand = false;
                     }),
                     o => !_isCommand));

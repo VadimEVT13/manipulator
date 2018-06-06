@@ -651,9 +651,9 @@ namespace InverseTest.GUI.Views
         {
             try
             {
-                Point3D manip = manipulatorCamPoint.GetTargetPoint();
-                Point3D targetPoint = this.targetPoint.point;
-                kinematicWorker.Solve(new SystemPosition(manip, targetPoint, Focus, focuseEnlagment));
+                Point3D manipPoint = manipulatorCamPoint.GetTargetPoint();
+                Point3D scannedPoint = this.targetPoint.point;
+                kinematicWorker.Solve(new SystemPosition(manipPoint, scannedPoint, Focus, focuseEnlagment));
             }
 
             /*ManipulatorCamPoint может быть null когда инициализируется окно, и срабатывает листенер 

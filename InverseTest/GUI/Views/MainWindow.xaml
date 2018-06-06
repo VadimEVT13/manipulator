@@ -120,11 +120,9 @@
             <ToggleButton Content="Подключение" Name="SystemConnectionTogleButton"  Margin="8,8,0,0"></ToggleButton>
             <Popup IsOpen="{Binding ElementName=SystemConnectionTogleButton, Path=IsChecked}" Placement="Mouse" Name="ConnectionPopUp" >
                 <Border BorderThickness="2" BorderBrush="LightGray" >
-
                     <local:ConnectionPopUp></local:ConnectionPopUp>
                 </Border>
-            </Popup>            
-            
+            </Popup>                        
             <StackPanel  Orientation="Horizontal">
                 <Label Content="Координаты точки съемки"/>
             </StackPanel>

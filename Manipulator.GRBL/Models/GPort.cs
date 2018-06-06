@@ -9,10 +9,21 @@ using Manipulator.GRBL.Utils;
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
 /// </summary>
-namespace Manipulator.GRBL.Models
-{
+namespace Manipulator.GRBL.Models{
+
+    /// <summary>
+    /// Делегат для принятия данных из serailPort
+    /// </summary>
+    /// <param name="data"></param>
+    public delegate void DataReceived(GState data);
+
     public class GPort
     {
+        /// <summary>
+        /// Событие вызываемое при получении данных из последовательного порта
+        /// </summary>
+        public event  DataReceived OnDataReceived;
+
         /// <summary>
         /// Логгер класса.
         /// </summary>
@@ -35,28 +46,11 @@ namespace Manipulator.GRBL.Models
         /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
-        private GPort() { }
-
-        /// <summary>
-        /// Статический класс для паттерна одиночка.
-        /// </summary>
-        private static class Holder
-        {
-            /// <summary>
-            /// Статический компонент для паттерна одиночка.
-            /// </summary>
-            public static readonly GPort INSTANCE = new GPort();
+        public GPort(GDevice settings) {
+            this.Settings = settings;
         }
 
-        /// <summary>
-        /// Паттерн одиночка.
-        /// </summary>
-        /// <returns>экземляр класса</returns>
-        public static GPort GetInstance()
-        {
-            return Holder.INSTANCE;
-        }
-
+      
         /// <summary>
         /// Настройки устройства.
         /// </summary>
@@ -83,6 +77,8 @@ namespace Manipulator.GRBL.Models
                 }
             }
             serialPort = new SerialPort(Settings.PortName, Settings.BaudRate, Settings.Parity, Settings.DataBits, Settings.StopBits);
+            //Подписываемся на получение данных из последовательного порта
+            serialPort.DataReceived += onDataReceivedFromSerialPort;
             if (serialPort.IsOpen)
             {
                 LOG.Error("Exception: Port is opened");
@@ -94,6 +90,7 @@ namespace Manipulator.GRBL.Models
                 serialPort.WriteLine(SOFT_RESET);
                 Thread.Sleep(Settings.Timeout);
                 serialPort.ReadExisting();
+                
                 LOG.Info("Open port");
                 return true;
             }
@@ -118,6 +115,18 @@ namespace Manipulator.GRBL.Models
                 LOG.Error("Error open port:" + e);
             }
             return false;
+        }
+
+
+        private void onDataReceivedFromSerialPort(object sender, SerialDataReceivedEventArgs e)
+        {
+            var serialPort = sender as SerialPort;
+            while(serialPort.BytesToRead > 0)
+            {
+                var lineData = serialPort.ReadLine();
+                var state = GConvert.ToState(lineData);
+                OnDataReceived?.Invoke(state);
+            }
         }
 
         /// <summary>
