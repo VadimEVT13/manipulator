@@ -161,6 +161,7 @@ namespace InverseTest.GUI.Views
             this.kinematicWorker.OnComplete += KinematicSolved;
 
             detail = ModelParser.LopatkaDetail;
+            detail.onPositionChanged += Deteil_PositionChenged;
             platform = ModelParser.DetailPlatform;
 
             this.detailVisControlle = DetailVisualFactory.CreateDetailVisual(detail, platform);
@@ -207,7 +208,7 @@ namespace InverseTest.GUI.Views
 
         public void OnCollisoinsDetected(List<CollisionPair> pair)
         {
-            this.collisoinVisual.Collisions(pair);
+            this.collisoinVisual.Collisions(pair);          
         }
 
         public void KinematicSolved(SystemState state)
@@ -245,6 +246,11 @@ namespace InverseTest.GUI.Views
             ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(detectorFrame.ScreenHolderPosition);
             ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.VerticalAngle);
             ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.HorizontalAngle);
+        }
+
+        public void Deteil_PositionChenged()
+        {
+            this.collisoinDetector.FindCollisoins();
         }
 
         /// <summary>

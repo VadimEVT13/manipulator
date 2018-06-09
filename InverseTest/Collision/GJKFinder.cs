@@ -19,7 +19,7 @@ namespace InverseTest.Collision
 
         List<Point3D> a, b; // два объекта, которые проверяются на пересечение 
         Vector3D[] resultSimplex; // конечный сиплекс
-
+        
         SupportClass sc; // класс для работы со вспомогательными функциями
 
         public GJKFinder(List<Point3D> first, List<Point3D> second)
@@ -45,12 +45,15 @@ namespace InverseTest.Collision
         {
             List<Vector3D> deletedVertexes = new List<Vector3D>();
             Vector3D zero = new Vector3D(0, 0, 0);
+            Plane symplex = new Plane();
             //Plane planeCSO = new Plane();//плоскость, которая остается после удаления дальней вершины симплекса
 
             while (sc.allDifferent(resultSimplex))
             {
-                //смотрим, где находится нуль, либо конец алгоритма, либо дальше идем
+                symplex = new Plane(resultSimplex[1], resultSimplex[2], resultSimplex[3]);
+                if (symplex.isPlane(resultSimplex[0])) return false;
 
+                //смотрим, где находится нуль, либо конец алгоритма, либо дальше идем
                 if (
                 (det3x3(zero, resultSimplex[0], resultSimplex[1], resultSimplex[2]) * det3x3(resultSimplex[3], resultSimplex[0], resultSimplex[1], resultSimplex[2]) >= 0) &&
                 (det3x3(zero, resultSimplex[0], resultSimplex[1], resultSimplex[3]) * det3x3(resultSimplex[2], resultSimplex[0], resultSimplex[1], resultSimplex[3]) >= 0) &&
