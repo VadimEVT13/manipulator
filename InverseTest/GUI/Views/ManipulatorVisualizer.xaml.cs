@@ -377,7 +377,6 @@ namespace InverseTest.GUI.Views
         public bool IsModelExist(Model3D model)
         {
             var res = false;
-
             res |= checkViewPort(ViewPort2DFront, model);
             res |= checkViewPort(ViewPort2DRight, model);
             res |= checkViewPort(ViewPort3D, model);

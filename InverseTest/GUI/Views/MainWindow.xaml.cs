@@ -230,9 +230,9 @@ namespace InverseTest.GUI.Views
             {
                 this.targetPoint = p;
                 recalculateKinematic();
-                TargetPointXTextBox.Text = Math.Round(p.point.X, 3).ToString();
-                TargetPointYTextBox.Text = Math.Round(p.point.Y, 3).ToString();
-                TargetPointZTextBox.Text = Math.Round(p.point.Z, 3).ToString();
+                TargetXSlider.Value = Math.Round(p.point.X, 3);
+                TargetYSlider.Value = Math.Round(p.point.Y, 3);
+                TargetZSlider.Value = Math.Round(p.point.Z, 3);
             }
         }
 
@@ -295,9 +295,9 @@ namespace InverseTest.GUI.Views
         {
             var cameraPosition = this.manipulator.GetCameraPosition();
 
-            PointManipulatorXTextBox.Text = Math.Round(cameraPosition.X, 3).ToString();
-            PointManipulatorYTextBox.Text = Math.Round(cameraPosition.Y, 3).ToString();
-            PointManipulatorZTextBox.Text = Math.Round(cameraPosition.Z, 3).ToString();
+            ManipulatorXSlider.Value = Math.Round(cameraPosition.X, 3);
+            ManipulatorYSlider.Value = Math.Round(cameraPosition.Y, 3);
+            ManipulatorZSlider.Value = Math.Round(cameraPosition.Z, 3);
         }
 
         /// <summary>
@@ -306,13 +306,6 @@ namespace InverseTest.GUI.Views
         public void ManipulatorManual_PositinChanged()
         {
             this.manipulatorCamPoint.Move(manipulator.GetCameraPosition());
-        }
-
-        public void SetManipCamPointTextBoxes(Point3D point)
-        {
-            PointManipulatorXTextBox.Text = Math.Round(point.X, 3).ToString();
-            PointManipulatorYTextBox.Text = Math.Round(point.Y, 3).ToString();
-            PointManipulatorZTextBox.Text = Math.Round(point.Z, 3).ToString();
         }
 
         /// <summary>
@@ -497,18 +490,6 @@ namespace InverseTest.GUI.Views
             }
         }
 
-        /// <summary>
-        /// Считываем координаты точки из полей ввода
-        /// </summary>
-        private void ParsePointsAndMove()
-        {
-            double manip_x, manip_y, manip_z;
-            double.TryParse(PointManipulatorXTextBox.Text, out manip_x);
-            double.TryParse(PointManipulatorYTextBox.Text, out manip_y);
-            double.TryParse(PointManipulatorZTextBox.Text, out manip_z);
-            manipulatorCamPoint.Move(new Point3D(manip_x, manip_y, manip_z));
-        }
-
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             recalculateKinematic();
@@ -636,30 +617,24 @@ namespace InverseTest.GUI.Views
             animate = false;
         }
 
-
-        private void TargetPointTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void Manipulator_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            Point3D position = new Point3D()
             {
-                ParsePointsAndMove();
-            }
-        }
-
-        private void PointManipulatorTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Enter)
-            {
-                ParsePointsAndMove();
-            }
+                X = ManipulatorXSlider.Value,
+                Y = ManipulatorYSlider.Value,
+                Z = ManipulatorZSlider.Value
+            };
+            manipulatorCamPoint.Move(position);
         }
 
         private void recalculateKinematic()
         {
             try
             {
-                Point3D manip = manipulatorCamPoint.GetTargetPoint();
-                Point3D targetPoint = this.targetPoint.point;
-                kinematicWorker.Solve(new SystemPosition(manip, targetPoint, Focus, focuseEnlagment));
+                Point3D manipPoint = manipulatorCamPoint.GetTargetPoint();
+                Point3D scannedPoint = this.targetPoint.point;
+                kinematicWorker.Solve(new SystemPosition(manipPoint, scannedPoint, Focus, focuseEnlagment));
             }
 
             /*ManipulatorCamPoint может быть null когда инициализируется окно, и срабатывает листенер 
@@ -726,66 +701,6 @@ namespace InverseTest.GUI.Views
         private void ResetCamers_Click(object sender, RoutedEventArgs e)
         {
             ManipulatorVisualizer.setCameras(allModels);
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси X.
-        /// </summary>
-        /// <param name="sender">Отправитель события</param>
-        /// <param name="e">Событие</param>
-        private void CheckX_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorXTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси X.
-        /// </summary>
-        /// <param name="sender">Отправитель события</param>
-        /// <param name="e">Событие</param>
-        private void CheckX_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorXTextBox.IsReadOnly = false;
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси Y.
-        /// </summary>
-        /// <param name="sender"> </param>
-        /// <param name="e">Событие</param>
-        private void CheckY_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorYTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси Y.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckY_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorYTextBox.IsReadOnly = false;
-        }
-
-        /// <summary>
-        /// Обработчик события - блокировка оси Z.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckZ_Checked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorZTextBox.IsReadOnly = true;
-        }
-
-        /// <summary>
-        /// Обработчик события - разблокировка оси Z.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckZ_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PointManipulatorZTextBox.IsReadOnly = false;
         }
 
         /// <summary>

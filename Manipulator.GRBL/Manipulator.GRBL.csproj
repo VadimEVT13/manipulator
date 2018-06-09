@@ -46,6 +46,7 @@
     <Compile Include="Models\GDevice.cs" />
     <Compile Include="Models\GPoint.cs" />
     <Compile Include="Models\GPort.cs" />
+    <Compile Include="Models\GPortFactory.cs" />
     <Compile Include="Models\GState.cs" />
     <Compile Include="Models\GStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

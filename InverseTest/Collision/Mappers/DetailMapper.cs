@@ -14,6 +14,8 @@ namespace InverseTest.Collision.Mappers
         public static DetailSnapshot DetailToSnapshot(DetailModel detail)
         {
             return new DetailSnapshot(Utils.ExtractShapeFromModel(ExtraPartsEnum.DETAIL, detail.GetModel()));
+
+            
         }
     }
 }
