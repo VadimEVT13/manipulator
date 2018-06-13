@@ -61,7 +61,7 @@
                     </StackPanel>
 				</Expander>
 				<Expander Header="Детектор">
-                    <StackPanel DataContext="{Binding Source={StaticResource DetectorVM}}">
+					<StackPanel DataContext="{Binding Source={StaticResource DetectorVM}}">
 						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450"
                                 SmallChange="1"
@@ -94,14 +94,9 @@
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
 						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-                        <Button Content="Установить детектор"  Command="{Binding Source={StaticResource DetectorVM}, Path=Global}" />
-
-
-
-                    </StackPanel>
-
-
-                </Expander>
+						<Button Content="Установить детектор"  Command="{Binding Source={StaticResource DetectorVM}, Path=Global}" />
+					</StackPanel>
+				</Expander>
 				<Expander Header="Деталь">
                     <StackPanel>
                         <TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
@@ -118,68 +113,71 @@
         
         <StackPanel DockPanel.Dock="Left" Width="160" >
             <ToggleButton Content="Подключение" Name="SystemConnectionTogleButton"  Margin="8,8,0,0"></ToggleButton>
-            <Popup IsOpen="{Binding ElementName=SystemConnectionTogleButton, Path=IsChecked}" Placement="Mouse" Name="ConnectionPopUp" >
-                <Border BorderThickness="2" BorderBrush="LightGray" >
-                    <local:ConnectionPopUp></local:ConnectionPopUp>
-                </Border>
-            </Popup>                        
-            <StackPanel  Orientation="Horizontal">
-                <Label Content="Координаты точки съемки"/>
-            </StackPanel>
-            <Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-				</Grid.RowDefinitions>
-				<Label Content="X" Grid.Column="0" Grid.Row="0"/>
-				<Label Content="Y" Grid.Column="0" Grid.Row="1"/>
-				<Label Content="Z" Grid.Column="0" Grid.Row="2"/>				
-                
-				<TextBox IsReadOnly="True" Name="TargetPointXTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="20" Grid.Column="1" Grid.Row="0" Margin="5"/>
-				<TextBox IsReadOnly="True" Name="TargetPointYTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="100" Grid.Column="1" Grid.Row="1" Margin="5"/>
-				<TextBox IsReadOnly="True" Name="TargetPointZTextBox" KeyDown="TargetPointTextBox_KeyDown" Text="0" Grid.Column="1" Grid.Row="2" Margin="5"/>
-			</Grid>
+			<Popup IsOpen="{Binding ElementName=SystemConnectionTogleButton, Path=IsChecked}" Placement="Mouse" Name="ConnectionPopUp" >
+				<Border BorderThickness="2" BorderBrush="LightGray" >
+					<local:ConnectionPopUp></local:ConnectionPopUp>
+				</Border>
+			</Popup>
 
-			<Label Content="Координаты наконечника"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Label Content="X" Grid.Column="0" Grid.Row="0"/>
-                <Label Content="Y" Grid.Column="0" Grid.Row="1"/>
-                <Label Content="Z" Grid.Column="0" Grid.Row="2"/>
-				<CheckBox Name="CheckX" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0"
-						  Checked="CheckX_Checked" Unchecked="CheckX_Unchecked"/>
-				<CheckBox Name="CheckY" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"
-						  Checked="CheckY_Checked" Unchecked="CheckY_Unchecked"/>
-				<CheckBox Name="CheckZ" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2"
-						  Checked="CheckZ_Checked" Unchecked="CheckZ_Unchecked"/>
-                <TextBox Text="-20" Grid.Column="2" Grid.Row="0" Margin="5"
-						 Name="PointManipulatorXTextBox" KeyDown="PointManipulatorTextBox_KeyDown"/>
-                <TextBox Text="100" Grid.Column="2" Grid.Row="1" Margin="5"
-						 Name="PointManipulatorYTextBox" KeyDown="PointManipulatorTextBox_KeyDown"/>
-				<TextBox Text="0" Grid.Column="2" Grid.Row="2" Margin="5"
-						 Name="PointManipulatorZTextBox" KeyDown="PointManipulatorTextBox_KeyDown"/>
-			</Grid>
+			<ScrollViewer DockPanel.Dock="Right" Width="160" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Expander Header="Координаты">
+					<StackPanel>
+						<Label Content="Координаты точки съемки"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
 
-            <Button Content="Повернуть станок" Name="RotateManipulatorButton"  Click="RotateManipulatorButton_OnClick"/>
-            <Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
+							<TextBlock Grid.Column="0" Grid.Row="0" Text="X, мм"/>
+							<Slider Name="TargetXSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="0" Text="{Binding ElementName=TargetXSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+							<TextBlock Grid.Column="0" Grid.Row="1" Text="Y, мм"/>
+							<Slider Name="TargetYSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="1" Text="{Binding ElementName=TargetYSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+							<TextBlock Grid.Column="0" Grid.Row="2" Text="Z, мм"/>
+							<Slider Name="TargetZSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="2" Text="{Binding ElementName=TargetZSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+						</Grid>
+
+						<Label Content="Координаты наконечника"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+
+							<TextBlock Grid.Column="0" Grid.Row="0" Text="X, мм"/>
+							<Slider Name="ManipulatorXSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding ElementName=ManipulatorXSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+							<TextBlock Grid.Column="0" Grid.Row="1" Text="Y, мм"/>
+							<Slider Name="ManipulatorYSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding ElementName=ManipulatorYSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+							<TextBlock Grid.Column="0" Grid.Row="2" Text="Z, мм"/>
+							<Slider Name="ManipulatorZSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding ElementName=ManipulatorZSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+						</Grid>
+						<Button Content="Повернуть станок" Name="RotateManipulatorButton"  Click="RotateManipulatorButton_OnClick"/>
+						<Button Content="Сброс" Name="ResetManipulatorButton" Click="ResetManipulatorButton_OnClick"/>
+					</StackPanel>
+				</Expander>
+			</ScrollViewer>
+
+			<StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
                 <Label Content="Область камеры"/>
                 <CheckBox x:Name="CameraVisibleArea" Checked="CameraVisibleArea_Checked" Unchecked="CameraVisibleArea_Unchecked" VerticalAlignment="Center"/>
             </StackPanel>

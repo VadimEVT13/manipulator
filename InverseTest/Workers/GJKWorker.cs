@@ -41,19 +41,14 @@ namespace InverseTest.Workers
                 {
                     CollisionPair pair = pairs.Dequeue();
 
-                    try
-                    {
+                  
                         if (solver.IntersectGJK(pair))
                         {
                             collisions.Add(pair);
                         }
                     }
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine(ex.StackTrace);
-                    }
-                }
-            }
+                    
+                            }
             else
             {
                 return new List<CollisionPair>() as L;

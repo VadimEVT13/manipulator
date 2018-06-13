@@ -85,8 +85,8 @@ namespace InverseTest.Collision
         {
             Vector3D Vector1, Vector2, Vector3;
 
-            triangle.minPoint();
-            if (triangle.inside_triangle()) return triangle.Hv;
+            //triangle.minPoint();
+            if (triangle.inside_triangle()) return triangle.pointOnPlaneNormal;
             else
             {
                 Vector1 = closestPointToEdge(triangle.P1, triangle.P2);

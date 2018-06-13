@@ -16,7 +16,7 @@ namespace InverseTest.Detail
     /// <summary>
     /// Класс для представления трехмерной детали которую будут сканировать
     /// </summary>
-    public class DetailModel : IVisualController
+    public class DetailModel : IVisualController, IPositionChanged
     {
 
         public MainVisual detailVisual { get; }
@@ -26,8 +26,8 @@ namespace InverseTest.Detail
         public readonly Model3D detailModel;
         public readonly Visual3D counturVisual;
 
-
-
+        public event PositionHandler onPositionChanged;
+        public event ManualPositionHandler onManulaPositionChanged;
 
         public DetailModel(Model3D detailModel)
         {
@@ -45,6 +45,7 @@ namespace InverseTest.Detail
         public void Transform(Transform3D transform)
         {
             this.detailVisual.Transform(transform);
+            onPositionChanged?.Invoke();
         }
 
 
