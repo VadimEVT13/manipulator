@@ -217,7 +217,7 @@ namespace InverseTest.GUI.ViewModels
                           {
                               Status = "Connection error";
                           }
-                          
+                          port.State();
                           _isOpen = false;
                       })
                   ,
@@ -231,6 +231,7 @@ namespace InverseTest.GUI.ViewModels
         /// <param name="data"></param>
         private void OnDataReceived(GState data)
         {
+            Console.WriteLine("State: " + data.Status);
             this.State = data;
         }
 
@@ -260,7 +261,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isClose = true;
-                        Status = "Update";
+                        Status = "Disconnect";
                         port.Close();
                         _isClose = false;
                     }),
@@ -303,6 +304,8 @@ namespace InverseTest.GUI.ViewModels
                         _isStartCommand = true;
                         Status = "Update";
                         port.Start();
+
+                        port.State();
                         _isStartCommand = false;
                     }),
                     o => !_isStartCommand));
@@ -339,6 +342,8 @@ namespace InverseTest.GUI.ViewModels
                         _isPauseCommand = true;
                         Status = "Update";
                         port.Pause();
+
+                        port.State();
                         _isPauseCommand = false;
                     }),
                     o => !_isPauseCommand));
@@ -368,6 +373,8 @@ namespace InverseTest.GUI.ViewModels
                         _isCommand = true;
                         Status = "Update";
                         port.Home();
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -397,6 +404,8 @@ namespace InverseTest.GUI.ViewModels
                         _isCommand = true;
                         Status = "Update";
                         port.Unlock();
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -500,6 +509,8 @@ namespace InverseTest.GUI.ViewModels
                         _isCommand = true;
                         Status = "Update";
                         port.Local(GetPoint(State.Global));
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -533,6 +544,8 @@ namespace InverseTest.GUI.ViewModels
                             X = GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -567,6 +580,8 @@ namespace InverseTest.GUI.ViewModels
                             X = -GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -600,6 +615,8 @@ namespace InverseTest.GUI.ViewModels
                             Y = GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -633,6 +650,8 @@ namespace InverseTest.GUI.ViewModels
                             Y = -GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -666,6 +685,8 @@ namespace InverseTest.GUI.ViewModels
                             Z = GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -699,6 +720,8 @@ namespace InverseTest.GUI.ViewModels
                             Z = -GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -765,6 +788,8 @@ namespace InverseTest.GUI.ViewModels
                             A = -GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -798,6 +823,8 @@ namespace InverseTest.GUI.ViewModels
                             B = GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -831,6 +858,8 @@ namespace InverseTest.GUI.ViewModels
                             B = -GetSpeed()
                         };
                         port.Local(point);
+
+                        port.State();
                         _isCommand = false;
                     }),
                     o => !_isCommand));

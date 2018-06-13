@@ -9,7 +9,8 @@ using Manipulator.GRBL.Utils;
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
 /// </summary>
-namespace Manipulator.GRBL.Models{
+namespace Manipulator.GRBL.Models
+{
 
     /// <summary>
     /// Делегат для принятия данных из serailPort
@@ -22,7 +23,10 @@ namespace Manipulator.GRBL.Models{
         /// <summary>
         /// Событие вызываемое при получении данных из последовательного порта
         /// </summary>
-        public event  DataReceived OnDataReceived;
+        public event DataReceived OnDataReceived;
+
+
+        private GState state;
 
         /// <summary>
         /// Логгер класса.
@@ -46,11 +50,12 @@ namespace Manipulator.GRBL.Models{
         /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
-        public GPort(GDevice settings) {
+        public GPort(GDevice settings)
+        {
             this.Settings = settings;
         }
 
-      
+
         /// <summary>
         /// Настройки устройства.
         /// </summary>
@@ -90,7 +95,6 @@ namespace Manipulator.GRBL.Models{
                 serialPort.WriteLine(SOFT_RESET);
                 Thread.Sleep(Settings.Timeout);
                 serialPort.ReadExisting();
-                
                 LOG.Info("Open port");
                 return true;
             }
@@ -121,11 +125,27 @@ namespace Manipulator.GRBL.Models{
         private void onDataReceivedFromSerialPort(object sender, SerialDataReceivedEventArgs e)
         {
             var serialPort = sender as SerialPort;
-            while(serialPort.BytesToRead > 0)
+            if (serialPort.BytesToRead > 0)
             {
                 var lineData = serialPort.ReadLine();
-                var state = GConvert.ToState(lineData);
-                OnDataReceived?.Invoke(state);
+                if (lineData.Length > 0)
+                {
+                    Console.WriteLine("LineData: " + lineData);
+                    try
+                    {
+                        var state = GConvert.ToState(lineData);
+
+                        if (state != null)
+                        {
+                            this.state = state;
+                            OnDataReceived?.Invoke(state);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Exception: " + ex.Message);
+                    }
+                }
             }
         }
 
@@ -133,56 +153,15 @@ namespace Manipulator.GRBL.Models{
         /// Получение состояния устройства.
         /// </summary>
         /// <returns>состояние устройства</returns>
-        public GState State()
+        public void State()
         {
             if (serialPort == null || !serialPort.IsOpen)
             {
-                return new GState
-                {
-                    Status = GStatus.DISCONNECT
-                };
+                return;
             }
-            GState state = null;
-            lock (locker)
-            {
-                try
-                {
-                    while (serialPort.IsOpen && state == null)
-                    {
-                        serialPort.ReadExisting();
-                        serialPort.WriteLine("?");
-                        LOG.Info("Write: ?");
-                        Thread.Sleep(Settings.Timeout);
-                        string line = null;
-                        if (serialPort.BytesToRead > 0)
-                        {
-                            line = serialPort.ReadLine();
-                        }
-                        if (line != null)
-                        {
-                            LOG.Info("State: " + line);
-                            state = GConvert.ToState(line);
-                        }
-                    }
-                }
-                catch (InvalidOperationException e)
-                {
-                    LOG.Error("Exception state port:" + e);
-                    state = new GState
-                    {
-                        Status = GStatus.ALARM
-                    };
-                }
-                catch (IOException e)
-                {
-                    LOG.Error("Exception state port:" + e);
-                    state = new GState
-                    {
-                        Status = GStatus.ALARM
-                    };
-                }
-            }
-            return state;
+            Thread.Sleep(Settings.Timeout);
+            serialPort.WriteLine("?");
+            LOG.Info("Write: ?");
         }
 
         /// <summary>
@@ -194,15 +173,9 @@ namespace Manipulator.GRBL.Models{
             {
                 return;
             }
-            try
-            {
-                LOG.Info("Write: ~");
-                serialPort.WriteLine("~");
-            }
-            catch (InvalidOperationException e)
-            {
-                LOG.Error("Exception start port:" + e);
-            }
+            LOG.Info("Write: ~");
+            serialPort.WriteLine("~");
+            this.State();
         }
 
         /// <summary>
@@ -214,15 +187,9 @@ namespace Manipulator.GRBL.Models{
             {
                 return;
             }
-            try
-            {
-                LOG.Info("Write: !");
-                serialPort.WriteLine("!");
-            }
-            catch (InvalidOperationException e)
-            {
-                LOG.Error("Exception pause port:" + e);
-            }
+            LOG.Info("Write: !");
+            serialPort.WriteLine("!");
+            this.State();
         }
 
         /// <summary>
@@ -234,50 +201,9 @@ namespace Manipulator.GRBL.Models{
             {
                 return;
             }
-            lock (locker)
-            {
-                try
-                {
-                    LOG.Info("Write: $H");
-                    serialPort.WriteLine("$H");
-                    int i = 0;
-                    if (Settings.IsX) i++;
-                    if (Settings.IsY) i++;
-                    if (Settings.IsZ) i++;
-                    if (Settings.IsA) i++;
-
-                    if (Settings.IsB) i++;
-                    if (Settings.IsC) i++;
-                    if (Settings.IsD) i++;
-                    if (Settings.IsE) i++;
-
-                    while (serialPort.IsOpen && i > 0)
-                    {
-                        Thread.Sleep(Settings.Timeout);
-                        string line = null;
-                        if (serialPort.BytesToRead > 0)
-                        {
-                            line = serialPort.ReadLine();
-                        }
-                        if (line != null)
-                        {
-                            LOG.Info("State: " + line);
-                            if (line.Contains("Idle"))
-                            {
-                                i -= 1;
-                            }
-                            if (line.Contains("ALARM"))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (InvalidOperationException e)
-                {
-                    LOG.Error("Exception home port:" + e);
-                }
-            }
+            LOG.Info("Write: $H");
+            serialPort.WriteLine("$H");
+            this.State();
         }
 
         /// <summary>
@@ -289,20 +215,9 @@ namespace Manipulator.GRBL.Models{
             {
                 return;
             }
-            lock (locker)
-            {
-                try
-                {
-                    LOG.Info("Write: $X");
-                    serialPort.WriteLine("$X");
-                    Thread.Sleep(Settings.Timeout);
-                    serialPort.ReadExisting();
-                }
-                catch (InvalidOperationException e)
-                {
-                    LOG.Error("Exception unlock port:" + e);
-                }
-            }
+            LOG.Info("Write: $X");
+            serialPort.WriteLine("$X");
+            this.State();
         }
 
         /// <summary>
@@ -316,41 +231,11 @@ namespace Manipulator.GRBL.Models{
                 return;
             }
             String cmd = PointToString(point);
-            lock (locker)
-            {
-                try
-                {
-                    LOG.Info("Write: G90");
-                    serialPort.WriteLine("G90");
-                    LOG.Info("Write: " + cmd);
-                    serialPort.WriteLine(cmd);
-                    while (serialPort.IsOpen)
-                    {
-                        Thread.Sleep(Settings.Timeout);
-                        string line = null;
-                        if (serialPort.BytesToRead > 0)
-                        {
-                            line = serialPort.ReadLine();
-                        }
-                        if (line != null)
-                        {
-                            LOG.Info("State: " + line);
-                            if (line.Contains("Idle"))
-                            {
-                                return;
-                            }
-                            if (line.Contains("ALARM"))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (InvalidOperationException e)
-                {
-                    LOG.Info("Exception state port:" + e);
-                }
-            }
+            LOG.Info("Write: G90");
+            serialPort.WriteLine("G90");
+            LOG.Info("Write: " + cmd);
+            serialPort.WriteLine(cmd);
+            this.State();
         }
 
         /// <summary>
@@ -415,42 +300,13 @@ namespace Manipulator.GRBL.Models{
                 return;
             }
             String cmd = PointToString(point);
-            lock (locker)
-            {
-                try
-                {
-                    LOG.Info("Write: G91");
-                    serialPort.WriteLine("G91");
-                    LOG.Info("Write: " + cmd);
-                    serialPort.WriteLine(cmd);
-                    while (serialPort.IsOpen)
-                    {
-                        Thread.Sleep(Settings.Timeout);
-                        string line = null;
-                        if (serialPort.BytesToRead > 0)
-                        {
-                            line = serialPort.ReadLine();
-                        }
-                        if (line != null)
-                        {
-                            LOG.Info("State: " + line);
-                            if (line.Contains("Idle"))
-                            {
-                                return;
-                            }
-                            if (line.Contains("ALARM"))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (InvalidOperationException e)
-                {
-                    LOG.Error("Exception state port:" + e);
-                }
-            }
+            LOG.Info("Write: G91");
+            serialPort.WriteLine("G91");
+            LOG.Info("Write: " + cmd);
+            serialPort.WriteLine(cmd);
+            this.State();
         }
+
 
         /// <summary>
         /// Закрытие порта.
