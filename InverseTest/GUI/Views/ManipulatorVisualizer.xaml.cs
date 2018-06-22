@@ -442,36 +442,12 @@ namespace InverseTest.GUI.Views
         }
 
 
-        public void showBorders(Model3D frame)
+        public void showBorders(Model3D frame, int i)
         {
-            Model3D part = frame;//.GetDetectorFramePart(DetectorFrame.Parts.Screen);
-            Rect3D rect = part.Bounds;
+                Model3D part = frame;//.GetDetectorFramePart(DetectorFrame.Parts.Screen);
+                Rect3D rect = part.Bounds;
 
 
-            BoxVisual3D rectagnle3D = new BoxVisual3D()
-            {
-                Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
-                Fill = Brushes.DarkBlue,
-                Width = rect.SizeY,
-                Length = rect.SizeX,
-                Height = rect.SizeZ
-            };
-
-
-
-            // ViewPort2DFront.Children.Add(rectagnle3D);
-            //  ViewPort2DTop.Children.Add(rectagnle3D);
-            ///   ViewPort2DRight.Children.Add(rectagnle3D);
-            ViewPort3D.Children.Add(rectagnle3D);
-        }
-
-        public void showBordersPortal(ManipulatorSnapshot frame)
-        {
-            //Model3D part = frame.GetManipulatorPart(ManipulatorV2.ManipulatorParts.Camera);
-            foreach (PartShape s in frame.parts)
-            {
-
-                Rect3D rect = s.Bounds;
                 BoxVisual3D rectagnle3D = new BoxVisual3D()
                 {
                     Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
@@ -479,7 +455,6 @@ namespace InverseTest.GUI.Views
                     Width = rect.SizeY,
                     Length = rect.SizeX,
                     Height = rect.SizeZ
-
                 };
 
 
@@ -489,6 +464,30 @@ namespace InverseTest.GUI.Views
                 ///   ViewPort2DRight.Children.Add(rectagnle3D);
                 ViewPort3D.Children.Add(rectagnle3D);
             }
+
+        public void showBordersPortal(ManipulatorSnapshot frame, int i)
+        {
+                foreach (PartShape s in frame.parts)
+                {
+
+                    Rect3D rect = s.Bounds;
+                    BoxVisual3D rectagnle3D = new BoxVisual3D()
+                    {
+                        Center = new Point3D(rect.Location.X + rect.SizeX / 2, rect.Location.Y + rect.SizeY / 2, rect.Location.Z + rect.SizeZ / 2),
+                        Fill = Brushes.DarkBlue,
+                        Width = rect.SizeY,
+                        Length = rect.SizeX,
+                        Height = rect.SizeZ
+
+                    };
+
+
+
+                    // ViewPort2DFront.Children.Add(rectagnle3D);
+                    //  ViewPort2DTop.Children.Add(rectagnle3D);
+                    ///   ViewPort2DRight.Children.Add(rectagnle3D);
+                    ViewPort3D.Children.Add(rectagnle3D);
+                }
         }
 
         public void ShowPoints(Point3D[] points)

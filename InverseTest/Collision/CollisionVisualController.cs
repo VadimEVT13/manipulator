@@ -62,6 +62,11 @@ namespace InverseTest.Collision
             this.Detail.ChangePartsColor(detailParts);
             this.manipulator.ChangePartsColor(manipParts);
             this.portal.ChangePartsColor(portalParts);
+
+            //this.Detail.BuildShell(detailParts);
+            //this.manipulator.BuildShell(manipParts);
+            //this.portal.BuildShell(portalParts);
+
         }
 
 

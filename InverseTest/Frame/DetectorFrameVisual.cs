@@ -28,5 +28,15 @@ namespace InverseTest.Frame
                 else pair.Value.SetDefaultColor();
             }
         }
+        public void BuildShell(List<DetectorFrame.Parts> parts)
+        {
+            foreach (KeyValuePair<DetectorFrame.Parts, MainVisual> pair in portalVisuals)
+            {
+                if (parts.Contains(pair.Key))
+                    pair.Value.BuildShell();
+                else pair.Value.removeShell();
+            }
+        }
+
     }
 }

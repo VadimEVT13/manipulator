@@ -570,10 +570,13 @@ namespace InverseTest.GUI.Views
             }
         }
 
-        private void ShowBorders_Click(object sender, RoutedEventArgs e)
+        
+        private void ShowBorders_Click()//(object sender, RoutedEventArgs e)
         {
-            ManipulatorVisualizer.showBorders(detectorFrame.GetDetectorFramePart(Parts.VerticalFrame));
-            //ManipulatorVisualizer.showBordersPortal(ManipulatorMapper.ManipulatorToSnapshot(manipulator));
+            
+            //ManipulatorVisualizer.showBorders(detectorFrame.GetDetectorFramePart(Parts.VerticalFrame),i);
+            //ManipulatorVisualizer.showBorders(manipulator.GetManipulatorPart(ManipulatorParts.Camera),i);
+            //ManipulatorVisualizer.showBorders(detail.detailModel,i);
         }
 
         private void CalculateJunctionsButton_Click(object sender, RoutedEventArgs e)

@@ -34,6 +34,23 @@ namespace InverseTest.Detail
                 else resetColors();
             }
         }
+        public void BuildShell(List<ExtraPartsEnum> parts)
+        {
+            resetShells();
+            foreach (ExtraPartsEnum en in parts)
+            {
+                if (en == ExtraPartsEnum.DETAIL)
+                    this.detail.BuildShell();
+                else if (en == ExtraPartsEnum.DETAIL_PLATFORM)
+                    this.platform.BuildShell();
+                else resetShells();
+            }
+        }
+        private void resetShells()
+        {
+            this.detail.removeShell();
+            this.platform.removeShell();
+        }
 
         private void resetColors()
         {

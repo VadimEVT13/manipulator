@@ -29,5 +29,15 @@ namespace InverseTest.Manipulator
                 else pair.Value.SetDefaultColor();
             }
         }
+
+        public void BuildShell(List<ManipulatorParts> parts) {
+            foreach (KeyValuePair<ManipulatorParts, MainVisual> pair in visualParts)
+            {
+                if (parts.Contains(pair.Key))
+                    pair.Value.BuildShell();
+                else pair.Value.removeShell();
+            }
+        }
+
     }
 }

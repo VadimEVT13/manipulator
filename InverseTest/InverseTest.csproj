@@ -191,6 +191,7 @@
     <Compile Include="Collision\Model\CollisionPair.cs" />
     <Compile Include="Collision\Model\DetailPlatformSnapshot.cs" />
     <Compile Include="Collision\Model\DetailSnapshot.cs" />
+    <Compile Include="Collision\Model\expandedAABB.cs" />
     <Compile Include="Collision\Model\ManipulatorSnapshot.cs" />
     <Compile Include="Collision\Model\Model3DCollision.cs" />
     <Compile Include="Collision\Model\ExtraPartsEnum.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Collision\PointComparer.cs" />
     <Compile Include="Collision\Support.cs" />
     <Compile Include="Collision\Model\Vertex.cs" />
+    <Compile Include="Collision\Tree.cs" />
     <Compile Include="DetailPathController.cs" />
     <Compile Include="Detail\DetailPointsCreator.cs" />
     <Compile Include="Detail\DetailVisualCollisionController.cs" />
