@@ -35,6 +35,7 @@ namespace InverseTest.Detail
             }
         }
 
+        
         private void resetColors()
         {
             this.detail.SetDefaultColor();

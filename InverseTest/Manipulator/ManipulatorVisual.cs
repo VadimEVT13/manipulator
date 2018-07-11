@@ -16,6 +16,7 @@ namespace InverseTest.Manipulator
         public ManipulatorVisual(Dictionary<ManipulatorParts, MainVisual> visual)
         {
             this.visualParts = visual;
+            
         }
 
         public List<MainVisual> Visuals => visualParts.Values.ToList();
@@ -29,5 +30,7 @@ namespace InverseTest.Manipulator
                 else pair.Value.SetDefaultColor();
             }
         }
+
+
     }
 }

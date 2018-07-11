@@ -32,31 +32,31 @@
                         <Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" 
                                 Value="{Binding Source={StaticResource ManipulatorVM}, Path=X, Mode=OneWayToSource}" 
                                 ValueChanged="T1Slider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=T1Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=T1Slider, Path=Value,StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
                         <Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1"                
                                 Value="{Binding Source={StaticResource ManipulatorVM}, Path=Y, Mode=OneWayToSource}" 
                             ValueChanged="T2Slider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=T2Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=T2Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" 
                         Value="{Binding Source={StaticResource ManipulatorVM}, Path=Z, Mode=OneWayToSource}" 
                                 ValueChanged="T3Slider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=T3Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=T3Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Четвертое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" 
                         Value="{Binding Source={StaticResource ManipulatorVM}, Path=A, Mode=OneWayToSource}" 
                         ValueChanged="T4Slider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=T4Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=T4Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                         <Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" 
                          Value="{Binding Source={StaticResource ManipulatorVM}, Path=B, Mode=OneWayToSource}" 
                          ValueChanged="T5Slider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=T5Slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=T5Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
                         <Button Content="Установить манипулятор" Command="{Binding Source={StaticResource ManipulatorVM}, Path=Global}"/>
                     </StackPanel>
 				</Expander>
@@ -67,32 +67,32 @@
                                 SmallChange="1"
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=X, Mode=OneWayToSource}"
 								ValueChanged="VerticalFrameSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" 
                                 SmallChange="1" 
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=Z, Mode=OneWayToSource}"
                                 ValueChanged="HorizontalBarSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" 
                          Value="{Binding Source={StaticResource DetectorVM}, Path=Y, Mode=OneWayToSource}"
                                 SmallChange="1" ValueChanged="ScreenHolderSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenVerticalAngleSlider" 
                                 Minimum="10" Maximum="160" SmallChange="1" 
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=B, Mode=OneWayToSource}"
                                 ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1"
                                 Value="{Binding Source={StaticResource DetectorVM}, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
-						<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Button Content="Установить детектор"  Command="{Binding Source={StaticResource DetectorVM}, Path=Global}" />
 					</StackPanel>
@@ -101,11 +101,11 @@
                     <StackPanel>
                         <TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
                         <Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                         <TextBlock Text="Высота подьема детали, мм" HorizontalAlignment="Center"/>
                         <Slider Name="RiseDetailSlider" Maximum="100" Minimum="0" Value="0" ValueChanged="RiseDetail_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=RiseDetailSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                        <TextBox Text="{Binding ElementName=RiseDetailSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
                     </StackPanel>
                 </Expander>
 			</StackPanel>
@@ -195,7 +195,7 @@
                     DockPanel.Dock="Top" Name="FocusDistance" Content="Фокус" Width="50"
                       Checked="FocusDistance_Checked" Unchecked="FocusDistance_Unchecked"/>
                 <Popup Name="FocusDistancePopup" Placement="Mouse" Width="auto" Height="auto">
-                    <Border BorderThickness="2" BorderBrush="LightGray" >
+                    <Border BorderThickness="1" BorderBrush="LightGray" Padding="4">
                     <StackPanel Orientation="Horizontal" Background="WhiteSmoke">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -203,19 +203,22 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBox Grid.Column="0" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" 
+                                <Label Content="Фокусное расстаяние, мм" Grid.Column="0" Grid.Row="0" />
+                                <TextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" HorizontalAlignment="Center" 
                                      Name="FocusDistanceTextBox" 
-                                     Text="{Binding Focus}"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Center" 
+                                     Text="{Binding Focus}" />
+                                <Label Content="Кратность увеличения" Grid.Column="1" Grid.Row="0"/>
+                                <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" HorizontalAlignment="Center" 
                                      Name="FocueEnlargmentTextBox" 
                                      Text="{Binding FocusEnlagment}"/>
-                            <Slider Grid.Column="0" Grid.Row="1" Name="FocusDistanceSlider"  Width="100" Maximum="100"
+                            <Slider Grid.Column="0" Grid.Row="2" Name="FocusDistanceSlider"  Width="100" Maximum="100"
                                     Minimum="0" Margin="0,0,8,8"  AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight" 
                                     ValueChanged="FocusDistanceSlider_ValueChanged"/>
-                            <Slider Grid.Column="1" Grid.Row="1"  Name="FocusEnlargementSlider"  TickFrequency="1" 
+                            <Slider Grid.Column="1" Grid.Row="2"  Name="FocusEnlargementSlider"  TickFrequency="1" 
                                     Width="100" SmallChange="0.5" LargeChange="0.5" Maximum="3" Margin="0,0,8,8"
                             Minimum="0.5" Ticks="0.5,1.0,1.5,2.0,2.5,3.0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             AutoToolTipPrecision="1" AutoToolTipPlacement="BottomRight"

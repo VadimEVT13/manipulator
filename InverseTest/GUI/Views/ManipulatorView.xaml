@@ -44,7 +44,7 @@
                 <Button  Content="Домой" Command="{Binding Home}" />
 				<Button Content="Разблокировать" Command="{Binding Unlock}" />
 			</StackPanel>
-			<StackPanel>
+			<StackPanel Visibility="Collapsed">
 				<TextBlock Margin="5" Width="70" Height="20" Text="Шаг"/>
 				<TextBox Margin="5" Width="70" Text="{Binding Speed}"/>
 			</StackPanel>

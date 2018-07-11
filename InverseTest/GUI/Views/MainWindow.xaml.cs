@@ -263,7 +263,8 @@ namespace InverseTest.GUI.Views
 
         public void SetDistanceToPoint()
         {
-            this.Focus = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
+            var focusMm =targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
+            this.Focus = Math.Round(focusMm,2);
         }
 
         /// <summary>
@@ -625,7 +626,9 @@ namespace InverseTest.GUI.Views
                 Y = ManipulatorYSlider.Value,
                 Z = ManipulatorZSlider.Value
             };
-            manipulatorCamPoint.Move(position);
+
+            this.manipulatorCamPoint.Move(position);
+         
         }
 
         private void recalculateKinematic()

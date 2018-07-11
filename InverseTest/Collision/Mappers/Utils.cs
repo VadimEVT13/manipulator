@@ -13,8 +13,7 @@ namespace InverseTest.Collision.Mappers
         public static PartShape ExtractShapeFromModel(Enum type, Model3D model)
         {
             var points = new Point3DCollection().ToList();
-
-
+            
             if (model is Model3DGroup)
             {
                 var modelGroup = (model as Model3DGroup).Children;
