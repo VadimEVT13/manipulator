@@ -13,7 +13,7 @@
     <Grid>
         <TabControl>
             <TabItem Header="Манипулятор">
-            <local:ManipulatorView DataContext="{Binding Source={StaticResource ManipulatorVM}}" />
+				<local:ManipulatorView DataContext="{Binding Source={StaticResource ManipulatorVM}}" />
             </TabItem>
             <TabItem Header="Детектор">
                 <local:DetectorView DataContext="{Binding Source={StaticResource DetectorVM}}" />

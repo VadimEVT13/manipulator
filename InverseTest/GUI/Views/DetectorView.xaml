@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:fa="http://schemas.fontawesome.io/icons/"
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:InverseTest.GUI.Views"
              mc:Ignorable="d" 
@@ -32,22 +33,28 @@
 	<StackPanel>
 		<TextBlock Margin="5" TextAlignment="Left" Text="{Binding Status}"/>
 		<StackPanel Orientation="Horizontal">
-			<StackPanel>
-				<Button Content="Открыть" Command="{Binding Open}" />
-                <Button  Content="Закрыть" Command="{Binding Close}" />
-			</StackPanel>
-			<StackPanel>
+			<Button Command="{Binding PlugCommand}">
+				<Image Source="{Binding PlugImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding PlayCommand}">
+				<Image Source="{Binding PlayImage}" Width="20" Height="20"/>
+			</Button>
+
+			<!--StackPanel>
                 <Button  Content="Старт" Command="{Binding Start}" />
                 <Button  Content="Пауза" Command="{Binding Pause}" />
-			</StackPanel>
-			<StackPanel>
-                <Button  Content="Домой" Command="{Binding Home}" />
-                <Button  Content="Разблокировать" Command="{Binding Unlock}" />
-			</StackPanel>
-			<StackPanel Visibility="Collapsed">
-				<TextBlock Margin="5" Width="70" Height="20" Text="Шаг"/>
-				<TextBox Margin="5" Width="70" Text="{Binding Speed}"/>
-			</StackPanel>
+			</StackPanel-->
+			<Button Command="{Binding UnlockCommand}">
+				<Image Source="{Binding UnlockImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding HomeCommand}">
+				<Image Source="{Binding HomeImage}" Width="20" Height="20"/>
+			</Button>
+			
+			<!--StackPanel>
+				<Button  Content="Домой" Command="{Binding Home}" />
+				<Button  Content="Разблокировать" Command="{Binding Unlock}" />
+			</StackPanel-->
 		</StackPanel>
 
         </StackPanel>
