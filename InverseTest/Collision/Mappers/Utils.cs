@@ -12,7 +12,7 @@ namespace InverseTest.Collision.Mappers
     {
         public static PartShape ExtractShapeFromModel(Enum type, Model3D model)
         {
-            var points = new Point3DCollection().ToList();
+            List < Point3D > points = new List<Point3D>();
 
 
             if (model is Model3DGroup)
@@ -26,14 +26,14 @@ namespace InverseTest.Collision.Mappers
             else {
                 points.AddRange(GetPointsFromModel(model));
             }
-            return new PartShape(type, model.Bounds, points, model.Transform.Value);
+            return new PartShape(type, model.Bounds, points, model.Transform.Value);//, triangles);
         }
 
         private static List<Point3D> GetPointsFromModel(Model3D model)
         {
             GeometryModel3D geometryModel = model as GeometryModel3D;
             MeshGeometry3D geom = geometryModel.Geometry as MeshGeometry3D;
-            return geom.Positions.ToList();
-        }
+            return geom.Positions.ToList();        
+        } 
     }
 }

@@ -67,7 +67,7 @@ namespace InverseTest.Collision
             return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
         }
 
-        public bool inside_triangle()
+        public bool inside_triangle() 
         {
             //Vector3D Hv = minPoint();
             FindPointOnPlane();
