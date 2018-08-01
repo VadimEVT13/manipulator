@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Manipulator.GRBL.Models;
 using Manipulator.GRBL.Utils;
 using InverseTest.GUI.Utils;
+using FontAwesome.WPF;
+using System.Windows.Media;
 
 /// <summary>
 /// Модель представления драйвера управления манипулятором.
@@ -53,6 +55,12 @@ namespace InverseTest.GUI.ViewModels
         /// Максимальное значение по оси B.
         /// </summary>
         private static int LIMIT_B_MAX = 180;
+
+
+        public ImageSource ConnectImage { get; set; }
+
+
+
 
         private String status = GConvert.ToString(GStatus.DISCONNECT);
         public String Status
@@ -179,7 +187,72 @@ namespace InverseTest.GUI.ViewModels
         {
             var gPortFactory = new GPortFactory();
             this.port = gPortFactory.CreateGPort(GPortFactory.GPortType.MANIPULATOR);
+
+            ConnectImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Flag, Brushes.Black);
         }
+
+
+        /// <summary>
+        /// Команда отправления данных обработана.
+        /// </summary>
+        private bool _isConnect;
+        /// <summary>
+        /// Команда отправления данных в порт.
+        /// </summary>
+        private AsyncRelayCommand _connectCommand;
+
+        /// <summary>
+        /// Свойство команда отправления данных в порт.
+        /// </summary>
+        public ICommand Connect
+        {
+            get
+            {
+                return _connectCommand
+                  ?? (_connectCommand = new AsyncRelayCommand(o =>
+                      Task.Run(() =>
+                      {
+                          if (_isConnect)
+                          {
+                              return;
+                          }
+                          _isConnect = true;
+                          Status = "Update";
+
+
+                          if (port.IsOpen)
+                          {
+                              if (!port.Open())
+                              {
+                                  Status = "Connection error";
+                              }
+                          }
+                          else
+                          {
+                              port.Close();
+                              Status = "Disconnect";
+                          }
+
+
+                          
+                          
+
+
+
+
+                          _isConnect = false;
+                      })
+                  ,
+                  o => !_isConnect));
+            }
+        }
+
+
+
+
+
+
+
 
 
         /// <summary>

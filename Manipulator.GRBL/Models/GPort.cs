@@ -56,6 +56,25 @@ namespace Manipulator.GRBL.Models
         }
 
 
+        public bool IsOpen
+        {
+            get
+            {
+                return serialPort != null && serialPort.IsOpen;
+            }
+        }
+
+        public bool IsPlay
+        {
+            get
+            {
+                return serialPort != null && serialPort.IsOpen
+                    && state != null && !state.Status.Equals(GStatus.HOLD);
+            }
+        }
+
+
+
         /// <summary>
         /// Настройки устройства.
         /// </summary>
@@ -150,18 +169,15 @@ namespace Manipulator.GRBL.Models
         }
 
         /// <summary>
-        /// Получение состояния устройства.
+        /// Запрос состояния устройства.
         /// </summary>
-        /// <returns>состояние устройства</returns>
         public void State()
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                LOG.Info("Write: ?");
+                serialPort.WriteLine("?");
             }
-            Thread.Sleep(Settings.Timeout);
-            serialPort.WriteLine("?");
-            LOG.Info("Write: ?");
         }
 
         /// <summary>
@@ -169,13 +185,12 @@ namespace Manipulator.GRBL.Models
         /// </summary>
         public void Start()
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                LOG.Info("Write: ~");
+                serialPort.WriteLine("~");
+                this.State();
             }
-            LOG.Info("Write: ~");
-            serialPort.WriteLine("~");
-            this.State();
         }
 
         /// <summary>
@@ -183,13 +198,12 @@ namespace Manipulator.GRBL.Models
         /// </summary>
         public void Pause()
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                LOG.Info("Write: !");
+                serialPort.WriteLine("!");
+                this.State();
             }
-            LOG.Info("Write: !");
-            serialPort.WriteLine("!");
-            this.State();
         }
 
         /// <summary>
@@ -197,13 +211,12 @@ namespace Manipulator.GRBL.Models
         /// </summary>
         public void Home()
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                LOG.Info("Write: $H");
+                serialPort.WriteLine("$H");
+                this.State();
             }
-            LOG.Info("Write: $H");
-            serialPort.WriteLine("$H");
-            this.State();
         }
 
         /// <summary>
@@ -211,13 +224,12 @@ namespace Manipulator.GRBL.Models
         /// </summary>
         public void Unlock()
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                LOG.Info("Write: $X");
+                serialPort.WriteLine("$X");
+                this.State();
             }
-            LOG.Info("Write: $X");
-            serialPort.WriteLine("$X");
-            this.State();
         }
 
         /// <summary>
@@ -226,16 +238,15 @@ namespace Manipulator.GRBL.Models
         /// <param name="point">точка перемещения</param>
         public void Global(GPoint point)
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                String cmd = PointToString(point);
+                LOG.Info("Write: G90");
+                serialPort.WriteLine("G90");
+                LOG.Info("Write: " + cmd);
+                serialPort.WriteLine(cmd);
+                this.State();
             }
-            String cmd = PointToString(point);
-            LOG.Info("Write: G90");
-            serialPort.WriteLine("G90");
-            LOG.Info("Write: " + cmd);
-            serialPort.WriteLine(cmd);
-            this.State();
         }
 
         /// <summary>
@@ -295,25 +306,23 @@ namespace Manipulator.GRBL.Models
         /// <param name="point">точка перемещения</param>
         public void Local(GPoint point)
         {
-            if (serialPort == null || !serialPort.IsOpen)
+            if (IsOpen)
             {
-                return;
+                String cmd = PointToString(point);
+                LOG.Info("Write: G91");
+                serialPort.WriteLine("G91");
+                LOG.Info("Write: " + cmd);
+                serialPort.WriteLine(cmd);
+                this.State();
             }
-            String cmd = PointToString(point);
-            LOG.Info("Write: G91");
-            serialPort.WriteLine("G91");
-            LOG.Info("Write: " + cmd);
-            serialPort.WriteLine(cmd);
-            this.State();
         }
-
 
         /// <summary>
         /// Закрытие порта.
         /// </summary>
         public void Close()
         {
-            if (serialPort != null && serialPort.IsOpen)
+            if (IsOpen)
             {
                 try
                 {

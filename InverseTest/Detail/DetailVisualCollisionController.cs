@@ -52,6 +52,7 @@ namespace InverseTest.Detail
             this.platform.removeShell();
         }
 
+        
         private void resetColors()
         {
             this.detail.SetDefaultColor();

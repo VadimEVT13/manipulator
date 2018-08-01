@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Manipulator.GRBL.Models;
 using Manipulator.GRBL.Utils;
 using InverseTest.GUI.Utils;
+using System.Windows.Media;
+using FontAwesome.WPF;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -183,47 +185,109 @@ namespace InverseTest.GUI.ViewModels
             var portFactory = new GPortFactory();
             this.port = portFactory.CreateGPort(GPortFactory.GPortType.DETECTOR);
             this.port.OnDataReceived += OnDataReceived;
+
+            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
+            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
+            UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
+            HomeImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
         }
+        public ImageSource UnlockImage { get; }
+        public ImageSource HomeImage { get; }
 
-        /// <summary>
-        /// Команда отправления данных обработана.
-        /// </summary>
-        private bool _isOpen;
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _openCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Open
+        private ImageSource plugImage;
+        public ImageSource PlugImage
         {
             get
             {
-                return _openCommand
-                  ?? (_openCommand = new AsyncRelayCommand(o =>
-                      Task.Run(() =>
-                      {
-                          if (_isOpen)
-                          {
-                              return;
-                          }
-                          _isOpen = true;
-                          Status = "Update";
-                          bool portIsOpened = port.Open();
-
-                          if (!portIsOpened)
-                          {
-                              Status = "Connection error";
-                          }
-                          port.State();
-                          _isOpen = false;
-                      })
-                  ,
-                  o => !_isOpen));
+                return plugImage;
+            }
+            set
+            {
+                plugImage = value;
+                NotifyPropertyChanged("PlugImage");
             }
         }
+        
+        private RelayCommand _plugCommand;
+
+        public RelayCommand PlugCommand
+        {
+            get
+            {
+                return _plugCommand
+                  ?? (_plugCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (!port.IsOpen)
+                        {
+                            port.Open();
+                        }
+                        else
+                        {
+                            port.Close();
+                        }
+                        if (!port.IsOpen)
+                        {
+                            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
+                            Status = "Disconnect";
+                        }
+                        else
+                        {
+                            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
+                            Status = "Connect";
+                        }
+                    }));
+            }
+        }
+
+        private ImageSource playImage;
+        public ImageSource PlayImage
+        {
+            get
+            {
+                return playImage;
+            }
+            set
+            {
+                playImage = value;
+                NotifyPropertyChanged("PlayImage");
+            }
+        }
+
+        private RelayCommand _playCommand;
+
+        public RelayCommand PlayCommand
+        {
+            get
+            {
+                return _playCommand
+                  ?? (_playCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (!port.IsPlay)
+                        {
+                            port.Start();
+                        }
+                        else
+                        {
+                            port.Pause();
+                        }
+                        port.State();
+                        if (!port.IsPlay)
+                        {
+                            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
+                            Status = "Pause";
+                        }
+                        else
+                        {
+                            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
+                            Status = "Play";
+                        }
+                    }));
+            }
+        }
+
+
 
         /// <summary>
         /// Вызывается при получии данных от детектора
@@ -234,121 +298,11 @@ namespace InverseTest.GUI.ViewModels
             Console.WriteLine("State: " + data.Status);
             this.State = data;
         }
-
-
-        /// <summary>
-        /// Команда отправления данных обработана.
-        /// </summary>
-        private bool _isClose;
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _CloseCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Close
-        {
-            get
-            {
-                return _CloseCommand
-                  ?? (_CloseCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isClose)
-                        {
-                            return;
-                        }
-                        _isClose = true;
-                        Status = "Disconnect";
-                        port.Close();
-                        _isClose = false;
-                    }),
-                    o => !_isClose));
-            }
-        }
-
-
-
+        
         /// <summary>
         /// Команда отправления данных обработана.
         /// </summary>
         private bool _isCommand;
-
-        /// <summary>
-        /// Команда отправления паузы.
-        /// </summary>
-        private bool _isStartCommand;
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _startCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Start
-        {
-            get
-            {
-                return _startCommand
-                  ?? (_startCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isStartCommand)
-                        {
-                            return;
-                        }
-                        _isStartCommand = true;
-                        Status = "Update";
-                        port.Start();
-
-                        port.State();
-                        _isStartCommand = false;
-                    }),
-                    o => !_isStartCommand));
-            }
-        }
-
-
-
-        /// <summary>
-        /// Команда отправления паузы.
-        /// </summary>
-        private bool _isPauseCommand;
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _PauseCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Pause
-        {
-            get
-            {
-                return _PauseCommand
-                  ?? (_PauseCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isPauseCommand)
-                        {
-                            return;
-                        }
-                        _isPauseCommand = true;
-                        Status = "Update";
-                        port.Pause();
-
-                        port.State();
-                        _isPauseCommand = false;
-                    }),
-                    o => !_isPauseCommand));
-            }
-        }
 
         /// <summary>
         /// Команда отправления данных в порт.
@@ -358,7 +312,7 @@ namespace InverseTest.GUI.ViewModels
         /// <summary>
         /// Свойство команда отправления данных в порт.
         /// </summary>
-        public ICommand Home
+        public ICommand HomeCommand
         {
             get
             {
@@ -389,7 +343,7 @@ namespace InverseTest.GUI.ViewModels
         /// <summary>
         /// Свойство команда отправления данных в порт.
         /// </summary>
-        public ICommand Unlock
+        public ICommand UnlockCommand
         {
             get
             {
