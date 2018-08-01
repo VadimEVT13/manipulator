@@ -109,7 +109,7 @@ namespace InverseTest.GUI.Views
                     if (orderedPoints.ContainsKey(v))
                     {
                         DetailViewPort.Children.Remove(v);
-                        ScanPointVisual orderedPoint = orderedPoints.GetOrDefault(v);
+                        orderedPoints.TryGetValue(v, out ScanPointVisual orderedPoint);
                         Path.ScanPath.getInstance.RemovePoint(orderedPoint.Point);
                         orderedPoints.Remove(v);
                         break;

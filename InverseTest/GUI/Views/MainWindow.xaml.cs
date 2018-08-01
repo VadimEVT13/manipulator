@@ -114,7 +114,7 @@ namespace InverseTest.GUI.Views
         {
             InitializeComponent();
             this.Loaded += this.MainWindowLoaded;
-            this.DataContext = this;
+            //this.DataContext = this;
             this.detailView = new DetailView();
         }
 
@@ -524,21 +524,6 @@ namespace InverseTest.GUI.Views
                 listCounter = 0;
                 ManipulatorVisualizer.RemoveAllMathModels();
             }
-        }
-
-        //Запрогать загрузку и замену детальки
-        private void LoadModel_Click(object sender, RoutedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-        }
-        
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
         }
 
         private void resetManip()

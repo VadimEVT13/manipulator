@@ -5,8 +5,8 @@
              xmlns:view="clr-namespace:InverseTest.GUI.Views"
              xmlns:localVm="clr-namespace:InverseTest.GUI.ViewModels"
              xmlns:local="clr-namespace:InverseTest"
-             StartupUri="GUI/Views/MainWindow.xaml">
-    <Application.Resources>
+			 Startup="Application_Startup">
+	<Application.Resources>
         <localVm:DetectorViewModel x:Key="DetectorVM"/>
         <localVm:ManipulatorViewModel x:Key="ManipulatorVM"/>
 
