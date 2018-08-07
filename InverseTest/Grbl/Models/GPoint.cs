@@ -1,10 +1,18 @@
-﻿/// <summary>
+﻿using System.ComponentModel;
+/// <summary>
 /// Модель данных - точка.
 /// </summary>
 namespace InverseTest.Grbl.Models
 {
-    public class GPoint
+    public class GPoint : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseProperty(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         /// <summary>
         /// Позиция по оси X.
         /// </summary>

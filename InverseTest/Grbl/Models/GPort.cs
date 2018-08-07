@@ -165,7 +165,6 @@ namespace InverseTest.Grbl.Models
                     {
                         Console.WriteLine("Exception: " + ex.Message);
                     }
-                    
                 }
             }
         }

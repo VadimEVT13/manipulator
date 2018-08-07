@@ -205,7 +205,9 @@
     <Compile Include="Grbl\Converters\GConvert.cs" />
     <Compile Include="Grbl\Converters\GStatusConverter.cs" />
     <Compile Include="Grbl\Finders\GPortFind.cs" />
+    <Compile Include="Grbl\Models\GDetector.cs" />
     <Compile Include="Grbl\Models\GDevice.cs" />
+    <Compile Include="Grbl\Models\GManipulator.cs" />
     <Compile Include="Grbl\Models\GPoint.cs" />
     <Compile Include="Grbl\Models\GPort.cs" />
     <Compile Include="Grbl\Models\GPortFactory.cs" />

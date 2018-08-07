@@ -1,54 +1,34 @@
 ﻿<UserControl x:Class="InverseTest.GUI.Views.ManipulatorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-             xmlns:local="clr-namespace:InverseTest.GUI.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="330" d:DesignWidth="320">
-    
-    
-	<UserControl.InputBindings>
-		<KeyBinding Command="{Binding Open}" Key="O" />
-		<KeyBinding Command="{Binding Close}" Key="C" />
-
-		<KeyBinding Command="{Binding PX}" Key="Q" />
-		<KeyBinding Command="{Binding MX}" Key="A" />
-
-		<KeyBinding Command="{Binding PY}" Key="W" />
-		<KeyBinding Command="{Binding MY}" Key="S" />
-
-		<KeyBinding Command="{Binding PZ}" Key="E" />
-		<KeyBinding Command="{Binding MZ}" Key="D" />
-
-		<KeyBinding Command="{Binding PA}" Key="R" />
-		<KeyBinding Command="{Binding MA}" Key="F" />
-
-		<KeyBinding Command="{Binding PB}" Key="T" />
-		<KeyBinding Command="{Binding MB}" Key="G" />
-	</UserControl.InputBindings>
-
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:converters="clr-namespace:InverseTest.Grbl.Converters"
+             mc:Ignorable="d">
+	<UserControl.Resources>
+		<converters:GStatusToStringConverter x:Key="GStatusToStringConverter" />
+	</UserControl.Resources>
 	<StackPanel>
-		<TextBlock Margin="5" TextAlignment="Left" Text="{Binding Status}"/>
+		<TextBlock Margin="5" TextAlignment="Left" Text="{Binding State.Status, Converter={StaticResource GStatusToStringConverter}}"/>
 		<StackPanel Orientation="Horizontal">
-			<StackPanel>
-                <Button Content="Открыть" Command="{Binding Open}" />
-                <Button  Content="Закрыть" Command="{Binding Close}" />
-			</StackPanel>
-			<StackPanel>
-                <Button  Content="Старт" Command="{Binding Start}" />
-                <Button  Content="Пауза" Command="{Binding Pause}" />
-			</StackPanel>
-			<StackPanel>
-                <Button  Content="Домой" Command="{Binding Home}" />
-				<Button Content="Разблокировать" Command="{Binding Unlock}" />
-			</StackPanel>
-			<StackPanel Visibility="Collapsed">
-				<TextBlock Margin="5" Width="70" Height="20" Text="Шаг"/>
-				<TextBox Margin="5" Width="70" Text="{Binding Speed}"/>
-			</StackPanel>
+			<Button Command="{Binding PlugCommand}" ToolTip="Открыть">
+				<Image Source="{Binding PlugImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding UnPlugCommand}" ToolTip="Закрыть">
+				<Image Source="{Binding UnPlugImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding PlayCommand}" ToolTip="Старт">
+				<Image Source="{Binding PlayImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding PauseCommand}" ToolTip="Пауза">
+				<Image Source="{Binding PauseImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding HomeCommand}" ToolTip="Домой">
+				<Image Source="{Binding HomeImage}" Width="20" Height="20"/>
+			</Button>
+			<Button Command="{Binding UnlockCommand}" ToolTip="Разблокировать">
+				<Image Source="{Binding UnlockImage}" Width="20" Height="20"/>
+			</Button>
 		</StackPanel>
-		
 	</StackPanel>
 </UserControl>
