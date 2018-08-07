@@ -2,11 +2,11 @@
 using System.Windows.Input;
 using System.Threading;
 using System.Threading.Tasks;
-using Manipulator.GRBL.Models;
-using Manipulator.GRBL.Utils;
 using InverseTest.GUI.Utils;
 using System.Windows.Media;
 using FontAwesome.WPF;
+using log4net;
+using InverseTest.Grbl.Models;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -15,6 +15,10 @@ namespace InverseTest.GUI.ViewModels
     /// </summary>
     class DetectorViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Минимальное значение по оси X.
         /// </summary>
@@ -56,7 +60,7 @@ namespace InverseTest.GUI.ViewModels
         /// </summary>
         private static int LIMIT_B_MAX = 180;
 
-        private String status = GConvert.ToString(GStatus.DISCONNECT);
+        /*private String status = GConvert.ToString(GStatus.DISCONNECT);
         public String Status
         {
             get
@@ -68,7 +72,7 @@ namespace InverseTest.GUI.ViewModels
                 status = value;
                 NotifyPropertyChanged("Status");
             }
-        }
+        }//*/
 
         private double x = 10;
         public double X
@@ -164,12 +168,12 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 state = value;
-                if (state != null)
+                /*if (state != null)
                 {
 
                     Status = GConvert.ToString(state.Status);
 
-                }
+                }//*/
                 NotifyPropertyChanged("State");
             }
         }
@@ -187,29 +191,17 @@ namespace InverseTest.GUI.ViewModels
             this.port.OnDataReceived += OnDataReceived;
 
             PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
-            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
-            UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
+            UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
+            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
+            PauseImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
             HomeImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
-        }
-        public ImageSource UnlockImage { get; }
-        public ImageSource HomeImage { get; }
+            UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
 
-        private ImageSource plugImage;
-        public ImageSource PlugImage
-        {
-            get
-            {
-                return plugImage;
-            }
-            set
-            {
-                plugImage = value;
-                NotifyPropertyChanged("PlugImage");
-            }
+            State = new GState();
         }
-        
+
+        public ImageSource PlugImage { get; }
         private RelayCommand _plugCommand;
-
         public RelayCommand PlugCommand
         {
             get
@@ -218,44 +210,30 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_plugCommand = new RelayCommand(
                     () =>
                     {
-                        if (!port.IsOpen)
-                        {
-                            port.Open();
-                        }
-                        else
-                        {
-                            port.Close();
-                        }
-                        if (!port.IsOpen)
-                        {
-                            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
-                            Status = "Disconnect";
-                        }
-                        else
-                        {
-                            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
-                            Status = "Connect";
-                        }
+                        port.Open();
+                        StateCommand();
                     }));
             }
         }
-
-        private ImageSource playImage;
-        public ImageSource PlayImage
+        
+        public ImageSource UnPlugImage { get; }
+        private RelayCommand _unPlugCommand;
+        public RelayCommand UnPlugCommand
         {
             get
             {
-                return playImage;
-            }
-            set
-            {
-                playImage = value;
-                NotifyPropertyChanged("PlayImage");
+                return _unPlugCommand
+                  ?? (_unPlugCommand = new RelayCommand(
+                    () =>
+                    {
+                        port.Close();
+                        StateCommand();
+                    }));
             }
         }
-
+        
+        public ImageSource PlayImage { get; }
         private RelayCommand _playCommand;
-
         public RelayCommand PlayCommand
         {
             get
@@ -264,28 +242,72 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_playCommand = new RelayCommand(
                     () =>
                     {
-                        if (!port.IsPlay)
-                        {
-                            port.Start();
-                        }
-                        else
-                        {
-                            port.Pause();
-                        }
-                        port.State();
-                        if (!port.IsPlay)
-                        {
-                            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
-                            Status = "Pause";
-                        }
-                        else
-                        {
-                            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
-                            Status = "Play";
-                        }
+                        port.Start();//TODO
+                        StateCommand();
                     }));
             }
         }
+
+        public ImageSource PauseImage { get; }
+        private RelayCommand _pauseCommand;
+        public RelayCommand PauseCommand
+        {
+            get
+            {
+                return _pauseCommand
+                  ?? (_pauseCommand = new RelayCommand(
+                    () =>
+                    {
+                        port.Pause();//TODO
+                        StateCommand();
+                    }));
+            }
+        }
+
+        public ImageSource HomeImage { get; }
+        private RelayCommand _homeCommand;
+        public ICommand HomeCommand
+        {
+            get
+            {
+                return _homeCommand
+                  ?? (_homeCommand = new RelayCommand(
+                    () =>
+                    {
+                        port.Home();//TODO
+                        StateCommand();
+                    }));
+            }
+        }
+
+        public ImageSource UnlockImage { get; }
+        private RelayCommand _unlockCommand;
+        public ICommand UnlockCommand
+        {
+            get
+            {
+                return _unlockCommand
+                  ?? (_unlockCommand = new RelayCommand(
+                    () =>
+                    {
+                        port.Unlock();//TODO
+                        StateCommand();
+                    }));
+            }
+        }
+
+        public void StateCommand()
+        {
+            if (port.IsOpen)
+            {
+                port.State();
+            }
+            else
+            {
+                State.Status = GStatus.DISCONNECT;
+            }
+        }
+
 
 
 
@@ -303,68 +325,6 @@ namespace InverseTest.GUI.ViewModels
         /// Команда отправления данных обработана.
         /// </summary>
         private bool _isCommand;
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _HomeCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand HomeCommand
-        {
-            get
-            {
-                return _HomeCommand
-                  ?? (_HomeCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isCommand)
-                        {
-                            return;
-                        }
-                        _isCommand = true;
-                        Status = "Update";
-                        port.Home();
-
-                        port.State();
-                        _isCommand = false;
-                    }),
-                    o => !_isCommand));
-            }
-        }
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _UnlockCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand UnlockCommand
-        {
-            get
-            {
-                return _UnlockCommand
-                  ?? (_UnlockCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isCommand)
-                        {
-                            return;
-                        }
-                        _isCommand = true;
-                        Status = "Update";
-                        port.Unlock();
-
-                        port.State();
-                        _isCommand = false;
-                    }),
-                    o => !_isCommand));
-            }
-        }
 
         private double GetSpeed()
         {
@@ -432,7 +392,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         port.Global(GetPoint(new GPoint()));
                         _isCommand = false;
                     }),
@@ -461,7 +421,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         port.Local(GetPoint(State.Global));
 
                         port.State();
@@ -492,7 +452,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             X = GetSpeed()
@@ -527,7 +487,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         Thread.Sleep(100);
                         GPoint point = new GPoint
                         {
@@ -563,7 +523,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             Y = GetSpeed()
@@ -598,7 +558,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             Y = -GetSpeed()
@@ -633,7 +593,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             Z = GetSpeed()
@@ -668,7 +628,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             Z = -GetSpeed()
@@ -703,7 +663,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             A = GetSpeed()
@@ -736,7 +696,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             A = -GetSpeed()
@@ -771,7 +731,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             B = GetSpeed()
@@ -806,7 +766,7 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        Status = "Update";
+                        //Status = "Update";
                         GPoint point = new GPoint
                         {
                             B = -GetSpeed()

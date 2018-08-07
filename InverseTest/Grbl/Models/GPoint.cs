@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Модель данных - точка.
 /// </summary>
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
     public class GPoint
     {

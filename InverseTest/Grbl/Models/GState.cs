@@ -1,10 +1,21 @@
-﻿/// <summary>
+﻿using System.ComponentModel;
+/// <summary>
 /// Модель данных - сотояние устройства.
 /// </summary>
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
-    public class GState
+    public class GState : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseProperty(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         /// <summary>
         /// Локальное положение.
         /// </summary>
@@ -18,7 +29,16 @@ namespace Manipulator.GRBL.Models
         /// <summary>
         /// Состояние устройства.
         /// </summary>
-        public GStatus Status { get; set; }
+        private GStatus _status;
+        public GStatus Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaiseProperty("Status");
+            }
+        }
 
         /// <summary>
         /// Конструктор по умолчанию.

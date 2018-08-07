@@ -3,13 +3,14 @@ using System.IO;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+using InverseTest.Grbl.Finders;
 using log4net;
 using Manipulator.GRBL.Utils;
 
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
 /// </summary>
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
 
     /// <summary>
@@ -164,6 +165,7 @@ namespace Manipulator.GRBL.Models
                     {
                         Console.WriteLine("Exception: " + ex.Message);
                     }
+                    
                 }
             }
         }

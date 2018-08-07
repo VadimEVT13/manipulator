@@ -2,13 +2,13 @@
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
+using InverseTest.Grbl.Models;
 using log4net;
-using Manipulator.GRBL.Models;
 
 /// <summary>
 /// Класс поиска имени порта по приветствию.
 /// </summary>
-namespace Manipulator.GRBL.Utils
+namespace InverseTest.Grbl.Finders
 {
     public class GPortFind
     {

@@ -2,11 +2,11 @@
 using System.Windows.Input;
 using System.Threading;
 using System.Threading.Tasks;
-using Manipulator.GRBL.Models;
-using Manipulator.GRBL.Utils;
 using InverseTest.GUI.Utils;
 using FontAwesome.WPF;
 using System.Windows.Media;
+using InverseTest.Grbl.Models;
+using Manipulator.GRBL.Utils;
 
 /// <summary>
 /// Модель представления драйвера управления манипулятором.

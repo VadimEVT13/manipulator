@@ -4,7 +4,7 @@ using System.IO.Ports;
 /// <summary>
 /// Модель данных устройства.
 /// </summary>
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
     public class GDevice
     {

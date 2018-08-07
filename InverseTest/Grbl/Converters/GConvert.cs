@@ -1,6 +1,6 @@
-﻿using System;
+﻿using InverseTest.Grbl.Models;
+using System;
 using System.Text.RegularExpressions;
-using Manipulator.GRBL.Models;
 
 /// <summary>
 /// Класс для конвертации моделей контроллера.
@@ -139,25 +139,25 @@ namespace Manipulator.GRBL.Utils
                     Status = GConvert.ToStatus(m.Groups[STATE].Value),
                     Local = new GPoint
                     {
-                        X = Double.Parse(m.Groups[LOCAL_X].Value),
-                        Y = Double.Parse(m.Groups[LOCAL_Y].Value),
-                        Z = Double.Parse(m.Groups[LOCAL_Z].Value),
-                        A = Double.Parse(m.Groups[LOCAL_A].Value),
-                        B = Double.Parse(m.Groups[LOCAL_B].Value),
-                        C = Double.Parse(m.Groups[LOCAL_C].Value),
-                        D = Double.Parse(m.Groups[LOCAL_D].Value),
-                        E = Double.Parse(m.Groups[LOCAL_E].Value)
+                        X = Double.Parse(m.Groups[LOCAL_X].Value.Replace('.',',')),
+                        Y = Double.Parse(m.Groups[LOCAL_Y].Value.Replace('.', ',')),
+                        Z = Double.Parse(m.Groups[LOCAL_Z].Value.Replace('.', ',')),
+                        A = Double.Parse(m.Groups[LOCAL_A].Value.Replace('.', ',')),
+                        B = Double.Parse(m.Groups[LOCAL_B].Value.Replace('.', ',')),
+                        C = Double.Parse(m.Groups[LOCAL_C].Value.Replace('.', ',')),
+                        D = Double.Parse(m.Groups[LOCAL_D].Value.Replace('.', ',')),
+                        E = Double.Parse(m.Groups[LOCAL_E].Value.Replace('.', ','))
                     },
                     Global = new GPoint
                     {
-                        X = Double.Parse(m.Groups[GLOBAL_X].Value),
-                        Y = Double.Parse(m.Groups[GLOBAL_Y].Value),
-                        Z = Double.Parse(m.Groups[GLOBAL_Z].Value),
-                        A = Double.Parse(m.Groups[GLOBAL_A].Value),
-                        B = Double.Parse(m.Groups[GLOBAL_B].Value),
-                        C = Double.Parse(m.Groups[GLOBAL_C].Value),
-                        D = Double.Parse(m.Groups[GLOBAL_D].Value),
-                        E = Double.Parse(m.Groups[GLOBAL_E].Value)
+                        X = Double.Parse(m.Groups[GLOBAL_X].Value.Replace('.', ',')),
+                        Y = Double.Parse(m.Groups[GLOBAL_Y].Value.Replace('.', ',')),
+                        Z = Double.Parse(m.Groups[GLOBAL_Z].Value.Replace('.', ',')),
+                        A = Double.Parse(m.Groups[GLOBAL_A].Value.Replace('.', ',')),
+                        B = Double.Parse(m.Groups[GLOBAL_B].Value.Replace('.', ',')),
+                        C = Double.Parse(m.Groups[GLOBAL_C].Value.Replace('.', ',')),
+                        D = Double.Parse(m.Groups[GLOBAL_D].Value.Replace('.', ',')),
+                        E = Double.Parse(m.Groups[GLOBAL_E].Value.Replace('.', ','))
                     }
                 };
             }

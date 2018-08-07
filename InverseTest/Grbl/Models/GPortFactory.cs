@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
     /// <summary>
     /// Фабрика для создания подключений к последовательному порту

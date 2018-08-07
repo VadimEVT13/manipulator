@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Список состояний GRBL - контроллера.
 /// </summary>
-namespace Manipulator.GRBL.Models
+namespace InverseTest.Grbl.Models
 {
     public enum GStatus
     {

@@ -202,6 +202,15 @@
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
     <Compile Include="Frame\DetectorPositionController.cs" />
     <Compile Include="Frame\Models\Matrix4D.cs" />
+    <Compile Include="Grbl\Converters\GConvert.cs" />
+    <Compile Include="Grbl\Converters\GStatusConverter.cs" />
+    <Compile Include="Grbl\Finders\GPortFind.cs" />
+    <Compile Include="Grbl\Models\GDevice.cs" />
+    <Compile Include="Grbl\Models\GPoint.cs" />
+    <Compile Include="Grbl\Models\GPort.cs" />
+    <Compile Include="Grbl\Models\GPortFactory.cs" />
+    <Compile Include="Grbl\Models\GState.cs" />
+    <Compile Include="Grbl\Models\GStatus.cs" />
     <Compile Include="GUI\Readers\JsonReader.cs" />
     <Compile Include="GUI\Utils\RelayCommand.cs" />
     <Compile Include="GUI\ViewModels\MainViewModel.cs" />
@@ -371,13 +380,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Manipulator.GRBL\Manipulator.GRBL.csproj">
-      <Project>{bfbcb61a-4f3d-48fd-912a-f15e7933b78b}</Project>
-      <Name>Manipulator.GRBL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
