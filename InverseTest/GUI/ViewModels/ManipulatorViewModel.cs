@@ -14,7 +14,7 @@ using log4net;
 /// </summary>
 namespace InverseTest.GUI.ViewModels
 {
-    class ManipulatorViewModel : ViewModelBase
+    public class ManipulatorViewModel : ViewModelBase
     {
         /// <summary>
         /// Логгирование

@@ -27,7 +27,9 @@ namespace InverseTest.GUI.ViewModels
             get { return "MainWindow"; }
         }
 
-        //public ShowViewModel ShowVM { get; set; }
+        public ManipulatorViewModel ManipulatorVM { get; set; }
+
+        public DetectorViewModel DetectorVM { get; set; }
         #endregion
 
         #region Constructors
@@ -35,7 +37,9 @@ namespace InverseTest.GUI.ViewModels
         {
             // DialogService is used to handle dialogs
             this.DialogService = new MvvmDialogs.DialogService();
-            //ShowVM = new ShowViewModel();
+
+            ManipulatorVM = new ManipulatorViewModel();
+            DetectorVM = new DetectorViewModel();
         }
         #endregion
 

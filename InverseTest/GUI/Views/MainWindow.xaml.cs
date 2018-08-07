@@ -19,6 +19,7 @@ using InverseTest.Manipulator.Models;
 using InverseTest.Model;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using InverseTest.GUI.ViewModels;
 
 namespace InverseTest.GUI.Views
 {

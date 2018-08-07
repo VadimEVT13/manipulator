@@ -35,75 +35,75 @@
 			<StackPanel>
 				<Expander Header="Манипулятор" IsExpanded="True">
 					<StackPanel Width="180">
-						<local:ManipulatorView DataContext="{Binding Source={StaticResource ManipulatorVM}}" />
+						<local:ManipulatorView DataContext="{Binding ManipulatorVM}" />
 						<Label Content="Первое колено, °" HorizontalAlignment="Center"/>
                         <Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" 
-                                Value="{Binding Source={StaticResource ManipulatorVM}, Path=X, Mode=OneWayToSource}" 
+                                Value="{Binding Source=ManipulatorVM, Path=X, Mode=OneWayToSource}" 
                                 ValueChanged="T1Slider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=T1Slider, Path=Value,StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
                         <Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1"                
-                                Value="{Binding Source={StaticResource ManipulatorVM}, Path=Y, Mode=OneWayToSource}" 
+                                Value="{Binding Source=ManipulatorVM, Path=Y, Mode=OneWayToSource}" 
                             ValueChanged="T2Slider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=T2Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" 
-                        Value="{Binding Source={StaticResource ManipulatorVM}, Path=Z, Mode=OneWayToSource}" 
+                        Value="{Binding Source=ManipulatorVM, Path=Z, Mode=OneWayToSource}" 
                                 ValueChanged="T3Slider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=T3Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Четвертое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" 
-                        Value="{Binding Source={StaticResource ManipulatorVM}, Path=A, Mode=OneWayToSource}" 
+                        Value="{Binding Source=ManipulatorVM, Path=A, Mode=OneWayToSource}" 
                         ValueChanged="T4Slider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=T4Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                         <Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
 						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" 
-                         Value="{Binding Source={StaticResource ManipulatorVM}, Path=B, Mode=OneWayToSource}" 
+                         Value="{Binding Source=ManipulatorVM, Path=B, Mode=OneWayToSource}" 
                          ValueChanged="T5Slider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=T5Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                        <Button Content="Установить манипулятор" Command="{Binding Source={StaticResource ManipulatorVM}, Path=Global}"/>
+						<Button Content="Установить манипулятор" Command="{Binding Source=ManipulatorVM, Path=Global}"/>
                     </StackPanel>
 				</Expander>
 				<Expander Header="Детектор">
 					<StackPanel Width="180">
-						<local:DetectorView DataContext="{Binding Source={StaticResource DetectorVM}}" />
+						<local:DetectorView DataContext="{Binding DetectorVM}" />
 						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450"
                                 SmallChange="1"
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=X, Mode=OneWayToSource}"
+                                Value="{Binding Source=DetectorVM, Path=X, Mode=OneWayToSource}"
 								ValueChanged="VerticalFrameSlider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
 						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" 
                                 SmallChange="1" 
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=Z, Mode=OneWayToSource}"
+                                Value="{Binding Source=DetectorVM, Path=Z, Mode=OneWayToSource}"
                                 ValueChanged="HorizontalBarSlider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" 
-                         Value="{Binding Source={StaticResource DetectorVM}, Path=Y, Mode=OneWayToSource}"
+                         Value="{Binding Source=DetectorVM, Path=Y, Mode=OneWayToSource}"
                                 SmallChange="1" ValueChanged="ScreenHolderSlider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenVerticalAngleSlider" 
                                 Minimum="10" Maximum="160" SmallChange="1" 
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=B, Mode=OneWayToSource}"
+                                Value="{Binding Source=DetectorVM, Path=B, Mode=OneWayToSource}"
                                 ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 						<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
 						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1"
-                                Value="{Binding Source={StaticResource DetectorVM}, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
+                                Value="{Binding Source=DetectorVM, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
                         <TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-						<Button Content="Установить детектор"  Command="{Binding Source={StaticResource DetectorVM}, Path=Global}" />
+						<Button Content="Установить детектор"  Command="{Binding Source=DetectorVM, Path=Global}" />
 					</StackPanel>
 				</Expander>
 				<Expander Header="Деталь">
@@ -234,6 +234,6 @@
             </StackPanel>
             <local:PathListView x:Name="PathListView" Width="Auto"/>
         </StackPanel>
-          <local:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
+		<local:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
 </Window>

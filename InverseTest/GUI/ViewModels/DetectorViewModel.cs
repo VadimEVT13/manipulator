@@ -13,7 +13,7 @@ namespace InverseTest.GUI.ViewModels
     /// <summary>
     /// Модель представления драйвера управления детектором.
     /// </summary>
-    class DetectorViewModel : ViewModelBase
+    public class DetectorViewModel : ViewModelBase
     {
         /// <summary>
         /// Логгирование
