@@ -9,26 +9,35 @@
 		<converters:GStatusToStringConverter x:Key="GStatusToStringConverter" />
 	</UserControl.Resources>
 	<StackPanel>
-		<TextBlock Margin="5" TextAlignment="Left" Text="{Binding State.Status, Converter={StaticResource GStatusToStringConverter}}"/>
-		<StackPanel Orientation="Horizontal">
-			<Button Command="{Binding PlugCommand}" ToolTip="Открыть">
-				<Image Source="{Binding PlugImage}" Width="20" Height="20"/>
+		<TextBlock Margin="5" TextAlignment="Left"
+				   Text="{Binding State.Status, Converter={StaticResource GStatusToStringConverter}}"/>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0" Command="{Binding PlugCommand}" ToolTip="Открыть">
+				<Image Source="{Binding PlugImage}"/>
 			</Button>
-			<Button Command="{Binding UnPlugCommand}" ToolTip="Закрыть">
-				<Image Source="{Binding UnPlugImage}" Width="20" Height="20"/>
+			<Button Grid.Column="1" Command="{Binding UnPlugCommand}" ToolTip="Закрыть">
+				<Image Source="{Binding UnPlugImage}"/>
 			</Button>
-			<Button Command="{Binding PlayCommand}" ToolTip="Старт">
-				<Image Source="{Binding PlayImage}" Width="20" Height="20"/>
+			<Button Grid.Column="2" Command="{Binding PlayCommand}" ToolTip="Старт">
+				<Image Source="{Binding PlayImage}"/>
 			</Button>
-			<Button Command="{Binding PauseCommand}" ToolTip="Пауза">
-				<Image Source="{Binding PauseImage}" Width="20" Height="20"/>
+			<Button Grid.Column="3" Command="{Binding PauseCommand}" ToolTip="Пауза">
+				<Image Source="{Binding PauseImage}"/>
 			</Button>
-			<Button Command="{Binding HomeCommand}" ToolTip="Домой">
-				<Image Source="{Binding HomeImage}" Width="20" Height="20"/>
+			<Button Grid.Column="4" Command="{Binding HomeCommand}" ToolTip="Домой">
+				<Image Source="{Binding HomeImage}"/>
 			</Button>
-			<Button Command="{Binding UnlockCommand}" ToolTip="Разблокировать">
-				<Image Source="{Binding UnlockImage}" Width="20" Height="20"/>
+			<Button Grid.Column="5" Command="{Binding UnlockCommand}" ToolTip="Разблокировать">
+				<Image Source="{Binding UnlockImage}"/>
 			</Button>
-		</StackPanel>
+		</Grid>
 	</StackPanel>
 </UserControl>

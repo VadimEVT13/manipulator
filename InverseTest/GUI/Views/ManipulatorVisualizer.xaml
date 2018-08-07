@@ -8,10 +8,8 @@
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="202.667" d:DesignWidth="132.666">
-    <UserControl.Resources>
-		<localVMs:DetectorViewModel x:Key="DetectorVM"/>
-		<localVMs:ManipulatorViewModel x:Key="ManipulatorVM"/>
-        <Style x:Key="ViewMaximizeStyle">
+	<UserControl.Resources>
+		<Style x:Key="ViewMaximizeStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked}" Value="True">
                     <Setter Property="Grid.Column" Value="0"/>
