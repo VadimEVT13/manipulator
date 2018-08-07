@@ -33,8 +33,8 @@ namespace InverseTest
 
             Log.Info("Starting App");
             LogMachineDetails();
-            app = new MainWindow();
             var context = new MainViewModel();
+            app = new MainWindow(context);
             app.DataContext = context;
             app.Show();
             

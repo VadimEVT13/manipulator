@@ -48,7 +48,7 @@ namespace InverseTest.GUI.Views
 
         private Kinematic manipKinematic;
 
-        public ManipulatorV2 manipulator;
+        
         public DetectorFrame detectorFrame;
         private MovementPoint manipulatorCamPoint;
         private ConeModel coneModel;
@@ -111,8 +111,12 @@ namespace InverseTest.GUI.Views
 
         DetailView detailView;
 
-        public MainWindow()
+        //TODO
+        public MainViewModel MainVM { get; set; }
+
+        public MainWindow(MainViewModel mainVM)
         {
+            MainVM = mainVM;
             InitializeComponent();
             this.Loaded += this.MainWindowLoaded;
             //this.DataContext = this;
@@ -135,19 +139,20 @@ namespace InverseTest.GUI.Views
             detectorFrame.onManulaPositionChanged += DetecterManual_PositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
 
-            manipulator = ModelParser.Manipulator;
-            ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(manipulator);
+            MainVM.Manipulator = ModelParser.Manipulator;
+            ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(MainVM.Manipulator);
 
-            ManipulatorVisualizer.setManipulatorModel(manipulator, manipulatorVisual);
-            manipulator.onPositionChanged += Manipulator_PositionChanged;
-            manipulator.onManulaPositionChanged += ManipulatorManual_PositinChanged;
+            ManipulatorVisualizer.setManipulatorModel(MainVM.Manipulator, manipulatorVisual);
+            MainVM.Manipulator.onPositionChanged += Manipulator_PositionChanged;
+            MainVM.Manipulator.onManulaPositionChanged += ManipulatorManual_PositinChanged;
 
             ManipulatorVisualizer.AddModel(ModelParser.Others);
 
             //Вычисляет длины ребер манипулятора для вычисления кинематики
-            double[] edges = ManipulatorUtils.CalculateManipulatorLength(manipulator);
+            double[] edges = ManipulatorUtils.CalculateManipulatorLength(MainVM.Manipulator);
             this.manipKinematic = new Kinematic(new Vertex3D { X = MANIPULATOR_OFFSET.X, Y = MANIPULATOR_OFFSET.Y, Z = MANIPULATOR_OFFSET.Z });
-            this.manipKinematic.SetLen(new LengthJoin { J1 = edges[0], J2 = edges[1], J3 = edges[2], J4 = edges[3], J5 = edges[4], Det = ManipulatorUtils.CalculateManipulatorDet(manipulator) });
+            this.manipKinematic.SetLen(new LengthJoin { J1 = edges[0], J2 = edges[1], J3 = edges[2], J4 = edges[3], J5 = edges[4],
+                Det = ManipulatorUtils.CalculateManipulatorDet(MainVM.Manipulator) });
 
             PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
             PortalBoundController portalBounds = new PortalBoundController();
@@ -185,9 +190,9 @@ namespace InverseTest.GUI.Views
             GJKSolver gjkSolver = new GJKSolver();
 
             AABB aabb = new AABB();
-            aabb.MakeListExcept(manipulator, detectorFrame, detail, platform);
+            aabb.MakeListExcept(MainVM.Manipulator, detectorFrame, detail, platform);
             collisionWorker = new GJKWorker<SceneSnapshot, List<CollisionPair>>(aabb, gjkSolver);
-            collisoinDetector = new CollisionDetector(manipulator, detectorFrame, detail, platform, collisionWorker);
+            collisoinDetector = new CollisionDetector(MainVM.Manipulator, detectorFrame, detail, platform, collisionWorker);
 
             //Точка камеры манипулятора
             manipulatorCamPoint = new MovementPoint(Colors.Red);
@@ -215,7 +220,7 @@ namespace InverseTest.GUI.Views
         public void KinematicSolved(SystemState state)
         {
             if (state.Angles != null)
-                manipulator.MoveManipulator(state.Angles, Animate);
+                MainVM.Manipulator.MoveManipulator(state.Angles, Animate);
 
             if (state.PortalPosition != null)
                 detectorFrame.MoveDetectFrame(state.PortalPosition, Animate);
@@ -275,13 +280,12 @@ namespace InverseTest.GUI.Views
         public void Manipulator_PositionChanged()
         {
             double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
-            coneModel.ChangePosition(manipulator.GetCameraPosition(), manipulator.GetCameraDirection(), distanceToPoint);
-
-            T1Slider.Value = ManipulatorPositionController.T1GlobalToLocal(manipulator.TablePosition);
-            T2Slider.Value = ManipulatorPositionController.T2GlobalToLocal(manipulator.MiddleEdgePosition);
-            T3Slider.Value = ManipulatorPositionController.T3GlobalToLocal(manipulator.TopEdgePosition);
-            T4Slider.Value = ManipulatorPositionController.T4GlobalToLocal(manipulator.CameraBasePosition);
-            T5Slider.Value = ManipulatorPositionController.T5GlobalToLocal(manipulator.CameraPosition);
+            coneModel.ChangePosition(MainVM.Manipulator.GetCameraPosition(), MainVM.Manipulator.GetCameraDirection(), distanceToPoint);
+            MainVM.ManipulatorVM.X = ManipulatorPositionController.T1GlobalToLocal(MainVM.Manipulator.TablePosition);
+            MainVM.ManipulatorVM.Y = ManipulatorPositionController.T2GlobalToLocal(MainVM.Manipulator.MiddleEdgePosition);
+            MainVM.ManipulatorVM.Z = ManipulatorPositionController.T3GlobalToLocal(MainVM.Manipulator.TopEdgePosition);
+            MainVM.ManipulatorVM.A = ManipulatorPositionController.T4GlobalToLocal(MainVM.Manipulator.CameraBasePosition);
+            MainVM.ManipulatorVM.B = ManipulatorPositionController.T5GlobalToLocal(MainVM.Manipulator.CameraPosition);
             collisoinDetector.FindCollisoins();
 
             SetDistanceToPoint();
@@ -295,7 +299,7 @@ namespace InverseTest.GUI.Views
         /// </summary>
         public void SetCameraPosition()
         {
-            var cameraPosition = this.manipulator.GetCameraPosition();
+            var cameraPosition = MainVM.Manipulator.GetCameraPosition();
 
             ManipulatorXSlider.Value = Math.Round(cameraPosition.X, 3);
             ManipulatorYSlider.Value = Math.Round(cameraPosition.Y, 3);
@@ -307,7 +311,7 @@ namespace InverseTest.GUI.Views
         /// </summary>
         public void ManipulatorManual_PositinChanged()
         {
-            this.manipulatorCamPoint.Move(manipulator.GetCameraPosition());
+            this.manipulatorCamPoint.Move(MainVM.Manipulator.GetCameraPosition());
         }
 
         /// <summary>
@@ -319,91 +323,6 @@ namespace InverseTest.GUI.Views
             if (solveKinematics)
             {
                 recalculateKinematic();
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения первого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T1Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T1LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.TablePosition - value) > 1e-2)
-                {
-                    manipulator.TablePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения второго колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T2Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T2LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.MiddleEdgePosition - value) > 1e-2)
-                {
-                    manipulator.MiddleEdgePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения третьего колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T3Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T3LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.TopEdgePosition - value) > 1e-2)
-                {
-                    manipulator.TopEdgePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения четвертого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T4Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T4LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.CameraBasePosition - value) > 1e-2)
-                {
-                    manipulator.CameraBasePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения пятого колена.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void T5Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (manipulator != null)
-            {
-                double value = ManipulatorPositionController.T5LocalToGlobal(e.NewValue);
-                if (Math.Abs(manipulator.CameraPosition - value) > 1e-2)
-                {
-                    manipulator.CameraPosition = value;
-                }
             }
         }
 
@@ -504,7 +423,7 @@ namespace InverseTest.GUI.Views
 
         private void HideManipModelBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            ManipulatorV2 m = manipulator;
+            ManipulatorV2 m = MainVM.Manipulator;
 
             ManipulatorVisualizer.RemoveModel(m.GetManipulatorModel());
         }
@@ -529,7 +448,7 @@ namespace InverseTest.GUI.Views
 
         private void resetManip()
         {
-            manipulator.ResetModel();
+            MainVM.Manipulator.ResetModel();
             detectorFrame.ResetTransforms();
         }
 

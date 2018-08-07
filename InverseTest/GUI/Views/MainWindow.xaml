@@ -34,39 +34,7 @@
 		<ScrollViewer DockPanel.Dock="Right" Width="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible">
 			<StackPanel>
 				<Expander Header="Манипулятор" IsExpanded="True">
-					<StackPanel Width="180">
-						<local:ManipulatorView DataContext="{Binding ManipulatorVM}" />
-						<Label Content="Первое колено, °" HorizontalAlignment="Center"/>
-                        <Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" 
-                                Value="{Binding Source=ManipulatorVM, Path=X, Mode=OneWayToSource}" 
-                                ValueChanged="T1Slider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=T1Slider, Path=Value,StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
-                        <Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1"                
-                                Value="{Binding Source=ManipulatorVM, Path=Y, Mode=OneWayToSource}" 
-                            ValueChanged="T2Slider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=T2Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" 
-                        Value="{Binding Source=ManipulatorVM, Path=Z, Mode=OneWayToSource}" 
-                                ValueChanged="T3Slider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=T3Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Четвертое колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T4Slider" Minimum="-180" Maximum="180" SmallChange="1" 
-                        Value="{Binding Source=ManipulatorVM, Path=A, Mode=OneWayToSource}" 
-                        ValueChanged="T4Slider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=T4Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-                        <Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
-						<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" 
-                         Value="{Binding Source=ManipulatorVM, Path=B, Mode=OneWayToSource}" 
-                         ValueChanged="T5Slider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=T5Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-						<Button Content="Установить манипулятор" Command="{Binding Source=ManipulatorVM, Path=Global}"/>
-                    </StackPanel>
+					<local:ManipulatorView DataContext="{Binding ManipulatorVM}" Width="180"/>
 				</Expander>
 				<Expander Header="Детектор">
 					<StackPanel Width="180">

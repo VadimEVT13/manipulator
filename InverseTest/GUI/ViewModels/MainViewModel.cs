@@ -1,6 +1,7 @@
 ﻿using InverseTest.GUI.Readers;
 using InverseTest.GUI.Utils;
 using InverseTest.GUI.Writers;
+using InverseTest.Manipulator;
 using InverseTest.Path;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
@@ -30,6 +31,12 @@ namespace InverseTest.GUI.ViewModels
         public ManipulatorViewModel ManipulatorVM { get; set; }
 
         public DetectorViewModel DetectorVM { get; set; }
+
+
+
+        public ManipulatorV2 Manipulator { get; set; }
+
+
         #endregion
 
         #region Constructors
@@ -39,6 +46,12 @@ namespace InverseTest.GUI.ViewModels
             this.DialogService = new MvvmDialogs.DialogService();
 
             ManipulatorVM = new ManipulatorViewModel();
+            ManipulatorVM.OnXChanged += ManipulatorXChanged;
+            ManipulatorVM.OnYChanged += ManipulatorYChanged;
+            ManipulatorVM.OnZChanged += ManipulatorZChanged;
+            ManipulatorVM.OnAChanged += ManipulatorAChanged;
+            ManipulatorVM.OnBChanged += ManipulatorBChanged;
+
             DetectorVM = new DetectorViewModel();
         }
         #endregion
@@ -147,6 +160,86 @@ namespace InverseTest.GUI.ViewModels
         #endregion
 
         #region Events
+
+        /// <summary>
+        /// Обработка изменения положения первого колена
+        /// </summary>
+        /// <param name="x">положение колена</param>
+        public void ManipulatorXChanged(double x)
+        {
+            if (Manipulator != null)
+            {
+                double value = ManipulatorPositionController.T1LocalToGlobal(x);
+                if (Math.Abs(Manipulator.TablePosition - value) > 1e-2)
+                {
+                    Manipulator.TablePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения второго колена
+        /// </summary>
+        /// <param name="y">положение колена</param>
+        private void ManipulatorYChanged(double y)
+        {
+            if (Manipulator != null)
+            {
+                double value = ManipulatorPositionController.T2LocalToGlobal(y);
+                if (Math.Abs(Manipulator.MiddleEdgePosition - value) > 1e-2)
+                {
+                    Manipulator.MiddleEdgePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения третьего колена
+        /// </summary>
+        /// <param name="z">положение колена</param>
+        private void ManipulatorZChanged(double z)
+        {
+            if (Manipulator != null)
+            {
+                double value = ManipulatorPositionController.T3LocalToGlobal(z);
+                if (Math.Abs(Manipulator.TopEdgePosition - value) > 1e-2)
+                {
+                    Manipulator.TopEdgePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения четвертого колена
+        /// </summary>
+        /// <param name="a">положение колена</param>
+        private void ManipulatorAChanged(double a)
+        {
+            if (Manipulator != null)
+            {
+                double value = ManipulatorPositionController.T4LocalToGlobal(a);
+                if (Math.Abs(Manipulator.CameraBasePosition - value) > 1e-2)
+                {
+                    Manipulator.CameraBasePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения пятого колена
+        /// </summary>
+        /// <param name="b">положение колена</param>
+        private void ManipulatorBChanged(double b)
+        {
+            if (Manipulator != null)
+            {
+                double value = ManipulatorPositionController.T5LocalToGlobal(b);
+                if (Math.Abs(Manipulator.CameraPosition - value) > 1e-2)
+                {
+                    Manipulator.CameraPosition = value;
+                }
+            }
+        }
 
         #endregion
     }

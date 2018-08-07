@@ -14,6 +14,8 @@ using log4net;
 /// </summary>
 namespace InverseTest.GUI.ViewModels
 {
+    public delegate void AxisChanged(double xValue);
+
     public class ManipulatorViewModel : ViewModelBase
     {
         /// <summary>
@@ -23,6 +25,11 @@ namespace InverseTest.GUI.ViewModels
 
         public GPoint Target { get; set; }//TODO
 
+
+        /// <summary>
+        /// Событие вызываемое при изменении X.
+        /// </summary>
+        public event AxisChanged OnXChanged;
         private double x = 10;
         public double X
         {
@@ -33,10 +40,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 x = value;
+                OnXChanged(value);
                 NotifyPropertyChanged("X");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении Y.
+        /// </summary>
+        public event AxisChanged OnYChanged;
         private double y = 10;
         public double Y
         {
@@ -47,10 +59,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 y = value;
+                OnYChanged(value);
                 NotifyPropertyChanged("Y");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении Z.
+        /// </summary>
+        public event AxisChanged OnZChanged;
         private double z = 10;
         public double Z
         {
@@ -61,10 +78,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 z = value;
+                OnZChanged(value);
                 NotifyPropertyChanged("Z");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении A.
+        /// </summary>
+        public event AxisChanged OnAChanged;
         private double a = 10;
         public double A
         {
@@ -75,10 +97,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 a = value;
+                OnAChanged(value);
                 NotifyPropertyChanged("A");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении B.
+        /// </summary>
+        public event AxisChanged OnBChanged;
         private double b = 10;
         public double B
         {
@@ -89,6 +116,7 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 b = value;
+                OnBChanged(value);
                 NotifyPropertyChanged("B");
             }
         }
