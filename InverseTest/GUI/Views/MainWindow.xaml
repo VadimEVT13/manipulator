@@ -37,42 +37,7 @@
 					<local:ManipulatorView DataContext="{Binding ManipulatorVM}" Width="180"/>
 				</Expander>
 				<Expander Header="Детектор">
-					<StackPanel Width="180">
-						<local:DetectorView DataContext="{Binding DetectorVM}" />
-						<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
-						<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450"
-                                SmallChange="1"
-                                Value="{Binding Source=DetectorVM, Path=X, Mode=OneWayToSource}"
-								ValueChanged="VerticalFrameSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
-						<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" 
-                                SmallChange="1" 
-                                Value="{Binding Source=DetectorVM, Path=Z, Mode=OneWayToSource}"
-                                ValueChanged="HorizontalBarSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Экран, мм" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" 
-                         Value="{Binding Source=DetectorVM, Path=Y, Mode=OneWayToSource}"
-                                SmallChange="1" ValueChanged="ScreenHolderSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenVerticalAngleSlider" 
-                                Minimum="10" Maximum="160" SmallChange="1" 
-                                Value="{Binding Source=DetectorVM, Path=B, Mode=OneWayToSource}"
-                                ValueChanged="ScreenVerticalAngleSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
-						<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1"
-                                Value="{Binding Source=DetectorVM, Path=A, Mode=OneWayToSource}" ValueChanged="ScreenHorizontalAngleSlider_ValueChanged"/>
-                        <TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-
-						<Button Content="Установить детектор"  Command="{Binding Source=DetectorVM, Path=Global}" />
-					</StackPanel>
+					<local:DetectorView DataContext="{Binding DetectorVM}" Width="180"/>
 				</Expander>
 				<Expander Header="Деталь">
                     <StackPanel>

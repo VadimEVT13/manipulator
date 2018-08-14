@@ -49,7 +49,7 @@ namespace InverseTest.Grbl.Finders
                     {
                         serialPort.Open();
                         serialPort.WriteLine(SOFT_RESET);
-                        Thread.Sleep(device.Timeout);
+                        Thread.Sleep(50);
                         for (string line = serialPort.ReadLine(); serialPort.BytesToRead > 0; line = serialPort.ReadLine())
                         {
                             if (line.Contains(device.Name))

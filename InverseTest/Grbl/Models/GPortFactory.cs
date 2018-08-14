@@ -28,7 +28,7 @@ namespace InverseTest.Grbl.Models
 
         private static GDevice manipulatorSettings = new GDevice
         {
-            Name = "Grbl Y-ray portal",
+            Name = "XManipulator",
             IsY = false,
             IsA = false,
             IsB = false,

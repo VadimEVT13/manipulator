@@ -48,8 +48,6 @@ namespace InverseTest.GUI.Views
 
         private Kinematic manipKinematic;
 
-        
-        public DetectorFrame detectorFrame;
         private MovementPoint manipulatorCamPoint;
         private ConeModel coneModel;
 
@@ -132,12 +130,12 @@ namespace InverseTest.GUI.Views
 
             this.ModelParser = new ModelParser(allModels);
             ModelParser.Parse();
-            detectorFrame = ModelParser.Frame;
-            DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(detectorFrame);
+            MainVM.Detector = ModelParser.Frame;
+            DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(MainVM.Detector);
 
-            detectorFrame.onPositionChanged += Detector_PositionChanged;
-            detectorFrame.onManulaPositionChanged += DetecterManual_PositionChanged;
-            ManipulatorVisualizer.SetDetectFrameModel(detectorFrame, portalVisual);
+            MainVM.Detector.onPositionChanged += Detector_PositionChanged;
+            MainVM.Detector.onManulaPositionChanged += DetecterManual_PositionChanged;
+            ManipulatorVisualizer.SetDetectFrameModel(MainVM.Detector, portalVisual);
 
             MainVM.Manipulator = ModelParser.Manipulator;
             ManipulatorVisual manipulatorVisual = ManipulatorVisualFactory.CreateManipulator(MainVM.Manipulator);
@@ -156,7 +154,7 @@ namespace InverseTest.GUI.Views
 
             PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
             PortalBoundController portalBounds = new PortalBoundController();
-            portalBounds.CalculateBounds(detectorFrame);
+            portalBounds.CalculateBounds(MainVM.Detector);
 
             this.kinematicWorker = new KinematicWorker<SystemPosition, SystemState>(
                 manipKinematic,
@@ -190,9 +188,9 @@ namespace InverseTest.GUI.Views
             GJKSolver gjkSolver = new GJKSolver();
 
             AABB aabb = new AABB();
-            aabb.MakeListExcept(MainVM.Manipulator, detectorFrame, detail, platform);
+            aabb.MakeListExcept(MainVM.Manipulator, MainVM.Detector, detail, platform);
             collisionWorker = new GJKWorker<SceneSnapshot, List<CollisionPair>>(aabb, gjkSolver);
-            collisoinDetector = new CollisionDetector(MainVM.Manipulator, detectorFrame, detail, platform, collisionWorker);
+            collisoinDetector = new CollisionDetector(MainVM.Manipulator, MainVM.Detector, detail, platform, collisionWorker);
 
             //Точка камеры манипулятора
             manipulatorCamPoint = new MovementPoint(Colors.Red);
@@ -223,7 +221,7 @@ namespace InverseTest.GUI.Views
                 MainVM.Manipulator.MoveManipulator(state.Angles, Animate);
 
             if (state.PortalPosition != null)
-                detectorFrame.MoveDetectFrame(state.PortalPosition, Animate);
+                MainVM.Detector.MoveDetectFrame(state.PortalPosition, Animate);
         }
 
         /// <summary>
@@ -247,11 +245,11 @@ namespace InverseTest.GUI.Views
         /// </summary>
         public void Detector_PositionChanged()
         {
-            VerticalFrameSlider.Value = DetectorPositionController.XGlobalToLocal(detectorFrame.VerticalFramePosition);
-            HorizontalBarSlider.Value = DetectorPositionController.YGlobalToLocal(detectorFrame.HorizontalBarPosition);
-            ScreenHolderSlider.Value = DetectorPositionController.ZGlobalToLocal(detectorFrame.ScreenHolderPosition);
-            ScreenVerticalAngleSlider.Value = DetectorPositionController.AGlobalToLocal(detectorFrame.VerticalAngle);
-            ScreenHorizontalAngleSlider.Value = DetectorPositionController.BGlobalToLocal(detectorFrame.HorizontalAngle);
+            MainVM.DetectorVM.X = DetectorPositionController.XGlobalToLocal(MainVM.Detector.VerticalFramePosition);
+            MainVM.DetectorVM.Y = DetectorPositionController.ZGlobalToLocal(MainVM.Detector.ScreenHolderPosition);
+            MainVM.DetectorVM.Z = DetectorPositionController.YGlobalToLocal(MainVM.Detector.HorizontalBarPosition);
+            MainVM.DetectorVM.A = DetectorPositionController.BGlobalToLocal(MainVM.Detector.HorizontalAngle);
+            MainVM.DetectorVM.B = DetectorPositionController.AGlobalToLocal(MainVM.Detector.VerticalAngle);
         }
 
         public void Deteil_PositionChenged()
@@ -326,91 +324,6 @@ namespace InverseTest.GUI.Views
             }
         }
 
-        /// <summary>
-        /// Обработка изменения положения вертикальной рамки.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void VerticalFrameSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.XLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.VerticalFramePosition - value) > 1e-2)
-                {
-                    detectorFrame.VerticalFramePosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения горизонтальной планки.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void HorizontalBarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.YLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.HorizontalBarPosition - value) > 1e-2)
-                {
-                    detectorFrame.HorizontalBarPosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения держателя экрана.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenHolderSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.ZLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.ScreenHolderPosition - value) > 1e-2)
-                {
-                    detectorFrame.ScreenHolderPosition = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения экрана детектора по вертикали.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenVerticalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.ALocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.VerticalAngle - value) > 1e-2)
-                {
-                    detectorFrame.VerticalAngle = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Обработка изменения положения экрана детектора по горизонтали.
-        /// </summary>
-        /// <param name="sender">инициатор изменения</param>
-        /// <param name="e">событие</param>
-        private void ScreenHorizontalAngleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (detectorFrame != null)
-            {
-                double value = DetectorPositionController.BLocalToGlobal(e.NewValue);
-                if (Math.Abs(detectorFrame.HorizontalAngle - value) > 1e-2)
-                {
-                    detectorFrame.HorizontalAngle = value;
-                }
-            }
-        }
-
         private void RotateManipulatorButton_OnClick(object sender, RoutedEventArgs e)
         {
             recalculateKinematic();
@@ -449,7 +362,7 @@ namespace InverseTest.GUI.Views
         private void resetManip()
         {
             MainVM.Manipulator.ResetModel();
-            detectorFrame.ResetTransforms();
+            MainVM.Detector.ResetTransforms();
         }
 
         private void PointDown_Click(object sender, RoutedEventArgs e)

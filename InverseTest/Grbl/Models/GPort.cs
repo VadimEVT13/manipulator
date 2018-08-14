@@ -1,38 +1,42 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using InverseTest.Grbl.Finders;
 using log4net;
-using Manipulator.GRBL.Utils;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
 /// </summary>
 namespace InverseTest.Grbl.Models
 {
-
-    /// <summary>
-    /// Делегат для принятия данных из serailPort
-    /// </summary>
-    /// <param name="data"></param>
-    public delegate void DataReceived(GState data);
-
-    public class GPort
+    public class GPort : INotifyPropertyChanged
     {
+        private GStatus _state;
+        public GStatus Status
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                RaiseProperty("Status");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseProperty(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         /// <summary>
-        /// Событие вызываемое при получении данных из последовательного порта
+        /// Логгирование
         /// </summary>
-        public event DataReceived OnDataReceived;
-
-
-        private GState state;
-
-        /// <summary>
-        /// Логгер класса.
-        /// </summary>
-        private static ILog LOG = LogManager.GetLogger("GrblPort");
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Команда вызова CTRL + X.
         /// </summary>
@@ -46,14 +50,13 @@ namespace InverseTest.Grbl.Models
         /// </summary>
         private SerialPort serialPort;
 
-        private object locker = new object();
-
         /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
         public GPort(GDevice settings)
         {
             this.Settings = settings;
+            Status = new GStatus();
         }
 
 
@@ -62,15 +65,6 @@ namespace InverseTest.Grbl.Models
             get
             {
                 return serialPort != null && serialPort.IsOpen;
-            }
-        }
-
-        public bool IsPlay
-        {
-            get
-            {
-                return serialPort != null && serialPort.IsOpen
-                    && state != null && !state.Status.Equals(GStatus.HOLD);
             }
         }
 
@@ -85,20 +79,20 @@ namespace InverseTest.Grbl.Models
         /// Открытие порта на основе настроек.
         /// </summary>
         /// <returns>состояние</returns>
-        public bool Open()
+        public void Open()
         {
             if (Settings == null)
             {
-                LOG.Error("Exception: Device not null");
-                return false;
+                log.Error("Device not null");
+                return;
             }
             if (Settings.PortName == null)
             {
                 Settings = GPortFind.FindPort(Settings);
                 if (Settings.PortName == null)
                 {
-                    LOG.Error("Exception: Port not null");
-                    return false;
+                    log.Error("Port not null");
+                    return;
                 }
             }
             serialPort = new SerialPort(Settings.PortName, Settings.BaudRate, Settings.Parity, Settings.DataBits, Settings.StopBits);
@@ -106,39 +100,38 @@ namespace InverseTest.Grbl.Models
             serialPort.DataReceived += onDataReceivedFromSerialPort;
             if (serialPort.IsOpen)
             {
-                LOG.Error("Exception: Port is opened");
-                return false;
+                log.Error("Port is opened");
+                return;
             }
             try
             {
                 serialPort.Open();
                 serialPort.WriteLine(SOFT_RESET);
-                Thread.Sleep(Settings.Timeout);
+                Thread.Sleep(100);
                 serialPort.ReadExisting();
-                LOG.Info("Open port");
-                return true;
+                Console.WriteLine("Open port");
             }
             catch (UnauthorizedAccessException e)
             {
-                LOG.Error("Error open port:" + e);
+                Console.WriteLine("Error open port:" + e);
             }
             catch (ArgumentOutOfRangeException e)
             {
-                LOG.Error("Error open port:" + e);
+                Console.WriteLine("Error open port:" + e);
             }
             catch (ArgumentException e)
             {
-                LOG.Error("Error open port:" + e);
+                Console.WriteLine("Error open port:" + e);
             }
             catch (IOException e)
             {
-                LOG.Error("Error open port:" + e);
+                Console.WriteLine("Error open port:" + e);
             }
             catch (InvalidOperationException e)
             {
-                LOG.Error("Error open port:" + e);
+                Console.WriteLine("Error open port:" + e);
             }
-            return false;
+            State();
         }
 
 
@@ -148,22 +141,21 @@ namespace InverseTest.Grbl.Models
             if (serialPort.BytesToRead > 0)
             {
                 var lineData = serialPort.ReadLine();
-                if (lineData.Length > 0)
+                if (lineData.Length > 0 && lineData[0] == '{')
                 {
-                    Console.WriteLine("LineData: " + lineData);
+                    Console.WriteLine("Data: {0}",lineData);
+                    GStatus newState = null;
                     try
                     {
-                        var state = GConvert.ToState(lineData);
-
-                        if (state != null)
-                        {
-                            this.state = state;
-                            OnDataReceived?.Invoke(state);
-                        }
+                        newState = JsonConvert.DeserializeObject<GStatus>(lineData);
                     }
-                    catch (Exception ex)
+                    catch (JsonSerializationException ex)
                     {
-                        Console.WriteLine("Exception: " + ex.Message);
+                        Console.WriteLine("Error read data", ex);
+                    }
+                    if (newState != null)
+                    {
+                        Status = newState;
                     }
                 }
             }
@@ -176,8 +168,12 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                LOG.Info("Write: ?");
+                log.Info("Write: ?");
                 serialPort.WriteLine("?");
+            }
+            else
+            {
+                Status.Status = GState.DISCONNECT;
             }
         }
 
@@ -188,10 +184,10 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                LOG.Info("Write: ~");
+                log.Info("Write: ~");
                 serialPort.WriteLine("~");
-                this.State();
             }
+            State();
         }
 
         /// <summary>
@@ -201,10 +197,10 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                LOG.Info("Write: !");
+                log.Info("Write: !");
                 serialPort.WriteLine("!");
-                this.State();
             }
+            State();
         }
 
         /// <summary>
@@ -214,10 +210,10 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                LOG.Info("Write: $H");
+                log.Info("Write: $H");
                 serialPort.WriteLine("$H");
-                this.State();
             }
+            State();
         }
 
         /// <summary>
@@ -227,10 +223,10 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                LOG.Info("Write: $X");
+                log.Info("Write: $X");
                 serialPort.WriteLine("$X");
-                this.State();
             }
+            State();
         }
 
         /// <summary>
@@ -242,9 +238,9 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 String cmd = PointToString(point);
-                LOG.Info("Write: G90");
+                log.Info("Write: G90");
                 serialPort.WriteLine("G90");
-                LOG.Info("Write: " + cmd);
+                log.Info("Write: " + cmd);
                 serialPort.WriteLine(cmd);
                 this.State();
             }
@@ -310,9 +306,9 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 String cmd = PointToString(point);
-                LOG.Info("Write: G91");
+                log.Info("Write: G91");
                 serialPort.WriteLine("G91");
-                LOG.Info("Write: " + cmd);
+                log.Info("Write: " + cmd);
                 serialPort.WriteLine(cmd);
                 this.State();
             }
@@ -328,13 +324,14 @@ namespace InverseTest.Grbl.Models
                 try
                 {
                     serialPort.Close();
-                    LOG.Info("Close port");
+                    log.Info("Close port");
                 }
                 catch (InvalidOperationException e)
                 {
-                    LOG.Error("Exception close port:" + e);
+                    log.Error("Exception close port:" + e);
                 }
             }
+            State();
         }
     }
 }

@@ -1,50 +1,41 @@
-﻿using System.ComponentModel;
-/// <summary>
-/// Модель данных - сотояние устройства.
+﻿/// <summary>
+/// Список состояний GRBL - контроллера.
 /// </summary>
 namespace InverseTest.Grbl.Models
 {
-    public class GState : INotifyPropertyChanged
+    public enum GState
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaiseProperty(string propertyName)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         /// <summary>
-        /// Локальное положение.
+        /// Простой.
         /// </summary>
-        public GPoint Local { get; set; }
-
+        IDLE,
         /// <summary>
-        /// Глобальное положение.
+        /// Движение.
         /// </summary>
-        public GPoint Global { get; set; }
-
+        RUN,
         /// <summary>
-        /// Состояние устройства.
+        /// Удержание.
         /// </summary>
-        private GStatus _status;
-        public GStatus Status
-        {
-            get { return _status; }
-            set
-            {
-                _status = value;
-                RaiseProperty("Status");
-            }
-        }
-
+        HOLD,
         /// <summary>
-        /// Конструктор по умолчанию.
+        /// Ожидание закрытия защиты.
         /// </summary>
-        public GState()
-        {
-            Local = new GPoint();
-            Global = new GPoint();
-            Status = GStatus.DISCONNECT;
-        }
-    }
+        DOOR,
+        /// <summary>
+        /// Самонаведение.
+        /// </summary>
+        HOME,
+        /// <summary>
+        /// Тревога.
+        /// </summary>
+        ALARM,
+        /// <summary>
+        /// Проверка G-кода без исполнения.
+        /// </summary>
+        CHECK,
+        /// <summary>
+        /// Нет подключения.
+        /// </summary>
+        DISCONNECT
+    };
 }

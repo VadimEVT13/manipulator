@@ -93,6 +93,9 @@
     <Reference Include="MvvmDialogs, Version=5.1.0.0, Culture=neutral, PublicKeyToken=3d3b9708589bc73e, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmDialogs.5.1.0\lib\net45\MvvmDialogs.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Portal, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Portal.dll</HintPath>
@@ -202,7 +205,6 @@
     <Compile Include="Frame\DetectorFrameVisualFactory.cs" />
     <Compile Include="Frame\DetectorPositionController.cs" />
     <Compile Include="Frame\Models\Matrix4D.cs" />
-    <Compile Include="Grbl\Converters\GConvert.cs" />
     <Compile Include="Grbl\Converters\GStatusConverter.cs" />
     <Compile Include="Grbl\Finders\GPortFind.cs" />
     <Compile Include="Grbl\Models\GDetector.cs" />
@@ -211,8 +213,8 @@
     <Compile Include="Grbl\Models\GPoint.cs" />
     <Compile Include="Grbl\Models\GPort.cs" />
     <Compile Include="Grbl\Models\GPortFactory.cs" />
-    <Compile Include="Grbl\Models\GState.cs" />
     <Compile Include="Grbl\Models\GStatus.cs" />
+    <Compile Include="Grbl\Models\GState.cs" />
     <Compile Include="GUI\Readers\JsonReader.cs" />
     <Compile Include="GUI\Utils\RelayCommand.cs" />
     <Compile Include="GUI\ViewModels\MainViewModel.cs" />

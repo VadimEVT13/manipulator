@@ -24,10 +24,6 @@ namespace InverseTest.Grbl.Models
         /// Стандартный протокол контроля четности.
         /// </summary>
         private static Parity DEFAULT_PARITY = Parity.None;
-        /// <summary>
-        /// Стандартный таймаут на чтение и запись.
-        /// </summary>
-        private static int DEFAULT_TIMEOUT = 50;
 
         /// <summary>
         /// Имя последовательного порта.
@@ -58,11 +54,6 @@ namespace InverseTest.Grbl.Models
         /// Протокол контроля четности.
         /// </summary>
         public Parity Parity { get; set; }
-
-        /// <summary>
-        /// Ожидание в миллисекундах для завершения операции записи и чтения.
-        /// </summary>
-        public int Timeout { get; set; }
 
         /// <summary>
         /// Устройство содержит ось X.
@@ -113,7 +104,6 @@ namespace InverseTest.Grbl.Models
             DataBits = DEFAULT_DATA_BITS;
             Parity = DEFAULT_PARITY;
             StopBits = DEFAULT_STOP_BITS;
-            Timeout = DEFAULT_TIMEOUT;
             IsX = true;
             IsY = true;
             IsZ = true;

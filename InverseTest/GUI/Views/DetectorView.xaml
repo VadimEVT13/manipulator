@@ -10,7 +10,7 @@
 	</UserControl.Resources>
 	<StackPanel>
 		<TextBlock Margin="5" TextAlignment="Left"
-				   Text="{Binding State.Status, Converter={StaticResource GStatusToStringConverter}}"/>
+				   Text="{Binding Port.Status.Status, Converter={StaticResource GStatusToStringConverter}}"/>
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
@@ -39,5 +39,30 @@
 				<Image Source="{Binding UnlockImage}"/>
 			</Button>
 		</Grid>
+		<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
+		<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="{Binding X}"/>
+		<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, StringFormat={}{0:0.##},
+			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+		<Label Content="Горизонтальная рама, мм" HorizontalAlignment="Center"/>
+		<Slider Name="HorizontalBarSlider" Minimum="10" Maximum="760" SmallChange="1" Value="{Binding Z}"/>
+		<TextBox Text="{Binding ElementName=HorizontalBarSlider, Path=Value, StringFormat={}{0:0.##},
+			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+		<Label Content="Экран, мм" HorizontalAlignment="Center"/>
+		<Slider Name="ScreenHolderSlider" Minimum="10" Maximum="760" SmallChange="1" Value="{Binding Y}"/>
+		<TextBox Text="{Binding ElementName=ScreenHolderSlider, Path=Value, StringFormat={}{0:0.##},
+			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+		<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
+		<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="{Binding B}"/>
+		<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##},
+			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+		<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
+		<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="{Binding A}"/>
+		<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, StringFormat={}{0:0.##},
+			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+		<Button Content="Установить детектор"  Command="{Binding Global}" />
 	</StackPanel>
 </UserControl>

@@ -1,41 +1,50 @@
-﻿/// <summary>
-/// Список состояний GRBL - контроллера.
+﻿using InverseTest.Grbl.Converters;
+using Newtonsoft.Json;
+using System.ComponentModel;
+/// <summary>
+/// Модель данных - сотояние устройства.
 /// </summary>
 namespace InverseTest.Grbl.Models
 {
-    public enum GStatus
+    public class GStatus : INotifyPropertyChanged
     {
         /// <summary>
-        /// Простой.
+        /// Положение
         /// </summary>
-        IDLE,
+        [JsonProperty("MPos")]
+        public GPoint Position { get; set; }
+
         /// <summary>
-        /// Движение.
+        /// Состояние устройства.
         /// </summary>
-        RUN,
+        [JsonIgnore]
+        private GState _status;
+        [JsonProperty("State", Required = Required.Always)]
+        [JsonConverter(typeof(GStatusToStringConverter))]
+        public GState Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaiseProperty("Status");
+            }
+        }
+
         /// <summary>
-        /// Удержание.
+        /// Конструктор по умолчанию.
         /// </summary>
-        HOLD,
-        /// <summary>
-        /// Ожидание закрытия защиты.
-        /// </summary>
-        DOOR,
-        /// <summary>
-        /// Самонаведение.
-        /// </summary>
-        HOME,
-        /// <summary>
-        /// Тревога.
-        /// </summary>
-        ALARM,
-        /// <summary>
-        /// Проверка G-кода без исполнения.
-        /// </summary>
-        CHECK,
-        /// <summary>
-        /// Нет подключения.
-        /// </summary>
-        DISCONNECT
-    };
+        public GStatus()
+        {
+            Position = new GPoint();
+            Status = GState.DISCONNECT;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseProperty(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

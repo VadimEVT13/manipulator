@@ -19,9 +19,11 @@ namespace InverseTest.GUI.ViewModels
         /// Логгирование
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
-        public GPoint Target { get; set; }//TODO
 
+        /// <summary>
+        /// Событие вызываемое при изменении X.
+        /// </summary>
+        public event AxisChanged OnXChanged;
         private double x = 10;
         public double X
         {
@@ -32,10 +34,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 x = value;
+                OnXChanged(value);
                 NotifyPropertyChanged("X");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении Y.
+        /// </summary>
+        public event AxisChanged OnYChanged;
         private double y = 10;
         public double Y
         {
@@ -46,10 +53,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 y = value;
+                OnYChanged(value);
                 NotifyPropertyChanged("Y");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении Z.
+        /// </summary>
+        public event AxisChanged OnZChanged;
         private double z = 10;
         public double Z
         {
@@ -60,10 +72,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 z = value;
+                OnZChanged(value);
                 NotifyPropertyChanged("Z");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении A.
+        /// </summary>
+        public event AxisChanged OnAChanged;
         private double a = 50;
         public double A
         {
@@ -74,10 +91,15 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 a = value;
+                OnAChanged(value);
                 NotifyPropertyChanged("A");
             }
         }
 
+        /// <summary>
+        /// Событие вызываемое при изменении B.
+        /// </summary>
+        public event AxisChanged OnBChanged;
         private double b = 50;
         public double B
         {
@@ -88,35 +110,21 @@ namespace InverseTest.GUI.ViewModels
             set
             {
                 b = value;
+                OnBChanged(value);
                 NotifyPropertyChanged("B");
             }
         }
 
-        private GState state;
-        public GState State
-        {
-            get
-            {
-                return state;
-            }
-            set
-            {
-                state = value;
-                NotifyPropertyChanged("State");
-            }
-        }
-
         /// <summary>
-        /// Класс для отправки комманд в последовательный порт
+        /// Последовательный порт
         /// </summary>
-        private GPort port;
+        public GPort Port { get; set; }
 
 
         public DetectorViewModel()
         {
             var portFactory = new GPortFactory();
-            this.port = portFactory.CreateGPort(GPortFactory.GPortType.DETECTOR);
-            this.port.OnDataReceived += OnDataReceived;
+            Port = portFactory.CreateGPort(GPortFactory.GPortType.DETECTOR);
 
             PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
             UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
@@ -124,16 +132,6 @@ namespace InverseTest.GUI.ViewModels
             PauseImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
             HomeImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
             UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
-
-            State = new GState();
-            Target = new GPoint()
-            {
-                X = 10,
-                Y = 10,
-                Z = 10,
-                A = 50,
-                B = 50
-            };
         }
 
         public ImageSource PlugImage { get; }
@@ -146,8 +144,7 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_plugCommand = new RelayCommand(
                     () =>
                     {
-                        port.Open();
-                        StateCommand();
+                        Port.Open();
                     }));
             }
         }
@@ -162,8 +159,7 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_unPlugCommand = new RelayCommand(
                     () =>
                     {
-                        port.Close();
-                        StateCommand();
+                        Port.Close();
                     }));
             }
         }
@@ -178,8 +174,7 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_playCommand = new RelayCommand(
                     () =>
                     {
-                        port.Start();
-                        StateCommand();
+                        Port.Start();
                     }));
             }
         }
@@ -194,8 +189,7 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_pauseCommand = new RelayCommand(
                     () =>
                     {
-                        port.Pause();
-                        StateCommand();
+                        Port.Pause();
                     }));
             }
         }
@@ -210,8 +204,7 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_homeCommand = new RelayCommand(
                     () =>
                     {
-                        port.Home();
-                        StateCommand();
+                        Port.Home();
                     }));
             }
         }
@@ -226,32 +219,9 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_unlockCommand = new RelayCommand(
                     () =>
                     {
-                        port.Unlock();
-                        StateCommand();
+                        Port.Unlock();
                     }));
             }
-        }
-
-        public void StateCommand()
-        {
-            if (port.IsOpen)
-            {
-                port.State();
-            }
-            else
-            {
-                State.Status = GStatus.DISCONNECT;
-            }
-        }
-        
-        /// <summary>
-        /// Вызывается при получии данных от детектора
-        /// </summary>
-        /// <param name="data"></param>
-        private void OnDataReceived(GState data)
-        {
-            Console.WriteLine("State: " + data.Status);
-            this.State = data;
         }
         
         /// <summary>
@@ -280,7 +250,6 @@ namespace InverseTest.GUI.ViewModels
                             return;
                         }
                         _isCommand = true;
-                        //Status = "Update";
                         GPoint target = new GPoint()
                         {
                             X = X,
@@ -289,8 +258,7 @@ namespace InverseTest.GUI.ViewModels
                             A = A,
                             B = B
                         };
-                        port.Global(GDetector.GlobalLimits(target));
-                        StateCommand();
+                        Port.Global(GDetector.GlobalLimits(target));
                         _isCommand = false;
                     }),
                     o => !_isCommand));
@@ -313,12 +281,11 @@ namespace InverseTest.GUI.ViewModels
                   ?? (_LocalCommand = new AsyncRelayCommand(o =>
                     Task.Run(() =>
                     {
-                        if (_isCommand || State == null)
+                        if (_isCommand)
                         {
                             return;
                         }
                         _isCommand = true;
-                        //Status = "Update";
                         GPoint target = new GPoint()
                         {
                             X = X,
@@ -327,8 +294,7 @@ namespace InverseTest.GUI.ViewModels
                             A = A,
                             B = B
                         };
-                        port.Local(GDetector.LocalLimits(State.Global, target));
-                        StateCommand();
+                        Port.Local(GDetector.LocalLimits(Port.Status.Position, target));
                         _isCommand = false;
                     }),
                     o => !_isCommand));

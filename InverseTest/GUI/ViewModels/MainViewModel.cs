@@ -1,4 +1,5 @@
-﻿using InverseTest.GUI.Readers;
+﻿using InverseTest.Frame;
+using InverseTest.GUI.Readers;
 using InverseTest.GUI.Utils;
 using InverseTest.GUI.Writers;
 using InverseTest.Manipulator;
@@ -35,7 +36,7 @@ namespace InverseTest.GUI.ViewModels
 
 
         public ManipulatorV2 Manipulator { get; set; }
-
+        public DetectorFrame Detector { get; set; }
 
         #endregion
 
@@ -53,6 +54,11 @@ namespace InverseTest.GUI.ViewModels
             ManipulatorVM.OnBChanged += ManipulatorBChanged;
 
             DetectorVM = new DetectorViewModel();
+            DetectorVM.OnXChanged += DetectorXChanged;
+            DetectorVM.OnYChanged += DetectorYChanged;
+            DetectorVM.OnZChanged += DetectorZChanged;
+            DetectorVM.OnAChanged += DetectorAChanged;
+            DetectorVM.OnBChanged += DetectorBChanged;
         }
         #endregion
 
@@ -237,6 +243,86 @@ namespace InverseTest.GUI.ViewModels
                 if (Math.Abs(Manipulator.CameraPosition - value) > 1e-2)
                 {
                     Manipulator.CameraPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения вертикальной рамки
+        /// </summary>
+        /// <param name="x">положение на оси</param>
+        private void DetectorXChanged(double x)
+        {
+            if (Detector != null)
+            {
+                double value = DetectorPositionController.XLocalToGlobal(x);
+                if (Math.Abs(Detector.VerticalFramePosition - value) > 1e-2)
+                {
+                    Detector.VerticalFramePosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения держателя экрана
+        /// </summary>
+        /// <param name="y">положение на оси</param>
+        private void DetectorYChanged(double y)
+        {
+            if (Detector != null)
+            {
+                double value = DetectorPositionController.ZLocalToGlobal(y);
+                if (Math.Abs(Detector.ScreenHolderPosition - value) > 1e-2)
+                {
+                    Detector.ScreenHolderPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения горизонтальной планки
+        /// </summary>
+        /// <param name="z">положение на оси</param>
+        private void DetectorZChanged(double z)
+        {
+            if (Detector != null)
+            {
+                double value = DetectorPositionController.YLocalToGlobal(z);
+                if (Math.Abs(Detector.HorizontalBarPosition - value) > 1e-2)
+                {
+                    Detector.HorizontalBarPosition = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения экрана детектора по горизонтали
+        /// </summary>
+        /// <param name="a">положение на оси</param>
+        private void DetectorAChanged(double a)
+        {
+            if (Detector != null)
+            {
+                double value = DetectorPositionController.BLocalToGlobal(a);
+                if (Math.Abs(Detector.HorizontalAngle - value) > 1e-2)
+                {
+                    Detector.HorizontalAngle = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработка изменения положения экрана детектора по вертикали
+        /// </summary>
+        /// <param name="b">положение на оси</param>
+        private void DetectorBChanged(double b)
+        {
+            if (Detector != null)
+            {
+                double value = DetectorPositionController.ALocalToGlobal(b);
+                if (Math.Abs(Detector.VerticalAngle - value) > 1e-2)
+                {
+                    Detector.VerticalAngle = value;
                 }
             }
         }

@@ -10,7 +10,7 @@
 	</UserControl.Resources>
 	<StackPanel>
 		<TextBlock Margin="5" TextAlignment="Left"
-				   Text="{Binding State.Status, Converter={StaticResource GStatusToStringConverter}}"/>
+				   Text="{Binding Port.Status.Status, Converter={StaticResource GStatusToStringConverter}}"/>
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
