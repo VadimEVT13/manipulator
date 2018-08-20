@@ -149,17 +149,3 @@ namespace InverseTest.Collision
         }
     }
 }
-
-/*
- * using LinearAlgebra;
-...
-class Program {
-    static void Main(string[] args) {
-        Triangle tr1 = new Triangle(new Point3D(0, 0, 0), new Point3D(0, 0, 10), new Point3D(10, 0, 0));
-        Triangle tr2 = new Triangle(new Point3D(5, 5, 5), new Point3D(5, -5, 5), new Point3D(5, 0, 10));
-        Line l = new Line(tr1.V1, tr1.V2);
-        Plane pl = new Plane(tr2.V1, tr2.V2, tr2.V3);
-        Console.WriteLine(tr1.IsIntersectWith(tr2).ToString());
-        Console.Read();
-    }
-}*/

@@ -1,16 +1,17 @@
 ﻿using InverseTest.Collision.Model;
 using InverseTest.Detail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NLog;
 using System.Windows.Media.Media3D;
 
 namespace InverseTest.Collision.Mappers
 {
     class SceneMapper
     {
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static SceneSnapshot CreateSceneSnapshot(ManipulatorV2 manip, DetectorFrame portal, DetailModel detail, Model3D detailPlatform)
         {
 
@@ -21,7 +22,7 @@ namespace InverseTest.Collision.Mappers
             DetailSnapshot detailSnapshot = DetailMapper.DetailToSnapshot(detail);
             DetailPlatformSnapshot detailPlatformSnapshot = DetailPlatformMapper.DetailPlatformToSnapshot(detailPlatform);
             watch.Stop();
-            Console.WriteLine("Mapping:" + watch.ElapsedMilliseconds);
+            logger.Debug("Mapping:" + watch.ElapsedMilliseconds);
 
             return new SceneSnapshot(manipSnapshot, portalSnapshot, detailSnapshot, detailPlatformSnapshot);
         }

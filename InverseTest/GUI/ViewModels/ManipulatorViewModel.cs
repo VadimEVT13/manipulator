@@ -102,7 +102,7 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении B.
         /// </summary>
         public event AxisChanged OnBChanged;
-        private double b = 10;
+        private double b = 0;
         public double B
         {
             get

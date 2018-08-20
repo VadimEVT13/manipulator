@@ -5,6 +5,7 @@ using System.Windows.Media.Media3D;
 using InverseTest.Manipulator;
 using System.Windows.Threading;
 using System.Linq;
+using NLog;
 
 namespace InverseTest
 {
@@ -51,6 +52,11 @@ namespace InverseTest
     /// </summary>
     public class ManipulatorV2 : IPositionChanged
     {
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         // поле для хранения 3D модели манипулятора
         private readonly Model3DGroup _manipulator3DModel = new Model3DGroup();
         int numberMesh = 0;
@@ -267,12 +273,12 @@ namespace InverseTest
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message);
                 throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message);
                 throw;
             }
         }
@@ -293,7 +299,7 @@ namespace InverseTest
                 }
                 catch (NullReferenceException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    logger.Error(ex.Message);
                 }
             }
         }

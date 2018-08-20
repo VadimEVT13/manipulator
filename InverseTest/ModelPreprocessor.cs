@@ -1,5 +1,6 @@
 ﻿using HelixToolkit.Wpf;
 using InverseTest.Detail;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace InverseTest
 {
     class ModelPreprocessor
     {
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Model3DGroup scene;
 
         private delegate MeshGeometry3D Proccess(GeometryModel3D m);
@@ -92,7 +98,7 @@ namespace InverseTest
                         {
                             if(normals[i] == normals[j])
                             {
-                                Console.WriteLine("POINTS EQUALS: " + points[i] + "  " + normals[i] + "  " + points[j] + "  " +normals[j]);
+                                logger.Trace("POINTS EQUALS: " + points[i] + "  " + normals[i] + "  " + points[j] + "  " +normals[j]);
                             }
 
                         }
@@ -116,7 +122,7 @@ namespace InverseTest
 
             foreach (GeometryModel3D m in scene.Children)
             {
-                Console.WriteLine("Validation: " + MeshGeometryHelper.Validate(m.Geometry as MeshGeometry3D));
+                logger.Trace("Validation: " + MeshGeometryHelper.Validate(m.Geometry as MeshGeometry3D));
             }
 
             return false;

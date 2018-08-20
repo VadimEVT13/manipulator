@@ -110,27 +110,27 @@ namespace InverseTest.Grbl.Models
                 serialPort.WriteLine(SOFT_RESET);
                 Thread.Sleep(100);
                 serialPort.ReadExisting();
-                Console.WriteLine("Open port");
+                logger.Info("Open port");
             }
             catch (UnauthorizedAccessException e)
             {
-                Console.WriteLine("Error open port:" + e);
+                logger.Error("Error open port:" + e);
             }
             catch (ArgumentOutOfRangeException e)
             {
-                Console.WriteLine("Error open port:" + e);
+                logger.Error("Error open port:" + e);
             }
             catch (ArgumentException e)
             {
-                Console.WriteLine("Error open port:" + e);
+                logger.Error("Error open port:" + e);
             }
             catch (IOException e)
             {
-                Console.WriteLine("Error open port:" + e);
+                logger.Error("Error open port:" + e);
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine("Error open port:" + e);
+                logger.Error("Error open port:" + e);
             }
             State();
         }
@@ -144,7 +144,7 @@ namespace InverseTest.Grbl.Models
                 var lineData = serialPort.ReadLine();
                 if (lineData.Length > 0 && lineData[0] == '{')
                 {
-                    Console.WriteLine("Data: {0}",lineData);
+                    logger.Debug("Data: {0}",lineData);
                     GStatus newState = null;
                     try
                     {
@@ -152,7 +152,7 @@ namespace InverseTest.Grbl.Models
                     }
                     catch (JsonSerializationException ex)
                     {
-                        Console.WriteLine("Error read data", ex);
+                        logger.Error("Error read data", ex);
                     }
                     if (newState != null)
                     {
