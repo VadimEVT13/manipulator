@@ -6,7 +6,7 @@ using InverseTest.GUI.Utils;
 using FontAwesome.WPF;
 using System.Windows.Media;
 using InverseTest.Grbl.Models;
-using log4net;
+using NLog;
 
 /// <summary>
 /// Модель представления драйвера управления манипулятором.
@@ -20,7 +20,7 @@ namespace InverseTest.GUI.ViewModels
         /// <summary>
         /// Логгирование
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Событие вызываемое при изменении X.
@@ -124,9 +124,7 @@ namespace InverseTest.GUI.ViewModels
 
         public ManipulatorViewModel()
         {
-            var portFactory = new GPortFactory();
-            Port = portFactory.CreateGPort(GPortFactory.GPortType.MANIPULATOR);
-
+            Port = GManipulator.getInstance().Port;
             PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
             UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
             PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);

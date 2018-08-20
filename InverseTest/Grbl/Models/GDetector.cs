@@ -9,6 +9,33 @@ namespace InverseTest.Grbl.Models
     public class GDetector
     {
         /// <summary>
+        /// Последовательный порт
+        /// </summary>
+        public GPort Port { get; set; }
+
+        private static GDetector instance;
+
+        private GDetector()
+        {
+            Port = new GPort(settings);
+        }
+
+        public static GDetector getInstance()
+        {
+            if (instance == null)
+                instance = new GDetector();
+            return instance;
+        }
+
+        private static GDevice settings = new GDevice
+        {
+            Name = "Grbl X-ray portal",
+            IsC = false,
+            IsD = false,
+            IsE = false
+        };
+
+        /// <summary>
         /// Минимальное значение по оси X.
         /// </summary>
         private static int LIMIT_X_MIN = 1;

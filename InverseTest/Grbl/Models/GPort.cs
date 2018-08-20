@@ -5,8 +5,8 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using InverseTest.Grbl.Finders;
-using log4net;
 using Newtonsoft.Json;
+using NLog;
 
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
@@ -15,6 +15,11 @@ namespace InverseTest.Grbl.Models
 {
     public class GPort : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private GStatus _state;
         public GStatus Status
         {
@@ -33,10 +38,6 @@ namespace InverseTest.Grbl.Models
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        /// <summary>
-        /// Логгирование
-        /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Команда вызова CTRL + X.
         /// </summary>
@@ -83,7 +84,7 @@ namespace InverseTest.Grbl.Models
         {
             if (Settings == null)
             {
-                log.Error("Device not null");
+                logger.Error("Device not null");
                 return;
             }
             if (Settings.PortName == null)
@@ -91,7 +92,7 @@ namespace InverseTest.Grbl.Models
                 Settings = GPortFind.FindPort(Settings);
                 if (Settings.PortName == null)
                 {
-                    log.Error("Port not null");
+                    logger.Error("Port not null");
                     return;
                 }
             }
@@ -100,7 +101,7 @@ namespace InverseTest.Grbl.Models
             serialPort.DataReceived += onDataReceivedFromSerialPort;
             if (serialPort.IsOpen)
             {
-                log.Error("Port is opened");
+                logger.Error("Port is opened");
                 return;
             }
             try
@@ -168,7 +169,7 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                log.Info("Write: ?");
+                logger.Info("Write: ?");
                 serialPort.WriteLine("?");
             }
             else
@@ -184,7 +185,7 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                log.Info("Write: ~");
+                logger.Info("Write: ~");
                 serialPort.WriteLine("~");
             }
             State();
@@ -197,7 +198,7 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                log.Info("Write: !");
+                logger.Info("Write: !");
                 serialPort.WriteLine("!");
             }
             State();
@@ -210,7 +211,7 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                log.Info("Write: $H");
+                logger.Info("Write: $H");
                 serialPort.WriteLine("$H");
             }
             State();
@@ -223,7 +224,7 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                log.Info("Write: $X");
+                logger.Info("Write: $X");
                 serialPort.WriteLine("$X");
             }
             State();
@@ -238,9 +239,9 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 String cmd = PointToString(point);
-                log.Info("Write: G90");
+                logger.Info("Write: G90");
                 serialPort.WriteLine("G90");
-                log.Info("Write: " + cmd);
+                logger.Info("Write: " + cmd);
                 serialPort.WriteLine(cmd);
                 this.State();
             }
@@ -306,9 +307,9 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 String cmd = PointToString(point);
-                log.Info("Write: G91");
+                logger.Info("Write: G91");
                 serialPort.WriteLine("G91");
-                log.Info("Write: " + cmd);
+                logger.Info("Write: " + cmd);
                 serialPort.WriteLine(cmd);
                 this.State();
             }
@@ -324,11 +325,11 @@ namespace InverseTest.Grbl.Models
                 try
                 {
                     serialPort.Close();
-                    log.Info("Close port");
+                    logger.Info("Close port");
                 }
                 catch (InvalidOperationException e)
                 {
-                    log.Error("Exception close port:" + e);
+                    logger.Error("Exception close port:" + e);
                 }
             }
             State();

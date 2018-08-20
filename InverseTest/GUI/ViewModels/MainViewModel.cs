@@ -7,6 +7,7 @@ using InverseTest.Path;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using MvvmDialogs.FrameworkDialogs.SaveFile;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,11 @@ namespace InverseTest.GUI.ViewModels
     public class MainViewModel : ViewModelBase
     {
         #region Parameters
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IDialogService DialogService;
 
         /// <summary>
@@ -97,7 +103,7 @@ namespace InverseTest.GUI.ViewModels
             bool? success = DialogService.ShowSaveFileDialog(this, settings);
             if (success == true)
             {
-                Log.Info("Saving file: " + settings.FileName);
+                logger.Info("Saving file: " + settings.FileName);
                 string ext = System.IO.Path.GetExtension(settings.FileName).ToLower();
                 switch (ext)
                 {
@@ -109,7 +115,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                     default:
                         {
-                            Log.Info("File format not supported.");
+                            logger.Info("File format not supported.");
                             break;
                         }
                 }
@@ -136,7 +142,7 @@ namespace InverseTest.GUI.ViewModels
             bool? success = DialogService.ShowOpenFileDialog(this, settings);
             if (success == true)
             {
-                Log.Info("Opening file: " + settings.FileName);
+                logger.Info("Opening file: " + settings.FileName);
                 string ext = System.IO.Path.GetExtension(settings.FileName).ToLower();
                 switch (ext)
                 {
@@ -147,7 +153,7 @@ namespace InverseTest.GUI.ViewModels
                         }
                     default:
                         {
-                            Log.Info("File format not supported.");
+                            logger.Info("File format not supported.");
                             break;
                         }
                 }
@@ -155,7 +161,7 @@ namespace InverseTest.GUI.ViewModels
         }
         private void OnShowAboutDialog()
         {
-            Log.Info("Opening About dialog");
+            logger.Info("Opening About dialog");
             //AboutViewModel dialog = new AboutViewModel();
             //var result = DialogService.ShowDialog<About>(this, dialog);
         }
@@ -171,16 +177,17 @@ namespace InverseTest.GUI.ViewModels
         /// Обработка изменения положения первого колена
         /// </summary>
         /// <param name="x">положение колена</param>
-        public void ManipulatorXChanged(double x)
+        private void ManipulatorXChanged(double x)
         {
             if (Manipulator != null)
             {
-                double value = ManipulatorPositionController.T1LocalToGlobal(x);
-                if (Math.Abs(Manipulator.TablePosition - value) > 1e-2)
+                double value = ManipulatorPositionController.T2LocalToGlobal(x);
+                if (Math.Abs(Manipulator.MiddleEdgePosition - value) > 1e-2)
                 {
-                    Manipulator.TablePosition = value;
+                    Manipulator.MiddleEdgePosition = value;
                 }
             }
+            
         }
 
         /// <summary>
@@ -191,10 +198,10 @@ namespace InverseTest.GUI.ViewModels
         {
             if (Manipulator != null)
             {
-                double value = ManipulatorPositionController.T2LocalToGlobal(y);
-                if (Math.Abs(Manipulator.MiddleEdgePosition - value) > 1e-2)
+                double value = ManipulatorPositionController.T3LocalToGlobal(y);
+                if (Math.Abs(Manipulator.TopEdgePosition - value) > 1e-2)
                 {
-                    Manipulator.MiddleEdgePosition = value;
+                    Manipulator.TopEdgePosition = value;
                 }
             }
         }
@@ -203,14 +210,14 @@ namespace InverseTest.GUI.ViewModels
         /// Обработка изменения положения третьего колена
         /// </summary>
         /// <param name="z">положение колена</param>
-        private void ManipulatorZChanged(double z)
+        public void ManipulatorZChanged(double z)
         {
             if (Manipulator != null)
             {
-                double value = ManipulatorPositionController.T3LocalToGlobal(z);
-                if (Math.Abs(Manipulator.TopEdgePosition - value) > 1e-2)
+                double value = ManipulatorPositionController.T1LocalToGlobal(z);
+                if (Math.Abs(Manipulator.TablePosition - value) > 1e-2)
                 {
-                    Manipulator.TopEdgePosition = value;
+                    Manipulator.TablePosition = value;
                 }
             }
         }

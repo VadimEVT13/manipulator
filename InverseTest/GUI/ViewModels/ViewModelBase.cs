@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using log4net;
+using NLog;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -15,7 +15,10 @@ namespace InverseTest.GUI.ViewModels
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        protected static readonly ILog Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

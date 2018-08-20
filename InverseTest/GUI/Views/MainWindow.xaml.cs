@@ -279,9 +279,12 @@ namespace InverseTest.GUI.Views
         {
             double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(MainVM.Manipulator.GetCameraPosition(), MainVM.Manipulator.GetCameraDirection(), distanceToPoint);
-            MainVM.ManipulatorVM.X = ManipulatorPositionController.T1GlobalToLocal(MainVM.Manipulator.TablePosition);
-            MainVM.ManipulatorVM.Y = ManipulatorPositionController.T2GlobalToLocal(MainVM.Manipulator.MiddleEdgePosition);
-            MainVM.ManipulatorVM.Z = ManipulatorPositionController.T3GlobalToLocal(MainVM.Manipulator.TopEdgePosition);
+            MainVM.ManipulatorVM.Z = ManipulatorPositionController.T1GlobalToLocal(MainVM.Manipulator.TablePosition);
+            MainVM.ManipulatorVM.X = ManipulatorPositionController.T2GlobalToLocal(MainVM.Manipulator.MiddleEdgePosition);
+            MainVM.ManipulatorVM.Y = ManipulatorPositionController.T3GlobalToLocal(MainVM.Manipulator.TopEdgePosition);
+            //MainVM.ManipulatorVM.X = ManipulatorPositionController.T1GlobalToLocal(MainVM.Manipulator.TablePosition);
+            //MainVM.ManipulatorVM.Y = ManipulatorPositionController.T2GlobalToLocal(MainVM.Manipulator.MiddleEdgePosition);
+            //MainVM.ManipulatorVM.Z = ManipulatorPositionController.T3GlobalToLocal(MainVM.Manipulator.TopEdgePosition);
             MainVM.ManipulatorVM.A = ManipulatorPositionController.T4GlobalToLocal(MainVM.Manipulator.CameraBasePosition);
             MainVM.ManipulatorVM.B = ManipulatorPositionController.T5GlobalToLocal(MainVM.Manipulator.CameraPosition);
             collisoinDetector.FindCollisoins();

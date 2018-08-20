@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using InverseTest.GUI.Utils;
 using System.Windows.Media;
 using FontAwesome.WPF;
-using log4net;
 using InverseTest.Grbl.Models;
+using NLog;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -18,7 +18,7 @@ namespace InverseTest.GUI.ViewModels
         /// <summary>
         /// Логгирование
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Событие вызываемое при изменении X.
@@ -123,9 +123,7 @@ namespace InverseTest.GUI.ViewModels
 
         public DetectorViewModel()
         {
-            var portFactory = new GPortFactory();
-            Port = portFactory.CreateGPort(GPortFactory.GPortType.DETECTOR);
-
+            Port = GManipulator.getInstance().Port;
             PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
             UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
             PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);

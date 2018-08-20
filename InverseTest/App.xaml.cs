@@ -1,7 +1,7 @@
 ﻿using InverseTest.Frame;
 using InverseTest.GUI.ViewModels;
 using InverseTest.GUI.Views;
-using log4net;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,18 +20,22 @@ namespace InverseTest
     /// </summary>
     public partial class App : Application
     {
-        private static readonly ILog Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private static MainWindow app;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Log.Info("Application Startup");
+            logger.Info("Application Startup");
 
             // For catching Global uncaught exception
             AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionOccured);
 
-            Log.Info("Starting App");
+            logger.Info("Starting App");
             LogMachineDetails();
             var context = new MainViewModel();
             app = new MainWindow(context);
@@ -40,7 +44,7 @@ namespace InverseTest
             
             if (e.Args.Length == 1) //make sure an argument is passed
             {
-                Log.Info("File type association: " + e.Args[0]);
+                logger.Info("File type association: " + e.Args[0]);
                 FileInfo file = new FileInfo(e.Args[0]);
                 if (file.Exists) //make sure it's actually a file
                 {
@@ -59,7 +63,7 @@ namespace InverseTest
                           computer.OSFullName + Environment.NewLine +
                           "RAM: " + computer.TotalPhysicalMemory.ToString() + Environment.NewLine +
                           "Language: " + computer.InstalledUICulture.EnglishName;
-            Log.Info(text);
+            logger.Info(text);
         }
     }
 }

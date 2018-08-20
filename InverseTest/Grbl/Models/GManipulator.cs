@@ -9,6 +9,38 @@ namespace InverseTest.Grbl.Models
     public class GManipulator
     {
         /// <summary>
+        /// Последовательный порт
+        /// </summary>
+        public GPort Port { get; set; }
+
+        private static GManipulator instance;
+
+        private GManipulator()
+        {
+            Port = new GPort(settings);
+        }
+
+        public static GManipulator getInstance()
+        {
+            if (instance == null)
+                instance = new GManipulator();
+            return instance;
+        }
+
+        private static GDevice settings = new GDevice
+        {
+            Name = "XManipulator",
+            IsX = false,
+            IsY = false,
+            IsZ = true,
+            IsA = false,
+            IsB = false,
+            IsC = false,
+            IsD = false,
+            IsE = false
+        };
+
+        /// <summary>
         /// Минимальное значение по оси X.
         /// </summary>
         private static int LIMIT_X_MIN = 1;
@@ -70,10 +102,10 @@ namespace InverseTest.Grbl.Models
             return new GPoint
             {
                 X = GetLimitValue(0, target.X, LIMIT_X_MIN, LIMIT_X_MAX),
-                Y = GetLimitValue(0, target.Y, LIMIT_Y_MIN, LIMIT_Y_MAX),
+                Y = GetLimitValue(0, target.Y, LIMIT_Y_MIN, LIMIT_Y_MAX) + 115,
                 Z = GetLimitValue(0, target.Z, LIMIT_Z_MIN, LIMIT_Z_MAX),
-                A = GetLimitValue(0, target.A, LIMIT_A_MIN, LIMIT_A_MAX),
-                B = GetLimitValue(0, target.B, LIMIT_B_MIN, LIMIT_B_MAX)
+                B = GetLimitValue(0, target.A, LIMIT_A_MIN, LIMIT_A_MAX),
+                C = GetLimitValue(0, target.B, LIMIT_B_MIN, LIMIT_B_MAX) + 185
             };
         }
 

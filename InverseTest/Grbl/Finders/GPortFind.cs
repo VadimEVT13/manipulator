@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using InverseTest.Grbl.Models;
-using log4net;
+using NLog;
 
 /// <summary>
 /// Класс поиска имени порта по приветствию.
@@ -13,9 +13,10 @@ namespace InverseTest.Grbl.Finders
     public class GPortFind
     {
         /// <summary>
-        /// Логгер класса.
+        /// Логгирование
         /// </summary>
-        private static ILog LOG = LogManager.GetLogger("PortFinder");
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Команда вызова CTRL + X.
         /// </summary>
@@ -37,7 +38,7 @@ namespace InverseTest.Grbl.Finders
         /// <returns>модель с найденным именем порта устройства</returns>
         public static GDevice FindPort(GDevice device)
         {
-            LOG.Info("Find Port");
+            logger.Info("Find Port");
             GDevice result = device;
             result.PortName = null;
             foreach (String port in SerialPort.GetPortNames())
@@ -55,7 +56,7 @@ namespace InverseTest.Grbl.Finders
                             if (line.Contains(device.Name))
                             {
                                 result.PortName = port;
-                                LOG.Info("Port is " + port);
+                                logger.Info("Port is " + port);
                                 break;
                             }
                         }
@@ -63,23 +64,23 @@ namespace InverseTest.Grbl.Finders
                     }
                     catch (UnauthorizedAccessException e)
                     {
-                        LOG.Error("Exception: Error open port:" + e);
+                        logger.Error("Exception: Error open port:" + e);
                     }
                     catch (ArgumentOutOfRangeException e)
                     {
-                        LOG.Error("Exception: Error open port:" + e);
+                        logger.Error("Exception: Error open port:" + e);
                     }
                     catch (ArgumentException e)
                     {
-                        LOG.Error("Exception: Error open port:" + e);
+                        logger.Error("Exception: Error open port:" + e);
                     }
                     catch (IOException e)
                     {
-                        LOG.Error("Exception: Error open port:" + e);
+                        logger.Error("Exception: Error open port:" + e);
                     }
                     catch (InvalidOperationException e)
                     {
-                        LOG.Error("Exception: Error open port:" + e);
+                        logger.Error("Exception: Error open port:" + e);
                     }
                 }
             }

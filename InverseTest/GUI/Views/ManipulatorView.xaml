@@ -40,17 +40,17 @@
 			</Button>
 		</Grid>
 		<Label Content="Первое колено, °" HorizontalAlignment="Center"/>
-		<Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" Value="{Binding X}" />
+		<Slider Name="T1Slider" Minimum="0" Maximum="180" SmallChange="1" Value="{Binding Z}" />
 		<TextBox Text="{Binding ElementName=T1Slider, Path=Value,StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 		<Label Content="Второе колено, °" HorizontalAlignment="Center"/>
-		<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="{Binding Y}"/>
+		<Slider Name="T2Slider" Minimum="10" Maximum="170" SmallChange="1" Value="{Binding X}"/>
 		<TextBox Text="{Binding ElementName=T2Slider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 		<Label Content="Третье колено, °" HorizontalAlignment="Center"/>
-		<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="{Binding Z}"/>
+		<Slider Name="T3Slider" Minimum="0" Maximum="180" SmallChange="1" Value="{Binding Y}"/>
 		<TextBox Text="{Binding ElementName=T3Slider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 		
