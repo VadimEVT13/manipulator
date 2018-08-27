@@ -38,7 +38,7 @@ namespace InverseTest.Grbl.Finders
         /// <returns>модель с найденным именем порта устройства</returns>
         public static GDevice FindPort(GDevice device)
         {
-            logger.Info("Find Port");
+            logger.Info("Find Port: " + device.Name);
             GDevice result = device;
             result.PortName = null;
             foreach (String port in SerialPort.GetPortNames())
@@ -53,6 +53,7 @@ namespace InverseTest.Grbl.Finders
                         Thread.Sleep(50);
                         for (string line = serialPort.ReadLine(); serialPort.BytesToRead > 0; line = serialPort.ReadLine())
                         {
+                            logger.Info("V: " + line);
                             if (line.Contains(device.Name))
                             {
                                 result.PortName = port;

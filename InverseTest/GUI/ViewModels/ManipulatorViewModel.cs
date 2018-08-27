@@ -257,7 +257,6 @@ namespace InverseTest.GUI.ViewModels
                             A = A,
                             B = B
                         };
-
                         Port.Global(GManipulator.GlobalLimits(target));
                         _isCommand = false;
                     }),

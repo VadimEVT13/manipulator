@@ -123,7 +123,7 @@ namespace InverseTest.GUI.ViewModels
 
         public DetectorViewModel()
         {
-            Port = GManipulator.getInstance().Port;
+            Port = GDetector.getInstance().Port;
             PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
             UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
             PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);

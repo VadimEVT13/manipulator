@@ -40,7 +40,7 @@
 			</Button>
 		</Grid>
 		<Label Content="Вертикальная рама, мм" HorizontalAlignment="Center"/>
-		<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="450" SmallChange="1" Value="{Binding X}"/>
+		<Slider Name="VerticalFrameSlider" Minimum="10" Maximum="445" SmallChange="1" Value="{Binding X}"/>
 		<TextBox Text="{Binding ElementName=VerticalFrameSlider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
@@ -55,12 +55,12 @@
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 		<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-		<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="160" SmallChange="1" Value="{Binding B}"/>
+		<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="175" SmallChange="1" Value="{Binding B}"/>
 		<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 		<Label Content="Горизонтальный угол, °" HorizontalAlignment="Center"/>
-		<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="70" SmallChange="1" Value="{Binding A}"/>
+		<Slider Name="ScreenHorizontalAngleSlider" Minimum="10" Maximum="110" SmallChange="1" Value="{Binding A}"/>
 		<TextBox Text="{Binding ElementName=ScreenHorizontalAngleSlider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 		<Button Content="Установить детектор"  Command="{Binding Global}" />
