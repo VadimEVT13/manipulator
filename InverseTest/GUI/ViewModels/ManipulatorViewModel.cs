@@ -133,6 +133,7 @@ namespace InverseTest.GUI.ViewModels
             UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
         }
 
+        #region Commands
         public ImageSource PlugImage { get; }
         private RelayCommand _plugCommand;
         public RelayCommand PlugCommand
@@ -299,5 +300,6 @@ namespace InverseTest.GUI.ViewModels
                     o => !_isCommand));
             }
         }
+        #endregion
     }
 }

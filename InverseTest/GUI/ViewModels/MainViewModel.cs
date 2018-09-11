@@ -1,6 +1,7 @@
 ﻿using InverseTest.Frame;
 using InverseTest.GUI.Readers;
 using InverseTest.GUI.Utils;
+using InverseTest.GUI.Views;
 using InverseTest.GUI.Writers;
 using InverseTest.Manipulator;
 using InverseTest.Path;
@@ -162,8 +163,8 @@ namespace InverseTest.GUI.ViewModels
         private void OnShowAboutDialog()
         {
             logger.Info("Opening About dialog");
-            //AboutViewModel dialog = new AboutViewModel();
-            //var result = DialogService.ShowDialog<About>(this, dialog);
+            AboutViewModel dialog = new AboutViewModel();
+            var result = DialogService.ShowDialog<About>(this, dialog);
         }
         private void OnExitApp()
         {

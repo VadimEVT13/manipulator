@@ -61,9 +61,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InverseTest\InverseTest.csproj">
+    <ProjectReference Include="..\InverseTest\Roentgen.csproj">
       <Project>{55ce4c0b-740e-406d-8a36-add4f8e14d84}</Project>
-      <Name>InverseTest</Name>
+      <Name>Roentgen</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -8,8 +8,8 @@
     <ProjectGuid>{55CE4C0B-740E-406D-8A36-ADD4F8E14D84}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InverseTest</RootNamespace>
-    <AssemblyName>InverseTest</AssemblyName>
+    <RootNamespace>Roentgen</RootNamespace>
+    <AssemblyName>Roentgen</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -30,7 +30,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ProductName>Roentgen</ProductName>
     <PublisherName>PNRPU</PublisherName>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.13.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -66,8 +66,12 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
@@ -148,6 +152,7 @@
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Design">
       <HintPath>..\packages\Microsoft.Xaml.4.0.0.1\lib\System.Design.dll</HintPath>
       <Private>True</Private>
@@ -237,8 +242,12 @@
     <Compile Include="Grbl\Models\GState.cs" />
     <Compile Include="GUI\Readers\JsonReader.cs" />
     <Compile Include="GUI\Utils\RelayCommand.cs" />
+    <Compile Include="GUI\ViewModels\AboutViewModel.cs" />
     <Compile Include="GUI\ViewModels\MainViewModel.cs" />
     <Compile Include="GUI\ViewModels\ManipulatorViewModel.cs" />
+    <Compile Include="GUI\Views\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Views\ManipulatorView.xaml.cs">
       <DependentUpon>ManipulatorView.xaml</DependentUpon>
     </Compile>
@@ -301,6 +310,10 @@
     <Compile Include="Model\PointsPositions.cs" />
     <Compile Include="Workers\GJKWorker.cs" />
     <Compile Include="Workers\KinematicWorker.cs" />
+    <Page Include="GUI\Views\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Views\ManipulatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
