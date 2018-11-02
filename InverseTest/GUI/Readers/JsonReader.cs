@@ -20,7 +20,14 @@ namespace InverseTest.GUI.Readers
 
         public static List<ScanPoint> Read(string fileName)
         {
-            return JsonConvert.DeserializeObject<List<ScanPoint>>(fileName);
+            string json;
+
+            using (StreamReader sr = new StreamReader(fileName))
+            {
+                json = sr.ReadToEnd();
+            }
+
+            return JsonConvert.DeserializeObject<List<ScanPoint>>(json);
         }
     }
 }
