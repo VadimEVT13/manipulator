@@ -34,21 +34,11 @@ namespace InverseTest.GUI.Views
         private static Point3D MANIPULATOR_OFFSET = new Point3D(-80, 0, 0);
 
         private bool solveKinematics = true;
-        private bool animate = false;
-        public bool Animate
-        {
-            get { return animate; }
-            set
-            {
-                animate = value;
-
-                NotifyPropertyChanged("Animate");
-            }
-        }
+        
 
         private Kinematic manipKinematic;
 
-        private MovementPoint manipulatorCamPoint;
+        
         private ConeModel coneModel;
 
         private Model3D platform;
@@ -59,7 +49,6 @@ namespace InverseTest.GUI.Views
         private GJKWorker<SceneSnapshot, List<CollisionPair>> collisionWorker;
         private CollisionDetector collisoinDetector;
         private CollisionVisualController collisoinVisual;
-        private DetailPathController detailPathController;
         private DetailVisualCollisionController detailVisControlle;
 
         /// <summary>
@@ -67,16 +56,7 @@ namespace InverseTest.GUI.Views
         /// </summary>
         private ModelParser ModelParser;
 
-        private double focus = 50;
-        public double Focus
-        {
-            get { return focus; }
-            set
-            {
-                focus = value;
-                NotifyPropertyChanged("Focus");
-            }
-        }
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -85,24 +65,13 @@ namespace InverseTest.GUI.Views
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private double focuseEnlagment = 1d;
-        public double FocusEnlagment
-        {
-            get { return focuseEnlagment; }
-            set
-            {
-                focuseEnlagment = value;
-                NotifyPropertyChanged("FocusEnlagment");
-            }
-        }
+        
 
         Model3DGroup allModels;
 
         private ObservableCollection<SystemPosition> targetPoints { get; set; }
 
         private int selectedIndexPoint = -1;
-
-        int numMesh = 0;
 
         private ScanPoint targetPoint = new ScanPoint(new Point3D(0, 60, 0));
 
@@ -132,7 +101,7 @@ namespace InverseTest.GUI.Views
             MainVM.Detector = ModelParser.Frame;
             DetectorFrameVisual portalVisual = DetectorFrameVisualFactory.CreateDetectorFrameVisual(MainVM.Detector);
 
-            MainVM.Detector.onPositionChanged += Detector_PositionChanged;
+            MainVM.Detector.onPositionChanged += MainVM.DetectorPositionChanged;
             MainVM.Detector.onManulaPositionChanged += DetecterManual_PositionChanged;
             ManipulatorVisualizer.SetDetectFrameModel(MainVM.Detector, portalVisual);
 
@@ -141,7 +110,7 @@ namespace InverseTest.GUI.Views
 
             ManipulatorVisualizer.setManipulatorModel(MainVM.Manipulator, manipulatorVisual);
             MainVM.Manipulator.onPositionChanged += Manipulator_PositionChanged;
-            MainVM.Manipulator.onManulaPositionChanged += ManipulatorManual_PositinChanged;
+            MainVM.Manipulator.onManulaPositionChanged += MainVM.ManipulatorPositionChanged;
 
             ManipulatorVisualizer.AddModel(ModelParser.Others);
 
@@ -175,7 +144,8 @@ namespace InverseTest.GUI.Views
 
             ManipulatorVisualizer.AddModel(platform);
 
-            this.detailPathController = new DetailPathController(detail, ScanPath.getInstance);
+            MainVM.DetailVM.Detail = detail;
+            MainVM.DetailVM.Path = ScanPath.getInstance;
 
             MainVM.PathVM.Scene = ManipulatorVisualizer;
 
@@ -194,18 +164,18 @@ namespace InverseTest.GUI.Views
             collisoinDetector = new CollisionDetector(MainVM.Manipulator, MainVM.Detector, detail, platform, collisionWorker);
 
             //Точка камеры манипулятора
-            manipulatorCamPoint = new MovementPoint(Colors.Red);
-            ManipulatorVisualizer.SetManipulatorPoint(manipulatorCamPoint);
-            manipulatorCamPoint.PositoinChanged += OnManipulatorCamPointPositoinChanged;
+            MainVM.ManipulatorCamPoint = new MovementPoint(Colors.Red);
+            ManipulatorVisualizer.SetManipulatorPoint(MainVM.ManipulatorCamPoint);
+            MainVM.ManipulatorCamPoint.PositoinChanged += OnManipulatorCamPointPositoinChanged;
 
             //Конус из камеры манипулятора
             coneModel = new ConeModel();
             ManipulatorVisualizer.AddModelWithoutCamView(coneModel.GetModel());
 
-            manipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
+            MainVM.ManipulatorCamPoint.MoveAndNotify(new Point3D(-10, 60, 0));
 
             collisionWorker.OnComplete += OnCollisoinsDetected;
-            FocueEnlargmentTextBox.Text = focuseEnlagment.ToString();
+            FocueEnlargmentTextBox.Text = MainVM.FocusEnlagment.ToString();
 
             this.detailView.Owner = this;
             detailView.Show();
@@ -219,10 +189,10 @@ namespace InverseTest.GUI.Views
         public void KinematicSolved(SystemState state)
         {
             if (state.Angles != null)
-                MainVM.Manipulator.MoveManipulator(state.Angles, Animate);
+                MainVM.Manipulator.MoveManipulator(state.Angles, MainVM.Animate);
 
             if (state.PortalPosition != null)
-                MainVM.Detector.MoveDetectFrame(state.PortalPosition, Animate);
+                MainVM.Detector.MoveDetectFrame(state.PortalPosition, MainVM.Animate);
         }
 
         /// <summary>
@@ -235,22 +205,10 @@ namespace InverseTest.GUI.Views
             {
                 this.targetPoint = p;
                 recalculateKinematic();
-                TargetXSlider.Value = Math.Round(p.point.X, 3);
-                TargetYSlider.Value = Math.Round(p.point.Y, 3);
-                TargetZSlider.Value = Math.Round(p.point.Z, 3);
+                MainVM.TargetX = p.point.X;
+                MainVM.TargetY = p.point.Y;
+                MainVM.TargetZ = p.point.Z;
             }
-        }
-
-        /// <summary>
-        /// Обработчик изменения положения детектора.
-        /// </summary>
-        public void Detector_PositionChanged()
-        {
-            MainVM.DetectorVM.X = DetectorPositionController.XGlobalToLocal(MainVM.Detector.VerticalFramePosition);
-            MainVM.DetectorVM.Y = DetectorPositionController.ZGlobalToLocal(MainVM.Detector.ScreenHolderPosition);
-            MainVM.DetectorVM.Z = DetectorPositionController.YGlobalToLocal(MainVM.Detector.HorizontalBarPosition);
-            MainVM.DetectorVM.A = DetectorPositionController.BGlobalToLocal(MainVM.Detector.HorizontalAngle);
-            MainVM.DetectorVM.B = DetectorPositionController.AGlobalToLocal(MainVM.Detector.VerticalAngle);
         }
 
         public void Deteil_PositionChenged()
@@ -268,8 +226,8 @@ namespace InverseTest.GUI.Views
 
         public void SetDistanceToPoint()
         {
-            var focusMm =targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
-            this.Focus = Math.Round(focusMm,2);
+            var focusMm =targetPoint.point.DistanceTo(MainVM.ManipulatorCamPoint.GetTargetPoint());
+            MainVM.Focus = Math.Round(focusMm,2);
         }
 
         /// <summary>
@@ -278,7 +236,7 @@ namespace InverseTest.GUI.Views
         /// </summary>
         public void Manipulator_PositionChanged()
         {
-            double distanceToPoint = targetPoint.point.DistanceTo(manipulatorCamPoint.GetTargetPoint());
+            double distanceToPoint = targetPoint.point.DistanceTo(MainVM.ManipulatorCamPoint.GetTargetPoint());
             coneModel.ChangePosition(MainVM.Manipulator.GetCameraPosition(), MainVM.Manipulator.GetCameraDirection(), distanceToPoint);
             MainVM.ManipulatorVM.Z = ManipulatorPositionController.T1GlobalToLocal(MainVM.Manipulator.TablePosition);
             MainVM.ManipulatorVM.X = ManipulatorPositionController.T2GlobalToLocal(MainVM.Manipulator.MiddleEdgePosition);
@@ -302,18 +260,9 @@ namespace InverseTest.GUI.Views
         public void SetCameraPosition()
         {
             var cameraPosition = MainVM.Manipulator.GetCameraPosition();
-
-            ManipulatorXSlider.Value = Math.Round(cameraPosition.X, 3);
-            ManipulatorYSlider.Value = Math.Round(cameraPosition.Y, 3);
-            ManipulatorZSlider.Value = Math.Round(cameraPosition.Z, 3);
-        }
-
-        /// <summary>
-        /// Обработчик изменения пложения манипулятора при ручном управлении 
-        /// </summary>
-        public void ManipulatorManual_PositinChanged()
-        {
-            this.manipulatorCamPoint.Move(MainVM.Manipulator.GetCameraPosition());
+            MainVM.ManipulatorX = cameraPosition.X;
+            MainVM.ManipulatorY = cameraPosition.Y;
+            MainVM.ManipulatorZ = cameraPosition.Z;
         }
 
         /// <summary>
@@ -434,35 +383,22 @@ namespace InverseTest.GUI.Views
         private void ToggleAnimation_Checked(object sender, RoutedEventArgs e)
         {
             solveKinematics = false;
-            animate = true;
+            MainVM.Animate = true;
         }
 
         private void ToggleAnimation_Unchecked(object sender, RoutedEventArgs e)
         {
             solveKinematics = true;
-            animate = false;
-        }
-
-        private void Manipulator_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Point3D position = new Point3D()
-            {
-                X = ManipulatorXSlider.Value,
-                Y = ManipulatorYSlider.Value,
-                Z = ManipulatorZSlider.Value
-            };
-
-            this.manipulatorCamPoint.Move(position);
-         
+            MainVM.Animate = false;
         }
 
         private void recalculateKinematic()
         {
             try
             {
-                Point3D manipPoint = manipulatorCamPoint.GetTargetPoint();
+                Point3D manipPoint = MainVM.ManipulatorCamPoint.GetTargetPoint();
                 Point3D scannedPoint = this.targetPoint.point;
-                kinematicWorker.Solve(new SystemPosition(manipPoint, scannedPoint, Focus, focuseEnlagment));
+                kinematicWorker.Solve(new SystemPosition(manipPoint, scannedPoint, MainVM.Focus, MainVM.FocusEnlagment));
             }
 
             /*ManipulatorCamPoint может быть null когда инициализируется окно, и срабатывает листенер 
@@ -473,7 +409,7 @@ namespace InverseTest.GUI.Views
 
         private void FocusEnlargementSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            this.FocusEnlagment = e.NewValue;
+            MainVM.FocusEnlagment = e.NewValue;
             recalculateKinematic();
         }
 
@@ -483,7 +419,7 @@ namespace InverseTest.GUI.Views
             var distance = e.NewValue;
 
             //Точка наконечника манипулятора
-            var manipCurrentPoint = manipulatorCamPoint.GetTargetPoint();
+            var manipCurrentPoint = MainVM.ManipulatorCamPoint.GetTargetPoint();
 
             //Точка сканирования
             var targetPoint = this.targetPoint.point;
@@ -502,7 +438,7 @@ namespace InverseTest.GUI.Views
                 newVector.Y + targetPoint.Y, newVector.Z + targetPoint.Z);
 
             //Перемещение точки наконечника 
-            manipulatorCamPoint.MoveAndNotify(point);
+            MainVM.ManipulatorCamPoint.MoveAndNotify(point);
         }
 
         private void FocusDistance_Checked(object sender, RoutedEventArgs e)
@@ -519,11 +455,6 @@ namespace InverseTest.GUI.Views
         {
             this.detailView.Show();
             this.detailView.Owner = this;
-        }
-
-        private void RotateDetailSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            this.detailPathController.Rotate(e.NewValue);
         }
 
         private void ResetCamers_Click(object sender, RoutedEventArgs e)
@@ -543,7 +474,7 @@ namespace InverseTest.GUI.Views
             {
                 ManipulatorVisualizer.RemoveModel(ModelParser.LopatkaDetail.detailModel);
                 collisoinDetector.Detail = ModelParser.ShpangoutDetail;
-                detailPathController.Detail = ModelParser.ShpangoutDetail;
+                MainVM.DetailVM.Detail = ModelParser.ShpangoutDetail;
                 ManipulatorVisualizer.AddModel(ModelParser.ShpangoutDetail.detailModel);
                 this.collisoinVisual.Detail = DetailVisualFactory.CreateDetailVisual(shpangout, ModelParser.DetailPlatform);
                 this.detail = ModelParser.ShpangoutDetail;
@@ -564,25 +495,13 @@ namespace InverseTest.GUI.Views
             {
                 ManipulatorVisualizer.RemoveModel(ModelParser.ShpangoutDetail.detailModel);
                 collisoinDetector.Detail = ModelParser.LopatkaDetail;
-                detailPathController.Detail = ModelParser.LopatkaDetail;
+                MainVM.DetailVM.Detail = ModelParser.LopatkaDetail;
                 ManipulatorVisualizer.AddModel(ModelParser.LopatkaDetail.detailModel);
                 this.detail = ModelParser.LopatkaDetail;
                 this.detailView.RemoveDetailMode(ModelParser.ShpangoutDetail);
                 this.detailView.AddDetailModel(lopatka);
                 this.collisoinVisual.Detail = DetailVisualFactory.CreateDetailVisual(lopatka, ModelParser.DetailPlatform);
             }
-        }
-        
-        /// <summary>
-        /// Обработка события - поднимает деталь 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RiseDetail_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            var mmValue = DetectorPositionController.MmToSm(e.NewValue);
-            var transoform = new TranslateTransform3D(0, mmValue, 0);
-            this.detailPathController.Transform(transoform);
         }
     }
 }

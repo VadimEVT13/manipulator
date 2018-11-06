@@ -12,15 +12,6 @@ namespace InverseTest.GUI.ViewModels
     /// </summary>
     public class PathViewModel : ViewModelBase
     {
-        /*public ObservableCollection<Point3D> Points { get; set; }
-        public ManipulatorVisualizer Scene { get; set; }
-
-        public PathViewModel()
-        {
-            Points = new ObservableCollection<Point3D>();
-        }//*/
-
-
         public List<ScanPointVisual> Points { get; set; }
         public ManipulatorVisualizer Scene { get; set; }
 

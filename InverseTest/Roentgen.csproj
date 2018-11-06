@@ -222,7 +222,6 @@
     <Compile Include="Collision\Model\Vertex.cs" />
     <Compile Include="Collision\Tree.cs" />
     <Compile Include="Collision\Algebra.cs" />
-    <Compile Include="DetailPathController.cs" />
     <Compile Include="Detail\DetailPointsCreator.cs" />
     <Compile Include="Detail\DetailVisualCollisionController.cs" />
     <Compile Include="Detail\DetailVisualFactory.cs" />
@@ -243,6 +242,7 @@
     <Compile Include="GUI\Readers\JsonReader.cs" />
     <Compile Include="GUI\Utils\RelayCommand.cs" />
     <Compile Include="GUI\ViewModels\AboutViewModel.cs" />
+    <Compile Include="GUI\ViewModels\DetailViewModel.cs" />
     <Compile Include="GUI\ViewModels\MainViewModel.cs" />
     <Compile Include="GUI\ViewModels\ManipulatorViewModel.cs" />
     <Compile Include="GUI\ViewModels\PathViewModel.cs" />

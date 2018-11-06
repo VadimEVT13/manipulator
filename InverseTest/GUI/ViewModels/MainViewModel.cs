@@ -1,4 +1,5 @@
 ﻿using InverseTest.Frame;
+using InverseTest.GUI.Model;
 using InverseTest.GUI.Readers;
 using InverseTest.GUI.Utils;
 using InverseTest.GUI.Views;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -38,9 +40,136 @@ namespace InverseTest.GUI.ViewModels
 
         public PathViewModel PathVM { get; set; }
 
+        public DetailViewModel DetailVM { get; set; }
+
 
         public ManipulatorV2 Manipulator { get; set; }
         public DetectorFrame Detector { get; set; }
+
+        public MovementPoint ManipulatorCamPoint { get; set; }
+
+
+        private double _targetX = 0;
+        public double TargetX
+        {
+            get => _targetX;
+            set
+            {
+                SetValue(ref _targetX, Math.Round(value, 3), "TargetX");
+                ManipulatorChanged();
+            }
+        }
+
+        private double _targetY = 0;
+        public double TargetY
+        {
+            get => _targetY;
+            set
+            {
+                SetValue(ref _targetY, Math.Round(value, 3), "TargetY");
+                ManipulatorChanged();
+            }
+        }
+
+        private double _targetZ = 0;
+        public double TargetZ
+        {
+            get => _targetZ;
+            set
+            {
+                SetValue(ref _targetZ, Math.Round(value, 3), "TargetZ");
+                ManipulatorChanged();
+            }
+        }
+
+        private double _manipulatorX = 0;
+        public double ManipulatorX
+        {
+            get => _manipulatorX;
+            set
+            {
+                SetValue(ref _manipulatorX, Math.Round(value, 3), "ManipulatorX");
+                ManipulatorChanged();
+            }
+        }
+
+        private double _manipulatorY = 0;
+        public double ManipulatorY
+        {
+            get => _manipulatorY;
+            set
+            {
+                SetValue(ref _manipulatorY, Math.Round(value, 3), "ManipulatorY");
+                ManipulatorChanged();
+            }
+        }
+
+        private double _manipulatorZ = 0;
+        public double ManipulatorZ
+        {
+            get => _manipulatorZ;
+            set
+            {
+                SetValue(ref _manipulatorZ, Math.Round(value, 3), "ManipulatorZ");
+                ManipulatorChanged();
+            }
+        }
+
+
+        private double _rotateDetail = 0;
+        public double RotateDetail
+        {
+            get => _rotateDetail;
+            set
+            {
+                DetailVM.Transform(value, RiseDetail);
+                SetValue(ref _rotateDetail, value, "RotateDetail");
+            }
+        }
+
+        /// <summary>
+        /// Подъем детали 
+        /// </summary>
+        private double _riseDetail = 0;
+        public double RiseDetail
+        {
+            get => _riseDetail;
+            set
+            {
+                DetailVM.Transform(RotateDetail, value);
+                SetValue(ref _riseDetail, value, "RiseDetail");
+            }
+        }
+
+        private bool _animate = false;
+        public bool Animate
+        {
+            get => _animate;
+            set
+            {
+                SetValue(ref _animate, value, "Animate");
+            }
+        }
+
+        private double _focus = 50;
+        public double Focus
+        {
+            get => _focus;
+            set
+            {
+                SetValue(ref _focus, value, "Focus");
+            }
+        }
+
+        private double _focuseEnlagment = 1d;
+        public double FocusEnlagment
+        {
+            get => _focuseEnlagment;
+            set
+            {
+                SetValue(ref _focuseEnlagment, value, "FocusEnlagment");
+            }
+        }
 
         #endregion
 
@@ -65,6 +194,8 @@ namespace InverseTest.GUI.ViewModels
             DetectorVM.OnBChanged += DetectorBChanged;
 
             PathVM = new PathViewModel();
+
+            DetailVM = new DetailViewModel();
         }
         #endregion
 
@@ -172,6 +303,38 @@ namespace InverseTest.GUI.ViewModels
         #endregion
 
         #region Events
+
+        public void ManipulatorChanged()
+        {
+            Point3D position = new Point3D()
+            {
+                X = ManipulatorX,
+                Y = ManipulatorY,
+                Z = ManipulatorZ
+            };
+            ManipulatorCamPoint.Move(position);
+        }
+
+        /// <summary>
+        /// Обработчик изменения пложения манипулятора при ручном управлении
+        /// </summary>
+        public void ManipulatorPositionChanged()
+        {
+            ManipulatorCamPoint.Move(Manipulator.GetCameraPosition());
+        }
+
+        /// <summary>
+        /// Обработчик изменения положения детектора
+        /// </summary>
+        public void DetectorPositionChanged()
+        {
+            DetectorVM.X = DetectorPositionController.XGlobalToLocal(Detector.VerticalFramePosition);
+            DetectorVM.Y = DetectorPositionController.ZGlobalToLocal(Detector.ScreenHolderPosition);
+            DetectorVM.Z = DetectorPositionController.YGlobalToLocal(Detector.HorizontalBarPosition);
+            DetectorVM.A = DetectorPositionController.BGlobalToLocal(Detector.HorizontalAngle);
+            DetectorVM.B = DetectorPositionController.AGlobalToLocal(Detector.VerticalAngle);
+        }
+
 
         /// <summary>
         /// Обработка изменения положения первого колена

@@ -42,11 +42,11 @@
 				<Expander Header="Деталь">
                     <StackPanel>
                         <TextBlock Text="Угол поворота, °" HorizontalAlignment="Center"/>
-                        <Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="0" ValueChanged="RotateDetailSlider_ValueChanged"/>
+						<Slider Name="RotateDetailSlider" Maximum="180" Minimum="-180" Value="{Binding RotateDetail}"/>
                         <TextBox Text="{Binding ElementName=RotateDetailSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
                         <TextBlock Text="Высота подьема детали, мм" HorizontalAlignment="Center"/>
-                        <Slider Name="RiseDetailSlider" Maximum="100" Minimum="0" Value="0" ValueChanged="RiseDetail_ValueChanged"/>
+						<Slider Name="RiseDetailSlider" Maximum="100" Minimum="0" Value="{Binding RiseDetail}"/>
                         <TextBox Text="{Binding ElementName=RiseDetailSlider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
                     </StackPanel>
                 </Expander>
@@ -71,16 +71,13 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock Grid.Column="0" Grid.Row="0" Text="X, мм"/>
-							<Slider Name="TargetXSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
-							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="0" Text="{Binding ElementName=TargetXSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="0" Text="{Binding TargetX}" Margin="5"/>
 
 							<TextBlock Grid.Column="0" Grid.Row="1" Text="Y, мм"/>
-							<Slider Name="TargetYSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
-							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="1" Text="{Binding ElementName=TargetYSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="1" Text="{Binding TargetY}" Margin="5"/>
 
 							<TextBlock Grid.Column="0" Grid.Row="2" Text="Z, мм"/>
-							<Slider Name="TargetZSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
-							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="2" Text="{Binding ElementName=TargetZSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+							<TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="2" Text="{Binding TargetZ}" Margin="5"/>
 						</Grid>
 
 						<Label Content="Координаты наконечника"/>
@@ -96,15 +93,15 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock Grid.Column="0" Grid.Row="0" Text="X, мм"/>
-							<Slider Name="ManipulatorXSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<Slider Name="ManipulatorXSlider" Maximum="1000" Minimum="-1000" Value="{Binding ManipulatorX}" Visibility="Collapsed"/>
 							<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding ElementName=ManipulatorXSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 							<TextBlock Grid.Column="0" Grid.Row="1" Text="Y, мм"/>
-							<Slider Name="ManipulatorYSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<Slider Name="ManipulatorYSlider" Maximum="1000" Minimum="-1000" Value="{Binding ManipulatorY}" Visibility="Collapsed"/>
 							<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding ElementName=ManipulatorYSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 							<TextBlock Grid.Column="0" Grid.Row="2" Text="Z, мм"/>
-							<Slider Name="ManipulatorZSlider" Maximum="1000" Minimum="-1000" Value="0" Visibility="Collapsed" ValueChanged="Manipulator_ValueChanged"/>
+							<Slider Name="ManipulatorZSlider" Maximum="1000" Minimum="-1000" Value="{Binding ManipulatorZ}" Visibility="Collapsed"/>
 							<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding ElementName=ManipulatorZSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 						</Grid>
 						<Button Content="Повернуть станок" Name="RotateManipulatorButton"  Click="RotateManipulatorButton_OnClick"/>

@@ -100,7 +100,7 @@ namespace InverseTest.GUI.ViewModels
         public ImageSource PlayImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
         public ImageSource PauseImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
         public ImageSource HomeImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
-        public ImageSource UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
+        public ImageSource UnlockImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
         #endregion
 
         public ManipulatorViewModel()

@@ -162,6 +162,8 @@ namespace InverseTest.GUI.Models
         {
             this.model.Transform = transform;
         }
+
+
         private void StoreDefaultMaterials(Model3D model) {
 
             List<Material> materials = new List<Material>();
