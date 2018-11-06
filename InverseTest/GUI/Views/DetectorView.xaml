@@ -20,22 +20,22 @@
 				<ColumnDefinition/>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
-			<Button Grid.Column="0" Command="{Binding PlugCommand}" ToolTip="Открыть">
+			<Button Grid.Column="0" Command="{Binding PlugCmd}" ToolTip="Открыть">
 				<Image Source="{Binding PlugImage}"/>
 			</Button>
-			<Button Grid.Column="1" Command="{Binding UnPlugCommand}" ToolTip="Закрыть">
+			<Button Grid.Column="1" Command="{Binding UnPlugCmd}" ToolTip="Закрыть">
 				<Image Source="{Binding UnPlugImage}"/>
 			</Button>
-			<Button Grid.Column="2" Command="{Binding PlayCommand}" ToolTip="Старт">
+			<Button Grid.Column="2" Command="{Binding PlayCmd}" ToolTip="Старт">
 				<Image Source="{Binding PlayImage}"/>
 			</Button>
-			<Button Grid.Column="3" Command="{Binding PauseCommand}" ToolTip="Пауза">
+			<Button Grid.Column="3" Command="{Binding PauseCmd}" ToolTip="Пауза">
 				<Image Source="{Binding PauseImage}"/>
 			</Button>
-			<Button Grid.Column="4" Command="{Binding HomeCommand}" ToolTip="Домой">
+			<Button Grid.Column="4" Command="{Binding HomeCmd}" ToolTip="Домой">
 				<Image Source="{Binding HomeImage}"/>
 			</Button>
-			<Button Grid.Column="5" Command="{Binding UnlockCommand}" ToolTip="Разблокировать">
+			<Button Grid.Column="5" Command="{Binding UnLockCmd}" ToolTip="Разблокировать">
 				<Image Source="{Binding UnlockImage}"/>
 			</Button>
 		</Grid>

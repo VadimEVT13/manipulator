@@ -60,7 +60,6 @@ namespace InverseTest.GUI.Views
         private CollisionDetector collisoinDetector;
         private CollisionVisualController collisoinVisual;
         private DetailPathController detailPathController;
-        private ScanPathVisualController pathVisual;
         private DetailVisualCollisionController detailVisControlle;
 
         /// <summary>
@@ -177,8 +176,10 @@ namespace InverseTest.GUI.Views
             ManipulatorVisualizer.AddModel(platform);
 
             this.detailPathController = new DetailPathController(detail, ScanPath.getInstance);
-            this.pathVisual = new ScanPathVisualController(ManipulatorVisualizer);
-            PathListView.OnSelectedPoint += this.pathVisual.OnPointSelected;
+
+            MainVM.PathVM.Scene = ManipulatorVisualizer;
+
+            PathListView.OnSelectedPoint += this.MainVM.PathVM.OnPointSelected;
             PathListView.OnSelectedPoint += this.OnScanPointSelected;
             PathListView.OnSelectedPoint += this.detailView.OnPointSelected;
 

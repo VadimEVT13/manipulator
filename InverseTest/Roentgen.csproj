@@ -245,6 +245,7 @@
     <Compile Include="GUI\ViewModels\AboutViewModel.cs" />
     <Compile Include="GUI\ViewModels\MainViewModel.cs" />
     <Compile Include="GUI\ViewModels\ManipulatorViewModel.cs" />
+    <Compile Include="GUI\ViewModels\PathViewModel.cs" />
     <Compile Include="GUI\Views\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -275,7 +276,6 @@
     <Compile Include="Manipulator\Models\Ogranichenie.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
     <Compile Include="Model\SystemState.cs" />
-    <Compile Include="Path\ScanPathVisual.cs" />
     <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Models\ScanPointVisual.cs" />
     <Compile Include="GUI\Models\MainVisual.cs" />

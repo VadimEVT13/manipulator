@@ -11,7 +11,7 @@ using System.Windows.Media.Media3D;
 
 namespace InverseTest.Path
 {
-    public class ScanPointVisual:BaseScanPointVisual
+    public class ScanPointVisual : BaseScanPointVisual
     {
 
         private static Material DEFAULT_MATERIAL = Materials.Green;

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Windows.Input;
-using System.Threading;
+﻿using System.Windows.Input;
 using System.Threading.Tasks;
 using InverseTest.GUI.Utils;
 using System.Windows.Media;
 using FontAwesome.WPF;
 using InverseTest.Grbl.Models;
-using NLog;
 
 namespace InverseTest.GUI.ViewModels
 {
@@ -16,26 +13,17 @@ namespace InverseTest.GUI.ViewModels
     public class DetectorViewModel : ViewModelBase
     {
         /// <summary>
-        /// Логгирование
-        /// </summary>
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        /// <summary>
         /// Событие вызываемое при изменении X.
         /// </summary>
         public event AxisChanged OnXChanged;
-        private double x = 10;
+        private double _x = 10;
         public double X
         {
-            get
-            {
-                return x;
-            }
+            get => _x;
             set
             {
-                x = value;
-                OnXChanged(value);
-                NotifyPropertyChanged("X");
+                OnXChanged?.Invoke(value);
+                SetValue(ref _x, value, "X");
             }
         }
 
@@ -43,18 +31,14 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении Y.
         /// </summary>
         public event AxisChanged OnYChanged;
-        private double y = 10;
+        private double _y = 10;
         public double Y
         {
-            get
-            {
-                return y;
-            }
+            get => _y;
             set
             {
-                y = value;
-                OnYChanged(value);
-                NotifyPropertyChanged("Y");
+                OnYChanged?.Invoke(value);
+                SetValue(ref _y, value, "Y");
             }
         }
 
@@ -62,18 +46,14 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении Z.
         /// </summary>
         public event AxisChanged OnZChanged;
-        private double z = 10;
+        private double _z = 10;
         public double Z
         {
-            get
-            {
-                return z;
-            }
+            get => _z;
             set
             {
-                z = value;
-                OnZChanged(value);
-                NotifyPropertyChanged("Z");
+                OnZChanged?.Invoke(value);
+                SetValue(ref _z, value, "Z");
             }
         }
 
@@ -81,18 +61,14 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении A.
         /// </summary>
         public event AxisChanged OnAChanged;
-        private double a = 50;
+        private double _a = 50;
         public double A
         {
-            get
-            {
-                return a;
-            }
+            get => _a;
             set
             {
-                a = value;
-                OnAChanged(value);
-                NotifyPropertyChanged("A");
+                OnAChanged?.Invoke(value);
+                SetValue(ref _a, value, "A");
             }
         }
 
@@ -100,18 +76,14 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении B.
         /// </summary>
         public event AxisChanged OnBChanged;
-        private double b = 50;
+        private double _b = 50;
         public double B
         {
-            get
-            {
-                return b;
-            }
+            get => _b;
             set
             {
-                b = value;
-                OnBChanged(value);
-                NotifyPropertyChanged("B");
+                OnBChanged?.Invoke(value);
+                SetValue(ref _b, value, "B");
             }
         }
 
@@ -120,107 +92,66 @@ namespace InverseTest.GUI.ViewModels
         /// </summary>
         public GPort Port { get; set; }
 
+        #region Images
+        public ImageSource PlugImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
+        public ImageSource UnPlugImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
+        public ImageSource PlayImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
+        public ImageSource PauseImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
+        public ImageSource HomeImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
+        public ImageSource UnlockImage => ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
+        #endregion
 
         public DetectorViewModel()
         {
             Port = GDetector.getInstance().Port;
-            PlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Plug, Brushes.Green);
-            UnPlugImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Circle, Brushes.Red);
-            PlayImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Play, Brushes.Green);
-            PauseImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Pause, Brushes.Orange);
-            HomeImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Home, Brushes.Green);
-            UnlockImage = ImageAwesome.CreateImageSource(FontAwesomeIcon.Unlock, Brushes.Red);
         }
 
-        public ImageSource PlugImage { get; }
-        private RelayCommand _plugCommand;
-        public RelayCommand PlugCommand
+        #region Commands
+        public ICommand PlugCmd { get { return new RelayCommand(OnPlug, AlwaysTrue); } }
+        public ICommand UnPlugCmd { get { return new RelayCommand(OnUnPlug, AlwaysTrue); } }
+        public ICommand PlayCmd { get { return new RelayCommand(OnPlay, AlwaysTrue); } }
+        public ICommand PauseCmd { get { return new RelayCommand(OnPause, AlwaysTrue); } }
+        public ICommand HomeCmd { get { return new RelayCommand(OnHome, AlwaysTrue); } }
+        public ICommand UnLockCmd { get { return new RelayCommand(OnUnLock, AlwaysTrue); } }
+        #endregion
+
+        #region Events
+        public void OnPlug()
         {
-            get
-            {
-                return _plugCommand
-                  ?? (_plugCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Open();
-                    }));
-            }
-        }
-        
-        public ImageSource UnPlugImage { get; }
-        private RelayCommand _unPlugCommand;
-        public RelayCommand UnPlugCommand
-        {
-            get
-            {
-                return _unPlugCommand
-                  ?? (_unPlugCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Close();
-                    }));
-            }
-        }
-        
-        public ImageSource PlayImage { get; }
-        private RelayCommand _playCommand;
-        public RelayCommand PlayCommand
-        {
-            get
-            {
-                return _playCommand
-                  ?? (_playCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Start();
-                    }));
-            }
+            logger.Info("Plug port detector");
+            Port.Open();
         }
 
-        public ImageSource PauseImage { get; }
-        private RelayCommand _pauseCommand;
-        public RelayCommand PauseCommand
+        public void OnUnPlug()
         {
-            get
-            {
-                return _pauseCommand
-                  ?? (_pauseCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Pause();
-                    }));
-            }
+            logger.Info("Unplug port detector");
+            Port.Close();
         }
 
-        public ImageSource HomeImage { get; }
-        private RelayCommand _homeCommand;
-        public ICommand HomeCommand
+        public void OnPlay()
         {
-            get
-            {
-                return _homeCommand
-                  ?? (_homeCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Home();
-                    }));
-            }
+            logger.Info("Play detector");
+            Port.Start();
         }
 
-        public ImageSource UnlockImage { get; }
-        private RelayCommand _unlockCommand;
-        public ICommand UnlockCommand
+        public void OnPause()
         {
-            get
-            {
-                return _unlockCommand
-                  ?? (_unlockCommand = new RelayCommand(
-                    () =>
-                    {
-                        Port.Unlock();
-                    }));
-            }
+            logger.Info("Pause detector");
+            Port.Pause();
         }
+
+        public void OnHome()
+        {
+            logger.Info("Home detector");
+            Port.Home();
+        }
+
+        public void OnUnLock()
+        {
+            logger.Info("Unlock detector");
+            Port.Unlock();
+        }
+        #endregion
         
         /// <summary>
         /// Команда отправления данных обработана.

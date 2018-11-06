@@ -21,10 +21,6 @@ namespace InverseTest.GUI.ViewModels
     public class MainViewModel : ViewModelBase
     {
         #region Parameters
-        /// <summary>
-        /// Логгирование
-        /// </summary>
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDialogService DialogService;
 
@@ -40,6 +36,7 @@ namespace InverseTest.GUI.ViewModels
 
         public DetectorViewModel DetectorVM { get; set; }
 
+        public PathViewModel PathVM { get; set; }
 
 
         public ManipulatorV2 Manipulator { get; set; }
@@ -66,6 +63,8 @@ namespace InverseTest.GUI.ViewModels
             DetectorVM.OnZChanged += DetectorZChanged;
             DetectorVM.OnAChanged += DetectorAChanged;
             DetectorVM.OnBChanged += DetectorBChanged;
+
+            PathVM = new PathViewModel();
         }
         #endregion
 

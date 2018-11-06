@@ -18,7 +18,7 @@ namespace InverseTest.GUI.ViewModels
         /// <summary>
         /// Логгирование
         /// </summary>
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -29,5 +29,24 @@ namespace InverseTest.GUI.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        protected bool SetValue<T>(ref T backingField, T value, [CallerMemberName]string propertyName = "")
+        {
+            if (object.Equals(backingField, value))
+            {
+                return false;
+            }
+
+            backingField = value;
+            this.NotifyPropertyChanged(propertyName);
+            return true;
+        }
+
+        #region Commands
+        protected bool AlwaysTrue() { return true; }
+        protected bool AlwaysTrue(object obj) { return true; }
+
+        protected bool AlwaysFalse() { return false; }
+        #endregion
     }
 }
