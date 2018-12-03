@@ -26,7 +26,7 @@ namespace InverseTest.Frame
         /// <summary>
         /// Начальное положение по оси B.
         /// </summary>
-        private static double B_POSITION = 40;
+        private static double B_POSITION = 60;//40;
 
         /// <summary>
         /// Преобразование мм в см.

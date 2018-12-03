@@ -195,43 +195,6 @@ namespace InverseTest.GUI.ViewModels
                     }),
                     o => !_isCommand));
             }
-        }
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _LocalCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Local
-        {
-            get
-            {
-                return _LocalCommand
-                  ?? (_LocalCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isCommand)
-                        {
-                            return;
-                        }
-                        _isCommand = true;
-                        GPoint target = new GPoint()
-                        {
-                            X = X,
-                            Y = Y,
-                            Z = Z,
-                            A = A,
-                            B = B
-                        };
-                        Port.Local(GManipulator.LocalLimits(Port.Status.Position, target));
-                        _isCommand = false;
-                    }),
-                    o => !_isCommand));
-            }
-        }
-        
+        }       
     }
 }

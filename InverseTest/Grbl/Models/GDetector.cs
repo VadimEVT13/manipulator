@@ -35,22 +35,6 @@ namespace InverseTest.Grbl.Models
             IsE = false
         };
 
-        public static double GetLimitValue(double value, double state, double minValue, double maxValue)
-        {
-            if (state + value < minValue)
-            {
-                return minValue - state;
-            }
-            else if (state + value > maxValue)
-            {
-                return maxValue - state;
-            }
-            else
-            {
-                return value;
-            }
-        }
-
         public static double GetLimitValue(double value, double minValue, double maxValue)
         {
             if (value < minValue)
@@ -76,18 +60,6 @@ namespace InverseTest.Grbl.Models
                 Z = GetLimitValue(target.Z, 10, 760),
                 A = GetLimitValue(target.A, 10, 110),
                 B = GetLimitValue(target.B, 10, 175)
-            };
-        }
-
-        public static GPoint LocalLimits(GPoint position, GPoint target)
-        {
-            return new GPoint
-            {
-                /*X = GetLimitValue(position.X, target.X, LIMIT_X_MIN, LIMIT_X_MAX),
-                Y = GetLimitValue(position.Y, target.Y, LIMIT_Y_MIN, LIMIT_Y_MAX),
-                Z = GetLimitValue(position.Z, target.Z, LIMIT_Z_MIN, LIMIT_Z_MAX),
-                A = GetLimitValue(position.A, target.A, LIMIT_A_MIN, LIMIT_A_MAX),
-                B = GetLimitValue(position.B, target.B, LIMIT_B_MIN, LIMIT_B_MAX)//*/
             };
         }
     }

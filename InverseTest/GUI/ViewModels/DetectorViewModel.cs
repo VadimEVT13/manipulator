@@ -61,7 +61,7 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении A.
         /// </summary>
         public event AxisChanged OnAChanged;
-        private double _a = 50;
+        private double _a = 60;
         public double A
         {
             get => _a;
@@ -76,7 +76,7 @@ namespace InverseTest.GUI.ViewModels
         /// Событие вызываемое при изменении B.
         /// </summary>
         public event AxisChanged OnBChanged;
-        private double _b = 50;
+        private double _b = 87;
         public double B
         {
             get => _b;
@@ -188,42 +188,6 @@ namespace InverseTest.GUI.ViewModels
                             B = B
                         };
                         Port.Global(GDetector.GlobalLimits(target));
-                        _isCommand = false;
-                    }),
-                    o => !_isCommand));
-            }
-        }
-
-        /// <summary>
-        /// Команда отправления данных в порт.
-        /// </summary>
-        private AsyncRelayCommand _LocalCommand;
-
-        /// <summary>
-        /// Свойство команда отправления данных в порт.
-        /// </summary>
-        public ICommand Local
-        {
-            get
-            {
-                return _LocalCommand
-                  ?? (_LocalCommand = new AsyncRelayCommand(o =>
-                    Task.Run(() =>
-                    {
-                        if (_isCommand)
-                        {
-                            return;
-                        }
-                        _isCommand = true;
-                        GPoint target = new GPoint()
-                        {
-                            X = X,
-                            Y = Y,
-                            Z = Z,
-                            A = A,
-                            B = B
-                        };
-                        Port.Local(GDetector.LocalLimits(Port.Status.Position, target));
                         _isCommand = false;
                     }),
                     o => !_isCommand));

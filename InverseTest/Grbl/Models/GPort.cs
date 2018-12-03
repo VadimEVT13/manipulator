@@ -132,6 +132,7 @@ namespace InverseTest.Grbl.Models
             {
                 logger.Error("Error open port:" + e);
             }
+            Thread.Sleep(100);
             State();
         }
 
@@ -238,12 +239,13 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                String cmd = PointToString(point);
-                logger.Info("Write: G90");
-                serialPort.WriteLine("G90");
-                logger.Info("Write: " + cmd);
-                serialPort.WriteLine(cmd);
-                this.State();
+                var builder = new StringBuilder();
+                builder.Append("G90 ");
+                builder.Append(PointToString(point));
+                builder.Append("\n");
+                logger.Info("Send: " + builder.ToString());
+                serialPort.WriteLine(builder.ToString());
+                State();
             }
         }
 
