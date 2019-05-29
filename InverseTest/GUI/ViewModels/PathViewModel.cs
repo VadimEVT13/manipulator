@@ -15,12 +15,12 @@ namespace InverseTest.GUI.ViewModels
         public List<ScanPointVisual> Points { get; set; }
         public ManipulatorVisualizer Scene { get; set; }
 
-        public List<ScanPointVisual> ShvatPoints { get; set; }              // Точки схвата манипулятора
+        public List<ScanPointVisual> ManipulatorPoints { get; set; }              // Точки схвата манипулятора
 
         public PathViewModel()
         {
             Points = new List<ScanPointVisual>();
-            ShvatPoints = new List<ScanPointVisual>();                      // Точки схвата манипулятора
+            ManipulatorPoints = new List<ScanPointVisual>();                      // Точки схвата манипулятора
             ScanPath.getInstance.PointAdd += OnPointAdd;
             ScanPath.getInstance.PointRemove += OnPointRemove;
             ScanPath.getInstance.PointTransformed += OnPointsTransformed;
@@ -33,7 +33,7 @@ namespace InverseTest.GUI.ViewModels
         public void OnMethodPointAdd(ScanPoint p)
         {
             var pointVis = new ScanPointVisual(p);
-            ShvatPoints.Add(pointVis);
+            ManipulatorPoints.Add(pointVis);
             if (Scene != null)
             {
                 Scene.AddVisual(pointVis.pointVisual);
@@ -52,12 +52,12 @@ namespace InverseTest.GUI.ViewModels
 
         public void OnMethodPointRemove(ScanPoint p)
         {
-            var pointVis = ShvatPoints.Find(x => x.Point.Equals(p));
+            var pointVis = ManipulatorPoints.Find(x => x.Point.Equals(p));
             if (Scene != null)
             {
                 Scene.RemoveVisual(pointVis.pointVisual);
             }
-            ShvatPoints.RemoveAll(x => x.Point.Equals(p));
+            ManipulatorPoints.RemoveAll(x => x.Point.Equals(p));
         }
 
         public void OnPointRemove(ScanPoint p)
@@ -72,7 +72,7 @@ namespace InverseTest.GUI.ViewModels
 
         public void OnMethodPointTransformed(Transform3D t)
         {
-            ShvatPoints.ForEach(x => x.pointVisual.Transform(t));
+            ManipulatorPoints.ForEach(x => x.pointVisual.Transform(t));
         }
 
         public void OnPointsTransformed(Transform3D t)

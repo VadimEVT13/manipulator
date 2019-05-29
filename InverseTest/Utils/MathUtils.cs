@@ -29,6 +29,30 @@ namespace InverseTest.Manipulator
             Point3D point = rect.Location;
             Size3D size = rect.Size;
             return new Point3D(point.X + size.X/2, point.Y + size.Y / 2, point.Z + size.Z / 2);
-        }      
+        }
+
+        /// <summary>
+        /// Перемножение матриц 4x4
+        /// </summary>
+        /// <param name="matrixA">Левая матрица</param>
+        /// <param name="matrixB">Правая матрица</param>
+        /// <returns></returns>
+        public static double[][] Mul_Matrix(double[][] matrixA, double[][] matrixB)
+        {
+            double[][] rez = new double[4][];
+            for (int i = 0; i < 4; i++)
+            {
+                rez[i] = new double[4];
+                for (int j = 0; j < 4; j++)
+                {
+                    rez[i][j] = 0;
+                    for (int k = 0; k < 4; k++)
+                    {
+                        rez[i][j] = rez[i][j] + matrixA[i][k] * matrixB[k][j];
+                    }
+                }
+            }
+            return rez;
+        }
     }
 }

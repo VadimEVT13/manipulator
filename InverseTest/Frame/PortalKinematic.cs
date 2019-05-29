@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
+using Roentgen.Path;
 
 namespace InverseTest.Frame
 {
@@ -266,6 +268,145 @@ namespace InverseTest.Frame
             {
                 return null;
             }
+        }
+
+        // Работает правильно
+        public PortalAngle InverseKinematic(Point3D ustanov_point, Point3D scan_point)
+        {
+            PortalAngle rezult = new PortalAngle();
+
+            Point3D differ = new Point3D() {
+                X =  ustanov_point.X - scan_point.X,
+                Y =  ustanov_point.Y - scan_point.Y,
+                Z =  ustanov_point.Z - scan_point.Z
+            };
+
+            rezult.O1 = GetAngle(Math.Sqrt(differ.X * differ.X + differ.Y * differ.Y), differ.Z);
+            rezult.O2 = GetAngle(differ.X, differ.Y);
+
+            Matrix3D rotateO1           = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), -rezult.O1 * 180 / Math.PI)).Value;
+            Matrix3D rotateO2           = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), -rezult.O2 * 180 / Math.PI)).Value;
+            Matrix3D reverse_rotateO1   = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), +rezult.O1 * 180 / Math.PI)).Value;
+            Matrix3D reverse_rotateO2   = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), +rezult.O2 * 180 / Math.PI)).Value;
+            Matrix3D detector = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = Math.Sqrt(differ.X * differ.X + differ.Y * differ.Y + differ.Z * differ.Z),
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+            Matrix3D m0 = new Matrix3D() { M14 = scan_point.X, M24 = scan_point.Y, M34 = scan_point.Z };
+            Matrix3D R = m0;
+            R = Matrix3D.Multiply(R, rotateO1);
+            R = Matrix3D.Multiply(R, rotateO2);
+            R = Matrix3D.Multiply(R, detector); // получили цент площадки детектора
+                        
+            Matrix3D ml3 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = l3,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+            R = Matrix3D.Multiply(R, ml3); // получили первый поворотный узел
+
+            Matrix3D ml1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = l1,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+
+            R = Matrix3D.Multiply(R, reverse_rotateO2);
+            R = Matrix3D.Multiply(R, reverse_rotateO1);
+            R = Matrix3D.Multiply(R, ml1); // получили крепление к вертикальной раме
+
+            rezult.X = R.M14;
+            rezult.Y = R.M24;
+            rezult.Z = R.M34;
+
+            return rezult;
+        }
+
+        #region Оболочка
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Basepoint">угловая (базовая) точка портальной установки</param>
+        /// <param name="Position">прирост от базовой точки</param>
+        /// <param name="a">в градусах вокруг X</param>
+        /// <param name="b">в градусах</param>
+        /// <returns></returns>
+        public List<Matrix3D> GetMatrix(Point3D Basepoint, PortalAngle Position)
+        {                                    
+            List<Matrix3D> rezult_list = new List<Matrix3D>();
+
+            Matrix3D m0 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = Basepoint.X,
+                M21 = 0, M22 = 1, M23 = 0, M24 = Basepoint.Y,
+                M31 = 0, M32 = 0, M33 = 1, M34 = Basepoint.Z,
+                M44 = 1,
+            };
+            Matrix3D m1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = Position.X,
+                M21 = 0, M22 = 1, M23 = 0, M24 = Position.Y,
+                M31 = 0, M32 = 0, M33 = 1, M34 = Position.Z,
+                M44 = 1,
+            };
+
+            Matrix3D ml1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = -l1,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1,
+            };
+
+            Matrix3D m2 = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), -Position.O1 * 180 / Math.PI)).Value;
+            Matrix3D m3 = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), -Position.O2 * 180 / Math.PI)).Value;
+
+            Matrix3D R = m0;
+            rezult_list.Add(R);
+            R = m1;
+            rezult_list.Add(R);
+            R = Matrix3D.Multiply(R, Matrix3D.Multiply(ml1, m2));
+            rezult_list.Add(R);
+            R = Matrix3D.Multiply(R, m3);
+            rezult_list.Add(R);
+            
+            return rezult_list;
+        }
+        #endregion
+
+        public Matrix3D DirectKinematic(PortalAngle Position)
+        {
+            Matrix3D m1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = Position.X,
+                M21 = 0, M22 = 1, M23 = 0, M24 = Position.Y,
+                M31 = 0, M32 = 0, M33 = 1, M34 = Position.Z,
+                M44 = 1,
+            };
+
+            Matrix3D ml1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = -l1,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1,
+            };
+
+            Matrix3D m2 = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), -Position.O1 * 180 / Math.PI)).Value;
+            Matrix3D m3 = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), -Position.O2 * 180 / Math.PI)).Value;
+
+            Matrix3D ml3 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = -l3,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1,
+            };
+
+            Matrix3D R = m1;
+            R = Matrix3D.Multiply(R, Matrix3D.Multiply(ml1, m2));
+            R = Matrix3D.Multiply(R, m3);
+            R = Matrix3D.Multiply(R, ml3);
+
+            return R;
         }
     }
 }

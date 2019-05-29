@@ -22,6 +22,8 @@ namespace InverseTest.GUI.Views
     /// </summary>
     public partial class MethodicView : UserControl
     {
+        public event OnPointSelected OnManipulatorPoint;
+
         public MethodicView()
         {
             InitializeComponent();
@@ -38,6 +40,7 @@ namespace InverseTest.GUI.Views
                     ShpangoutMethodic();
                     break;
                 case "Лопатка":
+                    LopatkaMethodic();
                     break;
             }                        
         }
@@ -51,6 +54,16 @@ namespace InverseTest.GUI.Views
                 || !double.TryParse(Radius.Text, out r) || !double.TryParse(NumberOfPoints.Text, out n))
                 return;
 
+            // Очистка таблиц
+            while (ScanPath.getInstance.PointsList.Count != 0)
+            {
+                ScanPath.getInstance.RemovePoint(ScanPath.getInstance.PointsList.First());
+            }
+            while (MethodPath.getInstance.PointsList.Count != 0)
+            {
+                MethodPath.getInstance.RemovePoint(MethodPath.getInstance.PointsList.First());
+            }
+            
             ScanPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0, y0, z0)));
 
             for (double i = 0; i <= Math.PI; i+= Math.PI / n)
@@ -62,6 +75,42 @@ namespace InverseTest.GUI.Views
                     Z = z0
                 }));
             }
+        }
+
+        void LopatkaMethodic()
+        {
+            double x0, y0, z0;
+            double r;
+
+            if (!double.TryParse(X.Text, out x0) || !double.TryParse(Y.Text, out y0) || !double.TryParse(Z.Text, out z0)
+                || !double.TryParse(Radius.Text, out r))
+                return;
+
+            // Очистка таблиц
+            while (ScanPath.getInstance.PointsList.Count != 0)
+            {
+                ScanPath.getInstance.RemovePoint(ScanPath.getInstance.PointsList.First());
+            }
+            while (MethodPath.getInstance.PointsList.Count != 0)
+            {
+                MethodPath.getInstance.RemovePoint(MethodPath.getInstance.PointsList.First());
+            }
+
+            ScanPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0, y0, z0)));
+            ScanPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0, y0 + 20, z0)));
+            ScanPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0, y0 + 40, z0)));
+            
+            MethodPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0 - r, y0, z0)));
+            MethodPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0 - r, y0 + 20, z0)));
+            MethodPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0 - r, y0 + 40, z0)));
+            MethodPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0 - r, y0 + 40 - r, z0)));
+        }
+
+        private void MethodicPointsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView lv = e.OriginalSource as ListView;
+            var selected = lv.SelectedItem as ScanPoint;
+            this.OnManipulatorPoint?.Invoke(selected);
         }
     }
 }

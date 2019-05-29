@@ -280,6 +280,7 @@
     <Compile Include="Model\BaseScanPointVisual.cs" />
     <Compile Include="Model\SystemState.cs" />
     <Compile Include="Path\MethodPath.cs" />
+    <Compile Include="Path\PathFinder.cs" />
     <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Models\ScanPointVisual.cs" />
     <Compile Include="GUI\Models\MainVisual.cs" />

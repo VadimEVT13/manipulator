@@ -65,7 +65,7 @@ namespace InverseTest.Workers
         private DetectorFramePosition SolvePortal(SystemPosition sp)
         {
             portal.SetPointManipAndNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);
-
+            
             double[] rez = portal.PortalPoint(sp.DistanceManipulatorToScanPoint, sp.FocusEnlagment);
             if (rez != null)
             {

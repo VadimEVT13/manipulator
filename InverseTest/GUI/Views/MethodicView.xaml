@@ -38,13 +38,13 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                     </Grid>
-                    <ListView  Width="auto" Height="auto"                   
+                    <ListView  Width="auto" Height="100"                   
                    ScrollViewer.CanContentScroll="True"
                    ScrollViewer.VerticalScrollBarVisibility="Visible"
                    Visibility="Visible" Name="MethodicPointsListView" 
                    SelectionMode="Single" 
                    ItemsSource="{Binding PointsList, Source={x:Static path:MethodPath.getInstance}}"                   
-                   >
+                   SelectionChanged="MethodicPointsListView_SelectionChanged">
 
                         <ListView.View>
                             <GridView>

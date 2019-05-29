@@ -123,7 +123,7 @@ namespace InverseTest.GUI.Views
             this.manipKinematic.SetLen(new LengthJoin { J1 = edges[0], J2 = edges[1], J3 = edges[2], J4 = edges[3], J5 = edges[4],
                 Det = ManipulatorUtils.CalculateManipulatorDet(MainVM.Manipulator) });
 
-            PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 30);
+            PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 20, 0, 22.5);
             PortalBoundController portalBounds = new PortalBoundController();
             portalBounds.CalculateBounds(MainVM.Detector);
 
@@ -155,6 +155,8 @@ namespace InverseTest.GUI.Views
             PathListView.OnSelectedPoint += this.MainVM.PathVM.OnPointSelected;
             PathListView.OnSelectedPoint += this.OnScanPointSelected;
             PathListView.OnSelectedPoint += this.detailView.OnPointSelected;
+
+            MethodicView.OnManipulatorPoint += this.OnManipulatorPointSelected;
 
             ManipulatorVisualizer.AddModel(ModelParser.Others);
 
@@ -211,6 +213,17 @@ namespace InverseTest.GUI.Views
                 MainVM.TargetX = p.point.X;
                 MainVM.TargetY = p.point.Y;
                 MainVM.TargetZ = p.point.Z;
+            }
+        }
+
+        public void OnManipulatorPointSelected(ScanPoint p)
+        {
+            if (p != null && this.targetPoint != null)
+            {
+                Point3D manipPoint = p.point;
+                Point3D scanPoint = this.targetPoint.point;
+
+                recalculateKinematic(manipPoint, scanPoint);
             }
         }
 
@@ -407,6 +420,15 @@ namespace InverseTest.GUI.Views
             /*ManipulatorCamPoint может быть null когда инициализируется окно, и срабатывает листенер 
                 у слайдера    
              */
+            catch (NullReferenceException ex) { }
+        }
+
+        private void recalculateKinematic(Point3D manipulatorPoint, Point3D scannedPoint)
+        {
+            try
+            {
+                kinematicWorker.Solve(new SystemPosition(manipulatorPoint, scannedPoint, MainVM.Focus, MainVM.FocusEnlagment));
+            }
             catch (NullReferenceException ex) { }
         }
 
