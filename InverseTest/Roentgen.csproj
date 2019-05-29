@@ -252,6 +252,9 @@
     <Compile Include="GUI\Views\ManipulatorView.xaml.cs">
       <DependentUpon>ManipulatorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Views\MethodicView.xaml.cs">
+      <DependentUpon>MethodicView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Views\PathListView.xaml.cs">
       <DependentUpon>PathListView.xaml</DependentUpon>
     </Compile>
@@ -276,6 +279,7 @@
     <Compile Include="Manipulator\Models\Ogranichenie.cs" />
     <Compile Include="Model\BaseScanPointVisual.cs" />
     <Compile Include="Model\SystemState.cs" />
+    <Compile Include="Path\MethodPath.cs" />
     <Compile Include="Path\ScanPoint.cs" />
     <Compile Include="GUI\Models\ScanPointVisual.cs" />
     <Compile Include="GUI\Models\MainVisual.cs" />
@@ -315,6 +319,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\Views\ManipulatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Views\MethodicView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -378,7 +386,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="InverseTest_TemporaryKey.pfx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

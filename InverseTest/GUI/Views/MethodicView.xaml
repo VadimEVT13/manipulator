@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="InverseTest.GUI.Views.MethodicView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:InverseTest.GUI.Views"             
+             xmlns:path="clr-namespace:InverseTest.Path"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid>
+        <StackPanel>
+            <Label Content="Выбор методики"/>
+            <ComboBox x:Name="Method">
+                <TextBlock>Шпангоут</TextBlock>
+                <TextBlock>Лопатка</TextBlock>
+            </ComboBox>
+            <Label Content="Точка установки"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox x:Name="X" TextAlignment="Center" Width="50"/>
+                <TextBox x:Name="Y" TextAlignment="Center" Width="50"/>
+                <TextBox x:Name="Z" TextAlignment="Center" Width="50"/>
+            </StackPanel>
+            <Label Content="Количество положений"/>
+            <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center"/>
+            <Label Content="Радиус (для шпангоута)"/>
+            <TextBox x:Name="Radius" Width="50" TextAlignment="Center"/>
+            <Button x:Name="GetPointsButton" Click="GetPointsButton_Click">Получить</Button>
+            <Expander Header="Траектория">
+                <Grid>
+                    <Grid Visibility="Visible" Name="TargetPointsListButtonsGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                    </Grid>
+                    <ListView  Width="auto" Height="auto"                   
+                   ScrollViewer.CanContentScroll="True"
+                   ScrollViewer.VerticalScrollBarVisibility="Visible"
+                   Visibility="Visible" Name="MethodicPointsListView" 
+                   SelectionMode="Single" 
+                   ItemsSource="{Binding PointsList, Source={x:Static path:MethodPath.getInstance}}"                   
+                   >
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="X" Width="auto" DisplayMemberBinding="{Binding point.X}" />
+                                <GridViewColumn Header="Y" Width="auto" DisplayMemberBinding="{Binding point.Y}" />
+                                <GridViewColumn Header="Z" Width="auto" DisplayMemberBinding="{Binding point.Z}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>                
+            </Expander>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -75,6 +75,9 @@ namespace InverseTest.GUI.Views
 
         private ScanPoint targetPoint = new ScanPoint(new Point3D(0, 60, 0));
 
+        // Добавлено
+        private ScanPoint ShvatPoint = new ScanPoint(new Point3D(-10, 60, 0));
+
         DetailView detailView;
 
         //TODO

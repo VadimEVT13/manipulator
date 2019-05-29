@@ -162,7 +162,10 @@
                     </Border>
                 </Popup>
             </StackPanel>
-            <local:PathListView x:Name="PathListView" Width="Auto"/>
+            <local:MethodicView x:Name="MethodicView" Width="Auto"/>
+            <Grid Height="140">
+                <local:PathListView x:Name="PathListView" Width="Auto"/>
+            </Grid>
         </StackPanel>
 		<local:ManipulatorVisualizer x:Name="ManipulatorVisualizer" Margin="8,8,8,8" Width="auto" />
     </DockPanel>
