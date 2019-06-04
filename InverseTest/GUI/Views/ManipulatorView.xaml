@@ -60,7 +60,7 @@
 							UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 		
 		<Label Content="Пятое колено, °" HorizontalAlignment="Center"/>
-		<Slider Name="T5Slider" Minimum="-90" Maximum="90" SmallChange="1" Value="{Binding B}"/>
+		<Slider Name="T5Slider" Minimum="-90" Maximum="85" SmallChange="1" Value="{Binding B}"/>
 		<TextBox Text="{Binding ElementName=T5Slider, Path=Value, StringFormat={}{0:0.##},
 							UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 

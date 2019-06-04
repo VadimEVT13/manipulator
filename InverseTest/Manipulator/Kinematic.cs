@@ -39,7 +39,7 @@ namespace InverseTest.Manipulator
                 O3min = -Math.PI / 2.0,
                 O3max = Math.PI / 2.0,
                 O4min = -Math.PI,
-                O4max = Math.PI,
+                O4max = Math.PI - Math.PI / 2,
                 O5min = -10 * Math.PI / 180.0,
                 O5max = Math.PI
             };
@@ -519,42 +519,6 @@ namespace InverseTest.Manipulator
 
             return m;
         }
-        /*
-        private Stack<Vertex3D> NewgP3(Vertex3D P4, out Vertex3D P34, double a, double b)
-        {
-            Vertex3D value = new Vertex3D
-            {
-                X = P4.X - length.J5 * Math.Cos(a) * Math.Cos(b),
-                Y = P4.Y - length.J5 * Math.Cos(a) * Math.Sin(b),
-                Z = P4.Z + length.J5 * Math.Sin(a)
-            };
-            P34 = value;
-
-            double[][] R = Matrix(mrotate_Z(b), mrotate_Y(a));
-            R[0][3] = P4.X;
-            R[1][3] = P4.Y;
-            R[2][3] = P4.Z;
-
-            R = Matrix(R, mmove_X(-length.J5));
-
-            Stack<Vertex3D> P3stack = new Stack<Vertex3D>();
-
-            for (double i = -180 / 180.0 * Math.PI; i < 180 / 180.0 * Math.PI; i += 0.1 / 180.0 * Math.PI)
-            {
-                double[][] Rt = Matrix(R, mrotate_X(i));
-                Rt = Matrix(Rt, mmove_Z(-length.J4));
-                Vertex3D point = new Vertex3D
-                {
-                    X = Rt[0][3],
-                    Y = Rt[1][3],
-                    Z = Rt[2][3]
-                };
-
-                P3stack.Push(point);
-            }
-            return P3stack;
-        }
-        */
 
         private double[] GetAandB(Vertex3D P4, Vertex3D Pnab)
         {
@@ -567,103 +531,7 @@ namespace InverseTest.Manipulator
 
             return new double[2] { a, b };
         }
-        /*
-        public Stack<Angle3D> Inverse(double X, double Y, double Z, double alf = 0, double bet = 0)
-        {
-            Stack<Angle3D> rezultAngles = new Stack<Angle3D>();   // Стек решений кинематики
-            double[][] mat = Mbase();                               
 
-            // Преобразование точек к локальной системе координат манипулятора
-            double x_ = mat[0][0] * (X - basePoint.X) + mat[1][0] * (Y - basePoint.Y) + mat[2][0] * (Z - basePoint.Z);
-            double y_ = mat[0][1] * (X - basePoint.X) + mat[1][1] * (Y - basePoint.Y) + mat[2][1] * (Z - basePoint.Z);
-            double z_ = mat[0][2] * (X - basePoint.X) + mat[1][2] * (Y - basePoint.Y) + mat[2][2] * (Z - basePoint.Z);
-
-            // Точка в новой системе координат
-            Vertex3D P4 = new Vertex3D
-            {
-                X = x_,
-                Y = y_,
-                Z = z_
-            };
-
-            // Перевод градусов в радианы
-            alf = alf * Math.PI / 180;                             // Угол альфа, вращение вокруг Y 
-            bet = bet * Math.PI / 180;                              // Угол бета, вращение вокруг Z
-
-            double[][] T = mt(alf, bet, P4);                        // Определение матрицы манипулятора
-
-            //----------------------------------------------------------------------------------------------------------------------
-            Stack<Vertex3D> P3mass = NewgP3(P4, out Vertex3D P34, alf, bet); // Получение множества точек P3
-
-            foreach (Vertex3D point in P3mass)                      // Для каждой такой точки P3 ищем решение кинематики
-            {
-                // Ниже идёт проверка на достижимость до точки P3 манипулятором                
-                if (Math.Sqrt(point.X * point.X + point.Y * point.Y + (point.Z - length.J1) * (point.Z - length.J1)) <= length.J2 + length.J3)
-                {
-                    Vertex3D P1 = GP1(point);                       // Получение точки P1 и получение обобщенной координаты O1
-                    Vertex3D P2 = GP2(point);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                    // Ниже условие, если получили точку то продолжаем 
-                    if (P2 != null)
-                    {
-                        Go4(P34);
-                        Go5(P34);
-
-                        double[] angle4 = { angles.O4, 0 };
-                        double[] angle5 = { -angles.O5 + Math.PI / 2, 0 };
-
-                        if (angles.O4 > Math.PI)
-                            angles.O4 = angles.O4 - Math.PI;
-                        else
-                        {
-                            angles.O4 = angles.O4 + Math.PI;
-                        }
-                        angle4[1] = angles.O4;
-                        Go5(P34);
-                        angle5[1] = -angles.O5 + Math.PI / 2;
-
-                        // Ниже выполненна прямая кинематика манипулятора
-                        double[][] R = Matrix(M1(angles.O1, length.J1), M2(angles.O2, length.J2));
-                        R = Matrix(R, M3(angles.O3, length.J3));
-
-                        R = Matrix(R, mmove_Z(length.Det));
-
-                        R = Matrix(R, M4(angle4[0]));
-                        R = Matrix(R, newm5(angle5[0]));
-                        R = Matrix(R, mmove_Z(length.J4));
-                        R = Matrix(R, mmove_X(length.J5));
-
-                        double pogr = 0.1;
-
-                        angles.O4 = angle4[0];
-                        angles.O5 = angle5[0];
-                        // Если отклонения от матрицы манипулятора Т меньше нормы, то записываем в результат
-                        if (Math.Abs(R[0][0] - T[0][0]) < pogr && Math.Abs(R[1][0] - T[1][0]) < pogr && Math.Abs(R[2][0] - T[2][0]) < pogr)
-                        {
-                            rezultAngles.Push(GetAngles());
-                        }
-
-                        R = Matrix(M1(angles.O1, length.J1), M2(angles.O2, length.J2));
-                        R = Matrix(R, M3(angles.O3, length.J3));
-
-                        R = Matrix(R, mmove_Z(length.Det));
-
-                        R = Matrix(R, M4(angle4[1]));
-                        R = Matrix(R, newm5(angle5[1]));
-                        R = Matrix(R, mmove_Z(length.J4));
-                        R = Matrix(R, mmove_X(length.J5));
-
-                        angles.O4 = angle4[1];
-                        angles.O5 = angle5[1];
-                        if (Math.Abs(R[0][0] - T[0][0]) < pogr && Math.Abs(R[1][0] - T[1][0]) < pogr && Math.Abs(R[2][0] - T[2][0]) < pogr)
-                        {
-                            rezultAngles.Push(GetAngles());
-                        }
-                    }
-                }
-            }
-            return rezultAngles;
-        }
-        */
         public double[][] DirectKinematic(Angle3D angles)
         {
             double[][] R = Matrix(M1(angles.O1, length.J1), M2(angles.O2, length.J2));
@@ -675,363 +543,6 @@ namespace InverseTest.Manipulator
             R = Matrix(R, mmove_X(length.J5));
             return R;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="P4"></param>
-        /// <param name="alf"></param>
-        /// <param name="bet"></param>
-        /// <param name="pogr"></param>
-        /// <param name="leftboard"></param>
-        /// <param name="rightdoard"></param>
-        /// <returns></returns>
-        /*
-        private Stack<Angle3D> Search(Vertex3D P4, double alf, double bet, double pogr, double leftboard, double rightdoard)
-        {
-            Stack<Angle3D> rezult = new Stack<Angle3D>();         // Результаты
-
-            decimal left = (decimal)leftboard;                   // левая грань
-            decimal right = (decimal)rightdoard;                    // правая грань
-
-            double deviation = 10000;                               // отклонение
-            double prev_deviation = 10001;
-
-            while (deviation > pogr)                                // пока отклонение больше погрешности
-            {
-                if (prev_deviation == deviation)
-                {
-                    return new Stack<Angle3D>();
-                }
-                decimal mid = (left + right) / (decimal)2;    // середина отрезка
-                decimal leftmid = (left + mid) / (decimal)2;    // значение левее середины
-                decimal rightmid = (right + mid) / (decimal)2;    // значение правее середины
-
-                Vertex3D P1 = new Vertex3D();
-                Vertex3D P2 = new Vertex3D();
-                Vertex3D P3 = new Vertex3D();
-                Vertex3D P34 = new Vertex3D();
-
-                List<Angle3D> leftrez = new List<Angle3D>();
-                List<Angle3D> rightrez = new List<Angle3D>();
-
-                if (deviation == 10000)
-                {
-                    List<Angle3D> midonly = new List<Angle3D>();
-
-                    P3 = GetP3((double)leftmid, P4, out P34, alf, bet);
-                    if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - length.J1) * (P3.Z - length.J1)) <= length.J2 + length.J3)
-                    {
-                        P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                        P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                                                            // Ниже условие, если получили точку то продолжаем 
-                        if (P2 != null)
-                        {
-                            Go4(P34);                                   // Получение обобщенной координаты O4
-                            Go5(P34);                                   // Получение обобщенной координаты O5
-
-                            double[] angle4 = { angles.O4, 0 };
-                            double[] angle5 = { -angles.O5 + Math.PI / 2, 0 };
-                            if (angles.O4 > 0)
-                                angles.O4 = angles.O4 - Math.PI;
-                            else
-                            {
-                                angles.O4 = angles.O4 + Math.PI;
-                            }
-                            angle4[1] = angles.O4;
-                            Go5(P34);
-                            angle5[1] = -angles.O5 + Math.PI / 2;
-
-                            angles.O4 = angle4[0];
-                            angles.O5 = angle5[0];
-
-                            midonly.Add(new Angle3D(GetAngles()));
-
-                            angles.O4 = angle4[1];
-                            angles.O5 = angle5[1];
-
-                            midonly.Add(new Angle3D(GetAngles()));
-
-                            double[][] MR1 = DirectKinematic(midonly[0]);
-                            double[][] MR2 = DirectKinematic(midonly[1]);
-
-                            double ml1_length = Math.Sqrt((MR1[0][3] - P4.X) * (MR1[0][3] - P4.X)
-                                                        + (MR1[1][3] - P4.Y) * (MR1[1][3] - P4.Y)
-                                                        + (MR1[2][3] - P4.Z) * (MR1[2][3] - P4.Z));
-                            double ml2_length = Math.Sqrt((MR2[0][3] - P4.X) * (MR2[0][3] - P4.X)
-                                                        + (MR2[1][3] - P4.Y) * (MR2[1][3] - P4.Y)
-                                                        + (MR2[2][3] - P4.Z) * (MR2[2][3] - P4.Z));
-
-                            if (ml1_length < ml2_length && ml1_length <= pogr)
-                            {
-                                rezult.Push(midonly[0]);
-                                return rezult;
-                            }
-                            if (ml1_length > ml2_length && ml2_length <= pogr)
-                            {
-                                rezult.Push(midonly[1]);
-                                return rezult;
-                            }
-
-                        }
-                    }
-                }
-
-                // ДЛЯ ЛЕВОГО
-                P3 = GetP3((double)leftmid, P4, out P34, alf, bet);
-                if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - length.J1) * (P3.Z - length.J1)) <= length.J2 + length.J3)
-                {
-                    P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                    P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                    // Ниже условие, если получили точку то продолжаем 
-                    if (P2 != null)
-                    {
-                        Go4(P34);                                   // Получение обобщенной координаты O4
-                        Go5(P34);                                   // Получение обобщенной координаты O5
-
-                        double[] angle4 = { angles.O4, 0 };
-                        double[] angle5 = { -angles.O5 + Math.PI / 2, 0 };
-                        if (angles.O4 > 0)
-                            angles.O4 = angles.O4 - Math.PI;
-                        else
-                        {
-                            angles.O4 = angles.O4 + Math.PI;
-                        }
-                        angle4[1] = angles.O4;
-                        Go5(P34);
-                        angle5[1] = -angles.O5 + Math.PI / 2;
-
-                        angles.O4 = angle4[0];
-                        angles.O5 = angle5[0];
-
-                        leftrez.Add(new Angle3D(GetAngles()));
-
-                        angles.O4 = angle4[1];
-                        angles.O5 = angle5[1];
-
-                        leftrez.Add(new Angle3D(GetAngles()));
-                    }
-                }
-
-                // ДЛЯ ПРАВОГО
-                P3 = GetP3((double)rightmid, P4, out P34, alf, bet);
-                if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - length.J1) * (P3.Z - length.J1)) <= length.J2 + length.J3)
-                {
-                    P1 = GP1(P3);                       // Получение точки P1 и получение обобщенной координаты O1
-                    P2 = GP2(P3);                       // Получение точки P2 и получение обобщенной координаты O2 и O3
-                    // Ниже условие, если получили точку то продолжаем 
-                    if (P2 != null)
-                    {
-                        Go4(P34);                                   // Получение обобщенной координаты O4
-                        Go5(P34);                                   // Получение обобщенной координаты O5
-
-                        double[] angle4 = { angles.O4, 0 };
-                        double[] angle5 = { -angles.O5 + Math.PI / 2, 0 };
-                        if (angles.O4 > 0)
-                            angles.O4 = angles.O4 - Math.PI;
-                        else
-                        {
-                            angles.O4 = angles.O4 + Math.PI;
-                        }
-                        angle4[1] = angles.O4;
-                        Go5(P34);
-                        angle5[1] = -angles.O5 + Math.PI / 2;
-
-                        angles.O4 = angle4[0];
-                        angles.O5 = angle5[0];
-
-                        rightrez.Add(new Angle3D(GetAngles()));
-
-                        angles.O4 = angle4[1];
-                        angles.O5 = angle5[1];
-
-                        rightrez.Add(new Angle3D(GetAngles()));
-                    }
-                }
-
-                double l1_length = double.MaxValue;
-                double l2_length = double.MaxValue;
-                double r1_length = double.MaxValue;
-                double r2_length = double.MaxValue;
-
-                if (leftrez.Count >= 1)
-                {
-                    double[][] LR1 = DirectKinematic(leftrez[0]);
-                    l1_length = Math.Sqrt((LR1[0][3] - P4.X) * (LR1[0][3] - P4.X)
-                                           + (LR1[1][3] - P4.Y) * (LR1[1][3] - P4.Y)
-                                           + (LR1[2][3] - P4.Z) * (LR1[2][3] - P4.Z));
-                }
-                if (leftrez.Count == 2)
-                {
-                    double[][] LR2 = DirectKinematic(leftrez[1]);
-                    l2_length = Math.Sqrt((LR2[0][3] - P4.X) * (LR2[0][3] - P4.X)
-                                           + (LR2[1][3] - P4.Y) * (LR2[1][3] - P4.Y)
-                                           + (LR2[2][3] - P4.Z) * (LR2[2][3] - P4.Z));
-                }
-                if (rightrez.Count >= 1)
-                {
-                    double[][] RR1 = DirectKinematic(rightrez[0]);
-                    r1_length = Math.Sqrt((RR1[0][3] - P4.X) * (RR1[0][3] - P4.X)
-                                               + (RR1[1][3] - P4.Y) * (RR1[1][3] - P4.Y)
-                                               + (RR1[2][3] - P4.Z) * (RR1[2][3] - P4.Z));
-                }
-                if (rightrez.Count >= 2)
-                {
-                    double[][] RR2 = DirectKinematic(rightrez[1]);
-                    r2_length = Math.Sqrt((RR2[0][3] - P4.X) * (RR2[0][3] - P4.X)
-                                           + (RR2[1][3] - P4.Y) * (RR2[1][3] - P4.Y)
-                                           + (RR2[2][3] - P4.Z) * (RR2[2][3] - P4.Z));
-                }
-
-                bool flag1 = false;
-                bool flag2 = false;
-                if (deviation == prev_deviation)
-                {
-                    return new Stack<Angle3D>();
-                }
-                if (l1_length <= pogr || flag1)
-                {
-                    rezult.Push(leftrez[0]);
-                    return rezult;
-                }
-                if (l2_length <= pogr || flag2)
-                {
-                    rezult.Push(leftrez[1]);
-                    return rezult;
-                }
-                if (r1_length <= pogr)
-                {
-                    rezult.Push(rightrez[0]);
-                    return rezult;
-                }
-                if (r2_length <= pogr)
-                {
-                    rezult.Push(rightrez[1]);
-                    return rezult;
-                }
-
-                if (Math.Min(l1_length, l2_length) <= Math.Min(r1_length, r2_length))
-                {
-                    right = mid;
-                    prev_deviation = deviation;
-                    deviation = Math.Min(l1_length, l2_length);
-                }
-                else
-                {
-                    left = mid;
-                    prev_deviation = deviation;
-                    deviation = Math.Min(r1_length, r2_length);
-                }
-            }   // конец while
-
-            return new Stack<Angle3D>();
-        }
-        */
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="inter"></param>
-        /// <param name="P4"></param>
-        /// <param name="alf"></param>
-        /// <param name="bet"></param>
-        /// <param name="tochnost"></param>
-        /// <param name="leftboard"></param>
-        /// <param name="rightboard"></param>
-        /// <returns></returns>
-        /*
-        private Stack<Angle3D> FindOnInterval(int inter, Vertex3D P4, double alf, double bet, double tochnost, double leftboard, double rightboard)
-        {
-            for (int i = 1; i < inter; i++)
-            {
-                double delta = (rightboard - leftboard) / (double)i;
-                for (int j = 0; j < i; j++)
-                {
-                    Stack<Angle3D> rez = Search(P4, alf, bet, tochnost, delta * j + leftboard, delta * (j + 1) + leftboard);
-                    if (rez.Count != 0)
-                    {
-                        return rez;
-                    }
-                }
-            }
-            return new Stack<Angle3D>();
-        }
-        */
-        /*
-        public Stack<Angle3D> InverseNab(double X, double Y, double Z, double X2, double Y2, double Z2)
-        {
-            double[][] mat = Mbase();                               // Положение манипулятора при работе системы Манипулятор-Портал
-                                                                    // В отрицательной зоне параметр true                           
-
-            // Преобразование точек к локальной системе координат манипулятора
-            double x_ = mat[0][0] * (X - basePoint.X) + mat[1][0] * (Y - basePoint.Y) + mat[2][0] * (Z - basePoint.Z);
-            double y_ = mat[0][1] * (X - basePoint.X) + mat[1][1] * (Y - basePoint.Y) + mat[2][1] * (Z - basePoint.Z);
-            double z_ = mat[0][2] * (X - basePoint.X) + mat[1][2] * (Y - basePoint.Y) + mat[2][2] * (Z - basePoint.Z);
-
-            // Точка в новой системе координат
-            Vertex3D P4 = new Vertex3D
-            {
-                X = x_,
-                Y = y_,
-                Z = z_
-            };
-
-            x_ = mat[0][0] * (X2 - basePoint.X) + mat[1][0] * (Y2 - basePoint.Y) + mat[2][0] * (Z2 - basePoint.Z);
-            y_ = mat[0][1] * (X2 - basePoint.X) + mat[1][1] * (Y2 - basePoint.Y) + mat[2][1] * (Z2 - basePoint.Z);
-            z_ = mat[0][2] * (X2 - basePoint.X) + mat[1][2] * (Y2 - basePoint.Y) + mat[2][2] * (Z2 - basePoint.Z);
-
-            Vertex3D Pn = new Vertex3D
-            {
-                X = x_,
-                Y = y_,
-                Z = z_
-            };
-            // Получение углов альфа и бета
-            double[] aandb = GetAandB(P4, Pn);
-            double alf = -aandb[0];
-            double bet = aandb[1];
-            //Точность вычисления
-            double tochnost = 0.000000000001;
-
-            Stack<Angle3D> rez = Search(P4, alf, bet, tochnost, 0, Math.PI / 2);
-            Stack<Angle3D> rez2 = Search(P4, alf, bet, tochnost, Math.PI / 2, Math.PI);
-            Stack<Angle3D> rez3 = Search(P4, alf, bet, tochnost, Math.PI, Math.PI * 3 / 2.0);
-            Stack<Angle3D> rez4 = Search(P4, alf, bet, tochnost, Math.PI * 3 / 2.0, Math.PI * 2);
-            if (rez2.Count >= 1)
-            {
-                rez.Push(rez2.Pop());
-            }
-            if (rez3.Count >= 1)
-            {
-                rez.Push(rez3.Pop());
-            }
-            if (rez4.Count >= 1)
-            {
-                rez.Push(rez4.Pop());
-            }
-            if (rez.Count >= 2)
-            {
-                return rez;
-            }
-            if (rez.Count <= 1)
-            {
-                rez = FindOnInterval(16, P4, alf, bet, tochnost, 0, Math.PI);
-                rez2 = FindOnInterval(16, P4, alf, bet, tochnost, Math.PI, Math.PI * 2);
-                if (rez2.Count >= 1)
-                {
-                    rez.Push(rez2.Pop());
-                    return rez;
-                }
-            }
-
-            foreach (Angle3D one in rez)
-            {
-                if (one.O5 < 0)
-                    one.O5 += Math.PI;
-            }
-
-            return rez;
-        }
-        */
 
         private Vertex3D GetP3(double i, Vertex3D P4, out Vertex3D P34, double alf, double bet)
         {
@@ -1104,8 +615,10 @@ namespace InverseTest.Manipulator
 
             double[][] T = mt(alf, bet, P4);                        // Определение матрицы манипулятора
 
+            Vertex3D P34 = new Vertex3D();
+
             //----------------------------------------------------------------------------------------------------------------------
-            Vertex3D P3 = GetP3(iter, P4, out Vertex3D P34, alf, bet); // Получение множества точек P3
+            Vertex3D P3 = GetP3(iter, P4, out P34, alf, bet); // Получение множества точек P3
 
             // Ниже идёт проверка на достижимость до точки P3 манипулятором                
             if (Math.Sqrt(P3.X * P3.X + P3.Y * P3.Y + (P3.Z - length.J1) * (P3.Z - length.J1)) <= length.J2 + length.J3)
@@ -1374,7 +887,6 @@ namespace InverseTest.Manipulator
             return rezult_node.Angle;
         }
 
-        //public Stack<Angle3D> Search_with_gold(Vertex3D Pnab, Vertex3D P4, double eps)
         /*
         public Stack<Angle3D> InverseNab(Vertex3D Pnab, Vertex3D P4)
         {
@@ -1440,14 +952,25 @@ namespace InverseTest.Manipulator
 
             return rez;
         }
-        */
-        /// <summary>
+
+            /// <summary>
         /// Добавил для адаптации!!!
         /// Пока основная функция поиска!!!
         /// То есть поправки есть!!!
         /// </summary>
         /// <param name="Pnab"></param>
         /// <param name="P4"></param>
+        /// <returns></returns>
+        */
+        /// <summary>
+        /// Основная функция
+        /// </summary>
+        /// <param name="X1">Схват</param>
+        /// <param name="Y1">Схват</param>
+        /// <param name="Z1">Схват</param>
+        /// <param name="X2">Объект</param>
+        /// <param name="Y2">Объект</param>
+        /// <param name="Z2">Объект</param>
         /// <returns></returns>
         public Stack<Angle3D> InverseNab(double X1, double Y1, double Z1, double X2, double Y2, double Z2)
         {
@@ -1619,6 +1142,139 @@ namespace InverseTest.Manipulator
             return rez;
         }
 
+        #region ForFindWay
+
+        public List<double[][]> GetNormalMatrix(Angle3D angles, Vertex3D basepoint, LengthJoin lj)
+        {
+            List<double[][]> rezult = new List<double[][]>();
+
+            double[][] example = new double[][] {
+                new double[] { },
+                new double[] { },
+                new double[] { },
+                new double[] { }
+            };
+
+            double[][] Mat0_rotate = new double[][] {
+                new double[] { 0, 1, 0, basepoint.X },
+                new double[] { 1, 0, 0, basepoint.Y },
+                new double[] { 0, 0, 1, basepoint.Z },
+                new double[] { 0, 0, 0, 1}
+            };
+
+            double[][] Mat0 = new double[][] {
+                new double[] { Math.Cos(angles.O1),     -Math.Sin(angles.O1),       0, 0 },
+                new double[] { Math.Sin(angles.O1),     Math.Cos(angles.O1),        0, 0 },
+                new double[] { 0,                       0,                          1, 0 },
+                new double[] { 0,                       0,                          0, 1 } };
+
+            double[][] Mat1_perem = new double[][] {
+                new double[] { 1, 0, 0, 0 },
+                new double[] { 0, 1, 0, 0 },
+                new double[] { 0, 0, 1, lj.J1 },
+                new double[] { 0, 0, 0, 1 }
+            };
+
+            double[][] Mat1_rotate = new double[][] {
+                new double[] { 1,  0, 0,  0 },
+                new double[] { 0,  1, 0,  0 },
+                new double[] { 0,  0, 1,  0 },
+                new double[] { 0,  0, 0,  1 }
+            };
+
+            double[][] Mat1 = new double[][] {
+                new double[] { 1, 0,                        0,                      0 },
+                new double[] { 0, Math.Cos(angles.O2),      -Math.Sin(angles.O2),   0 },
+                new double[] { 0, Math.Sin(angles.O2),      Math.Cos(angles.O2),    0 },
+                new double[] { 0, 0,                        0,                      1 }
+            };
+
+            double[][] Mat2_perem = new double[][] {
+                new double[] { 1, 0, 0, 0 },
+                new double[] { 0, 1, 0, 0 },
+                new double[] { 0, 0, 1, lj.J2 },
+                new double[] { 0, 0, 0, 1 }
+            };
+
+            double[][] Mat2_rotate = new double[][] {
+                new double[] { 1,  0, 0, 0 },
+                new double[] { 0,  0, 1, 0 },
+                new double[] { 0, -1, 0, 0 },
+                new double[] { 0,  0, 0, 1 }
+            };
+
+            double[][] Mat2 = new double[][] {
+                new double[] { 1, 0,                        0,                      0 },
+                new double[] { 0, Math.Cos(angles.O3),      -Math.Sin(angles.O3),    0 },
+                new double[] { 0, Math.Sin(angles.O3),      Math.Cos(angles.O3),    0 },
+                new double[] { 0, 0,                        0,                      1 }
+            };
+
+
+            double[][] Mat3_perem_y = new double[][] {
+                new double[] { 1, 0, 0, 0 },
+                new double[] { 0, 1, 0, -lj.Det },
+                new double[] { 0, 0, 1, 0 },
+                new double[] { 0, 0, 0, 1 }
+            };
+
+            double[][] Mat3_perem_z = new double[][] {
+                new double[] { 1, 0, 0, 0 },
+                new double[] { 0, 1, 0, 0 },
+                new double[] { 0, 0, 1, lj.J3 },
+                new double[] { 0, 0, 0, 1 }
+            };
+
+            double[][] Mat3 = new double[][] {
+                new double[] { Math.Cos(angles.O4), -Math.Sin(angles.O4),   0, 0 },
+                new double[] { Math.Sin(angles.O4), Math.Cos(angles.O4),    0, 0 },
+                new double[] { 0,                   0,                      1, 0 },
+                new double[] { 0,                   0,                      0, 1 }
+            };
+
+            double[][] Mat4_rotate = new double[][] {
+                new double[] { 1, 0, 0, 0 },
+                new double[] { 0, 1, 0, 0 },
+                new double[] { 0, 0, 1, 0 },
+                new double[] { 0, 0, 0, 1 }
+            };
+
+            double[][] Mat4 = new double[][] {
+                new double[] { 1, 0,                        0,                      0 },
+                new double[] { 0, Math.Cos(angles.O5),      -Math.Sin(angles.O5),   0 },
+                new double[] { 0, Math.Sin(angles.O5),      Math.Cos(angles.O5),    0 },
+                new double[] { 0, 0,                        0,                      1 }
+            };
+
+            // повернули матрицу 0 как надо для матрицы 1
+            double[][] R = Matrix(Mat0_rotate, Mat0);
+
+            rezult.Add(R);                      // добавили самую первую матрицу
+
+            R = Matrix(R, Mat1_perem);          // переместили локальные координаты к 2 узлу
+            R = Matrix(R, Mat1_rotate);         // изменили вектора на 2 узле
+            R = Matrix(R, Mat1);                // повернули 2 узел
+            rezult.Add(R);                      // добавили 2 матрицу
+
+            R = Matrix(R, Mat2_perem);          // переместили локальные координаты к 3 узлу
+            R = Matrix(R, Mat2_rotate);         // переместили локальные координаты к 3 узлу
+            R = Matrix(R, Mat2);                // повернули 3 узел
+            rezult.Add(R);                      // добавили 3 матрицу
+
+            R = Matrix(R, Mat3_perem_y);        // переместили локальные координаты к 4 узлу
+            R = Matrix(R, Mat3_perem_z);
+            R = Matrix(R, Mat3);                // повернули 4 узел
+            rezult.Add(R);                      // добавили 4 матрицу
+
+            R = Matrix(R, Mat4_rotate);         // переместили локальные координаты к 5 узлу
+            R = Matrix(R, Mat4);                // повернули 5 узел
+            rezult.Add(R);                      // добавили 5 матрицу
+
+            return rezult;
+        }
+
+        #endregion
+
         public double[][] DirectKinematic(Angle3D angles, Vertex3D basepoint)
         {
             double[][] mat = Mbase();
@@ -1703,33 +1359,10 @@ namespace InverseTest.Manipulator
 
             System.IO.File.WriteAllLines("map.txt", m1);
         }
-        /*   
-        private Matrix4D DirectKinematic(Angle3D angles, Vertex3D basepoint)
+
+        public Ogranichenie GetOgranichenie()
         {
-            Matrix4D mat = Matrix4D.MB();
-
-            Matrix4D R = Matrix4D.Multiply(Matrix4D.M1(angles.O1, length.J1), Matrix4D.M2(angles.O2, length.J2));
-            R = Matrix4D.Multiply(R, Matrix4D.M3(angles.O3, length.J3));
-            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.Det));
-            R = Matrix4D.Multiply(R, Matrix4D.M4(angles.O4));
-            R = Matrix4D.Multiply(R, Matrix4D.M5(angles.O5));
-            R = Matrix4D.Multiply(R, Matrix4D.MZ(length.J4));
-            R = Matrix4D.Multiply(R, Matrix4D.MX(length.J5));
-            
-            R.K13   = mat.K11 * (R.K14 + basepoint.X) +
-                      mat.K21 * (R.K24 + basepoint.Y) +
-                      mat.K31 * (R.K34 + basepoint.Z);
-
-            R.K23   = mat.K12 * (R.K14 + basepoint.X) +
-                      mat.K22 * (R.K24 + basepoint.Y) +
-                      mat.K32 * (R.K34 + basepoint.Z);
-
-            R.K33   = mat.K13 * (R.K14 + basepoint.X) +
-                      mat.K23 * (R.K24 + basepoint.Y) +
-                      mat.K33 * (R.K34 + basepoint.Z);
-
-            return R;
+            return this.ogranich;
         }
-        */
     }
 }

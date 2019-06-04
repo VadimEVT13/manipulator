@@ -76,11 +76,11 @@ namespace InverseTest.Grbl.Models
         {
             return new GPoint
             {
-                X = GetLimitValue(target.X, 5, 150) + 142,
-                Y = GetLimitValue(target.Y, 0, 150) + 175,
+                X = GetLimitValue(target.X, 5, 150) + (234.338 - 90),
+                Y = GetLimitValue(target.Y, 0, 150) + (263.518 - 90),
                 Z = GetLimitValue(target.Z, 0, 180),
-                A = -GetLimitValue(target.A, -179, 179) + 180,
-                B = -GetLimitValue(target.B, 0, 180) + 90 + 115
+                A = GetLimitValue(target.A, -179, 179) + 33.135,
+                B = -GetLimitValue(target.B, -90, 85) + (184.109)
             };
         }
     }

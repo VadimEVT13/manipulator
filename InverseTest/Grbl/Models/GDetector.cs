@@ -58,8 +58,8 @@ namespace InverseTest.Grbl.Models
                 X = GetLimitValue(target.X, 10, 445),
                 Y = GetLimitValue(target.Y, 10, 760),
                 Z = GetLimitValue(target.Z, 10, 760),
-                A = GetLimitValue(target.A, 10, 110),
-                B = GetLimitValue(target.B, 10, 175)
+                A = GetLimitValue(target.A, 10, 110) - 1,
+                B = GetLimitValue(target.B, 10, 175) + 3
             };
         }
     }
