@@ -322,9 +322,13 @@ namespace InverseTest.Frame
             R = Matrix3D.Multiply(R, reverse_rotateO1);
             R = Matrix3D.Multiply(R, ml1); // получили крепление к вертикальной раме
 
-            rezult_angle.X = R.M14;
-            rezult_angle.Y = R.M24;
-            rezult_angle.Z = R.M34;
+            rezult_angle.X = R.M14 - x_portal;
+            rezult_angle.Y = R.M24 - y_portal;
+            rezult_angle.Z = R.M34 - z_portal;
+
+            //rezult_angle.X = R.M14;
+            //rezult_angle.Y = R.M24;
+            //rezult_angle.Z = R.M34;
 
             return rezult_angle;
         }

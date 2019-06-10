@@ -138,10 +138,10 @@ namespace InverseTest.GUI.Views
             //    J5 = 20,
             //    Det = 11
             //});
-
-            //PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 26.5, 10, 0, 19.5); //26.5
-            PortalKinematic portalKinematic = new PortalKinematic(500, 500, 500, 140, 10, 51, 10, 0, 19.5);
-            PortalBoundController portalBounds = new PortalBoundController();
+            
+            //PortalKinematic portalKinematic     = new PortalKinematic(500, 500, 500, 71.529724, 38.631, -0.0025140, 10, 0, 19.5);
+            PortalKinematic portalKinematic     = new PortalKinematic(500, 500, 500, 71.529724, 38.631, -0.0025140, 10, 0, 19.5);
+            PortalBoundController portalBounds  = new PortalBoundController();
             portalBounds.CalculateBounds(MainVM.Detector);
 
             this.kinematicWorker = new KinematicWorker<SystemPosition, SystemState>(

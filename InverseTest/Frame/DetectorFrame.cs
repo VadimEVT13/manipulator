@@ -269,10 +269,13 @@ namespace InverseTest
 
         public void MoveDetectFrame(DetectorFramePosition p, bool animate)
         {
-            positionsToSet[Parts.VerticalFrame] = (p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X);
-            positionsToSet[Parts.HorizontalBar] = (p.pointScreen.Y - partStartPosition[Parts.ScreenCameraPos].Y);
-            positionsToSet[Parts.ScreenHolder] = (p.pointScreen.Z - partStartPosition[Parts.ScreenCameraPos].Z);
-            position = p;
+            //positionsToSet[Parts.VerticalFrame] = (p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X);
+            //positionsToSet[Parts.HorizontalBar] = (p.pointScreen.Y - partStartPosition[Parts.ScreenCameraPos].Y);
+            //positionsToSet[Parts.ScreenHolder] = (p.pointScreen.Z - partStartPosition[Parts.ScreenCameraPos].Z);
+            //positionsToSet[Parts.VerticalFrame] = p.pointScreen.X;
+            //positionsToSet[Parts.HorizontalBar] = p.pointScreen.Y;
+            //positionsToSet[Parts.ScreenHolder]  = p.pointScreen.Z;
+            //position = p;
 
             if (animate)
                 startAnimation(p);
@@ -364,14 +367,14 @@ namespace InverseTest
 
         private void setPosition(DetectorFramePosition p)
         {
-            double offsetX = p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X;
-            partOffset[Parts.VerticalFrame] = offsetX;
+            //double offsetX = p.pointScreen.X - partStartPosition[Parts.VerticalFrame].X;
+            partOffset[Parts.VerticalFrame] = p.pointScreen.X;
 
-            double offsetY = p.pointScreen.Y - (partStartPosition[Parts.ScreenCameraPos].Y + parts[Parts.ScreenCameraPos].Bounds().SizeY / 2);
-            partOffset[Parts.HorizontalBar] = offsetY;
+            //double offsetY = p.pointScreen.Y - (partStartPosition[Parts.ScreenCameraPos].Y + parts[Parts.ScreenCameraPos].Bounds().SizeY / 2);
+            partOffset[Parts.HorizontalBar] = p.pointScreen.Y - parts[Parts.ScreenCameraPos].Bounds().SizeY / 2;
 
-            double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
-            partOffset[Parts.ScreenHolder] = offsetZ;
+            //double offsetZ = p.pointScreen.Z - (partStartPosition[Parts.ScreenCameraPos].Z + parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2);
+            partOffset[Parts.ScreenHolder] = p.pointScreen.Z - parts[Parts.ScreenCameraPos].Bounds().SizeZ / 2;
 
             verticalAngle = p.verticalAngle;
             horizontalAngle = p.horizontalAngle;
