@@ -210,14 +210,14 @@ namespace InverseTest.Frame
             //расстояние от схвата манипулятора до точки наблюдения
             double L = Math.Sqrt(x * x + y * y + z * z);
             
-            L = dist * scale;                                       // Расстояние от точки наблюдения до площадки портала
+            //L = dist * scale;                                       // Расстояние от точки наблюдения до площадки портала
 
             bet = 0;
             alf = 0;
             alf = GetAngle(Math.Sqrt(x * x + y * y), z);            // Вычисление углов наблюдения за точкой (перпендикулярность схвату)
             bet = GetAngle(x, y);
             
-            double L2 = L * scale;                                  // Расстояние только до площадки 
+            //double L2 = L * scale;                                  // Расстояние только до площадки 
             L = L + l1;                                             // Расстояние до первого узла портала
 
             // Вычисление координат для сдвига
@@ -225,19 +225,19 @@ namespace InverseTest.Frame
             double newy = L * Math.Cos(alf) * Math.Sin(bet);
             double newz = L * Math.Sin(alf);
             
-            double newx2 = L2 * Math.Cos(alf) * Math.Cos(bet);
-            double newy2 = L2 * Math.Cos(alf) * Math.Sin(bet);
-            double newz2 = L2 * Math.Sin(alf);
+            //double newx2 = L2 * Math.Cos(alf) * Math.Cos(bet);
+            //double newy2 = L2 * Math.Cos(alf) * Math.Sin(bet);
+            //double newz2 = L2 * Math.Sin(alf);
 
             // Точка первого узла портала
             x_p = x_n - newx;
             y_p = y_n - newy;
             z_p = z_n - newz;
 
-            // Точка центра детектора
-            double x_p2 = x_n - newx2;
-            double y_p2 = y_n - newy2;
-            double z_p2 = z_n - newz2;
+            //// Точка центра детектора
+            //double x_p2 = x_n - newx2;
+            //double y_p2 = y_n - newy2;
+            //double z_p2 = z_n - newz2;
 
             // Точка второго узла портала
             Matrix4D R = Matrix4D.Multiply(MA(-alf), ML(l2));
@@ -261,6 +261,7 @@ namespace InverseTest.Frame
             
             if (tx <= x_max && ty <= y_max && tz <= z_max)
             {
+                //double[] m = { tx, ty, tz, alf, bet, x_portal - tx, y_portal - ty, z_portal + tz };
                 double[] m = { tx, ty, tz, alf, bet, x_portal - tx, y_portal - ty, z_portal + tz };
                 return m;
             }
@@ -268,6 +269,64 @@ namespace InverseTest.Frame
             {
                 return null;
             }
+        }
+
+        public PortalAngle PortalPoint(Point3D manip_point, Point3D scan_point)
+        {
+            PortalAngle rezult_angle = new PortalAngle();
+
+            Point3D differ = new Point3D() {
+                X = scan_point.X - manip_point.X,
+                Y = scan_point.Y - manip_point.Y,
+                Z = scan_point.Z - manip_point.Z
+                };
+
+            // длинна от точки наблюдения до детектора
+            double L = Math.Sqrt(differ.X * differ.X + differ.Y * differ.Y + differ.Z * differ.Z);
+
+            rezult_angle.O1 = GetAngle(Math.Sqrt(differ.X * differ.X + differ.Y * differ.Y), differ.Z);
+            rezult_angle.O2 = GetAngle(differ.X, differ.Y);
+
+            Matrix3D rotateO1           = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), -rezult_angle.O1 * 180 / Math.PI)).Value;
+            Matrix3D rotateO2           = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), -rezult_angle.O2 * 180 / Math.PI)).Value;
+            Matrix3D reverse_rotateO1   = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), +rezult_angle.O1 * 180 / Math.PI)).Value;
+            Matrix3D reverse_rotateO2   = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), +rezult_angle.O2 * 180 / Math.PI)).Value;
+            Matrix3D detector = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = L,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+            Matrix3D m0 = new Matrix3D() { M14 = scan_point.X, M24 = scan_point.Y, M34 = scan_point.Z };
+            Matrix3D R = m0;
+            R = Matrix3D.Multiply(R, rotateO1);
+            R = Matrix3D.Multiply(R, rotateO2);
+            R = Matrix3D.Multiply(R, detector); // получили цент площадки детектора
+
+            Matrix3D ml3 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = l3,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+            R = Matrix3D.Multiply(R, ml3); // получили первый поворотный узел
+
+            Matrix3D ml1 = new Matrix3D() {
+                M11 = 1, M12 = 0, M13 = 0, M14 = l1,
+                M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+                M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+                M44 = 1
+            };
+
+            R = Matrix3D.Multiply(R, reverse_rotateO2);
+            R = Matrix3D.Multiply(R, reverse_rotateO1);
+            R = Matrix3D.Multiply(R, ml1); // получили крепление к вертикальной раме
+
+            rezult_angle.X = x_portal - R.M14;
+            rezult_angle.Y = y_portal - R.M24;
+            rezult_angle.Z = z_portal - R.M34;
+
+            return rezult_angle;
         }
 
         // Работает правильно

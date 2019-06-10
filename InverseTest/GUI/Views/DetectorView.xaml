@@ -55,7 +55,7 @@
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
 		<Label Content="Вертикальный угол, °" HorizontalAlignment="Center"/>
-		<Slider Name="ScreenVerticalAngleSlider" Minimum="10" Maximum="175" SmallChange="1" Value="{Binding B}"/>
+		<Slider Name="ScreenVerticalAngleSlider" Minimum="0" Maximum="175" SmallChange="1" Value="{Binding B}"/>
 		<TextBox Text="{Binding ElementName=ScreenVerticalAngleSlider, Path=Value, StringFormat={}{0:0.##},
 			UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
