@@ -7,6 +7,7 @@ using InverseTest.Frame.Kinematic;
 using InverseTest.Model;
 using InverseTest.Bound;
 using System;
+using Roentgen.Path;
 
 namespace InverseTest.Workers
 {
@@ -65,12 +66,14 @@ namespace InverseTest.Workers
         private DetectorFramePosition SolvePortal(SystemPosition sp)
         {
             portal.SetPointManipAndNab(sp.ManipPoint.X, sp.ManipPoint.Z, sp.ManipPoint.Y, sp.TargetPoint.X, sp.TargetPoint.Z, sp.TargetPoint.Y);
+
+            PortalAngle rezult = portal.PortalPoint(sp.ManipPoint, sp.TargetPoint);
             
-            double[] rez = portal.PortalPoint(sp.DistanceManipulatorToScanPoint, sp.FocusEnlagment);
-            if (rez != null)
+            //double[] rez = portal.PortalPoint(sp.DistanceManipulatorToScanPoint, sp.FocusEnlagment);
+            if (rezult != null)
             {
                 ///ХЗ почему со знаком -
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rez[5], rez[7], rez[6]), -rez[4], rez[3]);
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rezult.X, rezult.Y, rezult.Z), rezult.O1, -rezult.O2);
                 detectp = portalBounds.CheckDetectroFramePosition(detectp);
                 return detectp;
             }
