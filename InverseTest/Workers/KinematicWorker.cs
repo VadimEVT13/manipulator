@@ -73,7 +73,7 @@ namespace InverseTest.Workers
             if (rezult != null)
             {
                 ///ХЗ почему со знаком -
-                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rezult.X, rezult.Y, rezult.Z), rezult.O1, -rezult.O2);
+                DetectorFramePosition detectp = new DetectorFramePosition(new Point3D(rezult.X, rezult.Y, rezult.Z), -rezult.O1, -rezult.O2);
                 //detectp = portalBounds.CheckDetectroFramePosition(detectp);
                 return detectp;
             }

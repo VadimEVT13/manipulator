@@ -324,13 +324,16 @@ namespace InverseTest.Frame
 
             rezult_angle.X = R.M14 - x_portal;
             rezult_angle.Y = R.M24 - y_portal;
-            rezult_angle.Z = R.M34 - z_portal;
+            rezult_angle.Z = -(R.M34 - z_portal);
 
-            //rezult_angle.X = R.M14;
-            //rezult_angle.Y = R.M24;
-            //rezult_angle.Z = R.M34;
+            if (R.M14 >= x_portal - x_max   & R.M14 <= x_portal + 20 &
+                R.M24 >= y_portal           & R.M24 <= y_portal + y_max &
+                R.M34 >= -z_max             & R.M34 <= z_max)
+            {
+                return rezult_angle;
+            }
 
-            return rezult_angle;
+            return null;
         }
 
         // Работает правильно

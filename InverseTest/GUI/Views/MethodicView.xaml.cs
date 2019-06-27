@@ -54,6 +54,9 @@ namespace InverseTest.GUI.Views
                 || !double.TryParse(Radius.Text, out r) || !double.TryParse(NumberOfPoints.Text, out n))
                 return;
 
+            if (n <= 0)
+                return;
+
             // Очистка таблиц
             while (ScanPath.getInstance.PointsList.Count != 0)
             {
@@ -66,7 +69,7 @@ namespace InverseTest.GUI.Views
             
             ScanPath.getInstance.AddPoint(new ScanPoint(new Point3D(x0, y0, z0)));
 
-            for (double i = 0; i <= Math.PI; i+= Math.PI / n)
+            for (double i = 0; i <= Math.PI; i+= Math.PI / (n - 1))
             {       
                 MethodPath.getInstance.AddPoint(new ScanPoint(new Point3D()
                 {

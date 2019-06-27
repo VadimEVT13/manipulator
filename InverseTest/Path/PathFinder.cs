@@ -493,32 +493,6 @@ namespace Roentgen.Path
             }
 
             return true;
-
-            /*
-            if (kin != null)
-            {
-                Stack<Angle3D> temp = kin.InverseNab(new_point.X, new_point.Y, new_point.Z, scan_point.X, scan_point.Y, scan_point.Z);
-                if (temp.Count != 0)
-                    return true;
-                else
-                    return false;
-            }
-
-            if (pkin != null)
-            {
-                if (pkin.IsFree(new_point.X, new_point.Y, new_point.Z, scan_point.X, scan_point.Y, scan_point.Z))
-                    return true;
-                else
-                    return false;
-            }
-            */
-
-            /*
-                Здесь же можно вызывать модуль по пересечениям,
-                если пересечение есть, то такая точка не подходит
-            */
-
-            throw new Exception("Что-то не доделал");
         }
 
         private bool IsFree(Angle3D new_angle)

@@ -129,6 +129,7 @@ namespace InverseTest.GUI.Views
                 J5 = edges[4],
                 Det = ManipulatorUtils.CalculateManipulatorDet(MainVM.Manipulator)
             });
+
             //this.manipKinematic.SetLen(new LengthJoin
             //{
             //    J1 = 71,
@@ -138,9 +139,9 @@ namespace InverseTest.GUI.Views
             //    J5 = 20,
             //    Det = 11
             //});
-            
-            //PortalKinematic portalKinematic     = new PortalKinematic(500, 500, 500, 71.529724, 38.631, -0.0025140, 10, 0, 19.5);
-            PortalKinematic portalKinematic     = new PortalKinematic(500, 500, 500, 71.529724, 38.631, -0.0025140, 10, 0, 19.5);
+
+            PortalKinematic portalKinematic = new PortalKinematic(44.5, 76, 36.5, 71.529724, 38.631, -0.0025140, 23, 0, 11);
+            //PortalKinematic portalKinematic = new PortalKinematic(44.5, 76, 36.5, 71.529724 + 7.5, 38.631 + 3.5, -1, 10, 0, 19.5 - 15);
             PortalBoundController portalBounds  = new PortalBoundController();
             portalBounds.CalculateBounds(MainVM.Detector);
 
