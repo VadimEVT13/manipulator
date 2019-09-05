@@ -2,11 +2,13 @@
 using System.ComponentModel;
 using System.IO;
 using System.IO.Ports;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using InverseTest.Grbl.Finders;
 using Newtonsoft.Json;
 using NLog;
+using SimpleTCP;
 
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
@@ -47,9 +49,9 @@ namespace InverseTest.Grbl.Models
         /// </summary>
         private static String SOFT_RESET = Convert.ToString(CMD_CTRL_X);
         /// <summary>
-        /// COM-порт.
+        /// Порт.
         /// </summary>
-        private SerialPort serialPort;
+        private SimpleTcpClient client;
 
         /// <summary>
         /// Конструктор по умолчанию.
@@ -60,16 +62,13 @@ namespace InverseTest.Grbl.Models
             Status = new GStatus();
         }
 
-
         public bool IsOpen
         {
             get
             {
-                return serialPort != null && serialPort.IsOpen;
+                return client != null;
             }
         }
-
-
 
         /// <summary>
         /// Настройки устройства.
@@ -82,83 +81,48 @@ namespace InverseTest.Grbl.Models
         /// <returns>состояние</returns>
         public void Open()
         {
-            if (Settings == null)
+            logger.Info("Connected to device");
+            if (Settings == null || Settings.PortName == null)
             {
-                logger.Error("Device not null");
+                logger.Error("Device not defined");
                 return;
             }
-            if (Settings.PortName == null)
-            {
-                Settings = GPortFind.FindPort(Settings);
-                if (Settings.PortName == null)
-                {
-                    logger.Error("Port not null");
-                    return;
-                }
-            }
-            serialPort = new SerialPort(Settings.PortName, Settings.BaudRate, Settings.Parity, Settings.DataBits, Settings.StopBits);
-            //Подписываемся на получение данных из последовательного порта
-            serialPort.DataReceived += onDataReceivedFromSerialPort;
-            if (serialPort.IsOpen)
-            {
-                logger.Error("Port is opened");
-                return;
-            }
+            client = new SimpleTcpClient();
+            client.StringEncoder = Encoding.UTF8;
             try
             {
-                serialPort.Open();
-                serialPort.WriteLine(SOFT_RESET);
-                Thread.Sleep(100);
-                serialPort.ReadExisting();
-                logger.Info("Open port");
+                client.Connect(Settings.PortName, 2000);
             }
-            catch (UnauthorizedAccessException e)
+            catch (SocketException)
             {
-                logger.Error("Error open port:" + e);
+                client = null;
+                State();
+                logger.Error("Device not found");
+                return;
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                logger.Error("Error open port:" + e);
-            }
-            catch (ArgumentException e)
-            {
-                logger.Error("Error open port:" + e);
-            }
-            catch (IOException e)
-            {
-                logger.Error("Error open port:" + e);
-            }
-            catch (InvalidOperationException e)
-            {
-                logger.Error("Error open port:" + e);
-            }
-            Thread.Sleep(100);
+            client.DataReceived += onDataReceivedFromSerialPort;
+            client.WriteLineAndGetReply(SOFT_RESET, TimeSpan.FromSeconds(5));
             State();
         }
 
-
-        private void onDataReceivedFromSerialPort(object sender, SerialDataReceivedEventArgs e)
+        private void onDataReceivedFromSerialPort(object sender, Message m)
         {
-            var serialPort = sender as SerialPort;
-            if (serialPort.BytesToRead > 0)
+            var lineData = m.MessageString;
+            if (lineData.Length > 0 && lineData[0] == '{')
             {
-                var lineData = serialPort.ReadLine();
-                if (lineData.Length > 0 && lineData[0] == '{')
+                logger.Debug("Data: {0}", lineData);
+                GStatus newState = null;
+                try
                 {
-                    logger.Debug("Data: {0}",lineData);
-                    GStatus newState = null;
-                    try
-                    {
-                        newState = JsonConvert.DeserializeObject<GStatus>(lineData);
-                    }
-                    catch (JsonSerializationException ex)
-                    {
-                        logger.Error("Error read data", ex);
-                    }
-                    if (newState != null)
-                    {
-                        Status = newState;
-                    }
+                    newState = JsonConvert.DeserializeObject<GStatus>(lineData);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    logger.Error("Error read data", ex);
+                }
+                if (newState != null)
+                {
+                    Status = newState;
                 }
             }
         }
@@ -171,7 +135,7 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 logger.Info("Write: ?");
-                serialPort.WriteLine("?");
+                client.WriteLineAndGetReply("?", TimeSpan.FromSeconds(5));
             }
             else
             {
@@ -187,7 +151,7 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 logger.Info("Write: ~");
-                serialPort.WriteLine("~");
+                client.WriteLineAndGetReply("~", TimeSpan.FromSeconds(5));
             }
             State();
         }
@@ -200,7 +164,7 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 logger.Info("Write: !");
-                serialPort.WriteLine("!");
+                client.WriteLineAndGetReply("!", TimeSpan.FromSeconds(5));
             }
             State();
         }
@@ -213,7 +177,7 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 logger.Info("Write: $H");
-                serialPort.WriteLine("$H");
+                client.WriteLineAndGetReply("$H", TimeSpan.FromSeconds(5));
             }
             State();
         }
@@ -226,7 +190,7 @@ namespace InverseTest.Grbl.Models
             if (IsOpen)
             {
                 logger.Info("Write: $X");
-                serialPort.WriteLine("$X");
+                client.WriteLineAndGetReply("$X", TimeSpan.FromSeconds(5));
             }
             State();
         }
@@ -244,7 +208,7 @@ namespace InverseTest.Grbl.Models
                 builder.Append(PointToString(point));
                 builder.Append("\n");
                 logger.Info("Send: " + builder.ToString());
-                serialPort.WriteLine(builder.ToString());
+                client.WriteLineAndGetReply(builder.ToString(), TimeSpan.FromSeconds(5));
                 State();
             }
         }
@@ -308,12 +272,12 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                String cmd = PointToString(point);
-                logger.Info("Write: G91");
-                serialPort.WriteLine("G91");
-                logger.Info("Write: " + cmd);
-                serialPort.WriteLine(cmd);
-                this.State();
+                var cmd = new StringBuilder();
+                cmd.AppendLine("G91");
+                cmd.AppendLine("PointToString(point)");
+                logger.Info("Write: {0}", cmd.ToString());
+                client.WriteLineAndGetReply(cmd.ToString(), TimeSpan.FromSeconds(5));
+                State();
             }
         }
 
@@ -326,7 +290,7 @@ namespace InverseTest.Grbl.Models
             {
                 try
                 {
-                    serialPort.Close();
+                    client.Disconnect();
                     logger.Info("Close port");
                 }
                 catch (InvalidOperationException e)

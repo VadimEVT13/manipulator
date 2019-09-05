@@ -30,6 +30,7 @@ namespace InverseTest.Grbl.Models
         private static GDevice settings = new GDevice
         {
             Name = "XManipulator",
+            PortName = "192.168.0.12",
             IsX = true,
             IsY = true,
             IsZ = false,
