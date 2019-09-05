@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Список состояний GRBL - контроллера.
 /// </summary>
-namespace InverseTest.Grbl.Models
+namespace Roentgen.Devices.Models
 {
     public enum GState
     {

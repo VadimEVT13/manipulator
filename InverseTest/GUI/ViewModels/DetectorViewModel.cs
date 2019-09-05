@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using InverseTest.GUI.Utils;
 using System.Windows.Media;
 using FontAwesome.WPF;
-using InverseTest.Grbl.Models;
+using Roentgen.Devices.Models;
 
 namespace InverseTest.GUI.ViewModels
 {

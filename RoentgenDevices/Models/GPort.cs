@@ -1,11 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.IO.Ports;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using InverseTest.Grbl.Finders;
 using Newtonsoft.Json;
 using NLog;
 using SimpleTCP;
@@ -13,46 +9,61 @@ using SimpleTCP;
 /// <summary>
 /// Драйвер работы с COM-портом GRBL устройства.
 /// </summary>
-namespace InverseTest.Grbl.Models
+namespace Roentgen.Devices.Models
 {
     public class GPort : INotifyPropertyChanged
     {
+        #region Службы
         /// <summary>
         /// Логгирование
         /// </summary>
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        #endregion
 
-        private GStatus _state;
+        #region Поля
+        /// <summary>
+        /// Порт
+        /// </summary>
+        private SimpleTcpClient client;
+        /// <summary>
+        /// Статус подключения
+        /// </summary>
+        private GStatus status;
+        #endregion
+
+        #region Свойства
+        /// <summary>
+        /// Статус подключения
+        /// </summary>
         public GStatus Status
         {
-            get { return _state; }
+            get => status;
             set
             {
-                _state = value;
+                status = value;
                 RaiseProperty("Status");
             }
         }
+        /// <summary>
+        /// Настройки устройства
+        /// </summary>
+        public GDevice Settings { get; set; }
+        /// <summary>
+        /// Подключен ли клиент
+        /// </summary>
+        public bool IsOpen => client != null;
+        #endregion
 
+        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RaiseProperty(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
-        /// <summary>
-        /// Команда вызова CTRL + X.
-        /// </summary>
-        private static char CMD_CTRL_X = Convert.ToChar(24);
-        /// <summary>
-        /// Команда мягкого сброса сессий устройства.
-        /// </summary>
-        private static String SOFT_RESET = Convert.ToString(CMD_CTRL_X);
-        /// <summary>
-        /// Порт.
-        /// </summary>
-        private SimpleTcpClient client;
-
+        #region Конструкторы
         /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
@@ -61,20 +72,9 @@ namespace InverseTest.Grbl.Models
             this.Settings = settings;
             Status = new GStatus();
         }
+        #endregion
 
-        public bool IsOpen
-        {
-            get
-            {
-                return client != null;
-            }
-        }
-
-        /// <summary>
-        /// Настройки устройства.
-        /// </summary>
-        public GDevice Settings { get; set; }
-
+        #region Методы
         /// <summary>
         /// Открытие порта на основе настроек.
         /// </summary>
@@ -101,6 +101,8 @@ namespace InverseTest.Grbl.Models
                 return;
             }
             client.DataReceived += onDataReceivedFromSerialPort;
+            /// Команда мягкого сброса сессий устройства CTRL + X.
+            var SOFT_RESET = Convert.ToString(Convert.ToChar(24));
             client.WriteLineAndGetReply(SOFT_RESET, TimeSpan.FromSeconds(5));
             State();
         }
@@ -139,7 +141,7 @@ namespace InverseTest.Grbl.Models
             }
             else
             {
-                Status.Status = GState.DISCONNECT;
+                Status.State = GState.DISCONNECT;
             }
         }
 
@@ -203,12 +205,11 @@ namespace InverseTest.Grbl.Models
         {
             if (IsOpen)
             {
-                var builder = new StringBuilder();
-                builder.Append("G90 ");
-                builder.Append(PointToString(point));
-                builder.Append("\n");
-                logger.Info("Send: " + builder.ToString());
-                client.WriteLineAndGetReply(builder.ToString(), TimeSpan.FromSeconds(5));
+                var cmd = new StringBuilder();
+                cmd.AppendLine("G90");
+                cmd.AppendLine(PointToString(point));
+                logger.Info("Send: {0}", cmd.ToString());
+                client.WriteLineAndGetReply(cmd.ToString(), TimeSpan.FromSeconds(5));
                 State();
             }
         }
@@ -218,7 +219,7 @@ namespace InverseTest.Grbl.Models
         /// </summary>
         /// <param name="point">точка</param>
         /// <returns>точка в GRBL</returns>
-        public String PointToString(GPoint point)
+        public string PointToString(GPoint point)
         {
             StringBuilder cmd = new StringBuilder();
             if (Settings.IsX)
@@ -300,5 +301,6 @@ namespace InverseTest.Grbl.Models
             }
             State();
         }
+        #endregion
     }
 }

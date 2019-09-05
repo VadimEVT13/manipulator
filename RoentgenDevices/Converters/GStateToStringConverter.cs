@@ -1,12 +1,12 @@
-﻿using InverseTest.Grbl.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Roentgen.Devices.Models;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace InverseTest.Grbl.Converters
+namespace Roentgen.Devices.Converters
 {
-    public class GStatusToStringConverter : JsonConverter, IValueConverter
+    public class GStateToStringConverter : JsonConverter, IValueConverter
     {
         public override bool CanConvert(Type objectType)
         {

@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Модель данных - точка.
 /// </summary>
-namespace InverseTest.Grbl.Models
+namespace Roentgen.Devices.Models
 {
     public class GPoint
     {

@@ -4,7 +4,7 @@ using System.IO.Ports;
 /// <summary>
 /// Модель данных устройства.
 /// </summary>
-namespace InverseTest.Grbl.Models
+namespace Roentgen.Devices.Models
 {
     public class GDevice
     {

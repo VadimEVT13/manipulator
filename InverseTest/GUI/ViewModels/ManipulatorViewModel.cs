@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using InverseTest.GUI.Utils;
 using FontAwesome.WPF;
 using System.Windows.Media;
-using InverseTest.Grbl.Models;
+using Roentgen.Devices.Models;
 
 /// <summary>
 /// Модель представления драйвера управления манипулятором.

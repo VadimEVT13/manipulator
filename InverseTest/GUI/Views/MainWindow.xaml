@@ -1,15 +1,16 @@
-﻿<Window x:Class="InverseTest.GUI.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:InverseTest.GUI.Views"
-		xmlns:localVMs="clr-namespace:InverseTest.GUI.ViewModels"
-		xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
-		md:DialogServiceViews.IsRegistered="True"
-        mc:Ignorable="d"
-        Title="{Binding Title}"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
+﻿<Window
+    x:Class="InverseTest.GUI.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:InverseTest.GUI.Views"
+    xmlns:localVMs="clr-namespace:InverseTest.GUI.ViewModels"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+    md:DialogServiceViews.IsRegistered="True"
+    mc:Ignorable="d"
+    Title="{Binding Title}"  WindowState="Maximized" Height="auto" Width="auto" WindowStartupLocation="CenterScreen">
     
     <DockPanel>
 		<!-- File Menu -->

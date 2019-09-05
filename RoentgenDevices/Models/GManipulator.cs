@@ -1,33 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InverseTest.Grbl.Models
+﻿namespace Roentgen.Devices.Models
 {
+    /// <summary>
+    /// Манипулятор
+    /// </summary>
     public class GManipulator
     {
+        #region Свойства
         /// <summary>
-        /// Последовательный порт
+        /// Настройки устройства
         /// </summary>
-        public GPort Port { get; set; }
-
-        private static GManipulator instance;
-
-        private GManipulator()
-        {
-            Port = new GPort(settings);
-        }
-
-        public static GManipulator getInstance()
-        {
-            if (instance == null)
-                instance = new GManipulator();
-            return instance;
-        }
-
-        private static GDevice settings = new GDevice
+        private static readonly GDevice settings = new GDevice
         {
             Name = "XManipulator",
             PortName = "192.168.0.12",
@@ -40,24 +22,34 @@ namespace InverseTest.Grbl.Models
             IsD = false,
             IsE = false
         };
+        /// <summary>
+        /// Порт устройства
+        /// </summary>
+        public GPort Port { get; set; }
+        #endregion
 
-        public static double GetLimitValue(double value, double state, double minValue, double maxValue)
+        #region Синглетон
+        private static GManipulator instance;
+        public static GManipulator getInstance()
         {
-            if (state + value < minValue)
-            {
-                return minValue - state;
-            }
-            else if (state + value > maxValue)
-            {
-                return maxValue - state;
-            }
-            else
-            {
-                return value;
-            }
+            if (instance == null)
+                instance = new GManipulator();
+            return instance;
         }
+        #endregion
 
-        public static double GetLimitValue(double value, double minValue, double maxValue)
+        #region Конструкторы
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
+        private GManipulator()
+        {
+            Port = new GPort(settings);
+        }
+        #endregion
+
+        #region Методы
+        private static double GetLimitValue(double value, double minValue, double maxValue)
         {
             if (value < minValue)
             {
@@ -84,5 +76,6 @@ namespace InverseTest.Grbl.Models
                 B = -GetLimitValue(target.B, -90, 85) + (185.493)
             };
         }
+        #endregion
     }
 }
