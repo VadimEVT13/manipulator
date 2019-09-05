@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="ISC_Rentgen.GUI.View.Scan"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"
+             xmlns:model="clr-namespace:ISC_Rentgen.GUI.Model"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0">
+            <TabItem Header="Ручное создание">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"></RowDefinition>
+                            <RowDefinition Height="2*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Content="Точка излучателя" HorizontalAlignment="Center"/>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="Emitter_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
+                            <TextBox x:Name="Emitter_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
+                            <TextBox x:Name="Emitter_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
+                        </Grid>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"></RowDefinition>
+                            <RowDefinition Height="2*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Content="Точка сканирования" HorizontalAlignment="Center"/>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="Scan_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
+                            <TextBox x:Name="Scan_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
+                            <TextBox x:Name="Scan_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Margin="5" Name="Add_key_point" Click="Add_key_point_Click">Добавить точки</Button>
+                        <Button Grid.Column="1" Margin="5" Name="Example_position" Click="Example_position_Click">Проверить</Button>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Автоматическое создание">
+                <Grid>
+                    <StackPanel>
+                        <Label Content="Выбор методики:"></Label>
+                        <ComboBox x:Name="Method" Margin="5,0,5,0">
+                            <TextBlock>Шпангоут</TextBlock>
+                            <TextBlock>Лопатка</TextBlock>
+                        </ComboBox>
+                        <Label Content="Точка установки"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox x:Name="Automatic_Scan_X" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
+                            <TextBox x:Name="Automatic_Scan_Y" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
+                            <TextBox x:Name="Automatic_Scan_Z" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
+                        </StackPanel>
+                        <Label Content="Количество положений"/>
+                        <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center"/>
+                        <Label Content="Радиус (для шпангоута)"/>
+                        <TextBox x:Name="Radius" Width="50" TextAlignment="Center" Margin="5"/>
+                        <Button x:Name="GetPointsButton" Click="GetPointsButton_Click" Margin="5,0,5,0">Получить</Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="1" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Content="Кратность:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="Kratnost" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5" TextChanged="Kratnost_TextChanged"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0">Сохранить методику</Button>
+                <Button Grid.Column="1">Загрузить методику</Button>
+                <Button Grid.Column="2" Name="Clear_Key_Points_Button" Click="Clear_Key_Points_Button_Click">Очистить</Button>
+            </Grid>
+            <ListView Grid.Row="1" Width="auto" Height="auto"                   
+                   ScrollViewer.CanContentScroll="True"
+                   ScrollViewer.VerticalScrollBarVisibility="Visible"
+            Visibility="Visible" Name="TargetPointsListView" 
+                   SelectionMode="Single" 
+            ItemsSource="{Binding Points_List, Source={x:Static  model:Key_Point_List.getInstance}}"             
+                   SelectionChanged="TargetPointsListView_SelectionChanged">
+                <ListView.View >
+                    <GridView>
+                        <GridViewColumn Header="Из.X" Width="auto" DisplayMemberBinding="{Binding Emitter_point.X}" />
+                        <GridViewColumn Header="Из.Y" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Y}" />
+                        <GridViewColumn Header="Из.Z" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Z}" />
+                        <GridViewColumn Header="Ск.X" Width="auto" DisplayMemberBinding="{Binding Scan_point.X}" />
+                        <GridViewColumn Header="Ск.Y" Width="auto" DisplayMemberBinding="{Binding Scan_point.Y}" />
+                        <GridViewColumn Header="Ск.Z" Width="auto" DisplayMemberBinding="{Binding Scan_point.Z}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>

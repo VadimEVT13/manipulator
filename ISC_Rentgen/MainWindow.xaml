@@ -1,0 +1,31 @@
+﻿<Window x:Class="ISC_Rentgen.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"   
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="Rentgen" Height="500" Width="700">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Загрузить объект" Name="Download_object_button" Click="Download_object_button_Click"/>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <local:Scan x:Name="Scan_View"></local:Scan>
+            </Grid>
+            <Grid Grid.Column="1">
+                <local:Visualizer x:Name="Visual_View"></local:Visualizer>
+            </Grid>
+            <Grid Grid.Column="2">
+                <local:Control x:Name="Control_View"></local:Control>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
