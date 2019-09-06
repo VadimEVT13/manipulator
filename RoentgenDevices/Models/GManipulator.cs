@@ -1,10 +1,19 @@
-﻿namespace Roentgen.Devices.Models
+﻿using NLog;
+
+namespace Roentgen.Devices.Models
 {
     /// <summary>
     /// Манипулятор
     /// </summary>
     public class GManipulator
     {
+        #region Службы
+        /// <summary>
+        /// Логгирование
+        /// </summary>
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        #endregion
+
         #region Свойства
         /// <summary>
         /// Настройки устройства
@@ -67,13 +76,19 @@
 
         public static GPoint GlobalLimits(GPoint target)
         {
+            var x = GetLimitValue(target.X, 5, 150) + (234.250 - 90);
+            var y = GetLimitValue(target.Y, 0, 150) + (136.670 - 90);
+            var z = GetLimitValue(target.Z, 0, 180);
+            var a = GetLimitValue(target.A, -179, 179) + 32.959;
+            var b = -GetLimitValue(target.B, -90, 85) + (185.493);
+
             return new GPoint
             {
-                X = GetLimitValue(target.X, 5, 150) + (234.250 - 90),
-                Y = GetLimitValue(target.Y, 0, 150) + (263.870 - 90), //263.870
-                Z = GetLimitValue(target.Z, 0, 180),
-                A = GetLimitValue(target.A, -179, 179) + 32.959,
-                B = -GetLimitValue(target.B, -90, 85) + (185.493)
+                X = x,
+                Y = y,
+                Z = z,
+                A = a,
+                B = b
             };
         }
         #endregion

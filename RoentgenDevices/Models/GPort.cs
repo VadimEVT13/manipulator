@@ -88,7 +88,7 @@ namespace Roentgen.Devices.Models
                 return;
             }
             client = new SimpleTcpClient();
-            client.StringEncoder = Encoding.UTF8;
+            //client.StringEncoder = Encoding.UTF8;
             try
             {
                 client.Connect(Settings.PortName, 2000);
