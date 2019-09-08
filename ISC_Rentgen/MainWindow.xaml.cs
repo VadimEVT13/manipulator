@@ -34,6 +34,9 @@ namespace ISC_Rentgen
     {
         public Model3DGroup Model { get { return model; } set { model = value; } }
         private Model3DGroup model = new ModelImporter().Load(@"Model3d/Detector Frame.obj");
+        public Model3DGroup Detal { get { return detal; } set { detal = value; } }
+        private Model3DGroup detal = new Model3DGroup();
+
         public string Example { get { return example; } set { example = value; } }
         private string example = "Example";
 
@@ -45,6 +48,7 @@ namespace ISC_Rentgen
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Visual_View.DataContext = this;                                                                                         // Для передачи глобальной переменной Model
+            Scan_View.DataContext = this;
             Emitter_and_scan_point_controller.Group = Model;                                                                        // Для отображения точек излучателя и сканирования
             Model3d.Model3DParser.Parse(Model);                                                                                     // Парсинг модели для разбора на компоненты
             ManipulatorV3.Base_Point = new Point3D(-80, 0, 0);                                                                      // Базовое положение манипулятора
@@ -61,9 +65,9 @@ namespace ISC_Rentgen
 
             //ManipulatorV3.Set_Position(new Point3D(-10, 10, 60), new Point3D(0, 0, 60));
             //// -- Установка шарика в схват манипулятора --
-            //Point3D p = ManipulatorV3.Rotate(ManipulatorV3.Angles);
+            //Point3D p2 = ManipulatorV3.Rotate(ManipulatorV3.Angles);
             //MeshBuilder mb = new MeshBuilder(true, true);
-            //mb.AddSphere(p, 10);
+            //mb.AddSphere(p2, 10);
             //GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Green };
             //gm.SetName("Test");
             //Model.Children.Add(gm);
@@ -89,6 +93,15 @@ namespace ISC_Rentgen
                 foreach (Model3D m in Scan_Object.Model.Children)
                 {
                     Model.Children.Add(m);
+                }
+
+                while (Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).Count() > 0)
+                {
+                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
+                }                
+                foreach (Model3D m in Scan_Object.Model.Children)
+                {
+                    Detal.Children.Add(m);
                 }
             }
         }

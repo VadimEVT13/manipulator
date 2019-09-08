@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"
              xmlns:model="clr-namespace:ISC_Rentgen.GUI.Model"
+             xmlns:helix="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="300">
     <Grid>
@@ -77,6 +78,7 @@
                         <ComboBox x:Name="Method" Margin="5,0,5,0">
                             <TextBlock>Шпангоут</TextBlock>
                             <TextBlock>Лопатка</TextBlock>
+                            <TextBlock>Шпангоут (дугами)</TextBlock>
                         </ComboBox>
                         <Label Content="Точка установки"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -91,6 +93,25 @@
                         <Button x:Name="GetPointsButton" Click="GetPointsButton_Click" Margin="5,0,5,0">Получить</Button>
                     </StackPanel>
                 </Grid>
+            </TabItem>
+            <TabItem Header="Новый_1">
+                <helix:HelixViewport3D x:Name="Detal_View" 
+                                       ShowViewCube="True" BorderBrush="Black" 
+                                       BorderThickness="1" IsRotationEnabled="True" MouseDown="Detal_View_MouseDown">
+                    <helix:DefaultLights/>
+                    <ModelVisual3D Content="{Binding Detal}"/>
+                    <helix:HelixViewport3D.DefaultCamera>
+                        <PerspectiveCamera Position="500,0,100" LookDirection="-500,0,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
+                    </helix:HelixViewport3D.DefaultCamera>
+                </helix:HelixViewport3D>
+            </TabItem>
+            <TabItem Header="Новый_2">
+                <helix:HelixViewport3D x:Name="Sphere_View" 
+                                       ShowViewCube="True" BorderBrush="Black" 
+                                       BorderThickness="1" IsRotationEnabled="True" MouseDown="Sphere_View_MouseDown">
+                    <helix:DefaultLights/>
+                    <helix:SphereVisual3D/>
+                </helix:HelixViewport3D>                
             </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Background="White">

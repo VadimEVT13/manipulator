@@ -32,6 +32,11 @@ namespace ISC_Rentgen.GUI.View
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Добавить точку
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Add_key_point_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -45,6 +50,11 @@ namespace ISC_Rentgen.GUI.View
             catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
 
+        /// <summary>
+        /// Отобразить положение системы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Example_position_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -58,6 +68,11 @@ namespace ISC_Rentgen.GUI.View
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
+        /// <summary>
+        /// Отобразить положение системы при выборе точки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TargetPointsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView lv = e.OriginalSource as ListView;
@@ -73,6 +88,11 @@ namespace ISC_Rentgen.GUI.View
             }
         }
 
+        /// <summary>
+        /// Смена положения точки излучателя
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Emitter_TextChanged(object sender, TextChangedEventArgs e)
         {
             double x, y, z;
@@ -82,6 +102,11 @@ namespace ISC_Rentgen.GUI.View
             }
         }
         
+        /// <summary>
+        /// Смена положения точки сканирования
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Scan_TextChanged(object sender, TextChangedEventArgs e)
         {
             double x, y, z;
@@ -91,6 +116,11 @@ namespace ISC_Rentgen.GUI.View
             }
         }
                 
+        /// <summary>
+        /// Смена точки сканирования во вкладке автоматического создания
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Automatic_Scan_TextChanged(object sender, TextChangedEventArgs e)
         {
             double x, y, z;
@@ -100,6 +130,11 @@ namespace ISC_Rentgen.GUI.View
             }
         }
 
+        /// <summary>
+        /// Автоматическое создание
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetPointsButton_Click(object sender, RoutedEventArgs e)
         {
             if (Method.SelectedItem == null)
@@ -112,6 +147,9 @@ namespace ISC_Rentgen.GUI.View
                     break;
                 case "Лопатка":
                     LopatkaMethodic();
+                    break;
+                case "Шпангоут (дугами)":
+                    Shpangout_Duga();
                     break;
             }
         }
@@ -180,6 +218,69 @@ namespace ISC_Rentgen.GUI.View
                 new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 60)));
         }
 
+        void Shpangout_Duga()
+        {
+            int n = 0;
+            double r = 0;
+            if (!int.TryParse(NumberOfPoints.Text, out n) || !double.TryParse(Radius.Text, out r))
+                return;
+
+            Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
+
+            double alfa1 = GetAngle(s.X - e1.X, s.Y - e1.Y);
+            double alfa2 = GetAngle(s.X - e2.X, s.Y - e2.Y);
+            double beta1 = GetAngle(s.X - e1.X, s.Z - e1.Z);
+            double beta2 = GetAngle(s.X - e2.X, s.Z - e2.Z);
+
+            for (int i = 0; i < n; i++)
+            {
+                double delta = 1.0 / n;
+                double a = delta * i * alfa2 + (n - i) * delta * alfa1;
+                double b = delta * i * beta2 + (n - i) * delta * beta1;
+
+                double x = Math.Sin(a                ) *    Math.Cos(b + Math.PI / 2.0) * r;
+                double y = Math.Sin(a                ) *    Math.Sin(b + Math.PI / 2.0) * r;
+                double z =                                  Math.Cos(b + Math.PI / 2.0) * r;
+
+                Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D(s.X + x, s.Y + y, s.Z + z), s));
+            }
+        }
+
+
+        private static double GetAngle(double X, double Y)
+        {
+            if (X == 0 && Y == 0)
+            {
+                return 0;
+            }
+            if (X == 0)
+            {
+                if (Y > 0)
+                {
+                    return Math.PI / 2;
+                }
+                else
+                {
+                    return -Math.PI / 2;
+                }
+            }
+            if (X > 0)
+            {
+                return Math.Atan(Y / X);
+            }
+            else
+            {
+                if (Y >= 0)
+                {
+                    return Math.Atan(Y / X) + Math.PI;
+                }
+                else
+                {
+                    return Math.Atan(Y / X) - Math.PI;
+                }
+            }
+        }
+
         private void Clear_Key_Points_Button_Click(object sender, RoutedEventArgs e)
         {
             Key_Point_List.getInstance.Clear();
@@ -194,6 +295,63 @@ namespace ISC_Rentgen.GUI.View
                     K = 1;
             }
             PortalV3.K = K;
+        }
+
+        private void Detal_View_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point mousePos = e.GetPosition(Detal_View);
+            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+            if (result != null)
+            {
+                Console.WriteLine(string.Format("[{0};{1};{2}]", result.PointHit.X, result.PointHit.Y, result.PointHit.Z));
+                Scan_x.Text = result.PointHit.X.ToString();
+                Scan_y.Text = result.PointHit.Y.ToString();
+                Scan_z.Text = result.PointHit.Z.ToString();
+            }
+        }
+
+        Point3D e1 = new Point3D();
+        Point3D e2 = new Point3D();
+
+        private void Sphere_View_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            double r = 0;
+
+            if (!double.TryParse(Radius.Text, out r))
+                return;
+                        
+            Point mousePos = e.GetPosition(Sphere_View);
+            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Sphere_View, mousePos) as RayMeshGeometry3DHitTestResult;
+            if (result != null)
+            {
+                Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
+                
+                e1 = e2;
+                e2 = new Point3D()
+                {
+                    X = Sphere_center.X + result.PointHit.X * r,
+                    Y = Sphere_center.Y + result.PointHit.Y * r,
+                    Z = Sphere_center.Z + result.PointHit.Z * r
+                };
+
+                Emitter_x.Text = e2.X.ToString();
+                Emitter_y.Text = e2.Y.ToString();
+                Emitter_z.Text = e2.Z.ToString();
+
+
+                Console.WriteLine(string.Format("[{0};{1};{2}]", e2.X, e2.Y, e2.Z));
+
+                Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
+
+                double alfa1 = -GetAngle(s.X - e1.X, s.Y - e1.Y);
+                double beta1 = -GetAngle(s.X - e1.X, s.Z - e1.Z);
+
+                double x = Math.Sin(alfa1) * Math.Cos(beta1 - Math.PI / 2.0) * r;
+                double y = Math.Sin(alfa1) * Math.Sin(beta1 - Math.PI / 2.0) * r;
+                double z = Math.Cos(beta1 - Math.PI / 2.0) * r;
+
+                Console.WriteLine(string.Format("обратно [{0};{1};{2}]", s.X + x, s.Y + y, s.Z + z));
+            }
         }
     }
 }
