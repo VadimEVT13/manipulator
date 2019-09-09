@@ -226,21 +226,20 @@ namespace ISC_Rentgen.GUI.View
                 return;
 
             Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
-
-            double alfa1 = GetAngle(s.X - e1.X, s.Y - e1.Y);
-            double alfa2 = GetAngle(s.X - e2.X, s.Y - e2.Y);
-            double beta1 = GetAngle(s.X - e1.X, s.Z - e1.Z);
-            double beta2 = GetAngle(s.X - e2.X, s.Z - e2.Z);
+            
+            double alfa1 = GetAngle((e1.X - s.X), (e1.Y - s.Y));
+            double beta1 = GetAngle((e1.X - s.X) / Math.Cos(alfa1), (e1.Z - s.Z));
+            double alfa2 = GetAngle((e2.X - s.X), (e2.Y - s.Y));
+            double beta2 = GetAngle((e2.X - s.X) / Math.Cos(alfa2), (e2.Z - s.Z));
 
             for (int i = 0; i < n; i++)
             {
-                double delta = 1.0 / n;
-                double a = delta * i * alfa2 + (n - i) * delta * alfa1;
-                double b = delta * i * beta2 + (n - i) * delta * beta1;
+                double delta_a = (double)(alfa2 - alfa1) / (n - 1);
+                double delta_b = (double)(beta2 - beta1) / (n - 1);
 
-                double x = Math.Sin(a                ) *    Math.Cos(b + Math.PI / 2.0) * r;
-                double y = Math.Sin(a                ) *    Math.Sin(b + Math.PI / 2.0) * r;
-                double z =                                  Math.Cos(b + Math.PI / 2.0) * r;
+                double x = Math.Cos(beta1 + delta_b * i) * Math.Cos(alfa1 + delta_a * i) * r;
+                double y = Math.Cos(beta1 + delta_b * i) * Math.Sin(alfa1 + delta_a * i) * r;
+                double z = Math.Sin(beta1 + delta_b * i) * r;
 
                 Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D(s.X + x, s.Y + y, s.Z + z), s));
             }
@@ -339,16 +338,39 @@ namespace ISC_Rentgen.GUI.View
                 Emitter_z.Text = e2.Z.ToString();
 
 
-                Console.WriteLine(string.Format("[{0};{1};{2}]", e2.X, e2.Y, e2.Z));
+                Console.WriteLine(string.Format("e1 [{0};{1};{2}]", e1.X, e1.Y, e1.Z));
+                Console.WriteLine(string.Format("e2 [{0};{1};{2}]", e2.X, e2.Y, e2.Z));
 
+                //Point3D test_point;
+                //double a_t = 2.88888888;
+                //double b_t = 0.44444444;
+
+                //double x = Math.Cos(b_t) * Math.Cos(a_t) * r;
+                //double y = Math.Cos(b_t) * Math.Sin(a_t) * r;
+                //double z = Math.Sin(b_t) * r;
+
+                //Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
+
+                //test_point = new Point3D()
+                //{
+                //    X = s.X + x,
+                //    Y = s.Y + y,
+                //    Z = s.Z + z
+                //};
+
+                //double alfa2 = GetAngle((test_point.X - s.X), (test_point.Y - s.Y));
+                //double beta2 = GetAngle((test_point.X - s.X) / Math.Cos(alfa2), (test_point.Z - s.Z));
+                
                 Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
 
-                double alfa1 = -GetAngle(s.X - e1.X, s.Y - e1.Y);
-                double beta1 = -GetAngle(s.X - e1.X, s.Z - e1.Z);
+                Console.WriteLine(string.Format("r [{0};{1};{2}]", e2.X - s.X, e2.Y - s.Y, e2.Z - s.Z));
 
-                double x = Math.Sin(alfa1) * Math.Cos(beta1 - Math.PI / 2.0) * r;
-                double y = Math.Sin(alfa1) * Math.Sin(beta1 - Math.PI / 2.0) * r;
-                double z = Math.Cos(beta1 - Math.PI / 2.0) * r;
+                double alfa2 = GetAngle((e2.X - s.X), (e2.Y - s.Y));
+                double beta2 = GetAngle((e2.X - s.X) / Math.Cos(alfa2), (e2.Z - s.Z));
+
+                double x = Math.Cos(beta2) * Math.Cos(alfa2) * r;
+                double y = Math.Cos(beta2) * Math.Sin(alfa2) * r;
+                double z = Math.Sin(beta2) * r;
 
                 Console.WriteLine(string.Format("обратно [{0};{1};{2}]", s.X + x, s.Y + y, s.Z + z));
             }
