@@ -22,11 +22,17 @@ using System.Windows.Shapes;
 
 namespace ISC_Rentgen.GUI.View
 {
+    public delegate void Sphere_Params_delegate(Sphere_Params SP);
+    public delegate void Sphere_delite_delegate();
+
     /// <summary>
     /// Логика взаимодействия для Scan.xaml
     /// </summary>
     public partial class Scan : UserControl
     {
+        public Sphere_Params_delegate OnSphereChanged;
+        public Sphere_delite_delegate OnSphereDelite;
+
         public Scan()
         {
             InitializeComponent();
@@ -244,8 +250,7 @@ namespace ISC_Rentgen.GUI.View
                 Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D(s.X + x, s.Y + y, s.Z + z), s));
             }
         }
-
-
+        
         private static double GetAngle(double X, double Y)
         {
             if (X == 0 && Y == 0)
@@ -295,85 +300,105 @@ namespace ISC_Rentgen.GUI.View
             }
             PortalV3.K = K;
         }
+        
+        Point3D e1 = new Point3D();
+        Point3D e2 = new Point3D();
+                
+        bool If_Shpere_Exist = false;
 
-        private void Detal_View_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Detal_View_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Point mousePos = e.GetPosition(Detal_View);
-            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-            if (result != null)
+            if (If_Shpere_Exist)
             {
-                Console.WriteLine(string.Format("[{0};{1};{2}]", result.PointHit.X, result.PointHit.Y, result.PointHit.Z));
-                Scan_x.Text = result.PointHit.X.ToString();
-                Scan_y.Text = result.PointHit.Y.ToString();
-                Scan_z.Text = result.PointHit.Z.ToString();
+                //Point mousePos = e.GetPosition(Detal_View);
+                //RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+                //if (result != null)
+                //{
+                //    Console.WriteLine(string.Format("[{0};{1};{2}]", result.PointHit.X, result.PointHit.Y, result.PointHit.Z));
+                //    Scan_x.Text = result.PointHit.X.ToString();
+                //    Scan_y.Text = result.PointHit.Y.ToString();
+                //    Scan_z.Text = result.PointHit.Z.ToString();
+                //}
+
+                double r = 0;
+
+                if (!double.TryParse(Radius.Text, out r))
+                    return;
+
+                Point mousePos = e.GetPosition(Detal_View);
+                RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+                if (result != null)
+                {
+                    Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
+
+                    e1 = e2;
+                    e2 = new Point3D()
+                    {
+                        X = result.PointHit.X,
+                        Y = result.PointHit.Y,
+                        Z = result.PointHit.Z
+                    };
+
+                    Emitter_x.Text = e2.X.ToString();
+                    Emitter_y.Text = e2.Y.ToString();
+                    Emitter_z.Text = e2.Z.ToString();
+                }
+            }
+            else
+            {
+                double r = 0;
+
+                if (!double.TryParse(Radius.Text, out r))
+                    return;
+
+                Point mousePos = e.GetPosition(Detal_View);
+                RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+                if (result != null)
+                {
+                    Scan_x.Text = result.PointHit.X.ToString();
+                    Scan_y.Text = result.PointHit.Y.ToString();
+                    Scan_z.Text = result.PointHit.Z.ToString();
+
+                    OnSphereChanged?.Invoke(new Sphere_Params()
+                    {
+                        Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
+                        Radius = r
+                    });
+
+                    If_Shpere_Exist = true;
+                }
+                else
+                {
+                    return;
+                }
             }
         }
 
-        Point3D e1 = new Point3D();
-        Point3D e2 = new Point3D();
-
-        private void Sphere_View_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Detal_View_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             double r = 0;
 
             if (!double.TryParse(Radius.Text, out r))
                 return;
-                        
-            Point mousePos = e.GetPosition(Sphere_View);
-            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Sphere_View, mousePos) as RayMeshGeometry3DHitTestResult;
+
+            Point mousePos = e.GetPosition(Detal_View);
+            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
             if (result != null)
             {
-                Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
-                
-                e1 = e2;
-                e2 = new Point3D()
-                {
-                    X = Sphere_center.X + result.PointHit.X * r,
-                    Y = Sphere_center.Y + result.PointHit.Y * r,
-                    Z = Sphere_center.Z + result.PointHit.Z * r
-                };
-
-                Emitter_x.Text = e2.X.ToString();
-                Emitter_y.Text = e2.Y.ToString();
-                Emitter_z.Text = e2.Z.ToString();
-
-
-                Console.WriteLine(string.Format("e1 [{0};{1};{2}]", e1.X, e1.Y, e1.Z));
-                Console.WriteLine(string.Format("e2 [{0};{1};{2}]", e2.X, e2.Y, e2.Z));
-
-                //Point3D test_point;
-                //double a_t = 2.88888888;
-                //double b_t = 0.44444444;
-
-                //double x = Math.Cos(b_t) * Math.Cos(a_t) * r;
-                //double y = Math.Cos(b_t) * Math.Sin(a_t) * r;
-                //double z = Math.Sin(b_t) * r;
-
-                //Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
-
-                //test_point = new Point3D()
-                //{
-                //    X = s.X + x,
-                //    Y = s.Y + y,
-                //    Z = s.Z + z
-                //};
-
-                //double alfa2 = GetAngle((test_point.X - s.X), (test_point.Y - s.Y));
-                //double beta2 = GetAngle((test_point.X - s.X) / Math.Cos(alfa2), (test_point.Z - s.Z));
-                
-                Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
-
-                Console.WriteLine(string.Format("r [{0};{1};{2}]", e2.X - s.X, e2.Y - s.Y, e2.Z - s.Z));
-
-                double alfa2 = GetAngle((e2.X - s.X), (e2.Y - s.Y));
-                double beta2 = GetAngle((e2.X - s.X) / Math.Cos(alfa2), (e2.Z - s.Z));
-
-                double x = Math.Cos(beta2) * Math.Cos(alfa2) * r;
-                double y = Math.Cos(beta2) * Math.Sin(alfa2) * r;
-                double z = Math.Sin(beta2) * r;
-
-                Console.WriteLine(string.Format("обратно [{0};{1};{2}]", s.X + x, s.Y + y, s.Z + z));
+                Scan_x.Text = result.PointHit.X.ToString();
+                Scan_y.Text = result.PointHit.Y.ToString();
+                Scan_z.Text = result.PointHit.Z.ToString();
             }
+
+            OnSphereChanged?.Invoke(new Sphere_Params() {
+                Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
+                Radius = r });
+        }
+
+        private void Sphere_delite(object sender, RoutedEventArgs e)
+        {
+            OnSphereDelite?.Invoke();
+            If_Shpere_Exist = false;
         }
     }
 }

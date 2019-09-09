@@ -95,23 +95,26 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Новый_1">
-                <helix:HelixViewport3D x:Name="Detal_View" 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="30"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <helix:HelixViewport3D Grid.Row="0" x:Name="Detal_View" 
                                        ShowViewCube="True" BorderBrush="Black" 
-                                       BorderThickness="1" IsRotationEnabled="True" MouseDown="Detal_View_MouseDown">
-                    <helix:DefaultLights/>
-                    <ModelVisual3D Content="{Binding Detal}"/>
-                    <helix:HelixViewport3D.DefaultCamera>
-                        <PerspectiveCamera Position="500,0,100" LookDirection="-500,0,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
-                    </helix:HelixViewport3D.DefaultCamera>
-                </helix:HelixViewport3D>
-            </TabItem>
-            <TabItem Header="Новый_2">
-                <helix:HelixViewport3D x:Name="Sphere_View" 
-                                       ShowViewCube="True" BorderBrush="Black" 
-                                       BorderThickness="1" IsRotationEnabled="True" MouseDown="Sphere_View_MouseDown">
-                    <helix:DefaultLights/>
-                    <helix:SphereVisual3D/>
-                </helix:HelixViewport3D>                
+                                       BorderThickness="1" IsRotationEnabled="True" MouseLeftButtonDown="Detal_View_MouseLeftButtonDown" Grid.ColumnSpan="2">
+                        <helix:DefaultLights/>
+                        <ModelVisual3D Content="{Binding Detal}"/>
+                        <helix:HelixViewport3D.DefaultCamera>
+                            <PerspectiveCamera Position="500,0,100" LookDirection="-500,0,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
+                        </helix:HelixViewport3D.DefaultCamera>
+                    </helix:HelixViewport3D>
+                    <Button Grid.Row="1" Click="Sphere_delite" Grid.ColumnSpan="2">Удалить сферу</Button>
+                </Grid>
             </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Background="White">

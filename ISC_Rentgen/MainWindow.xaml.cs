@@ -62,6 +62,8 @@ namespace ISC_Rentgen
             PortalV3.OnRefreshSliders += Control_View.Refresh_Sliders;
 
             Controller.PositionChanged += Test;
+            Scan_View.OnSphereChanged += SphereAdder;
+            Scan_View.OnSphereDelite += SphereDelete;
 
             //ManipulatorV3.Set_Position(new Point3D(-10, 10, 60), new Point3D(0, 0, 60));
             //// -- Установка шарика в схват манипулятора --
@@ -71,6 +73,33 @@ namespace ISC_Rentgen
             //GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Green };
             //gm.SetName("Test");
             //Model.Children.Add(gm);
+        }
+
+        private void SphereAdder(Sphere_Params SP)
+        {
+            while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+            {
+                Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+            }
+
+            var gm = new GeometryModel3D();
+            MeshBuilder mb = new MeshBuilder();
+            mb.AddSphere(SP.Position, SP.Radius);
+            gm.Geometry = mb.ToMesh();
+            gm.Material = Materials.Green;
+
+            Model3D m = gm;
+            m.SetName(Sphere_Params.SphereName);
+
+            Detal.Children.Add(m);
+        }
+
+        private void SphereDelete()
+        {
+            while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+            {
+                Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+            }
         }
 
         private void Test(Angles_Manipulator angle)
