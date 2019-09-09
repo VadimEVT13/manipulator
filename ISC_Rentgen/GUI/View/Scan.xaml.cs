@@ -238,6 +238,18 @@ namespace ISC_Rentgen.GUI.View
             double alfa2 = GetAngle((e2.X - s.X), (e2.Y - s.Y));
             double beta2 = GetAngle((e2.X - s.X) / Math.Cos(alfa2), (e2.Z - s.Z));
 
+            if (!Duga_mode)
+            {
+                if (alfa1 < 0 & alfa2 > 0)
+                    alfa2 -= Math.PI * 2;
+                if (alfa1 > 0 & alfa2 < 0)
+                    alfa1 -= Math.PI * 2;
+                if (beta1 < 0 & beta2 > 0)
+                    beta2 -= Math.PI * 2;
+                if (beta1 > 0 & beta2 < 0)
+                    beta1 -= Math.PI * 2;
+            }
+
             for (int i = 0; i < n; i++)
             {
                 double delta_a = (double)(alfa2 - alfa1) / (n - 1);
@@ -399,6 +411,12 @@ namespace ISC_Rentgen.GUI.View
         {
             OnSphereDelite?.Invoke();
             If_Shpere_Exist = false;
+        }
+
+        private bool Duga_mode = false;
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            Duga_mode = (bool)(sender as CheckBox).IsChecked;
         }
     }
 }
