@@ -16,5 +16,6 @@ namespace ISC_Rentgen.GUI.Model
         private double radius = 1;
 
         public static string SphereName { get { return "Sphere"; } }
+        public static bool If_Sphere_Exist = false;
     }
 }

@@ -89,7 +89,7 @@ namespace ISC_Rentgen.GUI.View
                 ManipulatorV3.Set_Position(selected.Emitter_point, selected.Scan_point);
                 PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point);
 
-                Emitter_and_scan_point_controller.AddEitter(selected.Emitter_point);
+                Emitter_and_scan_point_controller.AddEmitter(selected.Emitter_point);
                 Emitter_and_scan_point_controller.AddScan(selected.Scan_point);
             }
         }
@@ -104,7 +104,7 @@ namespace ISC_Rentgen.GUI.View
             double x, y, z;
             if (double.TryParse(Emitter_x.Text, out x) & double.TryParse(Emitter_y.Text, out y) & double.TryParse(Emitter_z.Text, out z))
             {
-                Emitter_and_scan_point_controller.AddEitter(new Point3D(x, y, z));
+                Emitter_and_scan_point_controller.AddEmitter(new Point3D(x, y, z));
             }
         }
         
@@ -326,22 +326,10 @@ namespace ISC_Rentgen.GUI.View
         Point3D e1 = new Point3D();
         Point3D e2 = new Point3D();
                 
-        bool If_Shpere_Exist = false;
-
         private void Detal_View_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (If_Shpere_Exist)
+            if (Sphere_Params.If_Sphere_Exist)
             {
-                //Point mousePos = e.GetPosition(Detal_View);
-                //RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-                //if (result != null)
-                //{
-                //    Console.WriteLine(string.Format("[{0};{1};{2}]", result.PointHit.X, result.PointHit.Y, result.PointHit.Z));
-                //    Scan_x.Text = result.PointHit.X.ToString();
-                //    Scan_y.Text = result.PointHit.Y.ToString();
-                //    Scan_z.Text = result.PointHit.Z.ToString();
-                //}
-
                 double r = 0;
 
                 if (!double.TryParse(Radius.Text, out r))
@@ -387,7 +375,7 @@ namespace ISC_Rentgen.GUI.View
                         Radius = r
                     });
 
-                    If_Shpere_Exist = true;
+                    Sphere_Params.If_Sphere_Exist = true;
                 }
                 else
                 {
@@ -395,32 +383,11 @@ namespace ISC_Rentgen.GUI.View
                 }
             }
         }
-
-        private void Detal_View_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            double r = 0;
-
-            if (!double.TryParse(Radius.Text, out r))
-                return;
-
-            Point mousePos = e.GetPosition(Detal_View);
-            RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-            if (result != null)
-            {
-                Scan_x.Text = result.PointHit.X.ToString();
-                Scan_y.Text = result.PointHit.Y.ToString();
-                Scan_z.Text = result.PointHit.Z.ToString();
-            }
-
-            OnSphereChanged?.Invoke(new Sphere_Params() {
-                Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
-                Radius = r });
-        }
-
+        
         private void Sphere_delite(object sender, RoutedEventArgs e)
         {
             OnSphereDelite?.Invoke();
-            If_Shpere_Exist = false;
+            Sphere_Params.If_Sphere_Exist = false;
         }
 
         private bool Duga_mode = false;
