@@ -410,7 +410,8 @@ namespace ISC_Rentgen.Rentgen_Parts.Manipulator_Components.Kinematic
             O3min = -Math.PI / 2.0,
             O3max = Math.PI / 2.0,
             O4min = -Math.PI,
-            O4max = Math.PI - Math.PI / 2,
+            //O4max = Math.PI - Math.PI / 2,
+            O4max = Math.PI,
             O5min = -10 * Math.PI / 180.0,
             O5max = Math.PI
         };

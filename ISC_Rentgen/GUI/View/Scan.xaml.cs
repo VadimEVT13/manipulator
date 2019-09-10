@@ -240,14 +240,24 @@ namespace ISC_Rentgen.GUI.View
 
             if (!Duga_mode)
             {
-                if (alfa1 < 0 & alfa2 > 0)
-                    alfa2 -= Math.PI * 2;
-                if (alfa1 > 0 & alfa2 < 0)
-                    alfa1 -= Math.PI * 2;
-                if (beta1 < 0 & beta2 > 0)
-                    beta2 -= Math.PI * 2;
-                if (beta1 > 0 & beta2 < 0)
-                    beta1 -= Math.PI * 2;
+                if (((alfa1 < 0 & alfa2 > 0) || (alfa1 > 0 & alfa2 < 0)))
+                {
+                    if (alfa1 > 0)
+                        alfa1 -= Math.PI * 2;
+                    if (alfa2 > 0)
+                        alfa2 -= Math.PI * 2;
+                }
+            }
+            else
+            {
+                if (((alfa1 < 0 & alfa2 < 0) || (alfa1 > 0 & alfa2 > 0)))
+                {
+                    if (alfa2 > 0)
+                        alfa2 -= Math.PI * 2;
+                    else
+                        alfa2 += Math.PI * 2;
+                }
+
             }
 
             for (int i = 0; i < n; i++)
