@@ -13,12 +13,14 @@ namespace ISC_Rentgen.GUI.Model
     public delegate void OnPointAdd(Key_Point p);
     public delegate void OnPointRemove(Key_Point p);
     public delegate void OnClear();
+    public delegate void OnModifAngle(Key_Point p);
 
     public class Key_Point_List : INotifyPropertyChanged
     {
         public OnPointAdd PointAdd;
         public OnPointRemove PointRemove;
         public OnClear PointsClear;
+        public OnModifAngle ModifAngle;
 
         private static Key_Point_List instance;
         public static Key_Point_List getInstance
@@ -71,6 +73,7 @@ namespace ISC_Rentgen.GUI.Model
                     Points_List[index].IsCorrect = false;
 
                 NotifyPropertyChanged("ModifAngles");
+                this.ModifAngle?.Invoke(Points_List[index]);
             }
         }
 

@@ -66,5 +66,31 @@ namespace ISC_Rentgen.GUI.Controllers
                 }
             }
         }
+
+        public void AngleModif(Key_Point p)
+        {
+            if (Model != null)
+            {
+                Model3D m = Model.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First();
+                if (m != null)
+                {
+                    if (p.IsCorrect)
+                        (m as GeometryModel3D).Material = Materials.Green;
+                    else
+                        (m as GeometryModel3D).Material = Materials.Red;
+                }
+            }
+            if (Detal != null)
+            {
+                Model3D m = Detal.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First();
+                if (m != null)
+                {
+                    if (p.IsCorrect)
+                        (m as GeometryModel3D).Material = Materials.Green;
+                    else
+                        (m as GeometryModel3D).Material = Materials.Red;
+                }
+            }
+        }
     }
 }
