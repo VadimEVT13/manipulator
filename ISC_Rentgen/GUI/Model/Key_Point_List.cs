@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ISC_Rentgen.Rentgen_Parts.Manipulator_Components.Model;
+using ISC_Rentgen.Rentgen_Parts.Portal_Components.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -52,6 +54,24 @@ namespace ISC_Rentgen.GUI.Model
                 NotifyPropertyChanged("Remove");
                 this.PointRemove?.Invoke(p);
             }                
+        }
+
+        public void ModifAngles(Key_Point p, Angles_Manipulator AM, Angles_Portal AP)
+        {
+            if (Points_List.Contains(p))
+            {
+                int index = Points_List.IndexOf(p);
+
+                Points_List[index].Manipulator_Angle = AM;
+                Points_List[index].Portal_Angle = AP;
+
+                if (AM != null & AP != null)
+                    Points_List[index].IsCorrect = true;
+                else
+                    Points_List[index].IsCorrect = false;
+
+                NotifyPropertyChanged("ModifAngles");
+            }
         }
 
         public void Clear()

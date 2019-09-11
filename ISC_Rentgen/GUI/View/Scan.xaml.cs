@@ -87,9 +87,13 @@ namespace ISC_Rentgen.GUI.View
 
             if (selected != null)
             {
-                ManipulatorV3.Set_Position(selected.Emitter_point, selected.Scan_point);
-                PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point);
-
+                Key_Point_List.getInstance.ModifAngles(
+                    selected, 
+                    ManipulatorV3.Set_Position(selected.Emitter_point, selected.Scan_point), 
+                    PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point));
+                //selected.Manipulator_Angle = ManipulatorV3.Set_Position(selected.Emitter_point, selected.Scan_point);
+                //selected.Portal_Angle = PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point);
+                              
                 Emitter_and_scan_point_controller.AddEmitter(selected.Emitter_point);
                 Emitter_and_scan_point_controller.AddScan(selected.Scan_point);
             }

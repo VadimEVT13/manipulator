@@ -155,6 +155,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Номер точки" Width="auto" DisplayMemberBinding="{Binding Index}"/>
+                        <GridViewColumn Header="Возможно поставить?" Width="auto" DisplayMemberBinding="{Binding IsCorrect}"/>
                     </GridView>
                 </ListView.View>
             </ListView>            

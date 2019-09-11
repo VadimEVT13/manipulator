@@ -94,6 +94,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Номер точки" Width="auto" DisplayMemberBinding="{Binding Index}"/>
+                        <GridViewColumn Header="Возможно поставить?" Width="auto" DisplayMemberBinding="{Binding IsCorrect}"/>
                         <GridViewColumn Header="Из.X" Width="auto" DisplayMemberBinding="{Binding Emitter_point.X}" />
                         <GridViewColumn Header="Из.Y" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Y}" />
                         <GridViewColumn Header="Из.Z" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Z}" />
