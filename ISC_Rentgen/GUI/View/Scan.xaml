@@ -128,7 +128,7 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0" Content="Кратность:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="Kratnost" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5" TextChanged="Kratnost_TextChanged"/>
+            <TextBox x:Name="Kratnost" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5" TextChanged="Kratnost_TextChanged" Text="1"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0,5,0,-5">
             <Grid.RowDefinitions>
