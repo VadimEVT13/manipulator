@@ -94,7 +94,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Новый_1">
+            <TabItem Header="Задание точек на ОИ">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -130,7 +130,7 @@
             <Label Grid.Column="0" Content="Кратность:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBox x:Name="Kratnost" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5" TextChanged="Kratnost_TextChanged"/>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="0,5,0,-5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"></RowDefinition>
                 <RowDefinition Height="10*"></RowDefinition>
@@ -154,12 +154,7 @@
                    SelectionChanged="TargetPointsListView_SelectionChanged" PreviewMouseRightButtonDown="TargetPointsListView_PreviewMouseRightButtonDown">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Из.X" Width="auto" DisplayMemberBinding="{Binding Emitter_point.X}" />
-                        <GridViewColumn Header="Из.Y" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Y}" />
-                        <GridViewColumn Header="Из.Z" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Z}" />
-                        <GridViewColumn Header="Ск.X" Width="auto" DisplayMemberBinding="{Binding Scan_point.X}" />
-                        <GridViewColumn Header="Ск.Y" Width="auto" DisplayMemberBinding="{Binding Scan_point.Y}" />
-                        <GridViewColumn Header="Ск.Z" Width="auto" DisplayMemberBinding="{Binding Scan_point.Z}" />
+                        <GridViewColumn Header="Номер точки" Width="auto" DisplayMemberBinding="{Binding Index}"/>
                     </GridView>
                 </ListView.View>
             </ListView>            

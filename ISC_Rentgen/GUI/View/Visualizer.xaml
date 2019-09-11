@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"
              xmlns:helix="http://helix-toolkit.org/wpf"
+             xmlns:model="clr-namespace:ISC_Rentgen.GUI.Model"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <TabControl>
@@ -82,6 +83,26 @@
         </TabItem>
         <TabItem Header="Камеры">
             
+        </TabItem>
+        <TabItem Header="Точки доп.">
+            <ListView Grid.Row="1" Width="auto" Height="auto"                   
+                   ScrollViewer.CanContentScroll="True"
+                   ScrollViewer.VerticalScrollBarVisibility="Visible"
+            Visibility="Visible" Name="TargetPointsListView" 
+                   SelectionMode="Single" 
+            ItemsSource="{Binding Points_List, Source={x:Static  model:Key_Point_List.getInstance}}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Номер точки" Width="auto" DisplayMemberBinding="{Binding Index}"/>
+                        <GridViewColumn Header="Из.X" Width="auto" DisplayMemberBinding="{Binding Emitter_point.X}" />
+                        <GridViewColumn Header="Из.Y" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Y}" />
+                        <GridViewColumn Header="Из.Z" Width="auto" DisplayMemberBinding="{Binding Emitter_point.Z}" />
+                        <GridViewColumn Header="Ск.X" Width="auto" DisplayMemberBinding="{Binding Scan_point.X}" />
+                        <GridViewColumn Header="Ск.Y" Width="auto" DisplayMemberBinding="{Binding Scan_point.Y}" />
+                        <GridViewColumn Header="Ск.Z" Width="auto" DisplayMemberBinding="{Binding Scan_point.Z}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </TabItem>
     </TabControl>
 </UserControl>
