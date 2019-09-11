@@ -87,28 +87,44 @@ namespace ISC_Rentgen
 
         private void SphereAdder(Sphere_Params SP)
         {
-            while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+            if (Detal != null & Model != null)
             {
-                Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                {
+                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                }
+                while (Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                {
+                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                }
+
+                var gm = new GeometryModel3D();
+                MeshBuilder mb = new MeshBuilder();
+                mb.AddSphere(SP.Position, SP.Radius);
+                gm.Geometry = mb.ToMesh();
+                gm.Material = MaterialHelper.CreateMaterial(Colors.Red, 0.5);
+                
+
+                Model3D m = gm;
+                m.SetName(Sphere_Params.SphereName);
+
+                Detal.Children.Add(m);
+                Model.Children.Add(m);
             }
-
-            var gm = new GeometryModel3D();
-            MeshBuilder mb = new MeshBuilder();
-            mb.AddSphere(SP.Position, SP.Radius);
-            gm.Geometry = mb.ToMesh();
-            gm.Material = Materials.Green;
-
-            Model3D m = gm;
-            m.SetName(Sphere_Params.SphereName);
-
-            Detal.Children.Add(m);
         }
 
         private void SphereDelete()
         {
-            while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+            if (Detal != null & Model != null)
             {
-                Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                {
+                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                }
+                while (Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                {
+                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                }
             }
         }
 
