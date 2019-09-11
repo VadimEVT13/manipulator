@@ -73,6 +73,7 @@ namespace ISC_Rentgen
 
             KPL_controller_main = new Key_Point_List_controller() { Model = Model, Detal = Detal };
             Key_Point_List.getInstance.PointAdd += KPL_controller_main.PointAdd;
+            Key_Point_List.getInstance.PointRemove += KPL_controller_main.PointRemove;
             Key_Point_List.getInstance.PointsClear += KPL_controller_main.PointsClear;
 
             //ManipulatorV3.Set_Position(new Point3D(-10, 10, 60), new Point3D(0, 0, 60));

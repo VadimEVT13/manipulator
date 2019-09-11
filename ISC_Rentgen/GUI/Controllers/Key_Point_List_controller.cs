@@ -13,7 +13,7 @@ namespace ISC_Rentgen.GUI.Controllers
     {
         public Model3DGroup Model { get; set; }
         public Model3DGroup Detal { get; set; }
-        private static string Key_Point_Model_Name = "Key_Point_From_Table";
+        private static string Key_Point_Model_Name = "Key_Point_From_Table+";
 
         public void PointAdd(Key_Point p)
         {
@@ -22,7 +22,7 @@ namespace ISC_Rentgen.GUI.Controllers
                 MeshBuilder mb = new MeshBuilder(true, true);
                 mb.AddSphere(p.Emitter_point, 1);
                 GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Red };
-                gm.SetName(Key_Point_Model_Name);
+                gm.SetName(Key_Point_Model_Name+p.Index);
                 Model.Children.Add(gm);
             }
 
@@ -31,7 +31,7 @@ namespace ISC_Rentgen.GUI.Controllers
                 MeshBuilder mb = new MeshBuilder(true, true);
                 mb.AddSphere(p.Emitter_point, 1);
                 GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Red };
-                gm.SetName(Key_Point_Model_Name);
+                gm.SetName(Key_Point_Model_Name+p.Index);
                 Detal.Children.Add(gm);
             }
         }
@@ -40,7 +40,11 @@ namespace ISC_Rentgen.GUI.Controllers
         {
             if (Model != null)
             {
-
+                Model.Children.Remove(Model.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First());
+            }
+            if (Detal != null)
+            {
+                Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First());
             }
         }
 

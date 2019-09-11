@@ -17,7 +17,7 @@ namespace ISC_Rentgen.GUI.ModelView
         public static Model3DGroup Group { get; set; }
         private static string emitter_point_name { get { return "emitter_point"; } }
         private static string scan_point_name { get { return "scan_point"; } }
-
+        
         public static void AddEmitter(Point3D Emitter_point )
         {
             Emitter_and_scan_point.Emitter_point = Emitter_point;

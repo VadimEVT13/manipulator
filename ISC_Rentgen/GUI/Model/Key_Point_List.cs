@@ -46,10 +46,12 @@ namespace ISC_Rentgen.GUI.Model
 
         public void RemovePoint(Key_Point p)
         {
-            var removed = this.points.Remove(p);
-            NotifyPropertyChanged("Remove");
-            if (removed)
+            if (Points_List.Contains(p))
+            {
+                Points_List.Remove(p);
+                NotifyPropertyChanged("Remove");
                 this.PointRemove?.Invoke(p);
+            }                
         }
 
         public void Clear()

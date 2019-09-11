@@ -70,7 +70,7 @@ namespace ISC_Rentgen.GUI.View
                 Point3D Scan_point = new Point3D(double.Parse(Scan_x.Text), double.Parse(Scan_y.Text), double.Parse(Scan_z.Text));
 
                 ManipulatorV3.Set_Position(Emitter_point, Scan_point);
-                PortalV3.Set_Position(Emitter_point, Scan_point);
+                PortalV3.Set_Position(Emitter_point, Scan_point);                  
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -395,6 +395,14 @@ namespace ISC_Rentgen.GUI.View
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             Duga_mode = (bool)(sender as CheckBox).IsChecked;
+        }
+        
+        private void TargetPointsListView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as ListView).SelectedItem != null)
+            {
+                Key_Point_List.getInstance.RemovePoint((sender as ListView).SelectedItem as Key_Point);
+            }
         }
     }
 }

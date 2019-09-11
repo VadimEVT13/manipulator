@@ -10,6 +10,10 @@ namespace ISC_Rentgen.GUI.Model
 {
     public class Key_Point
     {
+        private static int static_index = 0;
+        public int Index { get { return index; } }
+        private int index = 0;
+
         public Point3D Emitter_point { get; set; }
         public Point3D Scan_point { get; set; }
 
@@ -19,6 +23,9 @@ namespace ISC_Rentgen.GUI.Model
         {
             this.Emitter_point  = Emitter_point;
             this.Scan_point     = Scan_point;
+            //индекс и его инкриментация
+            index = static_index;
+            static_index++;
         }
     }
 }
