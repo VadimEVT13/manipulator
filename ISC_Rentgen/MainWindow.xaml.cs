@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using ISC_Rentgen.GUI.Controllers;
 using ISC_Rentgen.GUI.Model;
 using ISC_Rentgen.GUI.ModelView;
 using ISC_Rentgen.Model3d;
@@ -40,6 +41,11 @@ namespace ISC_Rentgen
         public string Example { get { return example; } set { example = value; } }
         private string example = "Example";
 
+        // отображение дуги на главной вьюшке
+        private Key_Point_List_controller KPL_controller_main;
+        // отображение дуги на дополнительной вьюшке
+        private Key_Point_List_controller KPL_controller_second;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -64,6 +70,10 @@ namespace ISC_Rentgen
             Controller.PositionChanged += Test;
             Scan_View.OnSphereChanged += SphereAdder;
             Scan_View.OnSphereDelite += SphereDelete;
+
+            KPL_controller_main = new Key_Point_List_controller() { Model = Model, Detal = Detal };
+            Key_Point_List.getInstance.PointAdd += KPL_controller_main.PointAdd;
+            Key_Point_List.getInstance.PointsClear += KPL_controller_main.PointsClear;
 
             //ManipulatorV3.Set_Position(new Point3D(-10, 10, 60), new Point3D(0, 0, 60));
             //// -- Установка шарика в схват манипулятора --

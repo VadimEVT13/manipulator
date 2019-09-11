@@ -31,8 +31,8 @@ namespace ISC_Rentgen.GUI.ModelView
                 }
 
                 MeshBuilder mb = new MeshBuilder(true, true);
-                mb.AddSphere(Emitter_point, 1);
-                GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Red };
+                mb.AddSphere(Emitter_point, 1.1);
+                GeometryModel3D gm = new GeometryModel3D() { Geometry = mb.ToMesh(), Material = Materials.Green };
                 gm.SetName(emitter_point_name);
                 Group.Children.Add(gm);
             }

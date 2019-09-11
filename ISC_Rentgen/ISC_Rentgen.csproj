@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GUI\Controllers\Key_Point_List_controller.cs" />
     <Compile Include="GUI\Model\Sphere_Params.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\Kinematic\Manipulator_Kinematic.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\ManipulatorV3.cs" />

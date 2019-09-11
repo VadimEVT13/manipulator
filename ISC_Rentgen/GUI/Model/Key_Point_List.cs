@@ -10,11 +10,13 @@ namespace ISC_Rentgen.GUI.Model
 {
     public delegate void OnPointAdd(Key_Point p);
     public delegate void OnPointRemove(Key_Point p);
+    public delegate void OnClear();
 
     public class Key_Point_List : INotifyPropertyChanged
     {
         public OnPointAdd PointAdd;
         public OnPointRemove PointRemove;
+        public OnClear PointsClear;
 
         private static Key_Point_List instance;
         public static Key_Point_List getInstance
@@ -57,6 +59,7 @@ namespace ISC_Rentgen.GUI.Model
                 RemovePoint(points.First());
             }
             NotifyPropertyChanged("Clear");
+            PointsClear?.Invoke();
         }
 
         private void NotifyPropertyChanged(String info)
