@@ -140,29 +140,39 @@ namespace ISC_Rentgen
 
         private void Download_object_button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog();
-            open_file_dialog.Filter = "Obj files (*.obj)|*.obj";
-            if (open_file_dialog.ShowDialog() == true)
+            try
             {
-                while (Model.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).Count() > 0)
+                OpenFileDialog open_file_dialog = new OpenFileDialog()
                 {
-                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
-                }
+                    Filter = "Obj files (*.obj)|*.obj",
+                    InitialDirectory = System.IO.Directory.GetCurrentDirectory() + @"\Model3d\Detals"
+                };
+                if (open_file_dialog.ShowDialog() == true)
+                {
+                    while (Model.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).Count() > 0)
+                    {
+                        Model.Children.Remove(Model.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
+                    }
 
-                Scan_Object_Parser.Parse(new ModelImporter().Load(open_file_dialog.FileName));
-                foreach (Model3D m in Scan_Object.Model.Children)
-                {
-                    Model.Children.Add(m);
-                }
+                    Scan_Object_Parser.Parse(new ModelImporter().Load(open_file_dialog.FileName));
+                    foreach (Model3D m in Scan_Object.Model.Children)
+                    {
+                        Model.Children.Add(m);
+                    }
 
-                while (Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).Count() > 0)
-                {
-                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
-                }                
-                foreach (Model3D m in Scan_Object.Model.Children)
-                {
-                    Detal.Children.Add(m);
+                    while (Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).Count() > 0)
+                    {
+                        Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
+                    }
+                    foreach (Model3D m in Scan_Object.Model.Children)
+                    {
+                        Detal.Children.Add(m);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }
