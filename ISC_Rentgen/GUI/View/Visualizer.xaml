@@ -23,7 +23,7 @@
                 <Grid Grid.Row="0" Grid.Column="0">
                     <helix:HelixViewport3D x:Name="Front_View" 
                                        ShowViewCube="False" BorderBrush="Black" 
-                                       BorderThickness="1" IsRotationEnabled="False">
+                                       BorderThickness="1" IsRotationEnabled="False" Orthographic="True">
                         <helix:DefaultLights/>
                         <ModelVisual3D Content="{Binding Model}"/>
                         <helix:HelixViewport3D.DefaultCamera>
@@ -38,7 +38,7 @@
                 <Grid Grid.Row="0" Grid.Column="1">
                     <helix:HelixViewport3D x:Name="Right_View"
                                        ShowViewCube="False" BorderBrush="Black" 
-                                       BorderThickness="1" IsRotationEnabled="False">
+                                       BorderThickness="1" IsRotationEnabled="False" Orthographic="True" >
                         <helix:DefaultLights/>
                         <ModelVisual3D Content="{Binding Model}"/>
                         <helix:HelixViewport3D.DefaultCamera>
@@ -53,7 +53,7 @@
                 <Grid Grid.Row="1" Grid.Column="0">
                     <helix:HelixViewport3D x:Name="Top_View"
                                        ShowViewCube="False" BorderBrush="Black" 
-                                       BorderThickness="1" IsRotationEnabled="False">
+                                       BorderThickness="1" IsRotationEnabled="False" Orthographic="True">
                         <helix:DefaultLights/>
                         <ModelVisual3D Content="{Binding Model}"/>
                         <helix:HelixViewport3D.DefaultCamera>

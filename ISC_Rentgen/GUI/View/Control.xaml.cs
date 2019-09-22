@@ -218,5 +218,24 @@ namespace ISC_Rentgen.GUI.View
                 Scan_Object.Base(new Point3D(x, y, z));
             }
         }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            double x = e.GetPosition((Image)sender).X;
+            double y = e.GetPosition((Image)sender).Y;
+
+            double W = 180.0;
+            double H = 360.0;
+
+            double AW = (sender as Image).ActualWidth;
+            double AH = (sender as Image).ActualHeight;
+
+            double y_new = 60  - x * W / AW;
+            double x_new = 160 - y * H / AH;
+            Console.WriteLine(string.Format("Точка x={0}; y={1}", x_new, y_new));
+
+            Scan_Object_x.Text = x_new.ToString();
+            Scan_Object_y.Text = y_new.ToString();
+        }
     }
 }

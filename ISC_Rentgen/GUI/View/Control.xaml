@@ -149,7 +149,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="5*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Точка базирования" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -169,10 +170,13 @@
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Z_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
                 <StackPanel Grid.Row="3">
-                    <Label HorizontalAlignment="Center" Content="Угол поворота 1"></Label>
+                    <Label HorizontalAlignment="Center" Content="Угол поворота 2"></Label>
                     <Slider Name="Object_Y_rotation_Slider" Minimum="-180" Maximum="180" ValueChanged="Object_Y_rotation_Slider_ValueChanged"></Slider>
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Y_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
+                <Grid Grid.Row="4">
+                    <Image Source="/Map/MyMap.bmp" MouseDown="Image_MouseDown"></Image>
+                </Grid>
             </Grid>
         </TabItem>
     </TabControl>

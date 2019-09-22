@@ -145,7 +145,7 @@ namespace ISC_Rentgen
                 OpenFileDialog open_file_dialog = new OpenFileDialog()
                 {
                     Filter = "Obj files (*.obj)|*.obj",
-                    InitialDirectory = System.IO.Directory.GetCurrentDirectory() + @"\Model3d\Detals"
+                    InitialDirectory = @"Model3d\Detals"
                 };
                 if (open_file_dialog.ShowDialog() == true)
                 {
