@@ -92,49 +92,7 @@ namespace ISC_Rentgen.GUI.View
                 Emitter_and_scan_point_controller.AddScan(selected.Scan_point);
             }
         }
-
-        /// <summary>
-        /// Смена положения точки излучателя
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Emitter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            double x, y, z;
-            if (double.TryParse(Emitter_x.Text, out x) & double.TryParse(Emitter_y.Text, out y) & double.TryParse(Emitter_z.Text, out z))
-            {
-                Emitter_and_scan_point_controller.AddEmitter(new Point3D(x, y, z));
-            }
-        }
-        
-        /// <summary>
-        /// Смена положения точки сканирования
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Scan_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            double x, y, z;
-            if (double.TryParse(Scan_x.Text, out x) & double.TryParse(Scan_y.Text, out y) & double.TryParse(Scan_z.Text, out z))
-            {
-                Emitter_and_scan_point_controller.AddScan(new Point3D(x, y, z));
-            }
-        }
-                
-        /// <summary>
-        /// Смена точки сканирования во вкладке автоматического создания
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Automatic_Scan_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            double x, y, z;
-            if (double.TryParse(Automatic_Scan_X.Text, out x) & double.TryParse(Automatic_Scan_Y.Text, out y) & double.TryParse(Automatic_Scan_Z.Text, out z))
-            {
-                    Emitter_and_scan_point_controller.AddScan(new Point3D(x, y, z));
-            }
-        }
-
+               
         /// <summary>
         /// Автоматическое создание
         /// </summary>
@@ -161,12 +119,6 @@ namespace ISC_Rentgen.GUI.View
 
         void ShpangoutMethodic()
         {
-            double x, y, z;
-            if (double.TryParse(Automatic_Scan_X.Text, out x) & double.TryParse(Automatic_Scan_Y.Text, out y) & double.TryParse(Automatic_Scan_Z.Text, out z))
-            {
-                Emitter_and_scan_point_controller.AddScan(new Point3D(x, y, z));
-            }
-
             Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
             double n;
 
@@ -194,12 +146,6 @@ namespace ISC_Rentgen.GUI.View
 
         void LopatkaMethodic()
         {
-            double x, y, z;
-            if (double.TryParse(Automatic_Scan_X.Text, out x) & double.TryParse(Automatic_Scan_Y.Text, out y) & double.TryParse(Automatic_Scan_Z.Text, out z))
-            {
-                Emitter_and_scan_point_controller.AddScan(new Point3D(x, y, z));
-            }
-
             Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
             
             // Очистка таблиц
@@ -347,12 +293,13 @@ namespace ISC_Rentgen.GUI.View
             {
                 Point mousePos = e.GetPosition(Detal_View);
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+
+                Scan_x.Text = result.PointHit.X.ToString();
+                Scan_y.Text = result.PointHit.Y.ToString();
+                Scan_z.Text = result.PointHit.Z.ToString();
+
                 if (result != null)
                 {
-                    Scan_x.Text = result.PointHit.X.ToString();
-                    Scan_y.Text = result.PointHit.Y.ToString();
-                    Scan_z.Text = result.PointHit.Z.ToString();
-
                     Addition_Sphere.getInstance.Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
                     Addition_Sphere.getInstance.If_Sphere_Exist = true;
                 }

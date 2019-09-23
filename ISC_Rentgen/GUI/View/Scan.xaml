@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"
              xmlns:model="clr-namespace:ISC_Rentgen.GUI.Model"
+             xmlns:modelview="clr-namespace:ISC_Rentgen.GUI.ModelView"
              xmlns:helix="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="300">
@@ -37,9 +38,12 @@
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="Emitter_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
-                            <TextBox x:Name="Emitter_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
-                            <TextBox x:Name="Emitter_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Emitter_TextChanged" Margin="5"></TextBox>
+                            <TextBox x:Name="Emitter_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.X}"/>
+                            <TextBox x:Name="Emitter_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.Y}"/>
+                            <TextBox x:Name="Emitter_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.Z}"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
@@ -55,9 +59,12 @@
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="Scan_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
-                            <TextBox x:Name="Scan_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
-                            <TextBox x:Name="Scan_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_TextChanged"  Margin="5"></TextBox>
+                            <TextBox x:Name="Scan_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.X}"/>
+                            <TextBox x:Name="Scan_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.Y}"/>
+                            <TextBox x:Name="Scan_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.X}"/>
                         </Grid>
                     </Grid>
 
@@ -80,12 +87,6 @@
                             <TextBlock>Лопатка</TextBlock>
                             <TextBlock>Шпангоут (дугами)</TextBlock>
                         </ComboBox>
-                        <Label Content="Точка установки"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBox x:Name="Automatic_Scan_X" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
-                            <TextBox x:Name="Automatic_Scan_Y" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
-                            <TextBox x:Name="Automatic_Scan_Z" TextAlignment="Center" Width="50" TextChanged="Automatic_Scan_TextChanged"/>
-                        </StackPanel>
                         <Label Content="Количество положений"/>
                         <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center"/>
                         <Label Content="Радиус (для шпангоута)"/>
