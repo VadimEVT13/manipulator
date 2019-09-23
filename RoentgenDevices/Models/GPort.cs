@@ -37,7 +37,8 @@ namespace Roentgen.Devices.Models
         /// </summary>
         public GStatus Status
         {
-            get => status;
+            get
+            { return status; }
             set
             {
                 status = value;

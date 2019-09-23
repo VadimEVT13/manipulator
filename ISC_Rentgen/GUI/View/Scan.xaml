@@ -89,7 +89,7 @@
                         <Label Content="Количество положений"/>
                         <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center"/>
                         <Label Content="Радиус (для шпангоута)"/>
-                        <TextBox x:Name="Radius" Width="50" TextAlignment="Center" Margin="5"/>
+                        <TextBox Width="50" TextAlignment="Center" Margin="5" Text="{Binding Radius, Source={x:Static model:Addition_Sphere.getInstance}}"/>
                         <Button x:Name="GetPointsButton" Click="GetPointsButton_Click" Margin="5,0,5,0">Получить</Button>
                     </StackPanel>
                 </Grid>

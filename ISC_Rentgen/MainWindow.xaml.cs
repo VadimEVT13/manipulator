@@ -67,8 +67,8 @@ namespace ISC_Rentgen
             PortalV3.OnRefreshSliders += Control_View.Refresh_Sliders;
 
             Controller.PositionChanged += Test;
-            Scan_View.OnSphereChanged += SphereAdder;
-            Scan_View.OnSphereDelite += SphereDelete;
+            Addition_Sphere.getInstance.Sphere_Added += SphereAdder;
+            Addition_Sphere.getInstance.Sphere_Deleted += SphereDelete;
 
             KPL_controller_main = new Key_Point_List_controller() { Model = Model, Detal = Detal };
             Key_Point_List.getInstance.PointAdd += KPL_controller_main.PointAdd;
@@ -90,45 +90,39 @@ namespace ISC_Rentgen
         /// Добавление сферы ОИ
         /// </summary>
         /// <param name="SP"></param>
-        private void SphereAdder(Sphere_Params SP)
+        private void SphereAdder(Model3D sphere)
         {
             if (Detal != null & Model != null)
             {
-                while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                string sphere_name = Addition_Sphere.getInstance.SphereName;
+
+                while (Detal.Children.Where(x => x.GetName() == sphere_name).Count() > 0)
                 {
-                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == sphere_name).ToList().First());
                 }
-                while (Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                while (Model.Children.Where(x => x.GetName() == sphere_name).Count() > 0)
                 {
-                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
-                }
+                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == sphere_name).ToList().First());
+                }                
 
-                var gm = new GeometryModel3D();
-                MeshBuilder mb = new MeshBuilder();
-                mb.AddSphere(SP.Position, SP.Radius);
-                gm.Geometry = mb.ToMesh();
-                gm.Material = MaterialHelper.CreateMaterial(Colors.Red, 0.5);
-                
-
-                Model3D m = gm;
-                m.SetName(Sphere_Params.SphereName);
-
-                Detal.Children.Add(m);
-                Model.Children.Add(m);
+                Detal.Children.Add(sphere);
+                Model.Children.Add(sphere);
             }
         }
 
-        private void SphereDelete()
+        private void SphereDelete(Model3D sphere)
         {
             if (Detal != null & Model != null)
             {
-                while (Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                string sphere_name = Addition_Sphere.getInstance.SphereName;
+
+                while (Detal.Children.Where(x => x.GetName() == sphere_name).Count() > 0)
                 {
-                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                    Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == sphere_name).ToList().First());
                 }
-                while (Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).Count() > 0)
+                while (Model.Children.Where(x => x.GetName() == sphere_name).Count() > 0)
                 {
-                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == Sphere_Params.SphereName).ToList().First());
+                    Model.Children.Remove(Model.Children.Where(x => x.GetName() == sphere_name).ToList().First());
                 }
             }
         }

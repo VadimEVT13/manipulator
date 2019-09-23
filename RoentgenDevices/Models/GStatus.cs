@@ -30,7 +30,7 @@ namespace Roentgen.Devices.Models
         [JsonConverter(typeof(GStateToStringConverter))]
         public GState State
         {
-            get => state;
+            get { return state; }
             set
             {
                 state = value;

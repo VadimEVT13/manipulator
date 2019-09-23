@@ -23,17 +23,11 @@ using System.Windows.Shapes;
 
 namespace ISC_Rentgen.GUI.View
 {
-    public delegate void Sphere_Params_delegate(Sphere_Params SP);
-    public delegate void Sphere_delite_delegate();
-
     /// <summary>
     /// Логика взаимодействия для Scan.xaml
     /// </summary>
     public partial class Scan : UserControl
     {
-        public Sphere_Params_delegate OnSphereChanged;
-        public Sphere_delite_delegate OnSphereDelite;
-
         public Scan()
         {
             InitializeComponent();
@@ -174,9 +168,9 @@ namespace ISC_Rentgen.GUI.View
             }
 
             Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
-            double r, n;
+            double n;
 
-            if (!double.TryParse(Radius.Text, out r) || !double.TryParse(NumberOfPoints.Text, out n))
+            if (!double.TryParse(NumberOfPoints.Text, out n))
                 return;
 
             if (n <= 0)
@@ -190,9 +184,9 @@ namespace ISC_Rentgen.GUI.View
             {
                 Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D()
                 {
-                    X = KP.Scan_point.X - Math.Sin(i) * r,
+                    X = KP.Scan_point.X - Math.Sin(i) * Addition_Sphere.getInstance.Radius,
                     Y = KP.Scan_point.Y,
-                    Z = KP.Scan_point.Z + Math.Cos(i) * r
+                    Z = KP.Scan_point.Z + Math.Cos(i) * Addition_Sphere.getInstance.Radius
                 },
                 KP.Scan_point));
             }
@@ -207,33 +201,28 @@ namespace ISC_Rentgen.GUI.View
             }
 
             Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
-            double r;
-
-            if (!double.TryParse(Radius.Text, out r))
-                return;
             
             // Очистка таблиц
             Key_Point_List.getInstance.Clear();
 
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - r, KP.Scan_point.Y, KP.Scan_point.Z + 15), 
+                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 15), 
                 new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 15)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - r, KP.Scan_point.Y, KP.Scan_point.Z + 30),
+                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 30),
                 new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 30)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - r, KP.Scan_point.Y, KP.Scan_point.Z + 45),
+                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 45),
                 new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 45)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - r, KP.Scan_point.Y, KP.Scan_point.Z + 60 - r),
+                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 60 - Addition_Sphere.getInstance.Radius),
                 new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 60)));
         }
 
         void Shpangout_Duga()
         {
             int n = 0;
-            double r = 0;
-            if (!int.TryParse(NumberOfPoints.Text, out n) || !double.TryParse(Radius.Text, out r))
+            if (!int.TryParse(NumberOfPoints.Text, out n))
                 return;
 
             Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
@@ -270,9 +259,9 @@ namespace ISC_Rentgen.GUI.View
                 double delta_a = (double)(alfa2 - alfa1) / (n - 1);
                 double delta_b = (double)(beta2 - beta1) / (n - 1);
 
-                double x = Math.Cos(beta1 + delta_b * i) * Math.Cos(alfa1 + delta_a * i) * r;
-                double y = Math.Cos(beta1 + delta_b * i) * Math.Sin(alfa1 + delta_a * i) * r;
-                double z = Math.Sin(beta1 + delta_b * i) * r;
+                double x = Math.Cos(beta1 + delta_b * i) * Math.Cos(alfa1 + delta_a * i) * Addition_Sphere.getInstance.Radius;
+                double y = Math.Cos(beta1 + delta_b * i) * Math.Sin(alfa1 + delta_a * i) * Addition_Sphere.getInstance.Radius;
+                double z = Math.Sin(beta1 + delta_b * i) * Addition_Sphere.getInstance.Radius;
 
                 Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D(s.X + x, s.Y + y, s.Z + z), s));
             }
@@ -333,13 +322,8 @@ namespace ISC_Rentgen.GUI.View
                 
         private void Detal_View_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Sphere_Params.If_Sphere_Exist)
+            if (Addition_Sphere.getInstance.If_Sphere_Exist)
             {
-                double r = 0;
-
-                if (!double.TryParse(Radius.Text, out r))
-                    return;
-
                 Point mousePos = e.GetPosition(Detal_View);
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
                 if (result != null)
@@ -361,11 +345,6 @@ namespace ISC_Rentgen.GUI.View
             }
             else
             {
-                double r = 0;
-
-                if (!double.TryParse(Radius.Text, out r))
-                    return;
-
                 Point mousePos = e.GetPosition(Detal_View);
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
                 if (result != null)
@@ -374,25 +353,74 @@ namespace ISC_Rentgen.GUI.View
                     Scan_y.Text = result.PointHit.Y.ToString();
                     Scan_z.Text = result.PointHit.Z.ToString();
 
-                    OnSphereChanged?.Invoke(new Sphere_Params()
-                    {
-                        Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
-                        Radius = r
-                    });
-
-                    Sphere_Params.If_Sphere_Exist = true;
+                    Addition_Sphere.getInstance.Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
+                    Addition_Sphere.getInstance.If_Sphere_Exist = true;
                 }
                 else
                 {
                     return;
                 }
             }
+
+            //if (Sphere_Params.If_Sphere_Exist)
+            //{
+            //    double r = 0;
+
+            //    if (!double.TryParse(Radius.Text, out r))
+            //        return;
+
+            //    Point mousePos = e.GetPosition(Detal_View);
+            //    RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+            //    if (result != null)
+            //    {
+            //        Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
+
+            //        e1 = e2;
+            //        e2 = new Point3D()
+            //        {
+            //            X = result.PointHit.X,
+            //            Y = result.PointHit.Y,
+            //            Z = result.PointHit.Z
+            //        };
+
+            //        Emitter_x.Text = e2.X.ToString();
+            //        Emitter_y.Text = e2.Y.ToString();
+            //        Emitter_z.Text = e2.Z.ToString();
+            //    }
+            //}
+            //else
+            //{
+            //    double r = 0;
+
+            //    if (!double.TryParse(Radius.Text, out r))
+            //        return;
+
+            //    Point mousePos = e.GetPosition(Detal_View);
+            //    RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
+            //    if (result != null)
+            //    {
+            //        Scan_x.Text = result.PointHit.X.ToString();
+            //        Scan_y.Text = result.PointHit.Y.ToString();
+            //        Scan_z.Text = result.PointHit.Z.ToString();
+
+            //        OnSphereChanged?.Invoke(new Sphere_Params()
+            //        {
+            //            Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
+            //            Radius = r
+            //        });
+
+            //        Sphere_Params.If_Sphere_Exist = true;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
         }
         
         private void Sphere_delite(object sender, RoutedEventArgs e)
         {
-            OnSphereDelite?.Invoke();
-            Sphere_Params.If_Sphere_Exist = false;
+            Addition_Sphere.getInstance.If_Sphere_Exist = false;
         }
 
         private bool Duga_mode = false;

@@ -71,7 +71,7 @@ namespace Roentgen.Devices.Converters
         {
             if (value is GState)
             {
-                switch (value)
+                switch ((GState)value)
                 {
                     case GState.IDLE:
                         return "Idle";

@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Roentgen.Devices.Models;
 
 namespace ISC_Rentgen.GUI.View
 {
@@ -33,10 +34,17 @@ namespace ISC_Rentgen.GUI.View
         public ComPort manip_port  = new ComPort();
         public ComPort portal_port = new ComPort();
 
+        public GPort MPort { get; set; }
+        public GPort DPort { get; set; }
+
         public Control()
         {
             InitializeComponent();
+            MPort = GManipulator.getInstance().Port;
+            DPort = GDetector.getInstance().Port;
         }
+
+        #region sliders
 
         private void Manipulator_Angle1_Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {        
@@ -117,30 +125,41 @@ namespace ISC_Rentgen.GUI.View
 
             PortalV3.Rotate(old_angle);
         }
-        
+        #endregion
 
         private void PortalOn_Click(object sender, RoutedEventArgs e)
         {
-            try {
-                portal_port = new ComPort(Portal_com_port.SelectedItem.ToString(), 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
-                Console.WriteLine(portal_port.Open());
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            DPort.Open();
+            //try {
+            //    portal_port = new ComPort(Portal_com_port.SelectedItem.ToString(), 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            //    Console.WriteLine(portal_port.Open());
+            //}
+            //catch (Exception ex) { MessageBox.Show(ex.Message); }
         } 
 
         private void PortalPlay_Click(object sender, RoutedEventArgs e)
         {
-            portal_port.Play(PortalV3.Angles);
+            DPort.Global(new GPoint() {
+                X = PortalV3.Angles.X,
+                Y = PortalV3.Angles.Y,
+                Z = PortalV3.Angles.Z,
+                A = PortalV3.Angles.O1,
+                B = PortalV3.Angles.O2
+            });
+            DPort.Start();
+            //portal_port.Play(PortalV3.Angles);
         }
 
         private void PortalHome_Click(object sender, RoutedEventArgs e)
         {
-            portal_port.Home();
+            DPort.Home();
+            //portal_port.Home();
         }
 
         private void PortalOff_Click(object sender, RoutedEventArgs e)
         {
-            portal_port.Close();
+            DPort.Close();
+            //portal_port.Close();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -166,22 +185,33 @@ namespace ISC_Rentgen.GUI.View
 
         private void ManipulatorOn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                manip_port = new ComPort(Manip_com_port.SelectedItem.ToString(), 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
-                Console.WriteLine(manip_port.Open());
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            MPort.Open();
+            //try
+            //{
+            //    manip_port = new ComPort(Manip_com_port.SelectedItem.ToString(), 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            //    Console.WriteLine(manip_port.Open());
+            //}
+            //catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         private void ManipulatorPlay_Click(object sender, RoutedEventArgs e)
-        {
-            manip_port.Play(ManipulatorV3.Angles);
+        { 
+            MPort.Global(new GPoint()
+            {
+                X = ManipulatorV3.Angles.O1,
+                Y = ManipulatorV3.Angles.O2,
+                Z = ManipulatorV3.Angles.O3,
+                A = ManipulatorV3.Angles.O4,
+                B = ManipulatorV3.Angles.O5
+            });
+            MPort.Start();
+            //manip_port.Play(ManipulatorV3.Angles);
         }
 
         private void ManipulatorOff_Click(object sender, RoutedEventArgs e)
         {
-            manip_port.Close();
+            MPort.Close();
+            //manip_port.Close();
         }
 
 
