@@ -282,11 +282,11 @@ namespace ISC_Rentgen.GUI.View
             {
                 Point mousePos = e.GetPosition(Detal_View);
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-
-                Emitter_and_scan_point_controller.getInstance.AddScan(result.PointHit);
-
+                
                 if (result != null)
                 {
+                    Emitter_and_scan_point_controller.getInstance.AddScan(result.PointHit);
+
                     Addition_Sphere.getInstance.Position = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point;
                     Addition_Sphere.getInstance.If_Sphere_Exist = true;
                 }

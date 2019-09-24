@@ -47,11 +47,15 @@ namespace ISC_Rentgen.GUI.Model
         // Создание сферы
         private Model3D CreateSphere()
         {
-            MeshBuilder mb = new MeshBuilder();
-            mb.AddSphere(Position, Radius);
-
             double current_opacity = opacity;
-            if (If_Sphere_Exist == false) { current_opacity = 0; }
+            double current_radius = Radius;
+            if (If_Sphere_Exist == false) {
+                current_opacity = 0;
+                current_radius = 0.1;
+            }
+
+            MeshBuilder mb = new MeshBuilder();
+            mb.AddSphere(Position, current_radius);
 
             sphere = new GeometryModel3D()
             {
