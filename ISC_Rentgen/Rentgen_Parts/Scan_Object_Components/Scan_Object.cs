@@ -1,6 +1,7 @@
 ﻿using ISC_Rentgen.Rentgen_Parts.Scan_Object_Components.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +9,68 @@ using System.Windows.Media.Media3D;
 
 namespace ISC_Rentgen.Rentgen_Parts.Scan_Object_Components
 {
-    public static class Scan_Object
+    public class Scan_Object : INotifyPropertyChanged
     {
-        public static  Model3DGroup Model { get { return model; } set { model = value; } }
-        private static Model3DGroup model = new Model3DGroup();
+        private static Scan_Object instant;
+        public static Scan_Object getInstant {
+            get
+            {
+                if (instant == null)
+                {
+                    instant = new Scan_Object();
+                }
+                return instant;
+            }
+        }
 
-        public static  Point3D Base_Point { get { return base_point; } }
-        private static Point3D base_point = new Point3D();
+        public Model3DGroup Model { get { return model; } set { model = value; } }
+        private Model3DGroup model = new Model3DGroup();
 
-        public static  Angles_Scan_Object Angles { get { return angles; } }
-        private static Angles_Scan_Object angles = new Angles_Scan_Object();
+        public Point3D Base_Point { get { return base_point; } }
+        private Point3D base_point = new Point3D();
 
-        public static void Rotate(Angles_Scan_Object _angles)
+        private double base_x = 0;
+        public double Base_X { get { return base_x; }
+            set
+            {
+                base_x = value;
+                base_point = new Point3D(base_x, base_y, base_z);
+                Rotate(Angles);
+                NotifyPropertyChanged(nameof(base_x));
+            }
+        }
+        private double base_y = 0;
+        public double Base_Y { get { return base_y; }
+            set
+            {
+                base_y = value;
+                base_point = new Point3D(base_x, base_y, base_z);
+                Rotate(Angles);
+                NotifyPropertyChanged(nameof(base_y));
+            }
+        }
+        private double base_z = 0;
+        public double Base_Z { get { return base_z; }
+            set
+            {
+                base_z = value;
+                base_point = new Point3D(base_x, base_y, base_z);
+                Rotate(Angles);
+                NotifyPropertyChanged(nameof(base_z));
+            }
+        }
+
+        public void SetBase(Point3D Point)
+        {
+            Base_X = Point.X;
+            Base_Y = Point.Y;
+            Base_Z = Point.Z;
+        }
+
+        public  Angles_Scan_Object Angles { get { return angles; } }
+        private Angles_Scan_Object angles = new Angles_Scan_Object();
+
+        public void Rotate(Angles_Scan_Object _angles)
         {
             if (Model.Children.Count() == 0)
                 return;
@@ -39,10 +90,20 @@ namespace ISC_Rentgen.Rentgen_Parts.Scan_Object_Components
             }          
         }
 
-        public static void Base(Point3D _Base)
+        public void Base(Point3D _Base)
         {
             base_point = _Base;
             Rotate(Angles);
         }
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

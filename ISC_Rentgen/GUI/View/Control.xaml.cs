@@ -162,36 +162,9 @@ namespace ISC_Rentgen.GUI.View
             //portal_port.Close();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            string[] port_names = manip_port.Get_ports();
-            foreach (string port_name in port_names)
-            {
-                Manip_com_port.Items.Add(port_name);
-            }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            Manip_com_port.Items.Clear();
-            Portal_com_port.Items.Clear();
-            string[] port_names = manip_port.Get_ports();
-            foreach (string port_name in port_names)
-            {
-                Manip_com_port.Items.Add(port_name);
-                Portal_com_port.Items.Add(port_name);
-            }
-        }
-
         private void ManipulatorOn_Click(object sender, RoutedEventArgs e)
         {
             MPort.Open();
-            //try
-            //{
-            //    manip_port = new ComPort(Manip_com_port.SelectedItem.ToString(), 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
-            //    Console.WriteLine(manip_port.Open());
-            //}
-            //catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         private void ManipulatorPlay_Click(object sender, RoutedEventArgs e)
@@ -205,13 +178,11 @@ namespace ISC_Rentgen.GUI.View
                 B = ManipulatorV3.Angles.O5
             });
             MPort.Start();
-            //manip_port.Play(ManipulatorV3.Angles);
         }
 
         private void ManipulatorOff_Click(object sender, RoutedEventArgs e)
         {
             MPort.Close();
-            //manip_port.Close();
         }
 
 
@@ -232,21 +203,12 @@ namespace ISC_Rentgen.GUI.View
 
         private void Object_Z_rotation_Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Scan_Object.Rotate(new Angles_Scan_Object() { Z_rotation = e.NewValue, Y_rotation = Scan_Object.Angles.Y_rotation });
+            Scan_Object.getInstant.Rotate(new Angles_Scan_Object() { Z_rotation = e.NewValue, Y_rotation = Scan_Object.getInstant.Angles.Y_rotation });
         }
 
         private void Object_Y_rotation_Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Scan_Object.Rotate(new Angles_Scan_Object() { Z_rotation = Scan_Object.Angles.Z_rotation, Y_rotation = e.NewValue });
-        }
-
-        private void Scan_Object_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            double x, y, z;
-            if (double.TryParse(Scan_Object_x.Text, out x) & double.TryParse(Scan_Object_y.Text, out y) & double.TryParse(Scan_Object_z.Text, out z))
-            {
-                Scan_Object.Base(new Point3D(x, y, z));
-            }
+            Scan_Object.getInstant.Rotate(new Angles_Scan_Object() { Z_rotation = Scan_Object.getInstant.Angles.Z_rotation, Y_rotation = e.NewValue });
         }
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
@@ -262,10 +224,10 @@ namespace ISC_Rentgen.GUI.View
 
             double y_new = 60  - x * W / AW;
             double x_new = 160 - y * H / AH;
-            Console.WriteLine(string.Format("Точка x={0}; y={1}", x_new, y_new));
+            //Console.WriteLine(string.Format("Точка x={0}; y={1}", x_new, y_new));
 
-            Scan_Object_x.Text = x_new.ToString();
-            Scan_Object_y.Text = y_new.ToString();
+            Scan_Object.getInstant.Base_X = x_new;
+            Scan_Object.getInstant.Base_Y = y_new;
         }
     }
 }

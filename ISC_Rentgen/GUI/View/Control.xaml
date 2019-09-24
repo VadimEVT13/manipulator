@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:ISC_Rentgen.GUI.View"
              xmlns:manip="clr-namespace:ISC_Rentgen.Rentgen_Parts.Manipulator_Components"
              xmlns:portal="clr-namespace:ISC_Rentgen.Rentgen_Parts.Portal_Components"
+             xmlns:scan_objects="clr-namespace:ISC_Rentgen.Rentgen_Parts.Scan_Object_Components"
              mc:Ignorable="d" 
-             Loaded="UserControl_Loaded"
              d:DesignHeight="500" d:DesignWidth="300">
     <TabControl>
         <TabItem Header="Манип.">
@@ -20,9 +20,6 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Content="Управление платой"></Label>
-                <Grid Grid.Row="1">
-                    <ComboBox x:Name="Manip_com_port" Margin="5,1,5,1"/>
-                </Grid>
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -36,7 +33,6 @@
                     <Button Grid.Column="0" Name="ManipulatorOn" Click="ManipulatorOn_Click">On</Button>
                     <Button Grid.Column="1" Name="ManipulatorPlay" Click="ManipulatorPlay_Click">Play</Button>
                     <Button Grid.Column="4" Name="ManipulatorOff" Click="ManipulatorOff_Click">Off</Button>
-                    <Button Grid.Column="5" Name="Refresh_Manpulator" Click="Refresh_Click">Обновить порты</Button>
                 </Grid>
                 <Grid Grid.Row="3" Margin="5">
                     <Grid.RowDefinitions>
@@ -88,8 +84,7 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0">Управление платой</Label>
-                <ComboBox Grid.Row="1" x:Name="Portal_com_port" Margin="5,1,5,1" />
-                
+                              
                 <Grid Grid.Row="2" Grid.Column="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -104,7 +99,6 @@
                     <Button Name="PortalPlay" Grid.Column="1" Click="PortalPlay_Click">Play</Button>
                     <Button Name="PortalHome" Grid.Column="3" Click="PortalHome_Click">Home</Button>
                     <Button Name="PortalOff"  Grid.Column="4" Click="PortalOff_Click">Off</Button>
-                    <Button Name="Refresh_portal"  Grid.Column="5" Click="Refresh_Click">Обновить</Button>
                 </Grid>
                 <Grid Grid.Row="3" Margin="5">
                     <Grid.RowDefinitions>
@@ -154,15 +148,18 @@
                     <RowDefinition Height="5*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Точка базирования" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" DataContext="{Binding Source={x:Static scan_objects:Scan_Object.getInstant}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="Scan_Object_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_Object_TextChanged" Margin="5"></TextBox>
-                    <TextBox x:Name="Scan_Object_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_Object_TextChanged" Margin="5"></TextBox>
-                    <TextBox x:Name="Scan_Object_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="Scan_Object_TextChanged" Margin="5"></TextBox>
+                    <TextBox x:Name="Scan_Object_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                             Text="{Binding Base_X}" Margin="5"></TextBox>
+                    <TextBox x:Name="Scan_Object_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                             Text="{Binding Base_Y}" Margin="5"></TextBox>
+                    <TextBox x:Name="Scan_Object_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                             Text="{Binding Base_Z}" Margin="5"></TextBox>
                 </Grid>
                 <StackPanel Grid.Row="2">
                     <Label HorizontalAlignment="Center" Content="Угол поворота 1"></Label>

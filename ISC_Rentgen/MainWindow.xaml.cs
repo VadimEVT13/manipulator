@@ -149,7 +149,7 @@ namespace ISC_Rentgen
                     }
 
                     Scan_Object_Parser.Parse(new ModelImporter().Load(open_file_dialog.FileName));
-                    foreach (Model3D m in Scan_Object.Model.Children)
+                    foreach (Model3D m in Scan_Object.getInstant.Model.Children)
                     {
                         Model.Children.Add(m);
                     }
@@ -158,7 +158,7 @@ namespace ISC_Rentgen
                     {
                         Detal.Children.Remove(Detal.Children.Where(x => x.GetName() == Model3DParts.ObjectParts.Scan_object).First());
                     }
-                    foreach (Model3D m in Scan_Object.Model.Children)
+                    foreach (Model3D m in Scan_Object.getInstant.Model.Children)
                     {
                         Detal.Children.Add(m);
                     }

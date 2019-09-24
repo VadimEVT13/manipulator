@@ -16,7 +16,7 @@ namespace ISC_Rentgen.Model3d
             foreach (Model3D m in model.Children)
                 m.SetName(Model3DParts.ObjectParts.Scan_object);
 
-            Scan_Object.Model = model;
+            Scan_Object.getInstant.Model = model;
         }
     }
 }
