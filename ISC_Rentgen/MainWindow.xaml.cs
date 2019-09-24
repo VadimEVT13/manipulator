@@ -53,8 +53,8 @@ namespace ISC_Rentgen
         {
             Visual_View.DataContext = this;                                                                                         // Для передачи глобальной переменной Model
             Scan_View.DataContext = this;
-            Emitter_and_scan_point_controller.Model = Model;                                                                        // Для отображения точек излучателя и сканирования
-            Emitter_and_scan_point_controller.Detal = Detal;
+            Emitter_and_scan_point_controller.getInstance.Model = Model;                                                                        // Для отображения точек излучателя и сканирования
+            Emitter_and_scan_point_controller.getInstance.Detal = Detal;
             Model3d.Model3DParser.Parse(Model);                                                                                     // Парсинг модели для разбора на компоненты
             ManipulatorV3.Base_Point = new Point3D(-80, 0, 0);                                                                      // Базовое положение манипулятора
             ManipulatorV3.Length = new Join_Length_Manipulator() { L1 = 70.5, L2 = 90, L3 = 91.75, L4 = 15.5, L5 = 19, Det = 11 };  // Длины манипулятора

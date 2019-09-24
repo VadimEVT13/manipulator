@@ -32,18 +32,18 @@
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" Content="Точка излучателя" HorizontalAlignment="Center"/>
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="1" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.getInstance}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="Emitter_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.X}"/>
-                            <TextBox x:Name="Emitter_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.Y}"/>
-                            <TextBox x:Name="Emitter_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Emitter_point.Z}"/>
+                            <TextBox Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" Text="{Binding EM_X}"/>
+                            <TextBox Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" Text="{Binding EM_Y}"/>
+                            <TextBox Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                     Margin="5" Text="{Binding EM_Z}"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
@@ -53,18 +53,18 @@
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" Content="Точка сканирования" HorizontalAlignment="Center"/>
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="1" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.getInstance}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="Scan_x" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.X}"/>
+                                     Margin="5" Text="{Binding Scan_X}"/>
                             <TextBox x:Name="Scan_y" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.Y}"/>
+                                     Margin="5" Text="{Binding Scan_Y}"/>
                             <TextBox x:Name="Scan_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                     Margin="5" DataContext="{Binding Source={x:Static modelview:Emitter_and_scan_point_controller.Emitter_and_scan_point}}" Text="{Binding Scan_point.X}"/>
+                                     Margin="5" Text="{Binding Scan_Z}"/>
                         </Grid>
                     </Grid>
 

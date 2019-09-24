@@ -42,10 +42,9 @@ namespace ISC_Rentgen.GUI.View
         {
             try
             {
-                Point3D Emitter_point   = new Point3D(double.Parse(Emitter_x.Text), double.Parse(Emitter_y.Text), double.Parse(Emitter_z.Text));
-                Point3D Scan_point      = new Point3D(double.Parse(Scan_x.Text), double.Parse(Scan_y.Text), double.Parse(Scan_z.Text));
-
-                Key_Point_List.getInstance.AddPoint(new Key_Point(Emitter_point, Scan_point));
+                Key_Point_List.getInstance.AddPoint(new Key_Point(
+                    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point,
+                    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point));
                 
             }
             catch(Exception ex) { MessageBox.Show(ex.Message); }
@@ -60,11 +59,10 @@ namespace ISC_Rentgen.GUI.View
         {
             try
             {
-                Point3D Emitter_point = new Point3D(double.Parse(Emitter_x.Text), double.Parse(Emitter_y.Text), double.Parse(Emitter_z.Text));
                 Point3D Scan_point = new Point3D(double.Parse(Scan_x.Text), double.Parse(Scan_y.Text), double.Parse(Scan_z.Text));
 
-                ManipulatorV3.Set_Position(Emitter_point, Scan_point);
-                PortalV3.Set_Position(Emitter_point, Scan_point);                  
+                ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, Scan_point);
+                PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, Scan_point);                  
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -87,9 +85,9 @@ namespace ISC_Rentgen.GUI.View
                     PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point));
                 //selected.Manipulator_Angle = ManipulatorV3.Set_Position(selected.Emitter_point, selected.Scan_point);
                 //selected.Portal_Angle = PortalV3.Set_Position(selected.Emitter_point, selected.Scan_point);
-                              
-                Emitter_and_scan_point_controller.AddEmitter(selected.Emitter_point);
-                Emitter_and_scan_point_controller.AddScan(selected.Scan_point);
+                                      
+                Emitter_and_scan_point_controller.getInstance.AddEmitter(selected.Emitter_point);
+                Emitter_and_scan_point_controller.getInstance.AddScan(selected.Scan_point);
             }
         }
                
@@ -119,7 +117,7 @@ namespace ISC_Rentgen.GUI.View
 
         void ShpangoutMethodic()
         {
-            Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
+            Key_Point KP = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point;
             double n;
 
             if (!double.TryParse(NumberOfPoints.Text, out n))
@@ -146,7 +144,7 @@ namespace ISC_Rentgen.GUI.View
 
         void LopatkaMethodic()
         {
-            Key_Point KP = Emitter_and_scan_point_controller.Emitter_and_scan_point;
+            Key_Point KP = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point;
             
             // Очистка таблиц
             Key_Point_List.getInstance.Clear();
@@ -171,7 +169,7 @@ namespace ISC_Rentgen.GUI.View
             if (!int.TryParse(NumberOfPoints.Text, out n))
                 return;
 
-            Point3D s = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point; // центр сферы
+            Point3D s = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point; // центр сферы
             
             double alfa1 = GetAngle((e1.X - s.X), (e1.Y - s.Y));
             double beta1 = GetAngle((e1.X - s.X) / Math.Cos(alfa1), (e1.Z - s.Z));
@@ -274,19 +272,10 @@ namespace ISC_Rentgen.GUI.View
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
                 if (result != null)
                 {
-                    Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
-
                     e1 = e2;
-                    e2 = new Point3D()
-                    {
-                        X = result.PointHit.X,
-                        Y = result.PointHit.Y,
-                        Z = result.PointHit.Z
-                    };
+                    e2 = result.PointHit;
 
-                    Emitter_x.Text = e2.X.ToString();
-                    Emitter_y.Text = e2.Y.ToString();
-                    Emitter_z.Text = e2.Z.ToString();
+                    Emitter_and_scan_point_controller.getInstance.AddEmitter(e2);
                 }
             }
             else
@@ -294,13 +283,11 @@ namespace ISC_Rentgen.GUI.View
                 Point mousePos = e.GetPosition(Detal_View);
                 RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
 
-                Scan_x.Text = result.PointHit.X.ToString();
-                Scan_y.Text = result.PointHit.Y.ToString();
-                Scan_z.Text = result.PointHit.Z.ToString();
+                Emitter_and_scan_point_controller.getInstance.AddScan(result.PointHit);
 
                 if (result != null)
                 {
-                    Addition_Sphere.getInstance.Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
+                    Addition_Sphere.getInstance.Position = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point;
                     Addition_Sphere.getInstance.If_Sphere_Exist = true;
                 }
                 else
@@ -308,61 +295,6 @@ namespace ISC_Rentgen.GUI.View
                     return;
                 }
             }
-
-            //if (Sphere_Params.If_Sphere_Exist)
-            //{
-            //    double r = 0;
-
-            //    if (!double.TryParse(Radius.Text, out r))
-            //        return;
-
-            //    Point mousePos = e.GetPosition(Detal_View);
-            //    RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-            //    if (result != null)
-            //    {
-            //        Point3D Sphere_center = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point;
-
-            //        e1 = e2;
-            //        e2 = new Point3D()
-            //        {
-            //            X = result.PointHit.X,
-            //            Y = result.PointHit.Y,
-            //            Z = result.PointHit.Z
-            //        };
-
-            //        Emitter_x.Text = e2.X.ToString();
-            //        Emitter_y.Text = e2.Y.ToString();
-            //        Emitter_z.Text = e2.Z.ToString();
-            //    }
-            //}
-            //else
-            //{
-            //    double r = 0;
-
-            //    if (!double.TryParse(Radius.Text, out r))
-            //        return;
-
-            //    Point mousePos = e.GetPosition(Detal_View);
-            //    RayMeshGeometry3DHitTestResult result = VisualTreeHelper.HitTest(Detal_View, mousePos) as RayMeshGeometry3DHitTestResult;
-            //    if (result != null)
-            //    {
-            //        Scan_x.Text = result.PointHit.X.ToString();
-            //        Scan_y.Text = result.PointHit.Y.ToString();
-            //        Scan_z.Text = result.PointHit.Z.ToString();
-
-            //        OnSphereChanged?.Invoke(new Sphere_Params()
-            //        {
-            //            Position = Emitter_and_scan_point_controller.Emitter_and_scan_point.Scan_point,
-            //            Radius = r
-            //        });
-
-            //        Sphere_Params.If_Sphere_Exist = true;
-            //    }
-            //    else
-            //    {
-            //        return;
-            //    }
-            //}
         }
         
         private void Sphere_delite(object sender, RoutedEventArgs e)
