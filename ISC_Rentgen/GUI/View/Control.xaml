@@ -145,6 +145,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="5*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Точка базирования" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -161,17 +162,21 @@
                     <TextBox x:Name="Scan_Object_z" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
                              Text="{Binding Base_Z}" Margin="5"></TextBox>
                 </Grid>
-                <StackPanel Grid.Row="2">
-                    <Label HorizontalAlignment="Center" Content="Угол поворота 1"></Label>
+                <StackPanel Grid.Row="2" DataContext="{Binding Source={x:Static scan_objects:Scan_Object.getInstant}}">
+                    <Label HorizontalAlignment="Center" Content="Координата Z"/>
+                    <Slider Minimum="0" Maximum="100" Value="{Binding Base_Z}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3">
+                    <Label HorizontalAlignment="Center" Content="Угол поворота 1"/>
                     <Slider Name="Object_Z_rotation_Slider" Minimum="-180" Maximum="180" ValueChanged="Object_Z_rotation_Slider_ValueChanged"></Slider>
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Z_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
-                <StackPanel Grid.Row="3">
+                <StackPanel Grid.Row="4">
                     <Label HorizontalAlignment="Center" Content="Угол поворота 2"></Label>
                     <Slider Name="Object_Y_rotation_Slider" Minimum="-180" Maximum="180" ValueChanged="Object_Y_rotation_Slider_ValueChanged"></Slider>
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Y_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
-                <Grid Grid.Row="4">
+                <Grid Grid.Row="5">
                     <Image Source="/Map/MyMap.bmp" MouseDown="Image_MouseDown"></Image>
                 </Grid>
             </Grid>
