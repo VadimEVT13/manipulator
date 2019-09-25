@@ -3,7 +3,6 @@ using ISC_Rentgen.GUI.Model;
 using ISC_Rentgen.GUI.ModelView;
 using ISC_Rentgen.Rentgen_Parts.Manipulator_Components;
 using ISC_Rentgen.Rentgen_Parts.Portal_Components;
-using ISC_Rentgen.Test;
 using System;
 using System.Collections.Generic;
 using System.Linq;

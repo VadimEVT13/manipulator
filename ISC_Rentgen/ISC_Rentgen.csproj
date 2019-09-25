@@ -106,7 +106,6 @@
     <Compile Include="Rentgen_Parts\Portal_Components\PortalV3.cs" />
     <Compile Include="Rentgen_Parts\Scan_Object_Components\Model\Angles_Scan_Object.cs" />
     <Compile Include="Rentgen_Parts\Scan_Object_Components\Scan_Object.cs" />
-    <Compile Include="Test\Controller.cs" />
     <Page Include="GUI\View\Control.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

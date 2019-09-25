@@ -8,7 +8,6 @@ using ISC_Rentgen.Rentgen_Parts.Manipulator_Components.Model;
 using ISC_Rentgen.Rentgen_Parts.Portal_Components;
 using ISC_Rentgen.Rentgen_Parts.Portal_Components.Model;
 using ISC_Rentgen.Rentgen_Parts.Scan_Object_Components;
-using ISC_Rentgen.Test;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -65,8 +64,7 @@ namespace ISC_Rentgen
 
             ManipulatorV3.OnRefreshSliders += Control_View.Refresh_Sliders;
             PortalV3.OnRefreshSliders += Control_View.Refresh_Sliders;
-
-            Controller.PositionChanged += Test;
+            
             Addition_Sphere.getInstance.Sphere_Added += SphereAdder;
             Addition_Sphere.getInstance.Sphere_Deleted += SphereDelete;
 
