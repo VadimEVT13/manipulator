@@ -167,6 +167,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Map\MyMap.bmp" />
+    <Content Include="Model3d\Detals\Config\lopatka.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Model3d\Detals\Config\shpangout.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
