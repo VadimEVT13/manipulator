@@ -141,12 +141,13 @@
         <TabItem Header="Объект">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Точка базирования" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 <Grid Grid.Row="1" DataContext="{Binding Source={x:Static scan_objects:Scan_Object.getInstant}}">
@@ -177,8 +178,9 @@
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Y_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
                 <Grid Grid.Row="5">
-                    <Image Source="/Map/MyMap.bmp" MouseDown="Image_MouseDown"></Image>
+                    <Image Source="/Map/MyMap.bmp" MouseLeftButtonDown="Image_MouseDown"></Image>
                 </Grid>
+                <Button Name="Configure" Grid.Row="6" Margin="5,5,5,5" Content="Сохранить конфигурацию" Click="Configure_Click"/>
             </Grid>
         </TabItem>
     </TabControl>

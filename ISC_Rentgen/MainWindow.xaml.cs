@@ -3,6 +3,8 @@ using ISC_Rentgen.GUI.Controllers;
 using ISC_Rentgen.GUI.Model;
 using ISC_Rentgen.GUI.ModelView;
 using ISC_Rentgen.Model3d;
+using ISC_Rentgen.Model3d.Detals.Controller;
+using ISC_Rentgen.Model3d.Detals.Model;
 using ISC_Rentgen.Rentgen_Parts.Manipulator_Components;
 using ISC_Rentgen.Rentgen_Parts.Manipulator_Components.Model;
 using ISC_Rentgen.Rentgen_Parts.Portal_Components;
@@ -11,6 +13,7 @@ using ISC_Rentgen.Rentgen_Parts.Scan_Object_Components;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,6 +76,11 @@ namespace ISC_Rentgen
             Key_Point_List.getInstance.PointRemove += KPL_controller_main.PointRemove;
             Key_Point_List.getInstance.PointsClear += KPL_controller_main.PointsClear;
             Key_Point_List.getInstance.ModifAngle += KPL_controller_main.AngleModif;
+
+            ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
+                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+            PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
+                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
 
             //ManipulatorV3.Set_Position(new Point3D(-10, 10, 60), new Point3D(0, 0, 60));
             //// -- Установка шарика в схват манипулятора --
@@ -137,7 +145,7 @@ namespace ISC_Rentgen
                 OpenFileDialog open_file_dialog = new OpenFileDialog()
                 {
                     Filter = "Obj files (*.obj)|*.obj",
-                    InitialDirectory = @"Model3d\Detals"
+                    InitialDirectory = System.IO.Path.GetFullPath(@"Model3d\Detals")
                 };
                 if (open_file_dialog.ShowDialog() == true)
                 {
@@ -159,6 +167,34 @@ namespace ISC_Rentgen
                     foreach (Model3D m in Scan_Object.getInstant.Model.Children)
                     {
                         Detal.Children.Add(m);
+                    }
+
+                    // Загрузка конфигов
+                    string ConfigPath = System.IO.Path.GetFullPath(@"Model3d/Detals/Config/" + 
+                        System.IO.Path.GetFileNameWithoutExtension(open_file_dialog.FileName) + ".txt");
+                    if (File.Exists(ConfigPath))
+                    {
+                        Detal_Config_Parser.Load_Config(ConfigPath);
+                        Scan_Object.getInstant.SetBase(Detal_Config.getInstance.Detal_Base);
+                        Key_Point_List.getInstance.Clear();
+                        var list = Detal_Config.getInstance.Position_ListToKey_Point_List(Detal_Config.getInstance.Positions);
+                        foreach (Key_Point kp in list)
+                        {
+                            Key_Point_List.getInstance.AddPoint(kp);
+                        }
+
+                        if (Key_Point_List.getInstance.Points_List.Count > 0)
+                        {
+                            Key_Point kp = Key_Point_List.getInstance.Points_List.First();
+
+                            Emitter_and_scan_point_controller.getInstance.AddEmitter(kp.Emitter_point);
+                            Emitter_and_scan_point_controller.getInstance.AddScan(kp.Scan_point);
+
+                            ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point,
+                                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+                            PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point,
+                                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+                        }
                     }
                 }
             }

@@ -44,7 +44,7 @@ namespace ISC_Rentgen.GUI.Model
         public void AddPoint(Key_Point p)
         {
             this.Points_List.Add(p);
-            NotifyPropertyChanged("Add");
+            NotifyPropertyChanged(nameof(Points_List));
             this.PointAdd?.Invoke(p);
         }
 
@@ -53,7 +53,7 @@ namespace ISC_Rentgen.GUI.Model
             if (Points_List.Contains(p))
             {
                 Points_List.Remove(p);
-                NotifyPropertyChanged("Remove");
+                NotifyPropertyChanged(nameof(Points_List));
                 this.PointRemove?.Invoke(p);
             }                
         }
@@ -72,7 +72,7 @@ namespace ISC_Rentgen.GUI.Model
                 else
                     Points_List[index].IsCorrect = false;
 
-                NotifyPropertyChanged("ModifAngles");
+                NotifyPropertyChanged(nameof(Points_List));
                 this.ModifAngle?.Invoke(Points_List[index]);
             }
         }
@@ -83,7 +83,7 @@ namespace ISC_Rentgen.GUI.Model
             {
                 RemovePoint(points.First());
             }
-            NotifyPropertyChanged("Clear");
+            NotifyPropertyChanged(nameof(Points_List));
             PointsClear?.Invoke();
         }
 

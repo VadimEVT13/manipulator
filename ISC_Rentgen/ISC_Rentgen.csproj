@@ -94,6 +94,8 @@
     </ApplicationDefinition>
     <Compile Include="GUI\Controllers\Key_Point_List_controller.cs" />
     <Compile Include="GUI\Model\Addition_Sphere.cs" />
+    <Compile Include="Model3d\Detals\Controller\Detal_Config_Parser.cs" />
+    <Compile Include="Model3d\Detals\Model\Detal_Config.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\Kinematic\Manipulator_Kinematic.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\ManipulatorV3.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\Model\Angles_Manipulator.cs" />
@@ -165,6 +167,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Map\MyMap.bmp" />
+    <Content Include="Model3d\Detals\Config\shpangout.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Model3d\Detals\lopatka.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

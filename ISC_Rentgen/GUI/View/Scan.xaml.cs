@@ -3,6 +3,7 @@ using ISC_Rentgen.GUI.Model;
 using ISC_Rentgen.GUI.ModelView;
 using ISC_Rentgen.Rentgen_Parts.Manipulator_Components;
 using ISC_Rentgen.Rentgen_Parts.Portal_Components;
+using ISC_Rentgen.Rentgen_Parts.Scan_Object_Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,8 +61,10 @@ namespace ISC_Rentgen.GUI.View
             {
                 Point3D Scan_point = new Point3D(double.Parse(Scan_x.Text), double.Parse(Scan_y.Text), double.Parse(Scan_z.Text));
 
-                ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, Scan_point);
-                PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, Scan_point);                  
+                ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
+                    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+                PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
+                    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);                  
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -143,23 +146,23 @@ namespace ISC_Rentgen.GUI.View
 
         void LopatkaMethodic()
         {
-            Key_Point KP = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point;
+            Point3D KP = Scan_Object.getInstant.Base_Point;
             
             // Очистка таблиц
             Key_Point_List.getInstance.Clear();
 
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 15), 
-                new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 15)));
+                new Point3D(KP.X - Addition_Sphere.getInstance.Radius, KP.Y, KP.Z + 37), 
+                new Point3D(KP.X, KP.Y, KP.Z + 37)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 30),
-                new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 30)));
+                new Point3D(KP.X - Addition_Sphere.getInstance.Radius, KP.Y, KP.Z + 47),
+                new Point3D(KP.X, KP.Y, KP.Z + 47)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 45),
-                new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 45)));
+                new Point3D(KP.X - Addition_Sphere.getInstance.Radius, KP.Y, KP.Z + 57),
+                new Point3D(KP.X, KP.Y, KP.Z + 57)));
             Key_Point_List.getInstance.AddPoint(new Key_Point(
-                new Point3D(KP.Scan_point.X - Addition_Sphere.getInstance.Radius, KP.Scan_point.Y, KP.Scan_point.Z + 60 - Addition_Sphere.getInstance.Radius),
-                new Point3D(KP.Scan_point.X, KP.Scan_point.Y, KP.Scan_point.Z + 60)));
+                new Point3D(KP.X - Addition_Sphere.getInstance.Radius, KP.Y, KP.Z + 67 - Addition_Sphere.getInstance.Radius),
+                new Point3D(KP.X, KP.Y, KP.Z + 67)));
         }
 
         void Shpangout_Duga()

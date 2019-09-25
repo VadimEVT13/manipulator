@@ -23,6 +23,10 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Roentgen.Devices.Models;
+using ISC_Rentgen.Model3d.Detals.Controller;
+using ISC_Rentgen.Model3d.Detals.Model;
+using ISC_Rentgen.GUI.Model;
+using Microsoft.Win32;
 
 namespace ISC_Rentgen.GUI.View
 {
@@ -228,6 +232,38 @@ namespace ISC_Rentgen.GUI.View
 
             Scan_Object.getInstant.Base_X = x_new;
             Scan_Object.getInstant.Base_Y = y_new;
+        }
+
+        private void Image_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ////Detal_Config.getInstance.Detal_Base = Scan_Object.getInstant.Base_Point;
+            ////Detal_Config.getInstance.Positions = Detal_Config.getInstance.Key_Point_ListToPosition_List(Key_Point_List.getInstance);
+            ////Detal_Config_Parser.Save_Config(System.IO.Path.GetFullPath(@"Model3d/Detals/Config/shpangout.txt"));
+
+            //Detal_Config_Parser.Load_Config(System.IO.Path.GetFullPath(@"Model3d/Detals/Config/shpangout.txt"));
+            //Scan_Object.getInstant.SetBase(Detal_Config.getInstance.Detal_Base);
+
+            //Key_Point_List.getInstance.Clear();
+            //var list = Detal_Config.getInstance.Position_ListToKey_Point_List(Detal_Config.getInstance.Positions);
+            //foreach (Key_Point kp in list)
+            //{
+            //    Key_Point_List.getInstance.AddPoint(kp);
+            //}
+        }
+
+        private void Configure_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog save_file_dialog = new SaveFileDialog()
+            {
+                Filter = "Txt files (*.txt)|*.txt",
+                InitialDirectory = System.IO.Path.GetFullPath(@"Model3d\Detals\Config")
+            };
+            if (save_file_dialog.ShowDialog() == true)
+            {
+                Detal_Config.getInstance.Detal_Base = Scan_Object.getInstant.Base_Point;
+                Detal_Config.getInstance.Positions = Detal_Config.getInstance.Key_Point_ListToPosition_List(Key_Point_List.getInstance);
+                Detal_Config_Parser.Save_Config(System.IO.Path.GetFullPath(save_file_dialog.FileName));
+            }
         }
     }
 }

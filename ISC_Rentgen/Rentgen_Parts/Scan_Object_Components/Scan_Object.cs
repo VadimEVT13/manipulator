@@ -90,12 +90,6 @@ namespace ISC_Rentgen.Rentgen_Parts.Scan_Object_Components
             }          
         }
 
-        public void Base(Point3D _Base)
-        {
-            base_point = _Base;
-            Rotate(Angles);
-        }
-
         private void NotifyPropertyChanged(String info)
         {
             if (PropertyChanged != null)
