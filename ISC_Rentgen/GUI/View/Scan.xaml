@@ -107,7 +107,7 @@
                         <helix:DefaultLights/>
                         <ModelVisual3D Content="{Binding Detal}"/>
                         <helix:HelixViewport3D.DefaultCamera>
-                            <PerspectiveCamera Position="500,0,100" LookDirection="-500,0,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
+                            <PerspectiveCamera Position="-500,500,100" LookDirection="500,-500,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
                         </helix:HelixViewport3D.DefaultCamera>
                     </helix:HelixViewport3D>
                     <Grid Grid.Row="1">

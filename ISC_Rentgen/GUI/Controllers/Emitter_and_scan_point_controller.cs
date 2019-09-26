@@ -15,8 +15,10 @@ namespace ISC_Rentgen.GUI.ModelView
         private static Emitter_and_scan_point_controller instance;
         public static Emitter_and_scan_point_controller getInstance {
             get {
-                if(instance == null)
-                     instance = new Emitter_and_scan_point_controller();
+                if (instance == null)
+                {
+                    instance = new Emitter_and_scan_point_controller();
+                }
                 return instance;
             }
         }
@@ -97,8 +99,10 @@ namespace ISC_Rentgen.GUI.ModelView
             }
         }
 
-        public Model3DGroup Model { get; set; }
-        public Model3DGroup Detal { get; set; }
+        public Model3DGroup Model { get { return model; } set { model = value; ModelAndDetal_EmitterAdder(); ModelAndDetal_ScanAdder(); } }
+        private Model3DGroup model = new Model3DGroup();
+        public Model3DGroup Detal { get { return detal; } set { detal = value; ModelAndDetal_EmitterAdder(); ModelAndDetal_ScanAdder(); } }
+        private Model3DGroup detal = new Model3DGroup();
         private string emitter_point_name { get { return "emitter_point"; } }
         private string scan_point_name { get { return "scan_point"; } }
 
