@@ -220,35 +220,18 @@ namespace ISC_Rentgen.GUI.View
             double x = e.GetPosition((Image)sender).X;
             double y = e.GetPosition((Image)sender).Y;
 
-            double W = 180.0;
+            double W = 200.0;
             double H = 360.0;
 
             double AW = (sender as Image).ActualWidth;
             double AH = (sender as Image).ActualHeight;
 
-            double y_new = 60  - x * W / AW;
-            double x_new = 160 - y * H / AH;
+            double y_new = 76 - x * W / AW;
+            double x_new = 156.6 - y * H / AH;
             //Console.WriteLine(string.Format("Точка x={0}; y={1}", x_new, y_new));
 
             Scan_Object.getInstant.Base_X = x_new;
             Scan_Object.getInstant.Base_Y = y_new;
-        }
-
-        private void Image_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            ////Detal_Config.getInstance.Detal_Base = Scan_Object.getInstant.Base_Point;
-            ////Detal_Config.getInstance.Positions = Detal_Config.getInstance.Key_Point_ListToPosition_List(Key_Point_List.getInstance);
-            ////Detal_Config_Parser.Save_Config(System.IO.Path.GetFullPath(@"Model3d/Detals/Config/shpangout.txt"));
-
-            //Detal_Config_Parser.Load_Config(System.IO.Path.GetFullPath(@"Model3d/Detals/Config/shpangout.txt"));
-            //Scan_Object.getInstant.SetBase(Detal_Config.getInstance.Detal_Base);
-
-            //Key_Point_List.getInstance.Clear();
-            //var list = Detal_Config.getInstance.Position_ListToKey_Point_List(Detal_Config.getInstance.Positions);
-            //foreach (Key_Point kp in list)
-            //{
-            //    Key_Point_List.getInstance.AddPoint(kp);
-            //}
         }
 
         private void Configure_Click(object sender, RoutedEventArgs e)

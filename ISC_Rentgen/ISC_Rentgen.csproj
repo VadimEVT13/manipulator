@@ -166,7 +166,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Map\MyMap.bmp" />
+    <Resource Include="Map\Map.bmp" />
     <Content Include="Model3d\Detals\Config\lopatka.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
