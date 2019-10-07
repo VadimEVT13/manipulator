@@ -77,10 +77,10 @@ namespace ISC_Rentgen
             Key_Point_List.getInstance.PointsClear += KPL_controller_main.PointsClear;
             Key_Point_List.getInstance.ModifAngle += KPL_controller_main.AngleModif;
 
-            //ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
-            //    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
-            //PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point, 
-            //    Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+            ManipulatorV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point,
+                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
+            PortalV3.Set_Position(Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Emitter_point,
+                Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point.Scan_point);
 
 
 
