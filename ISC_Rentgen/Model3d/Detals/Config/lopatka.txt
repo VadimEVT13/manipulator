@@ -1,1 +1,1 @@
-{"Detal_Base":"0,0,0","Positions":[{"Emitter":"-10,0,37","Scan":"0,0,37"},{"Emitter":"-10,0,47","Scan":"0,0,47"},{"Emitter":"-10,0,57","Scan":"0,0,57"},{"Emitter":"-10,0,57","Scan":"0,0,67"}]}
+{"Detal_Base":"0,0,0","Radius":10.0,"Methodic_name":"Лопатка","Num":1,"Positions":[{"Emitter":"-10,0,37","Scan":"0,0,37"},{"Emitter":"-10,0,47","Scan":"0,0,47"},{"Emitter":"-10,0,57","Scan":"0,0,57"},{"Emitter":"-10,0,57","Scan":"0,0,67"}]}

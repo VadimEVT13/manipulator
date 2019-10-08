@@ -16,7 +16,7 @@ namespace ISC_Rentgen.GUI.Model
         public static Auto_gen_model getInstance { get { if (instance == null) instance = new Auto_gen_model(); return instance; } }
         public OnRadiusChanged RadiusChanged;
 
-        private string methodic_name = "";
+        private string methodic_name = "Шпангоут";
         public string Methodic_name { get { return methodic_name; } set { methodic_name = value; NotifyPropertyChanged(nameof(methodic_name)); } }
 
         private double radius = 1;

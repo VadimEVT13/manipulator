@@ -20,8 +20,11 @@ namespace ISC_Rentgen.Model3d.Detals.Model
         private double radius = double.NaN;
         public double Radius { get { return radius; } set { if(value > 0) radius = value; } }
 
-        private string methodic_name = "";
+        private string methodic_name = "Шпангоут";
         public string Methodic_name { get { return methodic_name; } set { methodic_name = value; } }
+
+        private int num = 1;
+        public int Num { get { return num; } set { if (value > 0) num = value; } }
 
         private List<Position> positions = new List<Position>();
         public List<Position> Positions { get { return positions; } set { positions = value; } }

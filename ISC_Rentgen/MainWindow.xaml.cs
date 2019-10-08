@@ -179,7 +179,14 @@ namespace ISC_Rentgen
                     if (File.Exists(ConfigPath))
                     {
                         Detal_Config_Parser.Load_Config(ConfigPath);
-                        Scan_Object.getInstant.SetBase(Detal_Config.getInstance.Detal_Base);
+                        Detal_Config config = Detal_Config.getInstance;
+                        Auto_gen_model methodic = Auto_gen_model.getInstance; 
+
+                        Scan_Object.getInstant.SetBase(config.Detal_Base);
+                        methodic.Num = config.Num;
+                        methodic.Radius = config.Radius;
+                        methodic.Methodic_name = config.Methodic_name;
+
                         Key_Point_List.getInstance.Clear();
                         var list = Detal_Config.getInstance.Position_ListToKey_Point_List(Detal_Config.getInstance.Positions);
                         foreach (Key_Point kp in list)
