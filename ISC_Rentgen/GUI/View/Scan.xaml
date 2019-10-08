@@ -82,15 +82,17 @@
                 <Grid>
                     <StackPanel>
                         <Label Content="Выбор методики:"></Label>
-                        <ComboBox x:Name="Method" Margin="5,0,5,0">
-                            <TextBlock>Шпангоут</TextBlock>
+                        <ComboBox x:Name="Method" Margin="5,0,5,0" 
+                                  SelectedItem="{Binding Methodic_name, Source={x:Static model:Auto_gen_model.getInstance}}"
+                                  ItemsSource="{Binding Methodic_collection, Source={x:Static model:Auto_gen_model.getInstance}}">
+                            <!--<TextBlock>Шпангоут</TextBlock>
                             <TextBlock>Лопатка</TextBlock>
-                            <TextBlock>Шпангоут (дугами)</TextBlock>
+                            <TextBlock>Шпангоут (дугами)</TextBlock>-->
                         </ComboBox>
                         <Label Content="Количество положений"/>
-                        <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center"/>
+                        <TextBox x:Name="NumberOfPoints" Width="50" TextAlignment="Center" Text="{Binding Num, Source={x:Static model:Auto_gen_model.getInstance}}"/>
                         <Label Content="Радиус (для шпангоута)"/>
-                        <TextBox Width="50" TextAlignment="Center" Margin="5" Text="{Binding Radius, Source={x:Static model:Addition_Sphere.getInstance}}"/>
+                        <TextBox Width="50" TextAlignment="Center" Margin="5" Text="{Binding Radius, Source={x:Static model:Auto_gen_model.getInstance}}"/>
                         <Button x:Name="GetPointsButton" Click="GetPointsButton_Click" Margin="5,0,5,0">Получить</Button>
                     </StackPanel>
                 </Grid>
@@ -100,8 +102,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition Height="30"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <helix:HelixViewport3D Grid.Row="0" x:Name="Detal_View" 
+                    <helix:HelixViewport3D Grid.Row="0" x:Name="Detal_View" Margin="1,1,1,1"
                                        ShowViewCube="True" BorderBrush="Black" 
                                        BorderThickness="1" IsRotationEnabled="True" MouseLeftButtonDown="Detal_View_MouseLeftButtonDown" Grid.ColumnSpan="2">
                         <helix:DefaultLights/>
@@ -110,7 +113,7 @@
                             <PerspectiveCamera Position="-500,500,100" LookDirection="500,-500,0" UpDirection="0,0,1" NearPlaneDistance="0.1"/>
                         </helix:HelixViewport3D.DefaultCamera>
                     </helix:HelixViewport3D>
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="1,1,1,1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
@@ -118,6 +121,15 @@
                         <CheckBox Grid.Column="0"
                                   HorizontalAlignment="Center" VerticalAlignment="Center" Click="CheckBox_Click">Дуга второго типа</CheckBox>
                         <Button Grid.Column="1" Click="Sphere_delite" Grid.ColumnSpan="2">Удалить сферу</Button>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="1,1,1,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="1.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="Радиус сферы:"/>
+                        <TextBox Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                                 Text="{Binding Radius, Source={x:Static model:Auto_gen_model.getInstance}}"/>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -127,7 +139,6 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
             <Label Grid.Column="0" Content="Кратность:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBox x:Name="Kratnost" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5" TextChanged="Kratnost_TextChanged" Text="1"/>
         </Grid>

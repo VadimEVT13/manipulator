@@ -100,10 +100,10 @@ namespace ISC_Rentgen.GUI.View
         /// <param name="e"></param>
         private void GetPointsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Method.SelectedItem == null)
+            if (Auto_gen_model.getInstance.Methodic_name == "")
                 return;
 
-            switch ((Method.SelectedItem as TextBlock).Text)
+            switch (Auto_gen_model.getInstance.Methodic_name)
             {
                 case "Шпангоут":
                     ShpangoutMethodic();

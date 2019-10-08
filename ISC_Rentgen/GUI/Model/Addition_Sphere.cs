@@ -44,6 +44,8 @@ namespace ISC_Rentgen.GUI.Model
         public bool If_Sphere_Exist { get { return if_sphere_exist; } set { if_sphere_exist = value; CreateSphere(); } }
         private bool if_sphere_exist = false;
 
+        public void RadWasChanged(double R) { Radius = R; }
+
         // Создание сферы
         private Model3D CreateSphere()
         {

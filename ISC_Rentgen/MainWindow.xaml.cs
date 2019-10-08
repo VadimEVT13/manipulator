@@ -70,6 +70,7 @@ namespace ISC_Rentgen
             
             Addition_Sphere.getInstance.Sphere_Added += SphereAdder;
             Addition_Sphere.getInstance.Sphere_Deleted += SphereDelete;
+            Auto_gen_model.getInstance.RadiusChanged += Addition_Sphere.getInstance.RadWasChanged;
 
             KPL_controller_main = new Key_Point_List_controller() { Model = Model, Detal = Detal };
             Key_Point_List.getInstance.PointAdd += KPL_controller_main.PointAdd;

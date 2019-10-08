@@ -93,7 +93,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GUI\Controllers\Key_Point_List_controller.cs" />
+    <Compile Include="GUI\Controllers\Property_change_base.cs" />
     <Compile Include="GUI\Model\Addition_Sphere.cs" />
+    <Compile Include="GUI\Model\Auto_gen_model.cs" />
     <Compile Include="Model3d\Detals\Controller\Detal_Config_Parser.cs" />
     <Compile Include="Model3d\Detals\Model\Detal_Config.cs" />
     <Compile Include="Rentgen_Parts\Manipulator_Components\Kinematic\Manipulator_Kinematic.cs" />

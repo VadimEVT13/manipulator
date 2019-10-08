@@ -17,6 +17,12 @@ namespace ISC_Rentgen.Model3d.Detals.Model
         private Point3D detal_base = new Point3D();
         public Point3D Detal_Base { get { return detal_base; } set { detal_base = value; } }
 
+        private double radius = double.NaN;
+        public double Radius { get { return radius; } set { if(value > 0) radius = value; } }
+
+        private string methodic_name = "";
+        public string Methodic_name { get { return methodic_name; } set { methodic_name = value; } }
+
         private List<Position> positions = new List<Position>();
         public List<Position> Positions { get { return positions; } set { positions = value; } }
         
