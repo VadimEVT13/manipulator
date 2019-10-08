@@ -252,12 +252,6 @@ namespace ISC_Rentgen.GUI.View
                 config.Methodic_name = auto.Methodic_name;
                 config.Num = auto.Num;
 
-                //Detal_Config.getInstance.Detal_Base = Scan_Object.getInstant.Base_Point;
-                //Detal_Config.getInstance.Positions = Detal_Config.getInstance.Key_Point_ListToPosition_List(Key_Point_List.getInstance);
-                //Detal_Config.getInstance.Radius = Auto_gen_model.getInstance.Radius;
-                //Detal_Config.getInstance.Methodic_name = Auto_gen_model.getInstance.Methodic_name;
-                //Detal_Config.getInstance.Num = Auto_gen_model.getInstance.Num;
-
                 Detal_Config_Parser.Save_Config(System.IO.Path.GetFullPath(save_file_dialog.FileName));
             }
         }

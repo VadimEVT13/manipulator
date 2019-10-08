@@ -22,8 +22,10 @@ namespace ISC_Rentgen.GUI.Model
         public Angles_Manipulator Manipulator_Angle { get; set; }
         public Angles_Portal Portal_Angle { get; set; }
 
-        public bool IsCorrect { get { return iscorrect; } set { iscorrect = value; NotifyPropertyChanged(nameof(iscorrect)); } }
-        private bool iscorrect = false;
+        public bool IsCorrectManip { get { return iscorrectmanip; } set { iscorrectmanip = value; NotifyPropertyChanged(nameof(iscorrectmanip)); } }
+        private bool iscorrectmanip = false;
+        public bool IsCorrectPort { get { return iscorrectport; } set { iscorrectport = value; NotifyPropertyChanged(nameof(iscorrectport)); } }
+        private bool iscorrectport = false;
 
         public Key_Point(Point3D Emitter_point, Point3D Scan_point)
         {

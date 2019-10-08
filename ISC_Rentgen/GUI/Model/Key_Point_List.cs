@@ -66,11 +66,9 @@ namespace ISC_Rentgen.GUI.Model
 
                 Points_List[index].Manipulator_Angle = AM;
                 Points_List[index].Portal_Angle = AP;
-
-                if (AM != null & AP != null)
-                    Points_List[index].IsCorrect = true;
-                else
-                    Points_List[index].IsCorrect = false;
+                
+                Points_List[index].IsCorrectManip = (AM != null);
+                Points_List[index].IsCorrectPort = (AP != null);
 
                 NotifyPropertyChanged(nameof(Points_List));
                 this.ModifAngle?.Invoke(Points_List[index]);

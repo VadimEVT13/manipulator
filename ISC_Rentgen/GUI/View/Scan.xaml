@@ -167,7 +167,8 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Номер точки" Width="auto" DisplayMemberBinding="{Binding Index}"/>
-                        <GridViewColumn Header="Возможно поставить?" Width="auto" DisplayMemberBinding="{Binding IsCorrect}"/>
+                        <GridViewColumn Header="Излучатель" Width="auto" DisplayMemberBinding="{Binding IsCorrectManip}"/>
+                        <GridViewColumn Header="Детектор" Width="auto" DisplayMemberBinding="{Binding IsCorrectPort}"/>
                     </GridView>
                 </ListView.View>
             </ListView>            

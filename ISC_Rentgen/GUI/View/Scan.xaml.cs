@@ -119,20 +119,17 @@ namespace ISC_Rentgen.GUI.View
 
         void ShpangoutMethodic()
         {
+            Emitter_and_scan_point_controller.getInstance.AddScan(new Point3D(
+                Scan_Object.getInstant.Base_Point.X + 111, 
+                Scan_Object.getInstant.Base_Point.Y, 
+                Scan_Object.getInstant.Base_Point.Z));
             Key_Point KP = Emitter_and_scan_point_controller.getInstance.Emitter_and_scan_point;
-            double n;
-
-            if (!double.TryParse(NumberOfPoints.Text, out n))
-                return;
-
-            if (n <= 0)
-                return;
 
             // Очистка таблиц
             Key_Point_List.getInstance.Clear();
 
             // Добавление точек по дуге вокруг точки сканирования
-            for (double i = 0; i <= Math.PI; i += Math.PI / (n - 1))
+            for (double i = 0; i <= Math.PI; i += Math.PI / (Auto_gen_model.getInstance.Num - 1))
             {
                 Key_Point_List.getInstance.AddPoint(new Key_Point(new Point3D()
                 {

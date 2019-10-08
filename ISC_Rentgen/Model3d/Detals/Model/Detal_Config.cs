@@ -17,7 +17,7 @@ namespace ISC_Rentgen.Model3d.Detals.Model
         private Point3D detal_base = new Point3D();
         public Point3D Detal_Base { get { return detal_base; } set { detal_base = value; } }
 
-        private double radius = double.NaN;
+        private double radius = 1;
         public double Radius { get { return radius; } set { if(value > 0) radius = value; } }
 
         private string methodic_name = "Шпангоут";

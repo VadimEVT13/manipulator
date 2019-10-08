@@ -74,7 +74,7 @@ namespace ISC_Rentgen.GUI.Controllers
                 Model3D m = Model.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First();
                 if (m != null)
                 {
-                    if (p.IsCorrect)
+                    if (p.IsCorrectManip & p.IsCorrectPort)
                         (m as GeometryModel3D).Material = Materials.Green;
                     else
                         (m as GeometryModel3D).Material = Materials.Red;
@@ -85,7 +85,7 @@ namespace ISC_Rentgen.GUI.Controllers
                 Model3D m = Detal.Children.Where(x => x.GetName() == Key_Point_Model_Name + p.Index).First();
                 if (m != null)
                 {
-                    if (p.IsCorrect)
+                    if (p.IsCorrectManip & p.IsCorrectPort)
                         (m as GeometryModel3D).Material = Materials.Green;
                     else
                         (m as GeometryModel3D).Material = Materials.Red;
