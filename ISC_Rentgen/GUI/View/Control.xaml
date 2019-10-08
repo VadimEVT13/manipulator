@@ -145,7 +145,7 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="70"/>
-                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="5*"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
@@ -169,13 +169,14 @@
                 </StackPanel>
                 <StackPanel Grid.Row="3">
                     <Label HorizontalAlignment="Center" Content="Угол поворота 1"/>
-                    <Slider Name="Object_Z_rotation_Slider" Minimum="-180" Maximum="180" ValueChanged="Object_Z_rotation_Slider_ValueChanged"></Slider>
+                    <Slider Name="Object_Z_rotation_Slider" Minimum="-180" Maximum="180" Value="{Binding Angle_z, Source={x:Static scan_objects:Scan_Object.getInstant}}"></Slider>
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Z_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
                 </StackPanel>
                 <StackPanel Grid.Row="4">
                     <Label HorizontalAlignment="Center" Content="Угол поворота 2"></Label>
-                    <Slider Name="Object_Y_rotation_Slider" Minimum="-180" Maximum="180" ValueChanged="Object_Y_rotation_Slider_ValueChanged"></Slider>
+                    <Slider Name="Object_Y_rotation_Slider" Minimum="-180" Maximum="180" Value="{Binding Angle_y, Source={x:Static scan_objects:Scan_Object.getInstant}}"></Slider>
                     <TextBlock TextAlignment="Center" Text="{Binding ElementName=Object_Y_rotation_Slider, Path=Value, StringFormat={}{0:0.##}, UpdateSourceTrigger=PropertyChanged}" Margin="5"></TextBlock>
+                    <Button Grid.Row="0" Margin="5,1" Content="Сброс" Name="Haruki_Reseto" Click="Haruki_Reseto_Click"/>
                 </StackPanel>
                 <Grid Grid.Row="5">
                     <Image Source="/Map/Map.bmp" MouseLeftButtonDown="Image_MouseDown"></Image>

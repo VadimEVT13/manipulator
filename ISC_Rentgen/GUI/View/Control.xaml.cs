@@ -255,5 +255,12 @@ namespace ISC_Rentgen.GUI.View
                 Detal_Config_Parser.Save_Config(System.IO.Path.GetFullPath(save_file_dialog.FileName));
             }
         }
+
+        private void Haruki_Reseto_Click(object sender, RoutedEventArgs e)
+        {
+            Scan_Object obj = Scan_Object.getInstant;
+            obj.Angle_y = 0;
+            obj.Angle_z = 0;
+        }
     }
 }

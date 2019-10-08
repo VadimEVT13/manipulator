@@ -67,15 +67,37 @@ namespace ISC_Rentgen.Rentgen_Parts.Scan_Object_Components
             Base_Z = Point.Z;
         }
 
+        private double angle_y = 0;
+        public double Angle_y {
+            get { return angle_y; }
+            set {
+                angle_y = value;
+                angles.Y_rotation = angle_y;
+                Rotate(angles);
+                NotifyPropertyChanged(nameof(angle_y)); } }
+
+        private double angle_z = 0;
+        public double Angle_z {
+            get { return angle_z; }
+            set
+            {
+                angle_z = value;
+                angles.Z_rotation = angle_z;
+                Rotate(angles);
+                NotifyPropertyChanged(nameof(angle_z));
+            }
+        }
+
         public  Angles_Scan_Object Angles { get { return angles; } }
         private Angles_Scan_Object angles = new Angles_Scan_Object();
 
         public void Rotate(Angles_Scan_Object _angles)
         {
-            if (Model.Children.Count() == 0)
+            if (Model.Children.Count() == 0 || _angles == null)
                 return;
 
-            angles = _angles;
+            angle_y = _angles.Y_rotation;
+            angle_z = _angles.Z_rotation;
 
             Matrix3D T = new TranslateTransform3D(Base_Point.X, Base_Point.Y, Base_Point.Z).Value;
 
