@@ -77,6 +77,8 @@ namespace ISC_Rentgen.Rentgen_Parts.Portal_Components
             };
             
             PortalAngle rezult = pkin.InverseKinematic(p, Scan_Position, K);
+            if (rezult == null)
+                return null;
             Rotate(new Angles_Portal() { O1 = rezult.O1, O2 = rezult.O2, X = rezult.X, Y = rezult.Y, Z = rezult.Z });
 
             Angles_Portal output = new Angles_Portal() { O1 = rezult.O1, O2 = rezult.O2, X = rezult.X, Y = rezult.Y, Z = rezult.Z };

@@ -165,10 +165,6 @@ namespace ISC_Rentgen.Rentgen_Parts.Portal_Components.Kinematic
         double l2 = 0;
         double l3 = 0;
 
-        /*для присоединения модуля к внешней оболочке 
-        прийдётся менять устои компьютерной графики 
-        тем самым поменять y и z местами*/
-
         /// <summary>
         /// 
         /// </summary>
@@ -524,17 +520,21 @@ namespace ISC_Rentgen.Rentgen_Parts.Portal_Components.Kinematic
             R = Matrix3D.Multiply(R, reverse_rotateO2);
             R = Matrix3D.Multiply(R, reverse_rotateO1);
             R = Matrix3D.Multiply(R, ml1); // получили крепление к вертикальной раме
-
+                       
             rezult.X = x_portal - R.M14;
-            rezult.Y = Math.Abs(y_portal - R.M24);
-            rezult.Z = Math.Abs(z_portal - R.M34);
+            rezult.Y = - y_portal + R.M24;
+            rezult.Z = - z_portal + R.M34;
 
             // для адаптации
             double temp = rezult.O1;
             rezult.O1 = rezult.O2;
             rezult.O2 = temp;
 
-            return rezult;
+            if ((rezult.X < x_max & rezult.X > 0) &
+                (rezult.Y < y_max & rezult.Y > 0) &
+                (rezult.Z < z_max & rezult.Z > 0))
+                return rezult;
+            return null;
         }
 
         #region Оболочка
